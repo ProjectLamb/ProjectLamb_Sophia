@@ -1,0 +1,32 @@
+fileFormatVersion: 2
+guid: 6e013569ee18e44378fd5e569566dd94
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - The Jamsil OTF
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 209e71bcfa32f4ddb9ecabcb56e1d3ea, type: 3}
+  - {fileID: 12800000, guid: 2811c07a2f9c74f21bbb55fb18c1d0b3, type: 3}
+  - {fileID: 12800000, guid: 75d74e2bd7d48449aad320d7b0fc6b70, type: 3}
+  - {fileID: 12800000, guid: 5209719b0aa174b40bd327f501983705, type: 3}
+  - {fileID: 12800000, guid: 43b01261dcab24ce4be31fcd610f2f53, type: 3}
+  - {fileID: 12800000, guid: 8fc6b5937abc84def97f1e70e0f76308, type: 3}
+  - {fileID: 12800000, guid: 5fc27af2e4d09423e8b23958858c81e2, type: 3}
+  - {fileID: 12800000, guid: 537731f5c4d6d4b68b43b0acbeab564f, type: 3}
+  - {fileID: 12800000, guid: 095f30fd05679438eba82fd7133c6c03, type: 3}
+  - {fileID: 12800000, guid: 2155678604ee041e3945bc239b0567a7, type: 3}
+  - {fileID: 12800000, guid: b947aba69f33540f7b4f239881e24981, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
