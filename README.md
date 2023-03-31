@@ -20,7 +20,7 @@ git fetch
 
 **② 유니티 프로젝트 만들기**
 <div align=center>
-    <img src="2023-03-31-10-34-10.png">
+    <img src="/img/2023-03-31-10-34-10.png">
     <p>1. 3D(URP) 선택 <br>2. "Sophia_P_V_1_0" 으로 생성</p>
 </div>
 
@@ -31,7 +31,7 @@ git fetch
 ### 1. git lfs
 
 <div align=center>
-    <img src="2023-03-31-09-57-01.png" width=250px>
+    <img src="/img/2023-03-31-09-57-01.png" width=250px>
 </div>
 
 git lfs 설정을 한다면 **단일 파일 최대 100MB** 까지의 데이터도 협업할 수 있다. 왜 한것이냐면. 혹시모를 용량 큰 파일때문에 push가 안되는거 사전 예방하려고..
@@ -159,7 +159,7 @@ OS에 맞는 설정을 구글에 꼭 찾아보길!
 ## 2. Git 협업시 지켜야 하는것들
 
 <div align=center>
-    <img src="2023-03-31-10-41-08.png">
+    <img src="/img/2023-03-31-10-41-08.png">
     <h4>GitFlow 방식을 통해 브랜치를 나누자</h4>
 </div>
 
