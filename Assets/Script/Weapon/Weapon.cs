@@ -18,7 +18,6 @@ public class Weapon : MonoBehaviour
 
     public void Use(){
         if(!mIsReady) return;
-        Debug.Log("슈슈슉");
         mIsReady = false;
         Instantiate(weaponEffect, transform.position, transform.rotation).GetComponent<CombatEffect>().SetDatas(this.playerData, this.weaponData);
         mCoWaitUse = CoWaitUse();

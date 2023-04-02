@@ -9,9 +9,8 @@ public class PlayerAction : MonoBehaviour
     /// </summary>
     [HideInInspector]
     public PlayerData playerData;
-    
     public Weapon weapon;
-
+    public bool isPortal;
     Rigidbody mRigidbody;
     Vector3 mMoveVec;
     Vector3 mRotateVec;
@@ -20,11 +19,16 @@ public class PlayerAction : MonoBehaviour
     bool mIsDashed;
     IEnumerator mCoWaitDash;
 
+    
+
+
     private void Awake() {
         if(!TryGetComponent<PlayerData>(out playerData)) {Debug.Log("컴포넌트 로드 실패 : PlayerData");}
         if(!TryGetComponent<Rigidbody>(out mRigidbody)) {Debug.Log("컴포넌트 로드 실패 : Rigidbody");}
         
         weapon.playerData = this.playerData;
+
+        isPortal = true;
     }
 
     /// <summary>
