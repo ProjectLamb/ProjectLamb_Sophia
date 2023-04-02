@@ -5,6 +5,10 @@ TagManager:
   serializedVersion: 2
   tags:
   - Shootable
+  - Mesh
+  - Wall
+  - Enemy
+  - Portal
   layers:
   - Default
   - TransparentFX
@@ -12,8 +16,8 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
+  - Wall
+  - Tile
   - Lighting
   - Ground
   - Postprocessing
