@@ -23,6 +23,7 @@ public class Tile : MonoBehaviour
     string portalType;
     public void WarpPortal()
     {
+        Debug.Log("워프 포탈 만들기");
         if (!visited)
         {
             map = transform.parent.parent.gameObject;
@@ -92,6 +93,8 @@ public class Tile : MonoBehaviour
                 }
             }
             warpPos = new Vector3(destPos.x, GameManager.Instance.Player.transform.position.y, destPos.z);
+
+            Debug.Log(warpPos);
         }
         departRoom.GetComponent<RoomGenerator>().SetOffRoom();
         arriveRoom.GetComponent<RoomGenerator>().SetOnRoom();
