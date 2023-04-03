@@ -19,16 +19,22 @@ public class PlayerAction : MonoBehaviour
     bool mIsDashed;
     IEnumerator mCoWaitDash;
 
-    
+    private void Awake()
+    {
+        if (!TryGetComponent<PlayerData>(out playerData)) { Debug.Log("컴포넌트 로드 실패 : PlayerData"); }
+        if (!TryGetComponent<Rigidbody>(out mRigidbody)) { Debug.Log("컴포넌트 로드 실패 : Rigidbody"); }
 
-
-    private void Awake() {
-        if(!TryGetComponent<PlayerData>(out playerData)) {Debug.Log("컴포넌트 로드 실패 : PlayerData");}
-        if(!TryGetComponent<Rigidbody>(out mRigidbody)) {Debug.Log("컴포넌트 로드 실패 : Rigidbody");}
-        
         weapon.playerData = this.playerData;
 
         isPortal = true;
+    }
+
+    private void Update()
+    {
+        if (isPortal)
+        {
+            CheckPortal();
+        }
     }
 
     /// <summary>
@@ -36,13 +42,15 @@ public class PlayerAction : MonoBehaviour
     /// </summary>
     /// <param name="_hAxis">W, S 인풋 수치</param>
     /// <param name="_vAxis">A, D 인픗 수치</param>
-    public void Move(float _hAxis, float _vAxis){
+    public void Move(float _hAxis, float _vAxis)
+    {
         if (mRigidbody.velocity.magnitude > playerData.numericData.MoveSpeed) return;
 
         mMoveVec = AngleToVector(Camera.main.transform.eulerAngles.y + 90f) * _hAxis + AngleToVector(Camera.main.transform.eulerAngles.y) * _vAxis;
         mMoveVec = mMoveVec.normalized;
         mRotateVec = new Vector3(_vAxis, 0, -_hAxis).normalized;
-        if(!IsBorder()){
+        if (!IsBorder())
+        {
             Vector3 rbVel = mMoveVec * playerData.numericData.MoveSpeed;
             mRigidbody.velocity = rbVel;
             transform.LookAt(transform.position + mRotateVec);
@@ -52,22 +60,37 @@ public class PlayerAction : MonoBehaviour
     /// <summary>
     /// 이 함수가 실행되면 대쉬가 된다.
     /// </summary>
-    public void Dash(){
-        if(playerData.numericData.CurStamina <= 0) return; 
+    public void Dash()
+    {
+        if (playerData.numericData.CurStamina <= 0) return;
         Vector3 dashPower = mMoveVec * -Mathf.Log(1 / mRigidbody.drag);
         mRigidbody.AddForce(dashPower.normalized * playerData.numericData.MoveSpeed * 10, ForceMode.VelocityChange);
         Debug.Log($"Do Dash : Power:{dashPower}, Intencity:{mRigidbody.velocity.magnitude}");
-        if (playerData.numericData.CurStamina > 0) {playerData.numericData.CurStamina--;}
-        if (!mIsDashed) {
+        if (playerData.numericData.CurStamina > 0) { playerData.numericData.CurStamina--; }
+        if (!mIsDashed)
+        {
             mCoWaitDash = CoWaitDash();
             StartCoroutine(mCoWaitDash);
         }
     }
 
-    public void Attack(){
+    public void Attack()
+    {
         weapon.Use();
     }
-    
+
+    public void CheckPortal()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, Vector3.down, out hit, transform.position.y + 1, LayerMask.GetMask("Tile")))
+        {
+            if (hit.transform.tag == "Portal")
+            {
+                hit.transform.gameObject.GetComponent<Tile>().WarpPortal();
+            }
+        }
+    }
+
     private IEnumerator CoWaitDash()
     {
         mIsDashed = true;
@@ -79,11 +102,13 @@ public class PlayerAction : MonoBehaviour
         mIsDashed = false;
     }
 
-    private bool IsBorder(){
+    private bool IsBorder()
+    {
         return Physics.Raycast(transform.position, mMoveVec.normalized, 2, LayerMask.GetMask("Wall"));
     }
 
-    private Vector3 AngleToVector(float _angle){
+    private Vector3 AngleToVector(float _angle)
+    {
         _angle *= Mathf.Deg2Rad;
         return new Vector3(Mathf.Sin(_angle), 0, Mathf.Cos(_angle));
     }
