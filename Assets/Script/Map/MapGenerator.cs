@@ -10,12 +10,12 @@ public class MapGenerator : MonoBehaviour
     int maxY = 15;
 
     [Tooltip("Amount is random from N to N + 2")]
-
     public int roomAmount; //editable or not
     public int minimumDistanceOfEndRoom;
     public float hiddenRoomSpawnRate;
     public List<GameObject> roomArray = new List<GameObject>();
     public GameObject roomObject;
+
     public struct Room
     {
         // public Room(int n)
@@ -135,6 +135,7 @@ public class MapGenerator : MonoBehaviour
     };
 
     public Room[] room;
+
     void GenerateStage(int n)
     {
         InfiniteLoopDetector.Run();
@@ -143,6 +144,7 @@ public class MapGenerator : MonoBehaviour
         int roomAmount = n;
         int maxRoom = maxX * maxY;
 
+        // RoomType 초기화      
         for (int i = 1; i <= maxRoom; i++)
         {
             room[i].SetRoomNumber(i);
@@ -152,12 +154,13 @@ public class MapGenerator : MonoBehaviour
             }
         }
 
-        Queue<int> q = new Queue<int>();
-
+        /// 시작방 만들기
         int initRoomNumber = 1 + (maxX / 2) + (maxY / 2 * maxX);
-
-        q.Enqueue(room[initRoomNumber].GetRoomNumber());
         room[initRoomNumber].SetRoomType("start");
+
+        // 큐 작업
+        Queue<int> q = new Queue<int>();
+        q.Enqueue(room[initRoomNumber].GetRoomNumber());
         int amount = 0;
 
         while (amount != roomAmount)
@@ -177,6 +180,7 @@ public class MapGenerator : MonoBehaviour
                 amount++;
             }
 
+            
             for (int i = 0; i < 4; i++)	//Search 4 directions from the queue's front room
             {
                 int num = q.Peek();	//front room number
@@ -213,6 +217,7 @@ public class MapGenerator : MonoBehaviour
                     room[num].OccupyRoom();
                     amount++;
                 }
+
                 q.Enqueue(num);
             }
             q.Dequeue();
@@ -226,8 +231,11 @@ public class MapGenerator : MonoBehaviour
         //             endQ.Enqueue(i);
         //     }
 
+
+        //
         int farthest = 0;
         int farthestRoom = -1;
+
         Queue<int> endQ = new Queue<int>();
 
         for (int i = 1; i <= maxRoom; i++)
@@ -256,6 +264,9 @@ public class MapGenerator : MonoBehaviour
                 endQ.Dequeue();
             }
         }
+
+        //////////////////////////////////////////////////////////////////////////////////////
+        
         Queue<string> endRoomSet = new Queue<string>();
         //endRoomSet.Enqueue("boss");
         endRoomSet.Enqueue("shop");
@@ -274,6 +285,7 @@ public class MapGenerator : MonoBehaviour
         while (endRoomSet.Count != 0)
         {
             InfiniteLoopDetector.Run();
+
             endQ.Enqueue(endQ.Peek());
             endQ.Dequeue();
 
@@ -299,9 +311,11 @@ public class MapGenerator : MonoBehaviour
             {
                 GameObject instance;
                 bool[] portal = new bool[4]; //east, west, south, north
+
                 instance = Instantiate(roomObject, roomPos, Quaternion.identity);
                 instance.GetComponent<RoomGenerator>().SetRoomType(room[i].GetRoomType());
                 instance.GetComponent<RoomGenerator>().SetRoomLocation(roomPos.x, roomPos.z);
+                
                 if (!room[i - 1].IsVacant())
                     portal[0] = true;
                 if (!room[i + 1].IsVacant())
@@ -331,5 +345,7 @@ public class MapGenerator : MonoBehaviour
         hiddenRoomSpawnRate = 1f;
         Debug.Log("Generated amount of stages: " + roomAmount);
         GenerateStage(roomAmount);
+
+        
     }
 }
