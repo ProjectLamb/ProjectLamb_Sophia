@@ -33,13 +33,13 @@ public class Enemy : MonoBehaviour, IDieAble, IDamagable
         if(!TryGetComponent<EnemyData>(out mEnemyData)){Debug.Log("컴포넌트 로드 실패 : EnemyData");}
         if(!TryGetComponent<NavMeshAgent>(out nav)){Debug.Log("컴포넌트 로드 실패 : NavMeshAgent");}
         chase = false;
-        target = GameManager.Instance.Player.transform;
+        target = GameManager.Instance?.Player?.transform;
         mIsDie = false;
     }
 
     void FixedUpdate()
     {
-        if(GameManager.Instance.IsGamePaused.Equals(true)){return;}
+        if(GameManager.Instance?.globalEvent.IsGamePaused == true){return;}
         if (chase)
         {
             nav.SetDestination(target.position);
@@ -49,7 +49,7 @@ public class Enemy : MonoBehaviour, IDieAble, IDamagable
     // Update is called once per frame
     void Update()
     {
-        if(GameManager.Instance.IsGamePaused.Equals(true)){return;}
+        if(GameManager.Instance?.globalEvent.IsGamePaused == true){return;}
 
         if (chase) { nav.enabled = true;}
         else {nav.enabled = false;}
@@ -57,10 +57,13 @@ public class Enemy : MonoBehaviour, IDieAble, IDamagable
 
     void OnTriggerEnter(Collider collider)
     {
-        if (collider.tag == "Mesh" && !mIsDie){
+        Debug.Log("EnterColider");
+        if (collider.tag == "CombatEffect" && !mIsDie){
             GetDamaged(1);
             if(!collider.TryGetComponent<CombatEffect>(out CombatEffect combatEffect)){Debug.Log("컴포넌트 로드 실패 : NavMeshAgent");}
             Instantiate(combatEffect.hitEffect, transform);
+
+            GameManager.Instance?.globalEvent.OnHitEvents?.Invoke();
         }
     }
 
