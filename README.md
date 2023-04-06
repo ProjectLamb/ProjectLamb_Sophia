@@ -1,6 +1,7 @@
 # Sophia Prototype Version 1.0
 
 > Sophia_P_V_1_0 프로젝트 생성
+> 리소스 : https://drive.google.com/drive/folders/147bTzLhr9AizaJVXYsqfEHVwK0Rw72IS?usp=share_link
 
 #### 목차
 1. [Git Setting](#1-git-setting)
