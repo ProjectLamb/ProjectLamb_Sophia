@@ -10,7 +10,7 @@ public class HandleButtons : MonoBehaviour
     }
     public void HandleReturn(){
         pauseMenu.CloseMenu();
-        GameManager.Instance.IsGamePaused = false;
+        GameManager.Instance.globalEvent.IsGamePaused = false;
     }
     public void HandleQuit(){
         #if UNITY_EDITOR
