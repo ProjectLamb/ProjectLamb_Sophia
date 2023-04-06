@@ -302,7 +302,6 @@ public class RoomGenerator : MonoBehaviour
     }
     void Start()
     {
-        Debug.Log($"{portalE}, {portalW}, {portalS}, {portalN}");
         //RoomCamera.transform.position = new Vector3(RoomCamera.transform.position.x - 15 * (roomSizeRandom - 1), RoomCamera.transform.position.y, RoomCamera.transform.position.z + 15 * (roomSizeRandom - 1));
         InstantiateTile(width, height);
         InstantiatePortal();
