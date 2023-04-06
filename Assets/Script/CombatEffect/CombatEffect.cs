@@ -8,18 +8,22 @@ using Newtonsoft.Json.Linq;
 
 public class CombatEffect : MonoBehaviour {
     public GameObject hitEffect;
-    public MeshCollider hitBox;
+    public Collider hitBox;
+    public Action mOnHitAction;
 
     PlayerData playerData;
     WeaponData weaponData;
 
     IEnumerator mCoEnableOff;
 
+    public UnityEvent HitEvents;
+
+
     //ParticleSystem effectParticle;
 
     private void Awake() {
         //if(!TryGetComponent<ParticleSystem>(out effectParticle)){Debug.Log("컴포넌트 로드 실패 : PlayerData");}
-        if(!TryGetComponent<MeshCollider>(out hitBox)){Debug.Log("컴포넌트 로드 실패 : PlayerData");}
+        if(!TryGetComponent<Collider>(out hitBox)){Debug.Log("컴포넌트 로드 실패 : PlayerData");}
         hitBox.enabled = true;
     }
     private void Start() {
@@ -38,6 +42,6 @@ public class CombatEffect : MonoBehaviour {
         this.weaponData = _wd;
     }
 
-    public override string ToString() => $"playerData : {JsonUtility.ToJson(playerData)} weaponData : {JsonUtility.ToJson(weaponData)}";
+    //public override string ToString() => $"playerData : {JsonUtility.ToJson(playerData)} weaponData : {JsonUtility.ToJson(weaponData)}";
     //public void SetDatas(PlayerData _pd, WeaponData _wd, SkillData _sd){}
 }

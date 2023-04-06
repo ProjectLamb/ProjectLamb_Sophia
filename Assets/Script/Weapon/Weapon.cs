@@ -19,9 +19,9 @@ public class Weapon : MonoBehaviour
     public void Use(){
         if(!mIsReady) return;
         mIsReady = false;
-        Instantiate(weaponEffect, transform.position, transform.rotation).GetComponent<CombatEffect>().SetDatas(this.playerData, this.weaponData);
         mCoWaitUse = CoWaitUse();
         StartCoroutine(mCoWaitUse);
+        Instantiate(weaponEffect, transform.position, transform.rotation).GetComponent<CombatEffect>().SetDatas(this.playerData, this.weaponData);
     }
 
     IEnumerator CoWaitUse(){

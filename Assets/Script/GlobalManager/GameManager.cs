@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance
     {
         get {
-            if(!_instance)
+            if(_instance == null)
             {
                 _instance = FindObjectOfType(typeof(GameManager)) as GameManager;
 
@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour
     public GameObject Player;
     public GameObject UI;
     public GameObject CurrentRoom;
+    public GlobalEvent globalEvent;
 
     private bool mIsGamePaused = false;
 
@@ -37,32 +38,18 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
         //DontDestroyOnLoad(gameObject);
-    }
 
+    }
 
     // Update is called once per frame
     void Update()
     {
-        Time.timeScale = mTimenum;
+        Time.timeScale = globalEvent.CurrentTimeScale;
+
         if (Input.GetKeyDown(KeyCode.R))
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             //AudioManager.Instance.CleanEventInstance();
         }
     }
-
-    public bool IsGamePaused {
-        get {
-            return mIsGamePaused; 
-        }
-        set {
-            if(value == true){Time.timeScale = 0;}
-            else{Time.timeScale = 1;}
-            mIsGamePaused = value;
-            Debug.Log("Time Changed");
-        }
-    }
-
-    [Range(0,1)]
-    public float mTimenum = 1f;
 }
