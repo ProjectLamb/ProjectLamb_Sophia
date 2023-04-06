@@ -2,39 +2,63 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 플레이어의 모든 동작을 담는 클래스다
+/// </summary>
 public class PlayerAction : MonoBehaviour
 {
-    /// <summary>
-    /// 플레이어의 수치적 데이터를 가져온다
-    /// </summary>
+    /////////////////////////////////////////////////////////////////////////////////
+    /****************
+    *
+    * 클래스를 모아 놓는다.
+    *
+    ****************/
+
     [HideInInspector]
-    public PlayerData playerData;
-    public Weapon weapon;
-    public bool isPortal;
+    public PlayerData playerData;           // 플레이어가 가지는 모든 데이터
+    public Weapon weapon;                   // 무기 클래스를 가져온다.
+    //public Dictionary<string, Skill> skills;// 무기 클래스를 가져온다.
+    public Skill skill;// 무기 클래스를 가져온다.
     Rigidbody mRigidbody;
-    Vector3 mMoveVec;
-    Vector3 mRotateVec;
 
-    bool mIsBorder;
-    bool mIsDashed;
-    IEnumerator mCoWaitDash;
+    /****************
+    *
+    * 플레이어 "액션"에 대해 필요한 변수들을 모아 놓는다.
+    *
+    ****************/
 
-    private void Awake()
+    /// <summary>
+    /// RoomGenerator.cs에서 참조하는 변수 (리펙토링 필요해 보인다.) <br/>
+    /// * 포탈을 사용할수 있는지 없는지는 Map이 책임을 가져아 한다. <br/>
+    /// * 플레이어는 그저 바닥에 포탈이 있는지 없는지 확인하고 사용하기, 안하기를 하면 될듯하다.
+    /// </summary>
+    public bool isPortal;
+    Vector3 mMoveVec;               // 음직이는 방향을 얻어오는데 사용한다.
+    Vector3 mRotateVec;             // 회전하는데 사용한다.
+    bool mIsBorder;                 // 벽에 부딛혔는지 감지
+    bool mIsDashed;                 // 대쉬를 했는지 
+
+
+    /****************
+    *
+    * 코루틴, 액션을 모아 놓는다
+    *
+    ****************/
+    IEnumerator mCoWaitDash;        // StopCorutine을 사용하기 위해서는 코루틴 변수가 필요하다. 
+
+    /////////////////////////////////////////////////////////////////////////////////
+    void Awake()
     {
         if (!TryGetComponent<PlayerData>(out playerData)) { Debug.Log("컴포넌트 로드 실패 : PlayerData"); }
         if (!TryGetComponent<Rigidbody>(out mRigidbody)) { Debug.Log("컴포넌트 로드 실패 : Rigidbody"); }
-
         weapon.playerData = this.playerData;
 
         isPortal = true;
     }
 
-    private void Update()
+    void Update()
     {
-        if (isPortal)
-        {
-            CheckPortal();
-        }
+        if (isPortal) CheckPortal();
     }
 
     /// <summary>
@@ -44,11 +68,23 @@ public class PlayerAction : MonoBehaviour
     /// <param name="_vAxis">A, D 인픗 수치</param>
     public void Move(float _hAxis, float _vAxis)
     {
+        Vector3 AngleToVector(float _angle)
+        {
+            _angle *= Mathf.Deg2Rad;
+            return new Vector3(Mathf.Sin(_angle), 0, Mathf.Cos(_angle));
+        }
+
         if (mRigidbody.velocity.magnitude > playerData.numericData.MoveSpeed) return;
 
         mMoveVec = AngleToVector(Camera.main.transform.eulerAngles.y + 90f) * _hAxis + AngleToVector(Camera.main.transform.eulerAngles.y) * _vAxis;
         mMoveVec = mMoveVec.normalized;
         mRotateVec = new Vector3(_vAxis, 0, -_hAxis).normalized;
+
+        bool IsBorder()
+        {
+            return Physics.Raycast(transform.position, mMoveVec.normalized, 2, LayerMask.GetMask("Wall"));
+        }
+
         if (!IsBorder())
         {
             Vector3 rbVel = mMoveVec * playerData.numericData.MoveSpeed;
@@ -62,11 +98,25 @@ public class PlayerAction : MonoBehaviour
     /// </summary>
     public void Dash()
     {
-        if (playerData.numericData.CurStamina <= 0) return;
+        IEnumerator CoWaitDash()
+        {
+            mIsDashed = true;
+            while (playerData.numericData.CurStamina < playerData.numericData.MaxStamina)
+            {
+                yield return new WaitForSeconds(3.0f);
+                playerData.numericData.CurStamina++;
+            }
+            mIsDashed = false;
+        }
+
+        // 스테미나 false면 그냥 스킵
+        if (playerData.numericData.CurStamina <= 0) return; 
+        
         Vector3 dashPower = mMoveVec * -Mathf.Log(1 / mRigidbody.drag);
         mRigidbody.AddForce(dashPower.normalized * playerData.numericData.MoveSpeed * 10, ForceMode.VelocityChange);
-        Debug.Log($"Do Dash : Power:{dashPower}, Intencity:{mRigidbody.velocity.magnitude}");
+        
         if (playerData.numericData.CurStamina > 0) { playerData.numericData.CurStamina--; }
+        
         if (!mIsDashed)
         {
             mCoWaitDash = CoWaitDash();
@@ -74,12 +124,23 @@ public class PlayerAction : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Weapon 클래스를 참조해서 공격 을 실행한다.
+    /// </summary>
     public void Attack()
     {
         weapon.Use();
     }
+    public void Skill(string key)
+    {
+        //skills[key].Use();
+        skill.Use();
+    }
 
-    public void CheckPortal()
+    /// <summary>
+    /// 바닥에 레이케스트를 쏜다, 타일의 태그가 포탈이면 포탈에 해당하는 방이동(WarpPortal) 사용하기
+    /// </summary>
+    void CheckPortal()
     {
         RaycastHit hit;
         if (Physics.Raycast(transform.position, Vector3.down, out hit, transform.position.y + 1, LayerMask.GetMask("Tile")))
@@ -91,25 +152,4 @@ public class PlayerAction : MonoBehaviour
         }
     }
 
-    private IEnumerator CoWaitDash()
-    {
-        mIsDashed = true;
-        while (playerData.numericData.CurStamina < playerData.numericData.MaxStamina)
-        {
-            yield return new WaitForSeconds(3.0f);
-            playerData.numericData.CurStamina++;
-        }
-        mIsDashed = false;
-    }
-
-    private bool IsBorder()
-    {
-        return Physics.Raycast(transform.position, mMoveVec.normalized, 2, LayerMask.GetMask("Wall"));
-    }
-
-    private Vector3 AngleToVector(float _angle)
-    {
-        _angle *= Mathf.Deg2Rad;
-        return new Vector3(Mathf.Sin(_angle), 0, Mathf.Cos(_angle));
-    }
 }
