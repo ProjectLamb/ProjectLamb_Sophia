@@ -2,6 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Numeric : int, float 같은것들만 저장 <br/>
+/// * 최대체력, 현재체력, 최대스테미나, 현재스테미나, 이동속도, 힘, 사정거리(?), 운 <br/>
+/// Attribute : bool, Dictionary, List 저장 <br/>
+/// * 디버프상타, 버프상테, 시너지 상태 
+/// </summary>
 public class PlayerData : MonoBehaviour
 {
     [System.Serializable]
@@ -13,12 +19,18 @@ public class PlayerData : MonoBehaviour
 
         public int MaxHP {
             get{return mMaxHP;} 
-            set{mMaxHP = value;}
+            set{
+                if(mMaxHP < 0) mMaxHP = 0;
+                mMaxHP = value;
+            }
         }
 
         public int CurHP {
             get {return mCurHP;}
-            set {mCurHP = value;}
+            set {
+                if(mCurHP < 0) mCurHP = 0;
+                mCurHP = value;
+            }
         }
 
         [field: SerializeField]
@@ -27,15 +39,29 @@ public class PlayerData : MonoBehaviour
         private int mCurStamina;
 
         public int MaxStamina {get{return mMaxStamina;} set{mMaxStamina = value;}}
-        public int CurStamina {get{return mCurStamina;} set{mCurStamina = value;}}
+        public int CurStamina {
+            get{return mCurStamina;} 
+            set {
+                if(mCurStamina < 0) mCurStamina = 0;
+                mCurStamina = value;
+            }
+        }
 
         [field: SerializeField]
         public float MoveSpeed {get; set;}
 
         [field: SerializeField]
         public float Power {get; set;}
+
         [field: SerializeField]
-        public float Range {get; set;}
+        private float mRange;
+        public float Range {
+            get {return mRange;} 
+            set{
+                if(mRange < 0) mRange = 0;
+                mRange = value;
+            }
+        }
 
         [field: SerializeField]
         float Luck {get; set;}
