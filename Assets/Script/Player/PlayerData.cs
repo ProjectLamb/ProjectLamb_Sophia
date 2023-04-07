@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using AYellowpaper.SerializedCollections;
 
 /// <summary>
 /// Numeric : int, float 같은것들만 저장 <br/>
@@ -65,6 +67,14 @@ public class PlayerData : MonoBehaviour
 
         [field: SerializeField]
         float Luck {get; set;}
+        //https://stackoverflow.com/questions/6745224/iterate-through-class-fields-and-print-them
+        /*
+        public Numeric(){
+            foreach(var prop in typeof(Numeric).GetProperties()){
+                prop.SetValue(prop, 0f);
+                Debug.Log($"{prop.Name} = {prop.GetValue(this, null)}");
+            }
+        }*/
     }
     public class Attribute{
         public Dictionary<E_DebuffState, bool> mDebuffState;        
@@ -73,6 +83,21 @@ public class PlayerData : MonoBehaviour
     }
     public Numeric numericData;
     public Attribute attributeData;
+    public Weapon weapon; // 무기 클래스를 가져온다.
+
+    [SerializedDictionary("Input Type", "Skill")]
+    public SerializedDictionary<string, Skill> skills = new SerializedDictionary<string, Skill>(); // 무기 클래스를 가져온다.
+    public List<Equipment> equipments = new List<Equipment>(8);
+
+    private void Awake() {
+        weapon.playerData = this;
+        skills["Q"].playerData = this;
+    }
+
+    public void FakePlayerDataContructor(){
+        numericData = new PlayerData.Numeric();
+        attributeData = new PlayerData.Attribute();
+    }
 }
 
 /*
