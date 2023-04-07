@@ -25,6 +25,8 @@ public class CombatEffect : MonoBehaviour {
         //if(!TryGetComponent<ParticleSystem>(out effectParticle)){Debug.Log("컴포넌트 로드 실패 : PlayerData");}
         if(!TryGetComponent<Collider>(out hitBox)){Debug.Log("컴포넌트 로드 실패 : PlayerData");}
         hitBox.enabled = true;
+        
+        //HitEvents = GameManager.Instance?.globalEvent.OnHitEvents;
     }
     private void Start() {
         Debug.Log(this.ToString());
@@ -33,7 +35,7 @@ public class CombatEffect : MonoBehaviour {
     }
 
     IEnumerator CoEnableOff() {
-        yield return new WaitForSeconds(0.15f);
+        yield return YieldInstructionCache.WaitForSeconds(0.15f);
         hitBox.enabled = false;
     }
 

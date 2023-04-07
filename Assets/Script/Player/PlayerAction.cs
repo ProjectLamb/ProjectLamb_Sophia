@@ -16,9 +16,6 @@ public class PlayerAction : MonoBehaviour
 
     [HideInInspector]
     public PlayerData playerData;           // 플레이어가 가지는 모든 데이터
-    public Weapon weapon;                   // 무기 클래스를 가져온다.
-    //public Dictionary<string, Skill> skills;// 무기 클래스를 가져온다.
-    public Skill skill;// 무기 클래스를 가져온다.
     Rigidbody mRigidbody;
 
     /****************
@@ -51,7 +48,6 @@ public class PlayerAction : MonoBehaviour
     {
         if (!TryGetComponent<PlayerData>(out playerData)) { Debug.Log("컴포넌트 로드 실패 : PlayerData"); }
         if (!TryGetComponent<Rigidbody>(out mRigidbody)) { Debug.Log("컴포넌트 로드 실패 : Rigidbody"); }
-        weapon.playerData = this.playerData;
 
         isPortal = true;
     }
@@ -103,7 +99,7 @@ public class PlayerAction : MonoBehaviour
             mIsDashed = true;
             while (playerData.numericData.CurStamina < playerData.numericData.MaxStamina)
             {
-                yield return new WaitForSeconds(3.0f);
+                yield return YieldInstructionCache.WaitForSeconds(3.0f);
                 playerData.numericData.CurStamina++;
             }
             mIsDashed = false;
@@ -129,12 +125,12 @@ public class PlayerAction : MonoBehaviour
     /// </summary>
     public void Attack()
     {
-        weapon.Use();
+        playerData.weapon.Use();
     }
     public void Skill(string key)
     {
         //skills[key].Use();
-        skill.Use();
+        playerData.skills["Q"].Use();
     }
 
     /// <summary>
@@ -152,4 +148,8 @@ public class PlayerAction : MonoBehaviour
         }
     }
 
+    [ContextMenu("GetPizzaPickup")]
+    void GetPizzaPickup(){
+        playerData.equipments[0].Adaptation(this.playerData);
+    }
 }

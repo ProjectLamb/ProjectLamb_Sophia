@@ -3,8 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+/// <summary>
+/// 적 클래스 <br/>
+/// * IDieAble : 죽는 Action , 인터페이스로 동작을 구현<br/>
+/// * IDamagable : 맞는 Action , 인터페이스로 동작을 구현
+/// </summary>
 public class Enemy : MonoBehaviour, IDieAble, IDamagable
 {
+    [HideInInspector]
+    EnemyData mEnemyData;
+
     public Transform target;
     NavMeshAgent nav;
     Rigidbody mRigidBody;
@@ -12,9 +20,16 @@ public class Enemy : MonoBehaviour, IDieAble, IDamagable
     public bool chase;
     public bool mIsDie;
 
-    [HideInInspector]
-    EnemyData mEnemyData;
+    ///////////////////////////////////////////////////
+    // public void HitEvent() {
+    //     Camera.main.GetComponent<CameraEffect>().HandleZoomIn();
+    //     GameManager.Instance.globalEvent.HandleTimeSlow();
+    // }
+    ///////////////////////////////////////////////////
 
+    /// <summary>
+    /// 인터페이스 구현
+    /// </summary>
     public void Die()
     {
         chase = false;
@@ -22,6 +37,10 @@ public class Enemy : MonoBehaviour, IDieAble, IDamagable
         Destroy(gameObject, 0.5f);
     }
 
+    /// <summary>
+    /// 인터페이스 구현ㅌ
+    /// </summary>
+    /// <param name="_amount"></param>
     public void GetDamaged(int _amount){
         mEnemyData.numericData.CurHP -= _amount;
         if (this.mEnemyData.numericData.CurHP <= 0) {this.Die();}
@@ -33,7 +52,7 @@ public class Enemy : MonoBehaviour, IDieAble, IDamagable
         if(!TryGetComponent<EnemyData>(out mEnemyData)){Debug.Log("컴포넌트 로드 실패 : EnemyData");}
         if(!TryGetComponent<NavMeshAgent>(out nav)){Debug.Log("컴포넌트 로드 실패 : NavMeshAgent");}
         chase = false;
-        target = GameManager.Instance?.Player?.transform;
+        target = GameManager.Instance?.playerGameObject?.transform;
         mIsDie = false;
     }
 
@@ -63,7 +82,8 @@ public class Enemy : MonoBehaviour, IDieAble, IDamagable
             if(!collider.TryGetComponent<CombatEffect>(out CombatEffect combatEffect)){Debug.Log("컴포넌트 로드 실패 : NavMeshAgent");}
             Instantiate(combatEffect.hitEffect, transform);
 
-            GameManager.Instance?.globalEvent.OnHitEvents?.Invoke();
+            combatEffect.HitEvents.Invoke();
+            //HitEvent();
         }
     }
 
