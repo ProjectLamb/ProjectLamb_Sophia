@@ -20,12 +20,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public GameObject Player;
-    public GameObject UI;
-    public GameObject CurrentRoom;
+    public GameObject playerGameObject;
+    [HideInInspector]
+    public PlayerData playerData;
+    public GameObject currentRoom;
     public GlobalEvent globalEvent;
-
-    private bool mIsGamePaused = false;
 
     void Awake()
     {
@@ -39,6 +38,7 @@ public class GameManager : MonoBehaviour
         }
         //DontDestroyOnLoad(gameObject);
 
+        playerData = playerGameObject.GetComponent<PlayerData>();
     }
 
     // Update is called once per frame
