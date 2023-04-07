@@ -8,13 +8,18 @@ public class Skill : MonoBehaviour
     public PlayerData playerData;
     
     [HideInInspector]
-    WeaponData weaponData;
+    public WeaponData weaponData;
+    public SkillData skillData;
 
     public GameObject skillEffect;
 
     bool mIsReady = true;
     IEnumerator mCoWaitUse;
 
+    private void Awake() {
+        //if(!TryGetComponent<WeaponData>(out weaponData)) {Debug.Log("컴포넌트 로드 실패 : WeaponData");}
+        if(!TryGetComponent<SkillData>(out skillData)) {Debug.Log("컴포넌트 로드 실패 : SkillData");}
+    }
     public void Use(){
         if(!mIsReady) return;
         mIsReady = false;
@@ -24,7 +29,7 @@ public class Skill : MonoBehaviour
         Instantiate(skillEffect, transform.position, transform.rotation).GetComponent<CombatEffect>().SetDatas(this.playerData, this.weaponData);
     }
     IEnumerator CoWaitUse(){
-        yield return new WaitForSeconds(1f);
+        yield return YieldInstructionCache.WaitForSeconds(1f);
         mIsReady = true;
     }
 }
