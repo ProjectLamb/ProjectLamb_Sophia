@@ -240,7 +240,7 @@ public class RoomGenerator : MonoBehaviour
         gameObject.SetActive(true);
         if (!isClear)
             GameManager.Instance.playerGameObject.GetComponent<PlayerAction>().isPortal = false;
-            GameManager.Instance.currentRoom = this.gameObject;
+            GameManager.Instance.mapGenerator.currentRoom = this.gameObject;
         foreach (var m in mobArray)
         {
             if (m != null)
@@ -316,7 +316,7 @@ public class RoomGenerator : MonoBehaviour
         if (type == "start")
         {
             GameObject character = GameManager.Instance.playerGameObject;
-            GameManager.Instance.currentRoom = this.gameObject;
+            GameManager.Instance.mapGenerator.currentRoom = this.gameObject;
             isClear = true;
             //character.transform.position = new Vector3(transform.localPosition.x, GameObject.Find("Character").transform.position.y, transform.localPosition.z);
             character.transform.position = new Vector3(transform.position.x, character.transform.position.y, transform.position.z);
@@ -332,7 +332,7 @@ public class RoomGenerator : MonoBehaviour
     {
         if (!isClear)
         {
-            if (currentMobCount == 0 && GameManager.Instance.currentRoom == this.gameObject)
+            if (currentMobCount == 0 && GameManager.Instance.mapGenerator.currentRoom == this.gameObject)
             {
                 FirstClear();
             }
