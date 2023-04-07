@@ -16,6 +16,8 @@ public class MapGenerator : MonoBehaviour
     public List<GameObject> roomArray = new List<GameObject>();
     public GameObject roomObject;
 
+    public GameObject currentRoom;
+
     public struct Room
     {
         // public Room(int n)
@@ -232,7 +234,7 @@ public class MapGenerator : MonoBehaviour
         //     }
 
 
-        //
+        // 가장 멀리있는 방 찾기
         int farthest = 0;
         int farthestRoom = -1;
 
