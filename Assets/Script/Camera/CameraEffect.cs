@@ -9,11 +9,8 @@ public class CameraEffect : MonoBehaviour {
     public float mAmount;
     public float mOriginFOV = 50f;
     bool mIsZoomed = false;
-    private void Start(){
-        GameManager.Instance.globalEvent.OnHitEvents += handleZoomIn;
-    }
 
-    public void handleZoomIn(){
+    public void HandleZoomIn(){
         if(mIsZoomed == true) return;
         mCoZoom = ZoomCoroutine();
         StartCoroutine(mCoZoom);

@@ -4648,7 +4648,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 0c705a3bc7b78f542b313e57c16ba83d, type: 2}
+  - {fileID: 2100000, guid: b1048c1270cfe45b4b7b79001fcdc39a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4728,3 +4728,6 @@ MonoBehaviour:
   hitEffect: {fileID: 1446978853027966288, guid: 27132214ec3c74cc8980837569ded6fc,
     type: 3}
   hitBox: {fileID: 6885677840220166503}
+  HitEvents:
+    m_PersistentCalls:
+      m_Calls: []
