@@ -5,12 +5,10 @@ using UnityEngine;
 using UnityEngine.Events;
 
 public class GlobalEvent : MonoBehaviour{
-    public Action OnHitEvents;
-    public Action PausedEvent;
+    public UnityEvent OnHitEvents;
+    public UnityEvent PausedEvent;
 
     void Awake() {
-        OnHitEvents = new Action(() => Debug.Log("액션 시작"));
-        OnHitEvents += HandleTimeSlow;
     }
 
     ///////////////////////////////////////////////////////////////////
