@@ -92,13 +92,13 @@ public class Tile : MonoBehaviour
                     }
                 }
             }
-            warpPos = new Vector3(destPos.x, GameManager.Instance.Player.transform.position.y, destPos.z);
+            warpPos = new Vector3(destPos.x, GameManager.Instance.playerGameObject.transform.position.y, destPos.z);
 
             Debug.Log(warpPos);
         }
         departRoom.GetComponent<RoomGenerator>().SetOffRoom();
         arriveRoom.GetComponent<RoomGenerator>().SetOnRoom();
-        GameManager.Instance.Player.transform.position = warpPos;
+        GameManager.Instance.playerGameObject.transform.position = warpPos;
         visited = true;
     }
 

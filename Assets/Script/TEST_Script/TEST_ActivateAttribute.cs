@@ -49,7 +49,7 @@ public class TEST_ActivateAttribute : MonoBehaviour
                 curTime += 0.5f;
                 player.numericData.CurHP -= 10;
                 int currentHp = player.numericData.CurHP;
-                yield return new WaitForSeconds(0.5f);
+                yield return YieldInstructionCache.WaitForSeconds(0.5f);
             }
             StartBurn = false;
             player.material.color = mDefaultColor;
