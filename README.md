@@ -49,6 +49,8 @@ git lfs 설정을 한다면 **단일 파일 최대 100MB** 까지의 데이터�
 ```.gitattribute
 *.zip filter=lfs diff=lfs merge=lfs -text
 *.mp4 filter=lfs diff=lfs merge=lfs -text
+*.png filter=lfs diff=lfs merge=lfs -text
+*.fbx filter=lfs diff=lfs merge=lfs -text
 ```
 
 **3. LFS가 적용된 repo clone하기**
@@ -144,7 +146,11 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
 # Ignore Plugins
-Asset/Plugins
+Assets/Plugins
+Assets/Resources
+Assets/JMO Assets
+
+# End of https://www.toptal.com/developers/gitignore/api/unity
 
 # End of https://www.toptal.com/developers/gitignore/api/unity
 ```
