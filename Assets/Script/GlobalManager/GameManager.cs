@@ -20,10 +20,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    //public GameObject currentRoom;
     public GameObject playerGameObject;
-    [HideInInspector]
+
     public PlayerData playerData;
-    public GameObject currentRoom;
+    public MapGenerator mapGenerator;
     public GlobalEvent globalEvent;
 
     void Awake()
@@ -37,8 +38,6 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
         //DontDestroyOnLoad(gameObject);
-
-        playerData = playerGameObject.GetComponent<PlayerData>();
     }
 
     // Update is called once per frame
