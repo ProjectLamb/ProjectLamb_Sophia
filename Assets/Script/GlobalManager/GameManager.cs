@@ -23,7 +23,8 @@ public class GameManager : MonoBehaviour
     public GameObject playerGameObject;
     [HideInInspector]
     public PlayerData playerData;
-    public GameObject currentRoom;
+    public GameObject ChapterGenerator;
+    public GameObject currentStage;
     public GlobalEvent globalEvent;
 
     void Awake()
