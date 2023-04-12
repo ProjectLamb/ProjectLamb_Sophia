@@ -22,20 +22,20 @@ public class Minimap : MonoBehaviour
         {
 
             Vector2 pos = new Vector2(x,y);
-            if(!map.GetComponent<ChapterGenerator>().stage[i].IsVacant())
+            if(!map.GetComponent<ChapterGenerator>().stage[i].Vacancy)
             {
                 Image tmp;
                 tmp = Instantiate(img, transform);
                 tmp.transform.localPosition = new Vector3(pos.x - 250, pos.y, 0);
-                if(map.GetComponent<ChapterGenerator>().stage[i].GetStageType() == "start")
+                if(map.GetComponent<ChapterGenerator>().stage[i].Type == "start")
                     tmp.color = Color.green;
-                else if (map.GetComponent<ChapterGenerator>().stage[i].GetStageType() == "boss")
+                else if (map.GetComponent<ChapterGenerator>().stage[i].Type == "boss")
                     tmp.color = Color.red;
-                else if (map.GetComponent<ChapterGenerator>().stage[i].GetStageType() == "shop")
+                else if (map.GetComponent<ChapterGenerator>().stage[i].Type == "shop")
                     tmp.color = Color.blue;
-                else if (map.GetComponent<ChapterGenerator>().stage[i].GetStageType() == "middleboss")
+                else if (map.GetComponent<ChapterGenerator>().stage[i].Type == "middleboss")
                     tmp.color = Color.yellow;
-                else if (map.GetComponent<ChapterGenerator>().stage[i].GetStageType() == "hidden")
+                else if (map.GetComponent<ChapterGenerator>().stage[i].Type == "hidden")
                     tmp.color = Color.grey;
             }
 

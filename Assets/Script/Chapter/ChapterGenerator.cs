@@ -6,77 +6,114 @@ using UnityEngine.SceneManagement;
 public class ChapterGenerator : MonoBehaviour
 {
     /**/
-    int maxX = 15;
-    int maxY = 15;
+    static int MAX = 15;
 
-    [Tooltip("Amount is random from N to N + 2")]
-    public int stageAmount; //editable or not
-    public int minimumDistanceOfEndStage;
-    public float hiddenStageSpawnRate;
+    [SerializeField]
+    int stageAmount;
+    int minimumDistanceOfEndStage;
+    [SerializeField]
+    float hiddenStageSpawnRate;
     public List<GameObject> stageArray = new List<GameObject>();
-    public GameObject stageObject;
+    public GameObject obj;
 
-    public struct Stage
+    public class Stage
     {
-        public int GetStageNumber()
+        //type
+        private int mStageNumber;
+        public int StageNumber
         {
-            return stageNumber;
+            get
+            {
+                return mStageNumber;
+            }
+            set
+            {
+                mStageNumber = value;
+            }
         }
-        public void SetStageNumber(int n)
+        private bool mVacancy;
+        public bool Vacancy
         {
-            type = "normal";
-            stageNumber = n;
+            set
+            {
+                mVacancy = value;
+            }
+            get
+            {
+                return mVacancy;
+            }
         }
-        public void SetStageType(string s)
+        private int mDepth;
+        public int Depth
         {
-            type = s;
+            get
+            {
+                return mDepth;
+            }
+            set
+            {
+                mDepth = value;
+                if (mDepth > maxDepth)
+                    maxDepth = mDepth;
+            }
         }
-        public string GetStageType()
+        public static int maxDepth = -1;
+        private string mType;	//start, normal, shop, boss, boundary, hidden
+        public string Type
         {
-            return type;
+            get
+            {
+                return mType;
+            }
+            set
+            {
+                mType = value;
+            }
         }
-        public bool IsVacant()
+        public Stage East = null;
+        public Stage West = null;
+        public Stage South = null;
+        public Stage North = null;
+        public GameObject stageObject = null;
+
+        //methods
+        public Stage()
         {
-            return vacancy;
+            mStageNumber = 0;
+            mType = "normal";
+            mVacancy = true;
+            mDepth = 0;
         }
-        public void OccupyStage()
-        {
-            vacancy = false;
-        }
-        public void ResetStage()
-        {
-            vacancy = true;
-        }
-        public bool CheckAdjacency(Stage[] r, int maxX, int lower)
+        public bool CheckAdjacency(Stage[] r)
         {
             int i = 0;
-            if (!r[stageNumber - 1].vacancy)
+            if (!r[mStageNumber - 1].mVacancy)
                 i++;
-            if (!r[stageNumber + 1].vacancy)
+            if (!r[mStageNumber + 1].mVacancy)
                 i++;
-            if (!r[stageNumber - maxX].vacancy)
+            if (!r[mStageNumber - MAX].mVacancy)
                 i++;
-            if (!r[stageNumber + maxX].vacancy)
+            if (!r[mStageNumber + MAX].mVacancy)
                 i++;
 
-            if (i >= lower)
+            if (i > 1)
                 return true;
             else
                 return false;
         }
-        public bool CheckEndStage(Stage[] r, int maxX)
+        public bool CheckEndStage(Stage[] r)
         {
-            if (r[stageNumber].type == "start")
+            if (r[mStageNumber].mType == "start")
                 return false;
 
             int i = 0;
-            if (!r[stageNumber - 1].vacancy)
+            if (!r[mStageNumber - 1].mVacancy)
                 i++;
-            if (!r[stageNumber + 1].vacancy)
+            if (!r[mStageNumber + 1].mVacancy)
                 i++;
-            if (!r[stageNumber - maxX].vacancy)
+            if (!r[mStageNumber - MAX].mVacancy)
                 i++;
-            if (!r[stageNumber + maxX].vacancy)
+            if (!r[mStageNumber + MAX].mVacancy)
                 i++;
 
             if (i == 1)
@@ -84,104 +121,54 @@ public class ChapterGenerator : MonoBehaviour
             else
                 return false;
         }
-
-        public int CheckHiddenStage(Stage[] r, int maxX)
-        {
-            int stageNum = 0;
-
-            if (CheckAdjacency(r, maxX, 3))
-                stageNum = this.stageNumber;
-
-            return stageNum;
-        }
-        public void SetDistanceFromStart(int init, int maxX)
-        {
-            int distance = 0;
-            int initLine = init - (maxX / 2);
-            int tmp = stageNumber;
-            if (tmp < init)
-            {
-                while (tmp < initLine || tmp > initLine + maxX - 1)
-                {
-                    tmp += maxX;
-                    distance++;
-                }
-                if (tmp < init)
-                    distance += init - tmp;
-                else
-                    distance += tmp - init;
-            }
-            else
-            {
-                while (tmp < initLine || tmp > initLine + maxX - 1)
-                {
-                    tmp -= maxX;
-                    distance++;
-                }
-                if (tmp < init)
-                    distance += init - tmp;
-                else
-                    distance += tmp - init;
-            }
-            distanceFromStart = distance;
-        }
-
-        public int GetDistanceFromStart()
-        {
-            return distanceFromStart;
-        }
-        private int stageNumber;
-        private bool vacancy;
-        private int distanceFromStart;
-        private string type;	//start, normal, shop, boss, boundary
     };
 
-    public Stage[] stage;
+    public Stage[] stage = new Stage[MAX * MAX + 1];
 
     void GenerateStage(int n)
     {
-        InfiniteLoopDetector.Run();
-
-        stage = new Stage[maxX * maxY + 1];
         int stageAmount = n;
-        int maxStage = maxX * maxY;
+        int maxStage = MAX * MAX;
+        int initStageNumber = 1 + (MAX / 2) + (MAX / 2 * MAX);
+        int amount; //현재 방 개수
 
-        // StageType 초기화      
-        for (int i = 1; i <= maxStage; i++)
+        void Initialize()
         {
-            stage[i].SetStageNumber(i);
-            if ((i >= 1 && i <= maxX) || i % maxX == 1 || i % maxX == 0 || (i >= (maxStage - maxX + 1) && i <= maxStage))
+            Stage.maxDepth = -1;
+            for (int i = 1; i <= maxStage; i++)
             {
-                stage[i].SetStageType("boundary");
+                stage[i] = new Stage();
+                stage[i].StageNumber = i;
+                if ((i >= 1 && i <= MAX) || i % MAX == 1 || i % MAX == 0 || (i >= (maxStage - MAX + 1) && i <= maxStage))
+                {
+                    stage[i].Type = "boundary";
+                }
             }
+            /// 시작방 만들기
+            stage[initStageNumber].Type = "start";
+            amount = 0;
         }
 
-        /// 시작방 만들기
-        int initStageNumber = 1 + (maxX / 2) + (maxY / 2 * maxX);
-        stage[initStageNumber].SetStageType("start");
+        // StageType 초기화
+        Initialize();
 
         // 큐 작업
         Queue<int> q = new Queue<int>();
-        q.Enqueue(stage[initStageNumber].GetStageNumber());
-        int amount = 0;
+        q.Enqueue(stage[initStageNumber].StageNumber);
 
         while (amount != stageAmount)
         {
             if (q.Count == 0)
             {
-                for (int i = 1; i <= maxStage; i++)
-                    stage[i].ResetStage();
-                q.Enqueue(stage[initStageNumber].GetStageNumber());
-                stage[initStageNumber].SetStageType("start");
-                amount = 0;
+                Initialize();
+                q.Enqueue(stage[initStageNumber].StageNumber);
             }
 
-            if (q.Peek() >= 1 && q.Peek() <= maxStage && stage[q.Peek()].IsVacant())  //Occupy stage
+            if (q.Peek() >= 1 && q.Peek() <= maxStage && stage[q.Peek()].Vacancy)  //Occupy stage
             {
-                stage[q.Peek()].OccupyStage();
+                stage[q.Peek()].Vacancy = false;
                 amount++;
             }
-
 
             for (int i = 0; i < 4; i++)	//Search 4 directions from the queue's front stage
             {
@@ -196,27 +183,42 @@ public class ChapterGenerator : MonoBehaviour
                         num++;
                         break;
                     case 2: //Up
-                        num -= maxX;
+                        num -= MAX;
                         break;
                     case 3: //Down
-                        num += maxX;
+                        num += MAX;
                         break;
                 }
-
-                if (stage[num].GetStageType() == "boundary")  //To avoid array boundary exception
+                if (stage[num].Type == "boundary")  //To avoid array boundary exception
                     continue;
-                if (!stage[num].IsVacant())	//If the stage is already occupied
+                if (!stage[num].Vacancy)	//If the stage is already occupied
                     continue;
-                if (stage[num].CheckAdjacency(stage, maxX, 2))	//To avoid circulating stage array
+                if (stage[num].CheckAdjacency(stage))	//To avoid circulating stage array
                     continue;
                 if (amount == stageAmount)	//If the stage amount is already full
                     continue;
                 if (Randomizer.random())	//50% chance to pass
                     continue;
 
-                if (num >= 1 && num <= maxStage && stage[num].IsVacant())
+                if (num >= 1 && num <= maxStage && stage[num].Vacancy)
                 {
-                    stage[num].OccupyStage();
+                    stage[num].Vacancy = false;
+                    stage[num].Depth = stage[q.Peek()].Depth + 1;
+                    switch (i)
+                    {
+                        case 0:
+                            stage[q.Peek()].East = stage[num];
+                            break;
+                        case 1:
+                            stage[q.Peek()].West = stage[num];
+                            break;
+                        case 2:
+                            stage[q.Peek()].North = stage[num];
+                            break;
+                        case 3:
+                            stage[q.Peek()].South = stage[num];
+                            break;
+                    }
                     amount++;
                 }
                 q.Enqueue(num);
@@ -224,37 +226,24 @@ public class ChapterGenerator : MonoBehaviour
             q.Dequeue();
         }
 
-        int farthest = 0;
+        // int farthest = 0;
         int farthestStage = -1;
 
         Queue<int> endQ = new Queue<int>();
-        Queue<int> normalQ = new Queue<int>();
 
         for (int i = 1; i <= maxStage; i++)
-            if (!stage[i].IsVacant())
+            if (!stage[i].Vacancy)
             {
-                stage[i].SetDistanceFromStart(initStageNumber, maxX);
-                if (stage[i].CheckEndStage(stage, maxX) && stage[i].GetDistanceFromStart() >= minimumDistanceOfEndStage)
+                if (stage[i].CheckEndStage(stage) && stage[i].Depth >= minimumDistanceOfEndStage)   //end Stage
                     endQ.Enqueue(i);
-                else
-                    normalQ.Enqueue(i);
-                if (stage[i].GetDistanceFromStart() > farthest)
-                {
-                    farthest = stage[i].GetDistanceFromStart();
+
+                if (stage[i].Depth == Stage.maxDepth)
                     farthestStage = i;
-                }
-            }
-            else
-            {
-                if (stage[i].GetStageType() == "boundary")
-                    continue;
-                if (stage[i].CheckAdjacency(stage, maxX, 1))
-                    stage[i].SetStageType("border");
             }
 
-        for (int i = 0; i < endQ.Count; i++)
+        for (int i = 0; i < endQ.Count; i++)    //이미 배정된 보스 방은 큐에서 제거
         {
-            if (stage[endQ.Peek()].GetDistanceFromStart() == farthest)
+            if (endQ.Peek() == farthestStage)
                 endQ.Dequeue();
             else
             {
@@ -266,43 +255,17 @@ public class ChapterGenerator : MonoBehaviour
         //////////////////////////////////////////////////////////////////////////////////////
 
         Queue<string> endStageSet = new Queue<string>();
-        Queue<string> normalStageSet = new Queue<string>();
-        //endStageSet.Enqueue("boss");
         endStageSet.Enqueue("shop");
-        normalStageSet.Enqueue("middleboss");
         if (Randomizer.GetThisChanceResult_Percentage(hiddenStageSpawnRate))
         {
-            Queue<int> hiddenQ = new Queue<int>();
-            for (int i = 1; i <= maxStage; i++)
-            {
-                if (!stage[i].IsVacant())
-                    continue;
-                if (stage[i].GetStageType() != "border")
-                    continue;
-                int num = stage[i].CheckHiddenStage(stage, maxX);
-                if (num != 0)
-                    hiddenQ.Enqueue(num);
-            }
-
-            while (hiddenQ.Count != 0)
-            {
-                InfiniteLoopDetector.Run();
-                hiddenQ.Enqueue(hiddenQ.Peek());
-                hiddenQ.Dequeue();
-
-                if (Randomizer.random())
-                    continue;
-                stage[hiddenQ.Peek()].OccupyStage();
-                stage[hiddenQ.Peek()].SetStageType("hidden");
-                break;
-            }
+            endStageSet.Enqueue("hidden");
             Debug.Log("Hidden Stage Spawned");
         }
 
         if (endQ.Count < endStageSet.Count || farthestStage == -1)
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 
-        stage[farthestStage].SetStageType("boss");
+        stage[farthestStage].Type = "boss"; //가장 먼 방은 보스방으로 배정
 
         while (endStageSet.Count != 0)
         {
@@ -311,60 +274,45 @@ public class ChapterGenerator : MonoBehaviour
             endQ.Enqueue(endQ.Peek());
             endQ.Dequeue();
 
-            if (stage[endQ.Peek()].GetStageType() == "boss")
+            if (stage[endQ.Peek()].Type == "boss")
                 continue;
             if (!Randomizer.random())
                 continue;
-            stage[endQ.Peek()].SetStageType(endStageSet.Peek());
+            stage[endQ.Peek()].Type = endStageSet.Peek();
             endQ.Dequeue();
             endStageSet.Dequeue();
         }
-
-        while (normalStageSet.Count != 0)
-        {
-            InfiniteLoopDetector.Run();
-            normalQ.Enqueue(normalQ.Peek());
-            normalQ.Dequeue();
-
-            if (stage[normalQ.Peek()].GetDistanceFromStart() < 2) //minimum distance of middle boss
-                continue;
-            if (!Randomizer.random())
-                continue;
-            stage[normalQ.Peek()].SetStageType(normalStageSet.Peek());
-            normalQ.Dequeue();
-            normalStageSet.Dequeue();
-        }
-
         //Assign real stage objects in Unity
 
         int x = 0;
         int z = 0;
-        int stageInterval = stageObject.GetComponent<StageGenerator>().GetMaxSize(); //stage gameobect's width
+        int stageInterval = obj.GetComponent<StageGenerator>().GetMaxSize(); //stage gameobect's width
 
-        for (int i = 1; i <= maxX * maxY; i++)
+        for (int i = 1; i <= maxStage; i++)
         {
             Vector3 stagePos = new Vector3(x, 0, z);
-            if (!stage[i].IsVacant())
+            if (!stage[i].Vacancy)
             {
                 GameObject instance;
                 bool[] portal = new bool[4]; //east, west, south, north
-                instance = Instantiate(stageObject, stagePos, Quaternion.identity);
-                instance.GetComponent<StageGenerator>().SetStageType(stage[i].GetStageType());
+                instance = Instantiate(obj, stagePos, Quaternion.identity);
+                instance.GetComponent<StageGenerator>().SetStageType(stage[i].Type);
                 instance.GetComponent<StageGenerator>().SetStageLocation(stagePos.x, stagePos.z);
                 instance.transform.parent = transform;
                 stageArray.Add(instance);
 
-                if (!stage[i - 1].IsVacant())
+                if (!stage[i - 1].Vacancy)
                     portal[0] = true;
-                if (!stage[i + 1].IsVacant())
+                if (!stage[i + 1].Vacancy)
                     portal[1] = true;
-                if (!stage[i + maxX].IsVacant())
+                if (!stage[i + MAX].Vacancy)
                     portal[2] = true;
-                if (!stage[i - maxX].IsVacant())
+                if (!stage[i - MAX].Vacancy)
                     portal[3] = true;
                 instance.GetComponent<StageGenerator>().SetPortal(portal[0], portal[1], portal[2], portal[3]);
+                stage[i].stageObject = instance;
             }
-            if (i % maxX == 0)
+            if (i % MAX == 0)
             {
                 x = 0;
                 z += stageInterval;
@@ -377,9 +325,10 @@ public class ChapterGenerator : MonoBehaviour
     }
     void Awake()
     {
-        stageAmount = Random.Range(stageAmount, stageAmount + 3);
-        hiddenStageSpawnRate = 10f;
-        Debug.Log("Generated amount of stages: " + stageAmount);
+        stageAmount = 10;
+        minimumDistanceOfEndStage = 3;
+        hiddenStageSpawnRate = 50f; //10% possibility
+        //Debug.Log("Generated amount of stages: " + stageAmount);
         GenerateStage(stageAmount);
     }
 }
