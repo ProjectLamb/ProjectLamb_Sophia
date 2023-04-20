@@ -35,6 +35,8 @@ public class PlayerAction : MonoBehaviour
     bool mIsBorder;                 // 벽에 부딛혔는지 감지
     bool mIsDashed;                 // 대쉬를 했는지 
 
+    public LayerMask groundMask;                  // 바닥을 인식하는 마스크
+
 
     /****************
     *
@@ -48,13 +50,13 @@ public class PlayerAction : MonoBehaviour
     {
         if (!TryGetComponent<PlayerData>(out playerData)) { Debug.Log("컴포넌트 로드 실패 : PlayerData"); }
         if (!TryGetComponent<Rigidbody>(out mRigidbody)) { Debug.Log("컴포넌트 로드 실패 : Rigidbody"); }
-
         isPortal = true;
     }
 
     void Update()
     {
         if (isPortal) CheckPortal();
+        Turning();
     }
 
     /// <summary>
@@ -74,7 +76,7 @@ public class PlayerAction : MonoBehaviour
 
         mMoveVec = AngleToVector(Camera.main.transform.eulerAngles.y + 90f) * _hAxis + AngleToVector(Camera.main.transform.eulerAngles.y) * _vAxis;
         mMoveVec = mMoveVec.normalized;
-        mRotateVec = new Vector3(_vAxis, 0, -_hAxis).normalized;
+        //mRotateVec = new Vector3(_vAxis, 0, -_hAxis).normalized;
 
         bool IsBorder()
         {
@@ -85,7 +87,7 @@ public class PlayerAction : MonoBehaviour
         {
             Vector3 rbVel = mMoveVec * playerData.numericData.MoveSpeed;
             mRigidbody.velocity = rbVel;
-            transform.LookAt(transform.position + mRotateVec);
+            //transform.LookAt(transform.position + mRotateVec);
         }
     }
 
@@ -106,13 +108,13 @@ public class PlayerAction : MonoBehaviour
         }
 
         // 스테미나 false면 그냥 스킵
-        if (playerData.numericData.CurStamina <= 0) return; 
-        
+        if (playerData.numericData.CurStamina <= 0) return;
+
         Vector3 dashPower = mMoveVec * -Mathf.Log(1 / mRigidbody.drag);
         mRigidbody.AddForce(dashPower.normalized * playerData.numericData.MoveSpeed * 10, ForceMode.VelocityChange);
-        
+
         if (playerData.numericData.CurStamina > 0) { playerData.numericData.CurStamina--; }
-        
+
         if (!mIsDashed)
         {
             mCoWaitDash = CoWaitDash();
@@ -148,8 +150,32 @@ public class PlayerAction : MonoBehaviour
         }
     }
 
+    void Turning()
+    {
+        float camRayLength = 100f;          // 씬으로 보내는 카메라의 Ray 길이
+        // 마우스 커서에서 씬을 향해 발사되는 Ray 생성
+        Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        // Hit된 오브젝트의 정보를 담는것
+        RaycastHit groundHit;
+
+        // 레이캐스트 시작
+        if (Physics.Raycast(camRay, out groundHit, camRayLength, groundMask))
+        {
+            // 마우스 눌린곳, 플레이어 위치 계산
+            Vector3 playerToMouse = groundHit.point - transform.position;
+            playerToMouse.y = 0f;
+
+            Quaternion newRotatation = Quaternion.LookRotation(playerToMouse);
+
+            // 플레이어가 바라보는 방향 설정
+            mRigidbody.MoveRotation(newRotatation);
+        }
+    }
+    
     [ContextMenu("GetPizzaPickup")]
-    void GetPizzaPickup(){
+    void GetPizzaPickup()
+    {
         playerData.equipments[0].Adaptation(this.playerData);
     }
 }
