@@ -5,18 +5,31 @@ using UnityEngine;
 using UnityEngine.Events;
 
 
-    /*
-public class Equipment_004 : Equipment{
-    /*
+public class Equipment_004 : Equipment, IPlayerDataApplicant{
+    
+    [SerializeField]
+    public PlayerData.Numeric outerData;
     private void Awake() {
-        this.EquipmentName = "디지털 파편 조각";
-        this.playerData.numericData = new PlayerData.Numeric {
-            Power = GameManager.Instance.playerData.numericData.Power * (0.1f),
-        };
+        equipmentName = "디지털 파편 조각";
+    }
+    public void ApplyData(ref PlayerData _playerData){
+        if(this.mIsApplyed != false) return;
+        this.mIsApplyed = true;
+        _playerData.numericData.Power *= 1.1f;
     }
 
-    public override void Adaptation(float _inputDamage, out float _outdamage){
-        _outdamage = _inputDamage * 0.9f;
+    public void ApplyRemove(ref PlayerData _playerData) {
+        if(this.mIsApplyed != true) return;
+        this.mIsApplyed = false;
+        _playerData.numericData.Power /= 1.1f;
     }
+
+    public override void Equip(ref PlayerData pd){
+        ApplyData(ref pd);
+    }
+    public override void Unequip(ref PlayerData pd){
+        ApplyRemove(ref pd);
+    }
+
+    public override string ToString() => "";
 }
-    */
