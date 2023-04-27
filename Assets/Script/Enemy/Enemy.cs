@@ -82,7 +82,7 @@ public class Enemy : MonoBehaviour, IDieAble, IDamagable
 
     private void OnDestroy() {
         if(transform.parent == null) return;
-        if(!transform.parent.TryGetComponent<RoomGenerator>(out RoomGenerator roomGenerator)){Debug.Log("컴포넌트 로드 실패 : NavMeshAgent");}
+        if(!transform.parent.TryGetComponent<StageGenerator>(out StageGenerator roomGenerator)){Debug.Log("컴포넌트 로드 실패 : NavMeshAgent");}
         roomGenerator.DecreaseCurrentMobCount();
     }
 }
