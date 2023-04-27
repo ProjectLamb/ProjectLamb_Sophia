@@ -19,13 +19,15 @@ public class GameManager : MonoBehaviour
             return _instance;
         }
     }
+    
+    public GlobalEvent globalEvent;
+    public GlobalAudio globalAudio;
 
+    //public GameObject currentRoom;
     public GameObject playerGameObject;
-    [HideInInspector]
     public PlayerData playerData;
     public GameObject ChapterGenerator;
     public GameObject currentStage;
-    public GlobalEvent globalEvent;
 
     void Awake()
     {
@@ -38,8 +40,6 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
         //DontDestroyOnLoad(gameObject);
-
-        playerData = playerGameObject.GetComponent<PlayerData>();
     }
 
     // Update is called once per frame

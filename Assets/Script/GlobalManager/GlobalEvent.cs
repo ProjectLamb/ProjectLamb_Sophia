@@ -5,11 +5,9 @@ using UnityEngine;
 using UnityEngine.Events;
 
 public class GlobalEvent : MonoBehaviour{
+    
     public UnityEvent OnHitEvents;
     public UnityEvent PausedEvent;
-
-    void Awake() {
-    }
 
     ///////////////////////////////////////////////////////////////////
     [Range(0,1)]

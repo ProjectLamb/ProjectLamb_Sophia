@@ -5,22 +5,33 @@ using UnityEngine;
 using UnityEngine.Events;
 
 
-public class Equipment_001 : Equipment{
-    public PlayerData outerData;
+public class Equipment_001 : Equipment, IPlayerDataApplicant{
+    
+    [SerializeField]
+    public PlayerData.Numeric outerData;
     private void Awake() {
-        this.EquipmentName = "식어버린_피자_한조각";
-        this.playerData = new PlayerData();
-        playerData.FakePlayerDataContructor();
-        this.weaponData = new WeaponData();
-        this.skillData = new SkillData();
-        playerData.numericData.MaxHP = 10;
-        playerData.numericData.MoveSpeed = -outerData.numericData.MoveSpeed * 0.05f;
-        ToString();
+        equipmentName = "식어버린 피자 한조각";
     }
-    public override void Adaptation(PlayerData _input){
-        _input.numericData.MaxHP += this.playerData.numericData.MaxHP;
-        _input.numericData.MoveSpeed += this.playerData.numericData.MoveSpeed;
+    public void ApplyData(ref PlayerData _playerData){
+        if(this.mIsApplyed != false) return;
+        this.mIsApplyed = true;
+        _playerData.numericData.MaxHP += 10;
+        _playerData.numericData.MoveSpeed *= 0.95f;
     }
 
-    public override string ToString() => $"playerData : {JsonUtility.ToJson(playerData)} weaponData : {JsonUtility.ToJson(weaponData)}";
+    public void ApplyRemove(ref PlayerData _playerData){
+        if(this.mIsApplyed != true) return;
+        this.mIsApplyed = false;
+        _playerData.numericData.MaxHP -= 10;
+        _playerData.numericData.MoveSpeed /= 0.95f;
+    }
+
+    public override void Equip(ref PlayerData pd){
+        ApplyData(ref pd);
+    }
+    public override void Unequip(ref PlayerData pd){
+        ApplyRemove(ref pd);
+    }
+
+    public override string ToString() => "";
 }
