@@ -28,7 +28,6 @@ public class GameManager : MonoBehaviour
     public PlayerData playerData;
     public GameObject ChapterGenerator;
     public GameObject currentStage;
-    public GlobalEvent globalEvent;
 
     void Awake()
     {
