@@ -29,7 +29,7 @@ public class Weapon : MonoBehaviour
         Instantiate(weaponEffect[0], transform.position, Quaternion.Euler(EffectRotate)).GetComponent<CombatEffect>().SetDatas(this.playerData, this.weaponData);
     }
 
-    IEnumerator CoWaitUse(){
+    public virtual IEnumerator CoWaitUse(){
         yield return YieldInstructionCache.WaitForSeconds(weaponData.numericData.WeaponDelay);
         mIsReady = true;
     }

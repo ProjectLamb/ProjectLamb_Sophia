@@ -5,26 +5,26 @@ using UnityEngine;
 using UnityEngine.Events;
 
 
-public class Equipment_001 : Equipment, IPlayerDataApplicant{
+public class Equipment_003 : Equipment, IPlayerDataApplicant{
     
     [SerializeField]
     public PlayerData.Numeric outerData;
     private void Awake() {
-        equipmentName = "식어버린 피자 한조각";
+        equipmentName = "뒤집어진 양말";
     }
     public void ApplyData(ref PlayerData _playerData){
         if(this.mIsApplyed != false) return;
         this.mIsApplyed = true;
-        _playerData.numericData.MaxHP += 10;
-        _playerData.numericData.MoveSpeed *= 0.95f;
+        _playerData.numericData.Power *= 1.1f;
+        _playerData.numericData.MaxHP -= 15;
     }
-
     public void ApplyRemove(ref PlayerData _playerData){
         if(this.mIsApplyed != true) return;
         this.mIsApplyed = false;
-        _playerData.numericData.MaxHP -= 10;
-        _playerData.numericData.MoveSpeed /= 0.95f;
+        _playerData.numericData.Power /= 1.1f;
+        _playerData.numericData.MaxHP += 15;
     }
+
 
     public override void Equip(ref PlayerData pd){
         ApplyData(ref pd);
