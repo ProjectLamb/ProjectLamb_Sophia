@@ -1,6 +1,10 @@
+using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using UnityEngine;
+using UnityEngine.Events;
 
 /// <summary>
 /// 플레이어의 모든 동작을 담는 클래스다
@@ -8,27 +12,29 @@ using UnityEngine;
 public class PlayerAction : MonoBehaviour
 {
     /////////////////////////////////////////////////////////////////////////////////
-    /****************
+    /*********************************************************************************
     *
     * 클래스를 모아 놓는다.
     *
-    ****************/
+    *********************************************************************************/
 
     [HideInInspector]
     public PlayerData playerData;           // 플레이어가 가지는 모든 데이터
+
     Rigidbody mRigidbody;
 
-    /****************
+    /*********************************************************************************
     *
     * 플레이어 "액션"에 대해 필요한 변수들을 모아 놓는다.
     *
-    ****************/
+    *********************************************************************************/
 
     /// <summary>
     /// RoomGenerator.cs에서 참조하는 변수 (리펙토링 필요해 보인다.) <br/>
     /// * 포탈을 사용할수 있는지 없는지는 Map이 책임을 가져아 한다. <br/>
     /// * 플레이어는 그저 바닥에 포탈이 있는지 없는지 확인하고 사용하기, 안하기를 하면 될듯하다.
     /// </summary>
+
     public bool isPortal;
     Vector3 mMoveVec;               // 음직이는 방향을 얻어오는데 사용한다.
     Vector3 mRotateVec;             // 회전하는데 사용한다.
@@ -38,25 +44,38 @@ public class PlayerAction : MonoBehaviour
     public LayerMask groundMask;                  // 바닥을 인식하는 마스크
 
 
-    /****************
+    /*********************************************************************************
     *
     * 코루틴, 액션을 모아 놓는다
     *
-    ****************/
+    *********************************************************************************/
     IEnumerator mCoWaitDash;        // StopCorutine을 사용하기 위해서는 코루틴 변수가 필요하다. 
 
-    /////////////////////////////////////////////////////////////////////////////////
+    /*********************************************************************************
+    *
+    *
+    *
+    *********************************************************************************/
     void Awake()
     {
         if (!TryGetComponent<PlayerData>(out playerData)) { Debug.Log("컴포넌트 로드 실패 : PlayerData"); }
         if (!TryGetComponent<Rigidbody>(out mRigidbody)) { Debug.Log("컴포넌트 로드 실패 : Rigidbody"); }
         isPortal = true;
+
+        foreach(E_DebuffState E in Enum.GetValues(typeof(E_DebuffState))){
+            DebuffedDic.Add(E, false);
+        }
+
+        foreach(E_DebuffAtomic E in Enum.GetValues(typeof(E_DebuffAtomic))){
+            AtomActivatorDic.Add(E, null);
+        }
     }
 
     void Update()
     {
         if (isPortal) CheckPortal();
         Turning();
+
     }
 
     /// <summary>
@@ -127,12 +146,12 @@ public class PlayerAction : MonoBehaviour
     /// </summary>
     public void Attack()
     {
-        playerData.weapon.Use();
+        playerData.weapon?.Use();
     }
     public void Skill(string key)
     {
         //skills[key].Use();
-        playerData.skills["Q"].Use();
+        if(playerData.skills.ContainsKey("Q")) {playerData.skills["Q"].Use();}
     }
 
     /// <summary>
@@ -172,10 +191,149 @@ public class PlayerAction : MonoBehaviour
             mRigidbody.MoveRotation(newRotatation);
         }
     }
-    
-    [ContextMenu("GetPizzaPickup")]
-    void GetPizzaPickup()
-    {
-        playerData.equipments[0].Adaptation(this.playerData);
+
+    /*********************************************************************************
+    *
+    * 장비
+    *
+    *********************************************************************************/
+
+    [ContextMenu("Equip All Equipments")]
+    void Equip() { //적용이 되는지 확인만 하자
+        foreach(Equipment E in playerData.equipments){
+            IPlayerDataApplicant playerDataApplicant = (IPlayerDataApplicant)E;
+            playerDataApplicant?.ApplyData(ref this.playerData);
+        }
     }
+    [ContextMenu("Dump All Equipments")]
+    void Dump() { //적용이 되는지 확인만 하자
+        foreach(Equipment E in playerData.equipments){
+            IPlayerDataApplicant playerDataApplicant = (IPlayerDataApplicant)E;
+            playerDataApplicant?.ApplyRemove(ref this.playerData);
+        }
+    }
+
+    /*********************************************************************************
+    *
+    * 액티베이터 
+    *
+    *********************************************************************************/
+
+    Dictionary<E_DebuffState, bool> DebuffedDic = new Dictionary<E_DebuffState, bool>();
+    //Dictionary<E_DebuffState, IEnumerator> ActivatorDic = new Dictionary<E_DebuffState, IEnumerator>();
+    Dictionary<E_DebuffAtomic, IEnumerator> AtomActivatorDic = new Dictionary<E_DebuffAtomic, IEnumerator>();
+
+    IEnumerator DotCoroutine(float _durationTime, int _damAmount, E_DebuffState _debuffState) {
+        while(_durationTime > 0){
+            _durationTime -= 0.5f;
+            playerData.numericData.CurHP -= _damAmount;
+            yield return YieldInstructionCache.WaitForSeconds(0.5f);
+        }
+    }
+
+    IEnumerator SlowCoroutine(float _durationTime, float _slowAmount, E_DebuffState _debuffState) {
+        playerData.numericData.MoveSpeed *= _slowAmount;
+        
+        yield return YieldInstructionCache.WaitForSeconds(_durationTime);
+        
+        playerData.numericData.MoveSpeed /= _slowAmount;
+    }
+
+    IEnumerator UncontrollableCoroutine(float _durationTime, E_DebuffState _debuffState){
+
+        PlayerController.IsAttackAllow = false;
+        
+        yield return YieldInstructionCache.WaitForSeconds(_durationTime);
+
+        PlayerController.IsAttackAllow = true;
+
+    }
+
+    void Activate_DotDam_State(
+        float _durationTime,
+        int _damAmount,
+        E_DebuffState _debuffState
+        ) {
+            AtomActivatorDic[E_DebuffAtomic.Dot] = DotCoroutine(_durationTime, _damAmount, _debuffState);
+            StartCoroutine(AtomActivatorDic[E_DebuffAtomic.Dot]);
+    }
+
+    void Activate_Slow_State(
+        float _durationTime,
+        float _slowAmount,
+        E_DebuffState _debuffState
+        ) {
+            AtomActivatorDic[E_DebuffAtomic.Slow] = SlowCoroutine(_durationTime, _slowAmount, _debuffState);
+            StartCoroutine(AtomActivatorDic[E_DebuffAtomic.Slow]);
+    }
+    
+    void Activate_Uncontrollable_State(float _durationTime, E_DebuffState _debuffState){
+            AtomActivatorDic[E_DebuffAtomic.Uncontrollable] = UncontrollableCoroutine(_durationTime, _debuffState);
+            StartCoroutine(AtomActivatorDic[E_DebuffAtomic.Uncontrollable]);
+    }
+
+    [ContextMenu("Burns")]
+    public void Activate_Burn_state(
+        string _strParams
+        //float _durationTime,
+        //int _damAmount
+        ){
+        string[] splitParams = _strParams.Split(',');
+        Activate_DotDam_State(float.Parse(splitParams[0]), int.Parse(splitParams[1]), E_DebuffState.Burn);
+    }
+
+    [ContextMenu("Poisend")]
+    public void Activate_Poisend_State(
+        string _strParams
+        //float _durationTime,
+        //int _damAmount
+        ){
+        string[] splitParams = _strParams.Split(',');
+        Activate_DotDam_State(float.Parse(splitParams[0]), int.Parse(splitParams[1]), E_DebuffState.Poisend);
+    }
+
+    [ContextMenu("Bleed")]
+    public void Activate_Bleed_State(
+        string _strParams
+        //float _durationTime,
+        //int _damAmount
+        ){
+        string[] splitParams = _strParams.Split(',');
+        Activate_DotDam_State(float.Parse(splitParams[0]), int.Parse(splitParams[1]), E_DebuffState.Bleed);
+    }
+
+    [ContextMenu("Confused")]
+    public void Activate_Confused_State(
+        float _durationTime
+        ){
+        Activate_Uncontrollable_State(_durationTime, E_DebuffState.Confused);
+    }
+
+    [ContextMenu("Frearing")]
+    public void Activate_Fearing_State(
+        float _durationTime
+        ){
+        Activate_Uncontrollable_State(_durationTime, E_DebuffState.Fearing);
+        Activate_Slow_State(_durationTime, 0.1f, E_DebuffState.Fearing);
+    }
+    [ContextMenu("Stern")]
+    public void Activate_Stern_State(
+        float _durationTime
+        ){
+        Activate_Uncontrollable_State(_durationTime, E_DebuffState.Stern);
+        Activate_Slow_State(_durationTime, 0.0001f, E_DebuffState.Stern);
+    }
+
+    [ContextMenu("Bounded")]
+    public void Activate_Bounded_State(
+        float _durationTime
+        ){
+        Activate_Slow_State(_durationTime, 0.0001f, E_DebuffState.Bounded);
+    }
+
+    /*********************************************************************************
+    *
+    *
+    *
+    *********************************************************************************/
 }
