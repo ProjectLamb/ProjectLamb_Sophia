@@ -4,16 +4,42 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+/*********************************************************************************
+*
+* 먹었을떄 적용되며, 해제될떄 적용 될것
+*
+*********************************************************************************/
+public interface IPlayerDataApplicant {
+    public void ApplyData(ref PlayerData _playerData){
+
+    }
+    public void ApplyRemove(ref PlayerData _playerData){}
+}
+public interface IWeaponDataApplicant {
+    public void ApplyData(ref WeaponData _weaponData){
+
+    }
+    public void ApplyRemove(ref WeaponData _weaponData){}
+}
+public interface ISkillDataApplicant {
+    public void ApplyData(ref SkillData _skillData){
+
+    }
+    public void ApplyRemove(ref SkillData _skillData){}
+}
+
+public interface IActiveSelf {
+
+}
+
 
 public abstract class Equipment : MonoBehaviour{
-    public string EquipmentName;
+    [Header("부품 이름")]
     [SerializeField]
-    protected PlayerData playerData = new PlayerData();
-    
-    [SerializeField]
-    protected WeaponData weaponData = new WeaponData();
-    [SerializeField]
-    protected SkillData skillData = new SkillData();
+    public string equipmentName;
+    public string description;
+    protected bool mIsApplyed;
 
-    public abstract void Adaptation(PlayerData _input);
+    public virtual void Equip(ref PlayerData pd){}
+    public virtual void Unequip(ref PlayerData pd){}
 }

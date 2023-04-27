@@ -1,3 +1,4 @@
+/*
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -122,3 +123,5 @@ public class TEST_ActivateAttribute : MonoBehaviour
         Debug.Log("ReturnBounded");
     }
 }
+
+*/
