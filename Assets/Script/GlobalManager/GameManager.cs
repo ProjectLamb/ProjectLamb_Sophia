@@ -26,8 +26,9 @@ public class GameManager : MonoBehaviour
     //public GameObject currentRoom;
     public GameObject playerGameObject;
     public PlayerData playerData;
-    public MapGenerator mapGenerator;
-    
+    public GameObject ChapterGenerator;
+    public GameObject currentStage;
+    public GlobalEvent globalEvent;
 
     void Awake()
     {
