@@ -24,6 +24,7 @@ public class PlayerData : MonoBehaviour
             set{
                 if(mMaxHP < 0) mMaxHP = 0;
                 mMaxHP = value;
+                if(mMaxHP < CurHP) { CurHP = value;}
             }
         }
 
@@ -90,8 +91,8 @@ public class PlayerData : MonoBehaviour
     public List<Equipment> equipments = new List<Equipment>(8);
 
     private void Awake() {
-        weapon.playerData = this;
-        skills["Q"].playerData = this;
+        if(weapon != null) weapon.playerData = this;
+        if(skills.ContainsKey("Q")) skills["Q"].playerData = this;
     }
 
     public void FakePlayerDataContructor(){
