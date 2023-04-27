@@ -76,5 +76,7 @@ crashlytics-build.properties
 
 # Ignore Plugins
 Assets/Plugins
+Assets/Resources
+Assets/JMO Assets
 
 # End of https://www.toptal.com/developers/gitignore/api/unity
