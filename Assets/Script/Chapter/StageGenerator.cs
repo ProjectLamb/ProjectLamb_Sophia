@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class RoomGenerator : MonoBehaviour
+public class StageGenerator : MonoBehaviour
 {
     bool random()
     {
@@ -13,7 +13,7 @@ public class RoomGenerator : MonoBehaviour
         else
             return false;
     }
-    public void SetRoomType(string s)
+    public void SetStageType(string s)
     {
         this.type = s;
     }
@@ -29,7 +29,7 @@ public class RoomGenerator : MonoBehaviour
             portalN = true;
     }
 
-    public void SetRoomLocation(float x, float z)
+    public void SetStageLocation(float x, float z)
     {
         this.x = x;
         this.z = z;
@@ -40,10 +40,10 @@ public class RoomGenerator : MonoBehaviour
         return maxSize;
     }
 
-    public Vector3 GetRoomLocation()
+    public Vector3 GetStageLocation()
     {
-        Vector3 roomPos = new Vector3(this.x, 0, this.z);
-        return roomPos;
+        Vector3 stagePos = new Vector3(this.x, 0, this.z);
+        return stagePos;
     }
 
     public int GetWidth()
@@ -60,13 +60,14 @@ public class RoomGenerator : MonoBehaviour
     int maxSize;
     float x;
     float z;
-    int roomSizeRandom;
+    int stageSizeRandom;
     [SerializeField]
     string type;
     int mobCount;
     int currentMobCount;
     bool mIsClear;
-    bool isClear {
+    bool isClear
+    {
         get { return mIsClear; }
         set { mIsClear = value; }
     }
@@ -80,7 +81,6 @@ public class RoomGenerator : MonoBehaviour
     public GameObject[,] tileArray;
     public GameObject mob;
     public List<GameObject> mobArray;
-    GameObject RoomCamera;
 
     void InstantiateTile(int r, int c)
     {
@@ -167,6 +167,10 @@ public class RoomGenerator : MonoBehaviour
                     instance.GetComponent<Renderer>().material.color = Color.green;
                 else if (type == "boss")
                     instance.GetComponent<Renderer>().material.color = Color.red;
+                else if (type == "hidden")
+                    instance.GetComponent<Renderer>().material.color = Color.black;
+                else if (type == "middleboss")
+                    instance.GetComponent<Renderer>().material.color = Color.yellow;
                 else
                     instance.GetComponent<Renderer>().material.color = Color.grey;
                 tileArray[i, j] = instance;
@@ -235,12 +239,12 @@ public class RoomGenerator : MonoBehaviour
         }
     }
 
-    public void SetOnRoom()
+    public void SetOnStage()
     {
         gameObject.SetActive(true);
         if (!isClear)
             GameManager.Instance.playerGameObject.GetComponent<PlayerAction>().isPortal = false;
-            GameManager.Instance.mapGenerator.currentRoom = this.gameObject;
+        GameManager.Instance.currentStage = this.gameObject;
         foreach (var m in mobArray)
         {
             if (m != null)
@@ -250,7 +254,7 @@ public class RoomGenerator : MonoBehaviour
         }
     }
 
-    public void SetOffRoom()
+    public void SetOffStage()
     {
         foreach (var m in mobArray)
         {
@@ -276,7 +280,7 @@ public class RoomGenerator : MonoBehaviour
 
     void FirstClear()
     {
-        GameManager.Instance.playerGameObject.GetComponent<PlayerAction>().isPortal = true;    
+        GameManager.Instance.playerGameObject.GetComponent<PlayerAction>().isPortal = true;
         isClear = true;
     }
 
@@ -284,17 +288,16 @@ public class RoomGenerator : MonoBehaviour
     {
         return isClear;
     }
-    
+
     void Awake()
     {
         width = initWidth;
         increase = initIncrease;
-        //RoomCamera = transform.GetChild(0).gameObject;
         if (type == "normal")
-            roomSizeRandom = Random.Range(1, 4);
+            stageSizeRandom = Random.Range(1, 4);
         else
-            roomSizeRandom = 1;
-        width += increase * roomSizeRandom;
+            stageSizeRandom = 1;
+        width += increase * stageSizeRandom;
         height = width;
         tileArray = new GameObject[width + 1, height + 1];
         mobCount = Random.Range(3, 3 + 3);
@@ -302,7 +305,6 @@ public class RoomGenerator : MonoBehaviour
     }
     void Start()
     {
-        //RoomCamera.transform.position = new Vector3(RoomCamera.transform.position.x - 15 * (roomSizeRandom - 1), RoomCamera.transform.position.y, RoomCamera.transform.position.z + 15 * (roomSizeRandom - 1));
         InstantiateTile(width, height);
         InstantiatePortal();
         size = width * height;
@@ -312,11 +314,25 @@ public class RoomGenerator : MonoBehaviour
             InstantiateObstacle();
             InstantiateMob(mobCount);
         }
+        if (type == "middleboss")
+        {
+            //InstantiateObstacle();
+            InstantiateMob(mobCount);
+        }
+        else if (type == "hidden")
+        {
+            //InstantiateObstacle();
+            InstantiateMob(mobCount);
+        }
+        else if (type == "boss")
+        {
+
+        }
         currentMobCount = mobArray.Count;
         if (type == "start")
         {
             GameObject character = GameManager.Instance.playerGameObject;
-            GameManager.Instance.mapGenerator.currentRoom = this.gameObject;
+            GameManager.Instance.currentStage = this.gameObject;
             isClear = true;
             //character.transform.position = new Vector3(transform.localPosition.x, GameObject.Find("Character").transform.position.y, transform.localPosition.z);
             character.transform.position = new Vector3(transform.position.x, character.transform.position.y, transform.position.z);
@@ -332,7 +348,7 @@ public class RoomGenerator : MonoBehaviour
     {
         if (!isClear)
         {
-            if (currentMobCount == 0 && GameManager.Instance.mapGenerator.currentRoom == this.gameObject)
+            if (currentMobCount == 0 && GameManager.Instance.currentStage == this.gameObject)
             {
                 FirstClear();
             }

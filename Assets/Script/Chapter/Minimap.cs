@@ -14,7 +14,7 @@ public class Minimap : MonoBehaviour
 
     public void Print()
     {
-        map = GameObject.Find("MapGenerator");
+        map = GameManager.Instance.ChapterGenerator;
         int interval = (int)img.rectTransform.sizeDelta.x;
         float x = 0;
         float y = 0;
@@ -22,17 +22,21 @@ public class Minimap : MonoBehaviour
         {
 
             Vector2 pos = new Vector2(x,y);
-            if(!map.GetComponent<MapGenerator>().room[i].IsVacant())
+            if(!map.GetComponent<ChapterGenerator>().stage[i].Vacancy)
             {
                 Image tmp;
                 tmp = Instantiate(img, transform);
                 tmp.transform.localPosition = new Vector3(pos.x - 250, pos.y, 0);
-                if(map.GetComponent<MapGenerator>().room[i].GetRoomType() == "start")
+                if(map.GetComponent<ChapterGenerator>().stage[i].Type == "start")
                     tmp.color = Color.green;
-                else if (map.GetComponent<MapGenerator>().room[i].GetRoomType() == "boss")
+                else if (map.GetComponent<ChapterGenerator>().stage[i].Type == "boss")
                     tmp.color = Color.red;
-                else if (map.GetComponent<MapGenerator>().room[i].GetRoomType() == "shop")
+                else if (map.GetComponent<ChapterGenerator>().stage[i].Type == "shop")
                     tmp.color = Color.blue;
+                else if (map.GetComponent<ChapterGenerator>().stage[i].Type == "middleboss")
+                    tmp.color = Color.yellow;
+                else if (map.GetComponent<ChapterGenerator>().stage[i].Type == "hidden")
+                    tmp.color = Color.grey;
             }
 
             if(i % 15 == 0)
