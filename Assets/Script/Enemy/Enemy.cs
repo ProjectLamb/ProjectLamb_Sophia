@@ -20,13 +20,6 @@ public class Enemy : MonoBehaviour, IDieAble, IDamagable
     public bool chase;
     public bool mIsDie;
 
-    ///////////////////////////////////////////////////
-    // public void HitEvent() {
-    //     Camera.main.GetComponent<CameraEffect>().HandleZoomIn();
-    //     GameManager.Instance.globalEvent.HandleTimeSlow();
-    // }
-    ///////////////////////////////////////////////////
-
     /// <summary>
     /// 인터페이스 구현
     /// </summary>
@@ -81,9 +74,9 @@ public class Enemy : MonoBehaviour, IDieAble, IDamagable
             GetDamaged(1);
             if(!collider.TryGetComponent<CombatEffect>(out CombatEffect combatEffect)){Debug.Log("컴포넌트 로드 실패 : NavMeshAgent");}
             Instantiate(combatEffect.hitEffect, transform);
-
-            combatEffect.HitEvents.Invoke();
-            //HitEvent();
+            
+            GameManager.Instance.globalEvent.OnHitEvents.Invoke();
+            //combatEffect.HitEvents.Invoke();
         }
     }
 
