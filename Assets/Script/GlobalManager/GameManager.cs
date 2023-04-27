@@ -19,13 +19,15 @@ public class GameManager : MonoBehaviour
             return _instance;
         }
     }
+    
+    public GlobalEvent globalEvent;
+    public GlobalAudio globalAudio;
 
     //public GameObject currentRoom;
     public GameObject playerGameObject;
-
     public PlayerData playerData;
     public MapGenerator mapGenerator;
-    public GlobalEvent globalEvent;
+    
 
     void Awake()
     {
