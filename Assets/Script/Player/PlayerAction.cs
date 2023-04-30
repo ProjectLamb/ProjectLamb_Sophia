@@ -9,7 +9,7 @@ using UnityEngine.Events;
 /// <summary>
 /// 플레이어의 모든 동작을 담는 클래스다
 /// </summary>
-public class PlayerAction : MonoBehaviour
+public class PlayerAction : MonoBehaviour, IAffectableEntity
 {
     /////////////////////////////////////////////////////////////////////////////////
     /*********************************************************************************
@@ -74,8 +74,6 @@ public class PlayerAction : MonoBehaviour
     void Update()
     {
         if (isPortal) CheckPortal();
-        Turning();
-
     }
 
     /// <summary>
@@ -95,7 +93,7 @@ public class PlayerAction : MonoBehaviour
 
         mMoveVec = AngleToVector(Camera.main.transform.eulerAngles.y + 90f) * _hAxis + AngleToVector(Camera.main.transform.eulerAngles.y) * _vAxis;
         mMoveVec = mMoveVec.normalized;
-        //mRotateVec = new Vector3(_vAxis, 0, -_hAxis).normalized;
+        mRotateVec = new Vector3(_vAxis, 0, -_hAxis).normalized;
 
         bool IsBorder()
         {
@@ -106,7 +104,7 @@ public class PlayerAction : MonoBehaviour
         {
             Vector3 rbVel = mMoveVec * playerData.numericData.MoveSpeed;
             mRigidbody.velocity = rbVel;
-            //transform.LookAt(transform.position + mRotateVec);
+            transform.LookAt(transform.position + mRotateVec);
         }
     }
 
@@ -146,12 +144,11 @@ public class PlayerAction : MonoBehaviour
     /// </summary>
     public void Attack()
     {
-        playerData.weapon?.Use();
+        Turning(() => playerData.weapon?.Use());
     }
     public void Skill(string key)
     {
-        //skills[key].Use();
-        if(playerData.skills.ContainsKey("Q")) {playerData.skills["Q"].Use();}
+        if(playerData.skills.ContainsKey("Q")) {Turning(() => playerData.skills["Q"].Use());}
     }
 
     /// <summary>
@@ -162,14 +159,13 @@ public class PlayerAction : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(transform.position, Vector3.down, out hit, transform.position.y + 1, LayerMask.GetMask("Tile")))
         {
-            if (hit.transform.tag == "Portal")
-            {
+            if (hit.transform.tag == "Portal") {
                 hit.transform.gameObject.GetComponent<Tile>().WarpPortal();
             }
         }
     }
 
-    void Turning()
+    void Turning(UnityAction action)
     {
         float camRayLength = 100f;          // 씬으로 보내는 카메라의 Ray 길이
         // 마우스 커서에서 씬을 향해 발사되는 Ray 생성
@@ -184,12 +180,19 @@ public class PlayerAction : MonoBehaviour
             // 마우스 눌린곳, 플레이어 위치 계산
             Vector3 playerToMouse = groundHit.point - transform.position;
             playerToMouse.y = 0f;
-
-            Quaternion newRotatation = Quaternion.LookRotation(playerToMouse);
-
+            Quaternion newRotatation = Quaternion.LookRotation(playerToMouse) * Quaternion.Euler(0, -45, 0);
             // 플레이어가 바라보는 방향 설정
             mRigidbody.MoveRotation(newRotatation);
         }
+        action.Invoke();
+    }
+
+    
+    public void AffectHandler(UnityAction _action){
+        _action.Invoke();
+    }
+    public void AsyncAffectHandler(IEnumerator _coroutine){
+        StartCoroutine(_coroutine);
     }
 
     /*********************************************************************************

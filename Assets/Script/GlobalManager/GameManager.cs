@@ -20,12 +20,14 @@ public class GameManager : MonoBehaviour
         }
     }
     
+    [HideInInspector]
     public GlobalEvent globalEvent;
+    [HideInInspector]
     public GlobalAudio globalAudio;
+    [HideInInspector]
+    public GlobalUI globalUI;
 
-    //public GameObject currentRoom;
     public GameObject playerGameObject;
-    public PlayerData playerData;
     public GameObject ChapterGenerator;
     public GameObject currentStage;
 
@@ -41,7 +43,6 @@ public class GameManager : MonoBehaviour
         }
         //DontDestroyOnLoad(gameObject);
     }
-
     // Update is called once per frame
     void Update()
     {
@@ -52,5 +53,11 @@ public class GameManager : MonoBehaviour
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             //AudioManager.Instance.CleanEventInstance();
         }
+        InitializeComponents();
+    }
+    void InitializeComponents(){
+        if(globalEvent == null) globalEvent = GetComponentInChildren<GlobalEvent>();
+        if(globalAudio == null) globalAudio = GetComponentInChildren<GlobalAudio>();
+        if(globalUI == null) globalUI = GetComponentInChildren<GlobalUI>();
     }
 }
