@@ -48,7 +48,6 @@ public class GlobalEvent : MonoBehaviour{
         float passedTime = 0f;
         while(mDurateTime > passedTime){
             if(!IsGamePaused) {
-                Debug.Log(CurrentTimeScale);
                 passedTime += (Time.deltaTime / mDurateTime);
                 ContinouseTimeScale += valueGap * (Time.deltaTime / mDurateTime);
                 CurrentTimeScale = ContinouseTimeScale;
@@ -59,4 +58,5 @@ public class GlobalEvent : MonoBehaviour{
         CurrentTimeScale = ContinouseTimeScale;
         mIsSlowed = false;
     }
+    /////////////////////////////////////////////////////////////////
 }
