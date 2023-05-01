@@ -22,6 +22,7 @@ public class EAD_FreezeState : EntityAffector {
     float   mDurationTime;
     float   mSlowAmount;
     Material mSkin;
+    ParticleSystem mParticle;
     
     public EAD_FreezeState(GameObject _owner, GameObject _target, object[] _params) : base(_owner, _target, _params){
         if(this.Params == null){Debug.LogError("0: 유지시간 1:도트뎀 을 적어서 보내야함");}
@@ -33,18 +34,23 @@ public class EAD_FreezeState : EntityAffector {
         mSkin         = (Material)Params[2];
         //mParticle     = (ParticleSystem)Params[3];
         
-        this.AsyncAffectorCoroutine = Coroutine();
+        this.AsyncAffectorCoroutine.Add(Slow());
+        this.AsyncAffectorCoroutine.Add(VisualActivate());
     }
     public override void Affect() {
         this.Target.GetComponent<IAffectableEntity>().AsyncAffectHandler(this.AsyncAffectorCoroutine);
     }
-    IEnumerator Coroutine() {
-        mPlayerVisualData.skinModulator.SetSkinSets(1, mSkin);
-        //mPlayerVisualData.particleModulator.ActivateParticle(mParticle, mDurationTime);
+    IEnumerator Slow() {
         mPlayerData.numericData.MoveSpeed *= mSlowAmount;
         yield return YieldInstructionCache.WaitForSeconds(mDurationTime);
-        mPlayerData.numericData.MoveSpeed /= mSlowAmount;
-    
+        mPlayerData.numericData.MoveSpeed /= mSlowAmount;    
+    }
+    IEnumerator VisualActivate() {
+        mPlayerVisualData.skinModulator.SetSkinSets(1, mSkin);
+        //mPlayerVisualData.particleModulator.ActivateParticle(mParticle, mDurationTime);
+
+        yield return YieldInstructionCache.WaitForSeconds(mDurationTime);
+
         mPlayerVisualData.skinModulator.SetSkinSets(1, null);
     }
 }
