@@ -18,7 +18,7 @@ public class EADA_Inattackable : EntityAffector {
     public EADA_Inattackable(GameObject _owner, GameObject _target, object[] _params) : base(_owner, _target, _params){
         _target.TryGetComponent<PlayerData>(out mPlayerData);
         mDurationTime = (float)Params[0];
-        this.AsyncAffectorCoroutine = Coroutine();
+        this.AsyncAffectorCoroutine.Add(Coroutine());
     }
     public override void Affect() {
         this.Target.GetComponent<IAffectableEntity>().AsyncAffectHandler(this.AsyncAffectorCoroutine);
