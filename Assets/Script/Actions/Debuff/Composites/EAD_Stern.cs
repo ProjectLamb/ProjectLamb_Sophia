@@ -15,40 +15,44 @@ using UnityEngine;
 /// * [2]: mTargetMeshRender : MeshRenderer
 /// </param>
 /// <returns></returns>
-public class EAD_PoisonState : EntityAffector {
+public class EAD_SternState : EntityAffector {
     PlayerData mPlayerData;
     PlayerVisualData mPlayerVisualData;
     
     float   mDurationTime;
-    int     mDamageAmount;
+    float   mSlowAmount;
     Material mSkin;
     ParticleSystem mParticle;
     
-    public EAD_PoisonState(GameObject _owner, GameObject _target, object[] _params) : base(_owner, _target, _params){
+    public EAD_SternState(GameObject _owner, GameObject _target, object[] _params) : base(_owner, _target, _params){
         if(this.Params == null){Debug.LogError("0: 유지시간 1:도트뎀 을 적어서 보내야함");}
         _target.TryGetComponent<PlayerData>(out mPlayerData);
         _target.TryGetComponent<PlayerVisualData>(out mPlayerVisualData);
 
         mDurationTime = (float)Params[0];
-        mDamageAmount = (int)Params[1];
+        mSlowAmount = (float)Params[1];
         mSkin         = (Material)Params[2];
-        mParticle     = (ParticleSystem)Params[3];
-
-
+        //mParticle     = (ParticleSystem)Params[3];
+        
         this.AsyncAffectorCoroutine.Add(VisualActivate());
-        this.AsyncAffectorCoroutine.Add(DotDamage());
+        this.AsyncAffectorCoroutine.Add(Uncontrollable());
+        this.AsyncAffectorCoroutine.Add(Unmovable());
     }
     public override void Affect() {
         this.Target.GetComponent<IAffectableEntity>().AsyncAffectHandler(this.AsyncAffectorCoroutine);
     }
-    IEnumerator DotDamage() {
-        float passedTime = 0;
-        while(mDurationTime > passedTime){
-            passedTime += 0.5f;
-            mPlayerData.numericData.CurHP -= mDamageAmount;
-            yield return YieldInstructionCache.WaitForSeconds(0.5f);
-        }
+    IEnumerator Uncontrollable() {    
+        PlayerController.IsAttackAllow = false;
+        yield return YieldInstructionCache.WaitForSeconds(mDurationTime);
+        PlayerController.IsAttackAllow = true;
     }
+    
+    IEnumerator Unmovable(){        
+        PlayerController.IsMoveAllow = false;
+        yield return YieldInstructionCache.WaitForSeconds(mDurationTime);
+        PlayerController.IsMoveAllow = true;
+    }
+
     IEnumerator VisualActivate() {
         mPlayerVisualData.skinModulator.SetSkinSets(1, mSkin);
         mPlayerVisualData.particleModulator.ActivateParticle(mParticle, mDurationTime);

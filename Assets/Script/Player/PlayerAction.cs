@@ -61,14 +61,6 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
         if (!TryGetComponent<PlayerData>(out playerData)) { Debug.Log("컴포넌트 로드 실패 : PlayerData"); }
         if (!TryGetComponent<Rigidbody>(out mRigidbody)) { Debug.Log("컴포넌트 로드 실패 : Rigidbody"); }
         isPortal = true;
-
-        foreach(E_DebuffState E in Enum.GetValues(typeof(E_DebuffState))){
-            DebuffedDic.Add(E, false);
-        }
-
-        foreach(E_DebuffAtomic E in Enum.GetValues(typeof(E_DebuffAtomic))){
-            AtomActivatorDic.Add(E, null);
-        }
     }
 
     void Update()
@@ -81,8 +73,9 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
     /// </summary>
     /// <param name="_hAxis">W, S 인풋 수치</param>
     /// <param name="_vAxis">A, D 인픗 수치</param>
-    public void Move(float _hAxis, float _vAxis)
+    public void Move(float _hAxis, float _vAxis, bool _reverse)
     {
+        if(_reverse){ _hAxis *= -1; _vAxis *= -1;}
         Vector3 AngleToVector(float _angle)
         {
             _angle *= Mathf.Deg2Rad;
@@ -144,7 +137,8 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
     /// </summary>
     public void Attack()
     {
-        Turning(() => playerData.weapon?.Use());
+        //Turning(() => playerData.weapon?.Use());
+        playerData.weapon?.Use();
     }
     public void Skill(string key)
     {
@@ -188,11 +182,11 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
     }
 
     
-    public void AffectHandler(UnityAction _action){
-        _action.Invoke();
+    public void AffectHandler(List<UnityAction> _action){
+        _action.ForEach(E => E.Invoke());
     }
-    public void AsyncAffectHandler(IEnumerator _coroutine){
-        StartCoroutine(_coroutine);
+    public void AsyncAffectHandler(List<IEnumerator> _coroutine){
+        _coroutine.ForEach(E => StartCoroutine(E));
     }
 
     /*********************************************************************************
@@ -221,60 +215,7 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
     * 액티베이터 
     *
     *********************************************************************************/
-
-    Dictionary<E_DebuffState, bool> DebuffedDic = new Dictionary<E_DebuffState, bool>();
-    //Dictionary<E_DebuffState, IEnumerator> ActivatorDic = new Dictionary<E_DebuffState, IEnumerator>();
-    Dictionary<E_DebuffAtomic, IEnumerator> AtomActivatorDic = new Dictionary<E_DebuffAtomic, IEnumerator>();
-
-    IEnumerator DotCoroutine(float _durationTime, int _damAmount, E_DebuffState _debuffState) {
-        while(_durationTime > 0){
-            _durationTime -= 0.5f;
-            playerData.numericData.CurHP -= _damAmount;
-            yield return YieldInstructionCache.WaitForSeconds(0.5f);
-        }
-    }
-
-    IEnumerator SlowCoroutine(float _durationTime, float _slowAmount, E_DebuffState _debuffState) {
-        playerData.numericData.MoveSpeed *= _slowAmount;
-        
-        yield return YieldInstructionCache.WaitForSeconds(_durationTime);
-        
-        playerData.numericData.MoveSpeed /= _slowAmount;
-    }
-
-    IEnumerator UncontrollableCoroutine(float _durationTime, E_DebuffState _debuffState){
-
-        PlayerController.IsAttackAllow = false;
-        
-        yield return YieldInstructionCache.WaitForSeconds(_durationTime);
-
-        PlayerController.IsAttackAllow = true;
-
-    }
-
-    void Activate_DotDam_State(
-        float _durationTime,
-        int _damAmount,
-        E_DebuffState _debuffState
-        ) {
-            AtomActivatorDic[E_DebuffAtomic.Dot] = DotCoroutine(_durationTime, _damAmount, _debuffState);
-            StartCoroutine(AtomActivatorDic[E_DebuffAtomic.Dot]);
-    }
-
-    void Activate_Slow_State(
-        float _durationTime,
-        float _slowAmount,
-        E_DebuffState _debuffState
-        ) {
-            AtomActivatorDic[E_DebuffAtomic.Slow] = SlowCoroutine(_durationTime, _slowAmount, _debuffState);
-            StartCoroutine(AtomActivatorDic[E_DebuffAtomic.Slow]);
-    }
-    
-    void Activate_Uncontrollable_State(float _durationTime, E_DebuffState _debuffState){
-            AtomActivatorDic[E_DebuffAtomic.Uncontrollable] = UncontrollableCoroutine(_durationTime, _debuffState);
-            StartCoroutine(AtomActivatorDic[E_DebuffAtomic.Uncontrollable]);
-    }
-
+    /*
     [ContextMenu("Burns")]
     public void Activate_Burn_state(
         string _strParams
@@ -333,7 +274,7 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
         ){
         Activate_Slow_State(_durationTime, 0.0001f, E_DebuffState.Bounded);
     }
-
+    */
     /*********************************************************************************
     *
     *
