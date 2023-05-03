@@ -73,7 +73,7 @@ public class PlayerAction : MonoBehaviour
 
     void Update()
     {
-        if (isPortal) CheckPortal();
+        //if (isPortal) CheckPortal();
         Turning();
 
     }
@@ -157,17 +157,17 @@ public class PlayerAction : MonoBehaviour
     /// <summary>
     /// 바닥에 레이케스트를 쏜다, 타일의 태그가 포탈이면 포탈에 해당하는 방이동(WarpPortal) 사용하기
     /// </summary>
-    void CheckPortal()
-    {
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, Vector3.down, out hit, transform.position.y + 1, LayerMask.GetMask("Tile")))
-        {
-            if (hit.transform.tag == "Portal")
-            {
-                hit.transform.gameObject.GetComponent<Tile>().WarpPortal();
-            }
-        }
-    }
+    // void CheckPortal()
+    // {
+    //     RaycastHit hit;
+    //     if (Physics.Raycast(transform.position, Vector3.down, out hit, transform.position.y + 1, LayerMask.GetMask("Tile")))
+    //     {
+    //         if (hit.transform.tag == "Portal")
+    //         {
+    //             hit.transform.gameObject.GetComponent<Tile>().WarpPortal();
+    //         }
+    //     }
+    // }
 
     void Turning()
     {
