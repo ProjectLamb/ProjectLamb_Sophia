@@ -5,51 +5,6 @@ using UnityEngine.AI;
 
 public class StageGenerator : MonoBehaviour
 {
-    bool random()
-    {
-        int n = Random.Range(0, 2);
-        if (n == 1)
-            return true;
-        else
-            return false;
-    }
-    public void SetStageType(string s)
-    {
-        this.type = s;
-    }
-    public void SetPortal(bool e, bool w, bool s, bool n)
-    {
-        if (e)
-            portalE = true;
-        if (w)
-            portalW = true;
-        if (s)
-            portalS = true;
-        if (n)
-            portalN = true;
-    }
-
-    public void SetStageLocation(float x, float z)
-    {
-        this.x = x;
-        this.z = z;
-    }
-    public int GetMaxSize()
-    {
-        maxSize = (initWidth + 3 * initIncrease) * (initWidth + 3 * initIncrease);
-        return maxSize;
-    }
-
-    public Vector3 GetStageLocation()
-    {
-        Vector3 stagePos = new Vector3(this.x, 0, this.z);
-        return stagePos;
-    }
-
-    public int GetWidth()
-    {
-        return width;
-    }
     int initWidth = 10;
     int initIncrease = 5;
     int width;
@@ -58,11 +13,31 @@ public class StageGenerator : MonoBehaviour
     int wallHeight = 5;
     int size;
     int maxSize;
-    float x;
-    float z;
     int stageSizeRandom;
-    [SerializeField]
-    string type;
+    private int mStageNumber;
+    public int StageNumber
+    {
+        get
+        {
+            return mStageNumber;
+        }
+        set
+        {
+            mStageNumber = value;
+        }
+    }
+    private string mType;
+    public string Type
+    {
+        get
+        {
+            return mType;
+        }
+        set
+        {
+            mType = value;
+        }
+    }
     int mobCount;
     int currentMobCount;
     bool mIsClear;
@@ -75,6 +50,7 @@ public class StageGenerator : MonoBehaviour
     private bool portalW = false;
     private bool portalS = false;
     private bool portalN = false;
+    public GameObject portal;
     public GameObject tile;
     public GameObject wall;
     public GameObject transWall;
@@ -82,6 +58,22 @@ public class StageGenerator : MonoBehaviour
     public GameObject mob;
     public List<GameObject> mobArray;
 
+    public void SetPortal(bool e, bool w, bool s, bool n)
+    {
+        if (e)
+            portalE = true;
+        if (w)
+            portalW = true;
+        if (s)
+            portalS = true;
+        if (n)
+            portalN = true;
+    }
+    public int GetMaxSize()
+    {
+        maxSize = (initWidth + 3 * initIncrease) * (initWidth + 3 * initIncrease);
+        return maxSize;
+    }
     void InstantiateTile(int r, int c)
     {
         float interval = 10f;   //tile interval
@@ -161,15 +153,15 @@ public class StageGenerator : MonoBehaviour
                     }
                 }
 
-                if (type == "shop")
+                if (mType == "shop")
                     instance.GetComponent<Renderer>().material.color = Color.blue;
-                else if (type == "start")
+                else if (mType == "start")
                     instance.GetComponent<Renderer>().material.color = Color.green;
-                else if (type == "boss")
+                else if (mType == "boss")
                     instance.GetComponent<Renderer>().material.color = Color.red;
-                else if (type == "hidden")
+                else if (mType == "hidden")
                     instance.GetComponent<Renderer>().material.color = Color.black;
-                else if (type == "middleboss")
+                else if (mType == "middleboss")
                     instance.GetComponent<Renderer>().material.color = Color.yellow;
                 else
                     instance.GetComponent<Renderer>().material.color = Color.grey;
@@ -180,29 +172,38 @@ public class StageGenerator : MonoBehaviour
 
     void InstantiatePortal()
     {
+        GameObject instance;
         if (portalE)
         {
-            tileArray[1, height / 2 + 1].GetComponent<Renderer>().material.color = Color.cyan;
-            tileArray[1, height / 2 + 1].tag = "Portal";
-            tileArray[1, height / 2 + 1].GetComponent<Tile>().SetPortalType("east");
+            instance = Instantiate(portal, tileArray[1, height / 2 + 1].transform.position, Quaternion.identity);
+            instance.transform.parent = transform;
+            // tileArray[1, height / 2 + 1].GetComponent<Renderer>().material.color = Color.cyan;
+            // tileArray[1, height / 2 + 1].tag = "Portal";
+            // tileArray[1, height / 2 + 1].GetComponent<Tile>().SetPortalType("east");
         }
         if (portalW)
         {
-            tileArray[width, height / 2 + 1].GetComponent<Renderer>().material.color = Color.cyan;
-            tileArray[width, height / 2 + 1].tag = "Portal";
-            tileArray[width, height / 2 + 1].GetComponent<Tile>().SetPortalType("west");
+            instance = Instantiate(portal, tileArray[width, height / 2 + 1].transform.position, Quaternion.identity);
+            instance.transform.parent = transform;
+            // tileArray[width, height / 2 + 1].GetComponent<Renderer>().material.color = Color.cyan;
+            // tileArray[width, height / 2 + 1].tag = "Portal";
+            // tileArray[width, height / 2 + 1].GetComponent<Tile>().SetPortalType("west");
         }
         if (portalN)
         {
-            tileArray[width / 2 + 1, 1].GetComponent<Renderer>().material.color = Color.cyan;
-            tileArray[width / 2 + 1, 1].tag = "Portal";
-            tileArray[width / 2 + 1, 1].GetComponent<Tile>().SetPortalType("north");
+            instance = Instantiate(portal, tileArray[width / 2 + 1, 1].transform.position, Quaternion.identity);
+            instance.transform.parent = transform;
+            // tileArray[width / 2 + 1, 1].GetComponent<Renderer>().material.color = Color.cyan;
+            // tileArray[width / 2 + 1, 1].tag = "Portal";
+            // tileArray[width / 2 + 1, 1].GetComponent<Tile>().SetPortalType("north");
         }
         if (portalS)
         {
-            tileArray[width / 2 + 1, height].GetComponent<Renderer>().material.color = Color.cyan;
-            tileArray[width / 2 + 1, height].tag = "Portal";
-            tileArray[width / 2 + 1, height].GetComponent<Tile>().SetPortalType("south");
+            instance = Instantiate(portal, tileArray[width / 2 + 1, height].transform.position, Quaternion.identity);
+            instance.transform.parent = transform;
+            // tileArray[width / 2 + 1, height].GetComponent<Renderer>().material.color = Color.cyan;
+            // tileArray[width / 2 + 1, height].tag = "Portal";
+            // tileArray[width / 2 + 1, height].GetComponent<Tile>().SetPortalType("south");
         }
     }
 
@@ -293,7 +294,7 @@ public class StageGenerator : MonoBehaviour
     {
         width = initWidth;
         increase = initIncrease;
-        if (type == "normal")
+        if (mType == "normal")
             stageSizeRandom = Random.Range(1, 4);
         else
             stageSizeRandom = 1;
@@ -309,27 +310,27 @@ public class StageGenerator : MonoBehaviour
         InstantiatePortal();
         size = width * height;
         GenerateNevMesh();
-        if (type == "normal")
+        if (mType == "normal")
         {
             InstantiateObstacle();
             InstantiateMob(mobCount);
         }
-        if (type == "middleboss")
+        if (mType == "middleboss")
         {
             //InstantiateObstacle();
             InstantiateMob(mobCount);
         }
-        else if (type == "hidden")
+        else if (mType == "hidden")
         {
             //InstantiateObstacle();
             InstantiateMob(mobCount);
         }
-        else if (type == "boss")
+        else if (mType == "boss")
         {
 
         }
         currentMobCount = mobArray.Count;
-        if (type == "start")
+        if (mType == "start")
         {
             GameObject character = GameManager.Instance.playerGameObject;
             GameManager.Instance.currentStage = this.gameObject;
