@@ -40,6 +40,6 @@ public abstract class Equipment : MonoBehaviour{
     public string description;
     protected bool mIsApplyed;
 
-    public virtual void Equip(ref PlayerData pd){}
-    public virtual void Unequip(ref PlayerData pd){}
+    //public virtual void Equip(ref PlayerData pd){}
+    //public virtual void Unequip(ref PlayerData pd){}
 }
