@@ -13,13 +13,14 @@ public class PlayerController : MonoBehaviour
     PlayerAction playerAction;
     static public bool IsMoveAllow = true; //인풋을 받을수 있는지 없는지
     static public bool IsAttackAllow = true; //인풋을 받을수 있는지 없는지
+    static public bool IsReversedInput = false; //인풋을 받을수 있는지 없는지
     private void Awake() {
         if (!TryGetComponent<PlayerAction>(out playerAction)) { Debug.Log("컴포넌트 로드 실패 : PlayerAction"); }
     }
 
     private void Update() {
         if(IsMoveAllow){ 
-            playerAction.Move(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+            playerAction.Move(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), IsReversedInput);
             if(Input.GetKeyDown(KeyCode.Space)){playerAction.Dash();}
         }
         if(IsAttackAllow){

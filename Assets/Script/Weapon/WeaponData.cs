@@ -18,6 +18,17 @@ public class WeaponData : MonoBehaviour
 
         [field: SerializeField]
 		public float WeaponDelay {get;set;}
+        
+        [field: SerializeField]
+        private float mRange;
+        public float Range {
+            get {return mRange;} 
+            set{
+                if(mRange < 0) mRange = 0;
+                mRange = value;
+            }
+        }
+        
     }
     public class Attribute {
         

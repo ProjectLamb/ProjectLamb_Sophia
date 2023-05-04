@@ -5,13 +5,21 @@ using UnityEngine;
 using UnityEngine.Events;
 
 
-public class Equipment_004 : Equipment, IPlayerDataApplicant{
+public class Equipment_004 : Equipment {//, IPlayerDataApplicant{
     
     [SerializeField]
     public PlayerData.Numeric outerData;
     private void Awake() {
         equipmentName = "디지털 파편 조각";
+
+        outerData = new PlayerData.Numeric();
     }
+    public PlayerData.Numeric ApplyData(ref PlayerData _playerData) {
+        outerData.Power = 0.1f * _playerData.numericData.Power;
+        outerData.Defense = 10;
+        return outerData;
+    }
+    /*
     public void ApplyData(ref PlayerData _playerData){
         if(this.mIsApplyed != false) return;
         this.mIsApplyed = true;
@@ -32,4 +40,5 @@ public class Equipment_004 : Equipment, IPlayerDataApplicant{
     }
 
     public override string ToString() => "";
+    */
 }

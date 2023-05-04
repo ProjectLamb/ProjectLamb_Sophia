@@ -37,9 +37,10 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
 
     public bool isPortal;
     Vector3 mMoveVec;               // 음직이는 방향을 얻어오는데 사용한다.
-    Vector3 mRotateVec;             // 회전하는데 사용한다.
+    Quaternion mRotate;             // 회전하는데 사용한다.
     bool mIsBorder;                 // 벽에 부딛혔는지 감지
     bool mIsDashed;                 // 대쉬를 했는지 
+    bool mIsDie;                 // 대쉬를 했는지 
     Animator anim;
     GameObject model;
 
@@ -63,14 +64,6 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
         if (!TryGetComponent<PlayerData>(out playerData)) { Debug.Log("컴포넌트 로드 실패 : PlayerData"); }
         if (!TryGetComponent<Rigidbody>(out mRigidbody)) { Debug.Log("컴포넌트 로드 실패 : Rigidbody"); }
         isPortal = true;
-
-        foreach(E_DebuffState E in Enum.GetValues(typeof(E_DebuffState))){
-            DebuffedDic.Add(E, false);
-        }
-
-        foreach(E_DebuffAtomic E in Enum.GetValues(typeof(E_DebuffAtomic))){
-            AtomActivatorDic.Add(E, null);
-        }
         model = transform.GetChild(0).gameObject;
         anim = model.GetComponent<Animator>();
 
@@ -85,8 +78,9 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
     /// </summary>
     /// <param name="_hAxis">W, S 인풋 수치</param>
     /// <param name="_vAxis">A, D 인픗 수치</param>
-    public void Move(float _hAxis, float _vAxis)
+    public void Move(float _hAxis, float _vAxis, bool _reverse)
     {
+        if(_reverse){ _hAxis *= -1; _vAxis *= -1;}
         Vector3 AngleToVector(float _angle)
         {
             _angle *= Mathf.Deg2Rad;
@@ -97,7 +91,6 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
 
         mMoveVec = AngleToVector(Camera.main.transform.eulerAngles.y + 90f) * _hAxis + AngleToVector(Camera.main.transform.eulerAngles.y) * _vAxis;
         mMoveVec = mMoveVec.normalized;
-        mRotateVec = new Vector3(_vAxis, 0, -_hAxis).normalized;
 
         bool IsBorder()
         {
@@ -108,7 +101,10 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
         {
             Vector3 rbVel = mMoveVec * playerData.numericData.MoveSpeed;
             mRigidbody.velocity = rbVel;
-            transform.LookAt(transform.position + mRotateVec);
+            if(mMoveVec != Vector3.zero){
+                mRotate = Quaternion.LookRotation(mMoveVec);
+                transform.rotation = Quaternion.Slerp(transform.rotation,mRotate, 0.6f);
+            }
         }
     }
 
@@ -159,6 +155,36 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
     /// <summary>
     /// 바닥에 레이케스트를 쏜다, 타일의 태그가 포탈이면 포탈에 해당하는 방이동(WarpPortal) 사용하기
     /// </summary>
+    /*
+    void CheckPortal()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, Vector3.down, out hit, transform.position.y + 1, LayerMask.GetMask("Tile")))
+        {
+            if (hit.transform.tag == "Portal") {
+                hit.transform.gameObject.GetComponent<Tile>().WarpPortal();
+            }
+        }
+    }
+    */
+
+    public void GetDamaged(int _amount){
+        playerData.numericData.CurHP -= (int)(_amount * 100/(100+playerData.numericData.Defense));
+        if(this.playerData.numericData.CurHP <= 0) {Die();}
+    }
+    public void Die(){}
+
+    void OnTriggerEnter(Collider collider)
+    {
+        if (gameObject.layer != LayerMask.NameToLayer("Player") && collider.tag == "CombatEffect" && !mIsDie){
+            if(collider.TryGetComponent<CombatEffect>(out CombatEffect combatEffect)){
+                GetDamaged(combatEffect.SendDamage());
+                
+                Instantiate(combatEffect.hitEffect, transform);            
+            }
+        }
+    }
+
     void Turning(UnityAction action)
     {
         float camRayLength = 100f;          // 씬으로 보내는 카메라의 Ray 길이
@@ -182,11 +208,11 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
     }
 
     
-    public void AffectHandler(UnityAction _action){
-        _action.Invoke();
+    public void AffectHandler(List<UnityAction> _action){
+        _action.ForEach(E => E.Invoke());
     }
-    public void AsyncAffectHandler(IEnumerator _coroutine){
-        StartCoroutine(_coroutine);
+    public void AsyncAffectHandler(List<IEnumerator> _coroutine){
+        _coroutine.ForEach(E => StartCoroutine(E));
     }
 
     /*********************************************************************************
@@ -210,127 +236,4 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
         }
     }
 
-    /*********************************************************************************
-    *
-    * 액티베이터 
-    *
-    *********************************************************************************/
-
-    Dictionary<E_DebuffState, bool> DebuffedDic = new Dictionary<E_DebuffState, bool>();
-    //Dictionary<E_DebuffState, IEnumerator> ActivatorDic = new Dictionary<E_DebuffState, IEnumerator>();
-    Dictionary<E_DebuffAtomic, IEnumerator> AtomActivatorDic = new Dictionary<E_DebuffAtomic, IEnumerator>();
-
-    IEnumerator DotCoroutine(float _durationTime, int _damAmount, E_DebuffState _debuffState) {
-        while(_durationTime > 0){
-            _durationTime -= 0.5f;
-            playerData.numericData.CurHP -= _damAmount;
-            yield return YieldInstructionCache.WaitForSeconds(0.5f);
-        }
-    }
-
-    IEnumerator SlowCoroutine(float _durationTime, float _slowAmount, E_DebuffState _debuffState) {
-        playerData.numericData.MoveSpeed *= _slowAmount;
-        
-        yield return YieldInstructionCache.WaitForSeconds(_durationTime);
-        
-        playerData.numericData.MoveSpeed /= _slowAmount;
-    }
-
-    IEnumerator UncontrollableCoroutine(float _durationTime, E_DebuffState _debuffState){
-
-        PlayerController.IsAttackAllow = false;
-        
-        yield return YieldInstructionCache.WaitForSeconds(_durationTime);
-
-        PlayerController.IsAttackAllow = true;
-
-    }
-
-    void Activate_DotDam_State(
-        float _durationTime,
-        int _damAmount,
-        E_DebuffState _debuffState
-        ) {
-            AtomActivatorDic[E_DebuffAtomic.Dot] = DotCoroutine(_durationTime, _damAmount, _debuffState);
-            StartCoroutine(AtomActivatorDic[E_DebuffAtomic.Dot]);
-    }
-
-    void Activate_Slow_State(
-        float _durationTime,
-        float _slowAmount,
-        E_DebuffState _debuffState
-        ) {
-            AtomActivatorDic[E_DebuffAtomic.Slow] = SlowCoroutine(_durationTime, _slowAmount, _debuffState);
-            StartCoroutine(AtomActivatorDic[E_DebuffAtomic.Slow]);
-    }
-    
-    void Activate_Uncontrollable_State(float _durationTime, E_DebuffState _debuffState){
-            AtomActivatorDic[E_DebuffAtomic.Uncontrollable] = UncontrollableCoroutine(_durationTime, _debuffState);
-            StartCoroutine(AtomActivatorDic[E_DebuffAtomic.Uncontrollable]);
-    }
-
-    [ContextMenu("Burns")]
-    public void Activate_Burn_state(
-        string _strParams
-        //float _durationTime,
-        //int _damAmount
-        ){
-        string[] splitParams = _strParams.Split(',');
-        Activate_DotDam_State(float.Parse(splitParams[0]), int.Parse(splitParams[1]), E_DebuffState.Burn);
-    }
-
-    [ContextMenu("Poisend")]
-    public void Activate_Poisend_State(
-        string _strParams
-        //float _durationTime,
-        //int _damAmount
-        ){
-        string[] splitParams = _strParams.Split(',');
-        Activate_DotDam_State(float.Parse(splitParams[0]), int.Parse(splitParams[1]), E_DebuffState.Poisend);
-    }
-
-    [ContextMenu("Bleed")]
-    public void Activate_Bleed_State(
-        string _strParams
-        //float _durationTime,
-        //int _damAmount
-        ){
-        string[] splitParams = _strParams.Split(',');
-        Activate_DotDam_State(float.Parse(splitParams[0]), int.Parse(splitParams[1]), E_DebuffState.Bleed);
-    }
-
-    [ContextMenu("Confused")]
-    public void Activate_Confused_State(
-        float _durationTime
-        ){
-        Activate_Uncontrollable_State(_durationTime, E_DebuffState.Confused);
-    }
-
-    [ContextMenu("Frearing")]
-    public void Activate_Fearing_State(
-        float _durationTime
-        ){
-        Activate_Uncontrollable_State(_durationTime, E_DebuffState.Fearing);
-        Activate_Slow_State(_durationTime, 0.1f, E_DebuffState.Fearing);
-    }
-    [ContextMenu("Stern")]
-    public void Activate_Stern_State(
-        float _durationTime
-        ){
-        Activate_Uncontrollable_State(_durationTime, E_DebuffState.Stern);
-        Activate_Slow_State(_durationTime, 0.0001f, E_DebuffState.Stern);
-    }
-
-    [ContextMenu("Bounded")]
-    public void Activate_Bounded_State(
-        float _durationTime
-        ){
-        Activate_Slow_State(_durationTime, 0.0001f, E_DebuffState.Bounded);
-    }
-
-    /*********************************************************************************
-    *
-    *
-    *
-    *********************************************************************************/
-}
+ }
