@@ -24,7 +24,7 @@ public class EADA_SlowState : EntityAffector {
         _target.TryGetComponent<PlayerData>(out mPlayerData);
         mDurationTime = (float)Params[0];
         mSlowAmount = (float)Params[1];
-        this.AsyncAffectorCoroutine = Coroutine();
+        this.AsyncAffectorCoroutine.Add(Coroutine());
     }
     public override void Affect() {
         this.Target.GetComponent<IAffectableEntity>().AsyncAffectHandler(this.AsyncAffectorCoroutine);

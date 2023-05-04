@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028305, g: 0.22571313, b: 0.3069213, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -167,25 +167,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a30d5f67347d4d388aec40ed247291c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inputType:
-    Amount: 1940
-    Time: 3
-    Positon: {x: 10, y: 2, z: 7}
-  inputInspectorEvents:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 704333289}
-        m_TargetAssemblyTypeName: TEST_PrinterInputAmount, Assembly-CSharp
-        m_MethodName: printAmount
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!1 &704333288
 GameObject:
   m_ObjectHideFlags: 0
@@ -251,7 +232,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

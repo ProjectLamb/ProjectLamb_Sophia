@@ -31,8 +31,8 @@ interface IAffactableActions {
 */
 
 interface IAffectableEntity {
-    public void AsyncAffectHandler(IEnumerator _Coroutine);
-    public void AffectHandler(UnityAction _Action);
+    public void AsyncAffectHandler(List<IEnumerator> _Coroutine);
+    public void AffectHandler(List<UnityAction> _Action);
 }
 //모노비헤이비어를 상속받으면서 
 // 어떤 이득을 얻을 수 있나?
@@ -44,10 +44,12 @@ public abstract class EntityAffector {
     protected GameObject Owner {get; set;} 
     protected GameObject Target {get; set;} 
     protected object[] Params {get; set;} 
-    public IEnumerator AsyncAffectorCoroutine;
-    public UnityAction Affector;
+    public List<IEnumerator> AsyncAffectorCoroutine;
+    public List<UnityAction> Affector;
     public EntityAffector(GameObject _owner, GameObject _target, object[] _params) {
         Owner = _owner; Target = _target; Params = _params;
+        AsyncAffectorCoroutine = new List<IEnumerator>();
+        Affector = new List<UnityAction>();
     }
     public virtual void Affect(){ }
 }
