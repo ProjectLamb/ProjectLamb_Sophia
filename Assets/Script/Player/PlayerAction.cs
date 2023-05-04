@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
@@ -63,14 +64,6 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
         if (!TryGetComponent<PlayerData>(out playerData)) { Debug.Log("컴포넌트 로드 실패 : PlayerData"); }
         if (!TryGetComponent<Rigidbody>(out mRigidbody)) { Debug.Log("컴포넌트 로드 실패 : Rigidbody"); }
         isPortal = true;
-
-        foreach(E_DebuffState E in Enum.GetValues(typeof(E_DebuffState))){
-            DebuffedDic.Add(E, false);
-        }
-
-        foreach(E_DebuffAtomic E in Enum.GetValues(typeof(E_DebuffAtomic))){
-            AtomActivatorDic.Add(E, null);
-        }
         model = transform.GetChild(0).gameObject;
         anim = model.GetComponent<Animator>();
 
@@ -162,6 +155,7 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
     /// <summary>
     /// 바닥에 레이케스트를 쏜다, 타일의 태그가 포탈이면 포탈에 해당하는 방이동(WarpPortal) 사용하기
     /// </summary>
+    /*
     void CheckPortal()
     {
         RaycastHit hit;
@@ -172,6 +166,7 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
             }
         }
     }
+    */
 
     public void GetDamaged(int _amount){
         playerData.numericData.CurHP -= (int)(_amount * 100/(100+playerData.numericData.Defense));
