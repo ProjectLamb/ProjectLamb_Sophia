@@ -7,7 +7,7 @@ public enum E_DebuffAtomic {
 }
 
 public enum E_DebuffState{
-    Burn = 0 ,Poisend ,Bleed ,Contracted ,Slow ,Confused ,Fearing ,Stern ,Bounded    
+    Burn = 0 ,Poisend ,Bleed ,Contracted ,Freeze ,Confused ,Fearing ,Stern ,Bounded    
 }
 
 public enum E_BuffState{
