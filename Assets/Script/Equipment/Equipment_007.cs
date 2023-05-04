@@ -5,19 +5,19 @@ using UnityEngine;
 using UnityEngine.Events;
 
 
-public class Equipment_004 : Equipment {//, IPlayerDataApplicant{
+public class Equipment_007 : Equipment {//, IPlayerDataApplicant{
     
     [SerializeField]
-    public PlayerData.Numeric outerData;
+    public PlayerData.Numeric playerOuterData;
     private void Awake() {
-        equipmentName = "디지털 파편 조각";
-
-        outerData = new PlayerData.Numeric();
+        equipmentName = "유통기한 지난 전투식량";
+        playerOuterData = new PlayerData.Numeric();
     }
-    public PlayerData.Numeric ApplyData(ref PlayerData _playerData) {
-        outerData.Power = 0.1f * _playerData.numericData.Power;
-        outerData.Defense = 10;
-        return outerData;
+    public void ApplyData(ref PlayerData _playerData){
+        playerOuterData.MaxHP = 10;
+    }
+    public void ApplyActions() {
+        //??
     }
     /*
     public void ApplyData(ref PlayerData _playerData){
