@@ -5,15 +5,14 @@ using UnityEngine.SceneManagement;
 
 public class ChapterGenerator : MonoBehaviour
 {
-    /**/
     static int MAX = 15;
+    public int startNumber = 1 + (MAX / 2) + (MAX / 2 * MAX);
 
     [SerializeField]
     int stageAmount;
     int minimumDistanceOfEndStage;
     [SerializeField]
     float hiddenStageSpawnRate;
-    public List<GameObject> stageArray = new List<GameObject>();
     public GameObject obj;
 
     public class Stage
@@ -70,6 +69,7 @@ public class ChapterGenerator : MonoBehaviour
                 mType = value;
             }
         }
+        public string directionFromStart = null;
         public Stage East = null;
         public Stage West = null;
         public Stage South = null;
@@ -101,26 +101,6 @@ public class ChapterGenerator : MonoBehaviour
             else
                 return false;
         }
-        public bool CheckEndStage(Stage[] r)
-        {
-            if (r[mStageNumber].mType == "start")
-                return false;
-
-            int i = 0;
-            if (!r[mStageNumber - 1].mVacancy)
-                i++;
-            if (!r[mStageNumber + 1].mVacancy)
-                i++;
-            if (!r[mStageNumber - MAX].mVacancy)
-                i++;
-            if (!r[mStageNumber + MAX].mVacancy)
-                i++;
-
-            if (i == 1)
-                return true;
-            else
-                return false;
-        }
     };
 
     public Stage[] stage = new Stage[MAX * MAX + 1];
@@ -129,8 +109,11 @@ public class ChapterGenerator : MonoBehaviour
     {
         int stageAmount = n;
         int maxStage = MAX * MAX;
-        int initStageNumber = 1 + (MAX / 2) + (MAX / 2 * MAX);
         int amount; //현재 방 개수
+        bool hiddenStage = Randomizer.GetThisChanceResult_Percentage(hiddenStageSpawnRate); //히든 보스
+
+        // 큐 선언
+        Queue<int> q = new Queue<int>();
 
         void Initialize()
         {
@@ -145,34 +128,59 @@ public class ChapterGenerator : MonoBehaviour
                 }
             }
             /// 시작방 만들기
-            stage[initStageNumber].Type = "start";
-            amount = 0;
+            stage[startNumber].Type = "start";
+            stage[startNumber].Vacancy = false;
+            amount = 1;
+            q.Enqueue(startNumber);
+
+            int stageNum = Random.Range(2, 5);  //시작방 최소 인접 2 이상
+            int directionNum = -1;
+            while (stageNum > 0)
+            {
+                int num = startNumber;
+                directionNum++;
+                if (Randomizer.random())
+                    continue;
+                switch (directionNum % 4)
+                {
+                    case 0:
+                        num--;
+                        stage[startNumber].East = stage[num];
+                        break;
+                    case 1:
+                        num++;
+                        stage[startNumber].West = stage[num];
+                        break;
+                    case 2:
+                        num -= MAX;
+                        stage[startNumber].North = stage[num];
+                        break;
+                    case 3:
+                        num += MAX;
+                        stage[startNumber].South = stage[num];
+                        break;
+                }
+                stage[num].Vacancy = false;
+                stage[num].Depth = stage[q.Peek()].Depth + 1;
+                q.Enqueue(num);
+                stageNum--;
+                amount++;
+            }
         }
 
         // StageType 초기화
         Initialize();
 
-        // 큐 작업
-        Queue<int> q = new Queue<int>();
-        q.Enqueue(stage[initStageNumber].StageNumber);
-
-        while (amount != stageAmount)
+        while (amount != stageAmount)   //BFS
         {
             if (q.Count == 0)
             {
                 Initialize();
-                q.Enqueue(stage[initStageNumber].StageNumber);
+                q.Enqueue(stage[startNumber].StageNumber);
             }
-
-            if (q.Peek() >= 1 && q.Peek() <= maxStage && stage[q.Peek()].Vacancy)  //Occupy stage
+            for (int i = 0; i < 4; i++) //Search 4 directions from the queue's front stage
             {
-                stage[q.Peek()].Vacancy = false;
-                amount++;
-            }
-
-            for (int i = 0; i < 4; i++)	//Search 4 directions from the queue's front stage
-            {
-                int num = q.Peek();	//front stage number
+                int num = q.Peek(); //front stage number
 
                 switch (i)
                 {
@@ -189,17 +197,16 @@ public class ChapterGenerator : MonoBehaviour
                         num += MAX;
                         break;
                 }
+                if (!stage[num].Vacancy)    //If the stage is already occupied
+                    continue;
                 if (stage[num].Type == "boundary")  //To avoid array boundary exception
                     continue;
-                if (!stage[num].Vacancy)	//If the stage is already occupied
+                if (amount == stageAmount)  //If the stage amount is already full
                     continue;
-                if (stage[num].CheckAdjacency(stage))	//To avoid circulating stage array
+                if (stage[num].CheckAdjacency(stage))   //To avoid circulating stage array
                     continue;
-                if (amount == stageAmount)	//If the stage amount is already full
+                if (Randomizer.random())    //50% chance to pass
                     continue;
-                if (Randomizer.random())	//50% chance to pass
-                    continue;
-
                 if (num >= 1 && num <= maxStage && stage[num].Vacancy)
                 {
                     stage[num].Vacancy = false;
@@ -226,64 +233,130 @@ public class ChapterGenerator : MonoBehaviour
             q.Dequeue();
         }
 
-        // int farthest = 0;
-        int farthestStage = -1;
+        List<int> endL = new List<int>();
+        List<int> bossL = new List<int>();
+        string bossDirection = "";
 
-        Queue<int> endQ = new Queue<int>();
-
-        for (int i = 1; i <= maxStage; i++)
-            if (!stage[i].Vacancy)
+        void DFS(Stage _currentStage, string _directionFromStart)
+        {
+            int count = 0;
+            if (_currentStage.East != null)
             {
-                if (stage[i].CheckEndStage(stage) && stage[i].Depth >= minimumDistanceOfEndStage)   //end Stage
-                    endQ.Enqueue(i);
+                if (_currentStage.Depth == 0)
+                    _directionFromStart = "East";
+                DFS(_currentStage.East, _directionFromStart);
+                count++;
+            }
+            if (_currentStage.West != null)
+            {
+                if (_currentStage.Depth == 0)
+                    _directionFromStart = "West";
+                DFS(_currentStage.West, _directionFromStart);
+                count++;
+            }
+            if (_currentStage.North != null)
+            {
+                if (_currentStage.Depth == 0)
+                    _directionFromStart = "North";
+                DFS(_currentStage.North, _directionFromStart);
+                count++;
+            }
+            if (_currentStage.South != null)
+            {
+                if (_currentStage.Depth == 0)
+                    _directionFromStart = "South";
+                DFS(_currentStage.South, _directionFromStart);
+                count++;
+            }
+            for (int i = 0; i < 4; i++)
+            {
+                int num = _currentStage.StageNumber;
+                switch (i)
+                {
+                    case 0:
+                        num--;
+                        if (!stage[num].Vacancy)
+                            _currentStage.East = stage[num];
+                        break;
+                    case 1:
+                        num++;
+                        if (!stage[num].Vacancy)
+                            _currentStage.West = stage[num];
+                        break;
+                    case 2:
+                        num -= MAX;
+                        if (!stage[num].Vacancy)
+                            _currentStage.North = stage[num];
+                        break;
+                    case 3:
+                        num += MAX;
+                        if (!stage[num].Vacancy)
+                            _currentStage.South = stage[num];
+                        break;
+                }
+            }
+            if (count == 0)  //endStage
+            {
+                _currentStage.directionFromStart = _directionFromStart;
+                if (_currentStage.Depth == Stage.maxDepth)
+                    bossL.Add(_currentStage.StageNumber);
+                else if (_currentStage.Depth >= minimumDistanceOfEndStage)
+                    endL.Add(_currentStage.StageNumber);
+            }
+        }
 
-                if (stage[i].Depth == Stage.maxDepth)
-                    farthestStage = i;
+        DFS(stage[startNumber], "");
+
+        if (hiddenStage)
+        {
+            if (bossL.Count + endL.Count < 3)
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+        else
+        {
+            if (bossL.Count + endL.Count < 2)
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+
+        int bossRandom = Random.Range(0, bossL.Count);
+        stage[bossL[bossRandom]].Type = "boss";
+        bossDirection = stage[bossL[bossRandom]].directionFromStart;
+        bossL.RemoveAt(bossRandom);
+
+        if (hiddenStage)
+        {
+            bool assign = false;
+            foreach (int num in bossL)
+            {
+                endL.Add(num);
+                if (stage[num].directionFromStart != bossDirection)
+                {
+                    stage[num].Type = "hidden";
+                    assign = true;
+                    endL.Remove(num);
+                }
             }
 
-        for (int i = 0; i < endQ.Count; i++)    //이미 배정된 보스 방은 큐에서 제거
-        {
-            if (endQ.Peek() == farthestStage)
-                endQ.Dequeue();
-            else
+            if (!assign)
             {
-                endQ.Enqueue(endQ.Peek());
-                endQ.Dequeue();
+                foreach (int num in endL)
+                {
+                    if (stage[num].directionFromStart != bossDirection)
+                    {
+                        stage[num].Type = "hidden";
+                        endL.Remove(num);
+                        break;
+                    }
+                }
             }
         }
 
-        //////////////////////////////////////////////////////////////////////////////////////
+        endL.AddRange(bossL);
+        bossL.Clear();
+        int endRandom = Random.Range(0, endL.Count);
+        stage[endL[endRandom]].Type = "shop";
 
-        Queue<string> endStageSet = new Queue<string>();
-        endStageSet.Enqueue("shop");
-        if (Randomizer.GetThisChanceResult_Percentage(hiddenStageSpawnRate))
-        {
-            endStageSet.Enqueue("hidden");
-            Debug.Log("Hidden Stage Spawned");
-        }
-
-        if (endQ.Count < endStageSet.Count || farthestStage == -1)
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-
-        stage[farthestStage].Type = "boss"; //가장 먼 방은 보스방으로 배정
-
-        while (endStageSet.Count != 0)
-        {
-            InfiniteLoopDetector.Run();
-
-            endQ.Enqueue(endQ.Peek());
-            endQ.Dequeue();
-
-            if (stage[endQ.Peek()].Type == "boss")
-                continue;
-            if (!Randomizer.random())
-                continue;
-            stage[endQ.Peek()].Type = endStageSet.Peek();
-            endQ.Dequeue();
-            endStageSet.Dequeue();
-        }
         //Assign real stage objects in Unity
-
         int x = 0;
         int z = 0;
         int stageInterval = obj.GetComponent<StageGenerator>().GetMaxSize(); //stage gameobect's width
@@ -296,18 +369,17 @@ public class ChapterGenerator : MonoBehaviour
                 GameObject instance;
                 bool[] portal = new bool[4]; //east, west, south, north
                 instance = Instantiate(obj, stagePos, Quaternion.identity);
-                instance.GetComponent<StageGenerator>().SetStageType(stage[i].Type);
-                instance.GetComponent<StageGenerator>().SetStageLocation(stagePos.x, stagePos.z);
+                instance.GetComponent<StageGenerator>().Type = stage[i].Type;
+                instance.GetComponent<StageGenerator>().StageNumber = stage[i].StageNumber;
                 instance.transform.parent = transform;
-                stageArray.Add(instance);
 
-                if (!stage[i - 1].Vacancy)
+                if (stage[i].East != null)
                     portal[0] = true;
-                if (!stage[i + 1].Vacancy)
+                if (stage[i].West != null)
                     portal[1] = true;
-                if (!stage[i + MAX].Vacancy)
+                if (stage[i].South != null)
                     portal[2] = true;
-                if (!stage[i - MAX].Vacancy)
+                if (stage[i].North != null)
                     portal[3] = true;
                 instance.GetComponent<StageGenerator>().SetPortal(portal[0], portal[1], portal[2], portal[3]);
                 stage[i].stageObject = instance;
@@ -326,9 +398,8 @@ public class ChapterGenerator : MonoBehaviour
     void Awake()
     {
         stageAmount = 10;
-        minimumDistanceOfEndStage = 3;
-        hiddenStageSpawnRate = 50f; //10% possibility
-        //Debug.Log("Generated amount of stages: " + stageAmount);
+        minimumDistanceOfEndStage = 2;
+        hiddenStageSpawnRate = 10f; //10% possibility
         GenerateStage(stageAmount);
     }
 }
