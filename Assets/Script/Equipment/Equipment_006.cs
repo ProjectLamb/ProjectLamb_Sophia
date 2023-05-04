@@ -5,20 +5,26 @@ using UnityEngine;
 using UnityEngine.Events;
 
 
-public class Equipment_004 : Equipment {//, IPlayerDataApplicant{
+public class Equipment_006 : Equipment {//, IPlayerDataApplicant{
     
     [SerializeField]
-    public PlayerData.Numeric outerData;
+    public PlayerData.Numeric playerOuterData;
+    public WeaponData.Numeric weaponOuterData;
     private void Awake() {
-        equipmentName = "디지털 파편 조각";
+        equipmentName = "반쯤 남은 위장크림";
 
-        outerData = new PlayerData.Numeric();
+        playerOuterData = new PlayerData.Numeric();
+        weaponOuterData = new WeaponData.Numeric();
     }
-    public PlayerData.Numeric ApplyData(ref PlayerData _playerData) {
-        outerData.Power = 0.1f * _playerData.numericData.Power;
-        outerData.Defense = 10;
-        return outerData;
+    public PlayerData.Numeric ApplyData(ref PlayerData _playerData){
+        playerOuterData.Power = _playerData.numericData.MoveSpeed * 0.1f;
+        return this.playerOuterData;
     }
+    public WeaponData.Numeric ApplyData(ref WeaponData _weaponData){
+        weaponOuterData.WeaponDelay = -_weaponData.numericData.WeaponDelay * 0.05f;
+        return this.weaponOuterData;
+    }
+
     /*
     public void ApplyData(ref PlayerData _playerData){
         if(this.mIsApplyed != false) return;
