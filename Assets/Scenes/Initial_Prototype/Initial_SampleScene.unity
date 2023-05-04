@@ -185,16 +185,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed1a7e6ebead04ba79441c4f2d74bba6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skinnedMeshRenderers:
-  - {fileID: 2817765545117491484}
-  - {fileID: 8939856295035223690}
-  - {fileID: 8740630423886707691}
-  - {fileID: 7521397581893975169}
-  - {fileID: 2282134895317091834}
-  mSkinMaterials:
-  - {fileID: 2100000, guid: c6bd53f2cbb4f4c7fb65753237622c68, type: 2}
-  - {fileID: 2100000, guid: d5cd7500883df47d0b872d352c0f25e1, type: 2}
-  TransMaterial: {fileID: 2100000, guid: d5cd7500883df47d0b872d352c0f25e1, type: 2}
 --- !u!1 &366341591
 GameObject:
   m_ObjectHideFlags: 0
@@ -784,12 +774,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f530f928d2c04a7aaaf71879f1ba2b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Hands:
-    _serializedList:
-    - Key: LeftHand
-      Value: {fileID: 3603472116087870450}
-    - Key: RightHand
-      Value: {fileID: 5448145832581828510}
 --- !u!1 &860060120134375267
 GameObject:
   m_ObjectHideFlags: 0
@@ -2936,7 +2920,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6778335139197183863}
-  - component: {fileID: 8441454539602430099}
   - component: {fileID: 8441454539602430102}
   - component: {fileID: 8441454539602430105}
   - component: {fileID: 8441454539602430103}
@@ -3445,26 +3428,6 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 6857
---- !u!95 &8441454539602430099
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6778335139197183816}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 0539edc5a09ba430294a5a7c68337ea1, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
 --- !u!54 &8441454539602430102
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3546,8 +3509,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 336f6f14de621429aacdbb1b1102338c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skinModulator: {fileID: 280574962}
-  particleModulator: {fileID: 366341593}
 --- !u!1 &8454677947442368107
 GameObject:
   m_ObjectHideFlags: 0

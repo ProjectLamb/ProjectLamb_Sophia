@@ -40,6 +40,8 @@ public class PlayerAction : MonoBehaviour
     Vector3 mRotateVec;             // 회전하는데 사용한다.
     bool mIsBorder;                 // 벽에 부딛혔는지 감지
     bool mIsDashed;                 // 대쉬를 했는지 
+    Animator anim;
+    GameObject model;
 
     public LayerMask groundMask;                  // 바닥을 인식하는 마스크
 
@@ -69,6 +71,9 @@ public class PlayerAction : MonoBehaviour
         foreach(E_DebuffAtomic E in Enum.GetValues(typeof(E_DebuffAtomic))){
             AtomActivatorDic.Add(E, null);
         }
+        model = transform.GetChild(0).gameObject;
+        anim = model.GetComponent<Animator>();
+
     }
 
     void Update()
@@ -146,6 +151,7 @@ public class PlayerAction : MonoBehaviour
     /// </summary>
     public void Attack()
     {
+        anim.SetTrigger("DoAttack");
         playerData.weapon?.Use();
     }
     public void Skill(string key)
