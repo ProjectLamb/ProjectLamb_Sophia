@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
@@ -37,9 +36,10 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
 
     public bool isPortal;
     Vector3 mMoveVec;               // 음직이는 방향을 얻어오는데 사용한다.
-    Vector3 mRotateVec;             // 회전하는데 사용한다.
+    Quaternion mRotate;             // 회전하는데 사용한다.
     bool mIsBorder;                 // 벽에 부딛혔는지 감지
     bool mIsDashed;                 // 대쉬를 했는지 
+    bool mIsDie;                 // 대쉬를 했는지 
 
     public LayerMask groundMask;                  // 바닥을 인식하는 마스크
 
@@ -86,7 +86,6 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
 
         mMoveVec = AngleToVector(Camera.main.transform.eulerAngles.y + 90f) * _hAxis + AngleToVector(Camera.main.transform.eulerAngles.y) * _vAxis;
         mMoveVec = mMoveVec.normalized;
-        mRotateVec = new Vector3(_vAxis, 0, -_hAxis).normalized;
 
         bool IsBorder()
         {
@@ -97,7 +96,10 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
         {
             Vector3 rbVel = mMoveVec * playerData.numericData.MoveSpeed;
             mRigidbody.velocity = rbVel;
-            transform.LookAt(transform.position + mRotateVec);
+            if(mMoveVec != Vector3.zero){
+                mRotate = Quaternion.LookRotation(mMoveVec);
+                transform.rotation = Quaternion.Slerp(transform.rotation,mRotate, 0.6f);
+            }
         }
     }
 
@@ -159,6 +161,23 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
         }
     }
 
+    public void GetDamaged(int _amount){
+        playerData.numericData.CurHP -= (int)(_amount * 100/(100+playerData.numericData.Defense));
+        if(this.playerData.numericData.CurHP <= 0) {Die();}
+    }
+    public void Die(){}
+
+    void OnTriggerEnter(Collider collider)
+    {
+        if (gameObject.layer != LayerMask.NameToLayer("Player") && collider.tag == "CombatEffect" && !mIsDie){
+            if(collider.TryGetComponent<CombatEffect>(out CombatEffect combatEffect)){
+                GetDamaged(combatEffect.SendDamage());
+                
+                Instantiate(combatEffect.hitEffect, transform);            
+            }
+        }
+    }
+
     void Turning(UnityAction action)
     {
         float camRayLength = 100f;          // 씬으로 보내는 카메라의 Ray 길이
@@ -210,74 +229,4 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
         }
     }
 
-    /*********************************************************************************
-    *
-    * 액티베이터 
-    *
-    *********************************************************************************/
-    /*
-    [ContextMenu("Burns")]
-    public void Activate_Burn_state(
-        string _strParams
-        //float _durationTime,
-        //int _damAmount
-        ){
-        string[] splitParams = _strParams.Split(',');
-        Activate_DotDam_State(float.Parse(splitParams[0]), int.Parse(splitParams[1]), E_DebuffState.Burn);
-    }
-
-    [ContextMenu("Poisend")]
-    public void Activate_Poisend_State(
-        string _strParams
-        //float _durationTime,
-        //int _damAmount
-        ){
-        string[] splitParams = _strParams.Split(',');
-        Activate_DotDam_State(float.Parse(splitParams[0]), int.Parse(splitParams[1]), E_DebuffState.Poisend);
-    }
-
-    [ContextMenu("Bleed")]
-    public void Activate_Bleed_State(
-        string _strParams
-        //float _durationTime,
-        //int _damAmount
-        ){
-        string[] splitParams = _strParams.Split(',');
-        Activate_DotDam_State(float.Parse(splitParams[0]), int.Parse(splitParams[1]), E_DebuffState.Bleed);
-    }
-
-    [ContextMenu("Confused")]
-    public void Activate_Confused_State(
-        float _durationTime
-        ){
-        Activate_Uncontrollable_State(_durationTime, E_DebuffState.Confused);
-    }
-
-    [ContextMenu("Frearing")]
-    public void Activate_Fearing_State(
-        float _durationTime
-        ){
-        Activate_Uncontrollable_State(_durationTime, E_DebuffState.Fearing);
-        Activate_Slow_State(_durationTime, 0.1f, E_DebuffState.Fearing);
-    }
-    [ContextMenu("Stern")]
-    public void Activate_Stern_State(
-        float _durationTime
-        ){
-        Activate_Uncontrollable_State(_durationTime, E_DebuffState.Stern);
-        Activate_Slow_State(_durationTime, 0.0001f, E_DebuffState.Stern);
-    }
-
-    [ContextMenu("Bounded")]
-    public void Activate_Bounded_State(
-        float _durationTime
-        ){
-        Activate_Slow_State(_durationTime, 0.0001f, E_DebuffState.Bounded);
-    }
-    */
-    /*********************************************************************************
-    *
-    *
-    *
-    *********************************************************************************/
-}
+ }
