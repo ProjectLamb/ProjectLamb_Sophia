@@ -22,8 +22,6 @@ public class GameManager : MonoBehaviour
     
     public GlobalEvent globalEvent;
     public GlobalAudio globalAudio;
-
-    //public GameObject currentRoom;
     public GameObject playerGameObject;
     public PlayerData playerData;
     public GameObject ChapterGenerator;
@@ -31,7 +29,7 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
-        Application.targetFrameRate = 65;
+        Application.targetFrameRate = 60;
 
         if (_instance == null) {
             _instance = this;
