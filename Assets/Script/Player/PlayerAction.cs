@@ -40,6 +40,8 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
     Vector3 mRotateVec;             // 회전하는데 사용한다.
     bool mIsBorder;                 // 벽에 부딛혔는지 감지
     bool mIsDashed;                 // 대쉬를 했는지 
+    Animator anim;
+    GameObject model;
 
     public LayerMask groundMask;                  // 바닥을 인식하는 마스크
 
@@ -69,11 +71,13 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
         foreach(E_DebuffAtomic E in Enum.GetValues(typeof(E_DebuffAtomic))){
             AtomActivatorDic.Add(E, null);
         }
+        model = transform.GetChild(0).gameObject;
+        anim = model.GetComponent<Animator>();
+
     }
 
     void Update()
     {
-        if (isPortal) CheckPortal();
     }
 
     /// <summary>
@@ -144,6 +148,7 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
     /// </summary>
     public void Attack()
     {
+        anim.SetTrigger("DoAttack");
         Turning(() => playerData.weapon?.Use());
     }
     public void Skill(string key)
@@ -154,17 +159,6 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
     /// <summary>
     /// 바닥에 레이케스트를 쏜다, 타일의 태그가 포탈이면 포탈에 해당하는 방이동(WarpPortal) 사용하기
     /// </summary>
-    void CheckPortal()
-    {
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, Vector3.down, out hit, transform.position.y + 1, LayerMask.GetMask("Tile")))
-        {
-            if (hit.transform.tag == "Portal") {
-                hit.transform.gameObject.GetComponent<Tile>().WarpPortal();
-            }
-        }
-    }
-
     void Turning(UnityAction action)
     {
         float camRayLength = 100f;          // 씬으로 보내는 카메라의 Ray 길이
