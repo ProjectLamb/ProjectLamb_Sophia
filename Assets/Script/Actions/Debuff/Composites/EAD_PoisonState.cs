@@ -15,39 +15,55 @@ using UnityEngine;
 /// * [2]: mTargetMeshRender : MeshRenderer
 /// </param>
 /// <returns></returns>
-public class EAD_PoisonState : EntityAffector {
+public class EAD_PoisonState : EntityAffector
+{
     PlayerData mPlayerData;
     PlayerVisualData mPlayerVisualData;
-    
-    float   mDurationTime;
-    int     mDamageAmount;
+
+    float mDurationTime;
+    int mDamageAmount;
     Material mSkin;
     ParticleSystem mParticle;
-    
-    public EAD_PoisonState(GameObject _owner, GameObject _target, object[] _params) : base(_owner, _target, _params){
-        if(this.Params == null){Debug.LogError("0: 유지시간 1:도트뎀 을 적어서 보내야함");}
+
+    public EAD_PoisonState(GameObject _owner, GameObject _target, object[] _params) : base(_owner, _target, _params)
+    {
+        if (this.Params == null) { Debug.LogError("0: 유지시간 1:도트뎀 을 적어서 보내야함"); }
         _target.TryGetComponent<PlayerData>(out mPlayerData);
         _target.TryGetComponent<PlayerVisualData>(out mPlayerVisualData);
 
         mDurationTime = (float)Params[0];
         mDamageAmount = (int)Params[1];
-        mSkin         = (Material)Params[2];
-        mParticle     = (ParticleSystem)Params[3];
-        
-        this.AsyncAffectorCoroutine = Coroutine();
+        mSkin = (Material)Params[2];
+        mParticle = (ParticleSystem)Params[3];
+
+
+        this.AsyncAffectorCoroutine.Add(VisualActivate());
+        this.AsyncAffectorCoroutine.Add(DotDamage());
     }
-    public override void Affect() {
+    public override void Affect()
+    {
         this.Target.GetComponent<IAffectableEntity>().AsyncAffectHandler(this.AsyncAffectorCoroutine);
     }
-    IEnumerator Coroutine() {
+    IEnumerator DotDamage()
+    {
         float passedTime = 0;
-        mPlayerVisualData.skinModulator.SetSkinSets(1, mSkin);
-        mPlayerVisualData.particleModulator.ActivateParticle(mParticle, mDurationTime);
-        while(mDurationTime > passedTime){
+        while (mDurationTime > passedTime)
+        {
             passedTime += 0.5f;
             mPlayerData.numericData.CurHP -= mDamageAmount;
             yield return YieldInstructionCache.WaitForSeconds(0.5f);
         }
+    }
+    IEnumerator VisualActivate()
+    {
+        //mPlayerData.attributeData.mDebuffState[(int)E_DebuffState.Poisend]++;
+
+        mPlayerVisualData.skinModulator.SetSkinSets(1, mSkin);
+        mPlayerVisualData.particleModulator.ActivateParticle(mParticle, mDurationTime);
+
+        yield return YieldInstructionCache.WaitForSeconds(mDurationTime);
+
         mPlayerVisualData.skinModulator.SetSkinSets(1, null);
+        //mPlayerData.attributeData.mDebuffState[(int)E_DebuffState.Poisend]--;
     }
 }
