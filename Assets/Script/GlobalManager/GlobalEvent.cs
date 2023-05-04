@@ -74,4 +74,5 @@ public class GlobalEvent : MonoBehaviour
         CurrentTimeScale = ContinouseTimeScale;
         mIsSlowed = false;
     }
+    /////////////////////////////////////////////////////////////////
 }
