@@ -40,6 +40,8 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
     bool mIsBorder;                 // 벽에 부딛혔는지 감지
     bool mIsDashed;                 // 대쉬를 했는지 
     bool mIsDie;                 // 대쉬를 했는지 
+    Animator anim;
+    GameObject model;
 
     public LayerMask groundMask;                  // 바닥을 인식하는 마스크
 
@@ -61,11 +63,21 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
         if (!TryGetComponent<PlayerData>(out playerData)) { Debug.Log("컴포넌트 로드 실패 : PlayerData"); }
         if (!TryGetComponent<Rigidbody>(out mRigidbody)) { Debug.Log("컴포넌트 로드 실패 : Rigidbody"); }
         isPortal = true;
+
+        foreach(E_DebuffState E in Enum.GetValues(typeof(E_DebuffState))){
+            DebuffedDic.Add(E, false);
+        }
+
+        foreach(E_DebuffAtomic E in Enum.GetValues(typeof(E_DebuffAtomic))){
+            AtomActivatorDic.Add(E, null);
+        }
+        model = transform.GetChild(0).gameObject;
+        anim = model.GetComponent<Animator>();
+
     }
 
     void Update()
     {
-        if (isPortal) CheckPortal();
     }
 
     /// <summary>
@@ -139,8 +151,8 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
     /// </summary>
     public void Attack()
     {
-        //Turning(() => playerData.weapon?.Use());
-        playerData.weapon?.Use();
+        anim.SetTrigger("DoAttack");
+        Turning(() => playerData.weapon?.Use());
     }
     public void Skill(string key)
     {
