@@ -146,11 +146,9 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
 # Ignore Plugins
-Assets/Plugins
-Assets/Resources
-Assets/JMO Assets
-
-# End of https://www.toptal.com/developers/gitignore/api/unity
+Assets/Plugins/*
+Assets/Packages/*
+Assets/Resources/*
 
 # End of https://www.toptal.com/developers/gitignore/api/unity
 ```
