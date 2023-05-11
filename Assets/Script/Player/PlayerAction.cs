@@ -144,8 +144,8 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
     /// </summary>
     public void Attack()
     {
-        anim.SetTrigger("DoAttack");
         Turning(() => playerData.weapon?.Use());
+        anim.SetTrigger("DoAttack");
     }
     public void Skill(string key)
     {

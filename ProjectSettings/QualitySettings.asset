@@ -21,7 +21,7 @@ QualitySettings:
     skinWeights: 4
     textureQuality: 0
     anisotropicTextures: 2
-    antiAliasing: 0
+    antiAliasing: 4
     softParticles: 1
     softVegetation: 1
     realtimeReflectionProbes: 1
@@ -40,7 +40,7 @@ QualitySettings:
     asyncUploadBufferSize: 4
     asyncUploadPersistentBuffer: 1
     resolutionScalingFixedDPIFactor: 1
-    customRenderPipeline: {fileID: 11400000, guid: 011083b17734b45ebb6deb947a28031d,
+    customRenderPipeline: {fileID: 11400000, guid: 6f9900ad21b4c5942b8ed388e2abd897,
       type: 2}
     excludedTargetPlatforms: []
   m_PerPlatformDefaultQuality:
