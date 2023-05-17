@@ -10,8 +10,9 @@ TagManager:
   - Enemy
   - Portal
   - FxTemporaire
-  - CombatEffect
   - Door
+  - PlayerProjectile
+  - EnemyProjectile
   layers:
   - Default
   - TransparentFX

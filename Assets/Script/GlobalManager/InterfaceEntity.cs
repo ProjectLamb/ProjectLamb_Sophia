@@ -20,3 +20,7 @@ public interface IDamagable
 {
    public void GetDamaged(int _amount);
 }
+
+public interface IVisuallyInteractable {
+    public void Interact();
+}

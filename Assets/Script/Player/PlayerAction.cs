@@ -6,9 +6,15 @@ using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.Events;
 
+using Component = UnityEngine.Component;
+using Random = UnityEngine.Random;
+
 /// <summary>
 /// 플레이어의 모든 동작을 담는 클래스다
 /// </summary>
+
+
+
 public class PlayerAction : MonoBehaviour, IAffectableEntity
 {
     /////////////////////////////////////////////////////////////////////////////////
@@ -42,9 +48,12 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
     bool mIsDashed;                 // 대쉬를 했는지 
     bool mIsDie;                 // 대쉬를 했는지 
     Animator anim;
-    GameObject model;
+    public GameObject model;
+    public VFXBucket vFXBucket;
 
     public LayerMask groundMask;                  // 바닥을 인식하는 마스크
+
+    public Dictionary<Affector_PlayerState, UnityAction> dynamicsDic;
 
 
     /*********************************************************************************
@@ -64,9 +73,16 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
         if (!TryGetComponent<PlayerData>(out playerData)) { Debug.Log("컴포넌트 로드 실패 : PlayerData"); }
         if (!TryGetComponent<Rigidbody>(out mRigidbody)) { Debug.Log("컴포넌트 로드 실패 : Rigidbody"); }
         isPortal = true;
-        model = transform.GetChild(0).gameObject;
         anim = model.GetComponent<Animator>();
-
+        dynamicsDic = new Dictionary<Affector_PlayerState, UnityAction>();
+        foreach(Affector_PlayerState E in (Affector_PlayerState[])Enum.GetValues(typeof(Affector_PlayerState))){
+            dynamicsDic.Add(E, () => {});
+        }
+        /*
+        foreach(KeyValuePair<Affector_PlayerState, UnityAction> kvp in dynamicsDic){
+            Debug.Log($"{kvp.Key}, {kvp.Value}");
+        }
+        */
     }
 
     void Update()
@@ -152,36 +168,39 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
         if(playerData.skills.ContainsKey("Q")) {Turning(() => playerData.skills["Q"].Use());}
     }
 
-    /// <summary>
-    /// 바닥에 레이케스트를 쏜다, 타일의 태그가 포탈이면 포탈에 해당하는 방이동(WarpPortal) 사용하기
-    /// </summary>
-    /*
-    void CheckPortal()
-    {
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, Vector3.down, out hit, transform.position.y + 1, LayerMask.GetMask("Tile")))
-        {
-            if (hit.transform.tag == "Portal") {
-                hit.transform.gameObject.GetComponent<Tile>().WarpPortal();
-            }
-        }
-    }
-    */
-
     public void GetDamaged(int _amount){
         playerData.numericData.CurHP -= (int)(_amount * 100/(100+playerData.numericData.Defense));
         if(this.playerData.numericData.CurHP <= 0) {Die();}
     }
     public void Die(){}
 
+    //맞는 콜라이더도 있을것이고, 그렇다..
     void OnTriggerEnter(Collider collider)
     {
-        if (gameObject.layer != LayerMask.NameToLayer("Player") && collider.tag == "CombatEffect" && !mIsDie){
-            if(collider.TryGetComponent<CombatEffect>(out CombatEffect combatEffect)){
-                GetDamaged(combatEffect.SendDamage());
-                
-                Instantiate(combatEffect.hitEffect, transform);            
+        /*
+        void PRINT_GAMEOBJECT_COMPONENTS(){
+            List<Component> components = collider.GetComponents<Component>().ToList();
+            foreach(var item in components){
+                Debug.Log($"Component {item} ComponentName : {item.name}, ComponentTag {item.tag}");
             }
+        }
+        PRINT_GAMEOBJECT_COMPONENTS();
+        */
+        //전투 이펙트다.
+        if (collider.tag == "EnemyProjectile" && !mIsDie){
+            Debug.Log($"{gameObject.name} triggerEnter");
+            if(collider.TryGetComponent<CombatEffect>(out CombatEffect projectile)){
+                if(projectile.Modifiers.TryGetValue(Affector_PlayerState.Attack, out EntityAffector debuffs)) {
+                    if(ChanceToDodge()){Debug.Log("Dodged"); return;}
+                    vFXBucket.VFXInstantiator(projectile.hitEffect);
+                    debuffs.Affect();
+                    GetDamaged(5);
+                } 
+                return;
+            }
+        }
+        if(collider.TryGetComponent<Equipment>(out Equipment equipment)){
+            return;
         }
     }
 
@@ -214,13 +233,24 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
     public void AsyncAffectHandler(List<IEnumerator> _coroutine){
         _coroutine.ForEach(E => StartCoroutine(E));
     }
+    /*********************************************************************************
+    *
+    * Modifier
+    *
+    *********************************************************************************/
 
+    public bool ChanceToDodge(){
+        if(Random.Range(0f, 100f) <= 5f + playerData.numericData.Luck){
+            return true;
+        }
+        return false;
+    }
     /*********************************************************************************
     *
     * 장비
     *
     *********************************************************************************/
-
+    /*
     [ContextMenu("Equip All Equipments")]
     void Equip() { //적용이 되는지 확인만 하자
         foreach(Equipment E in playerData.equipments){
@@ -235,5 +265,5 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
             playerDataApplicant?.ApplyRemove(ref this.playerData);
         }
     }
-
+    */
  }

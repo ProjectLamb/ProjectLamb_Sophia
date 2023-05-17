@@ -1,9 +1,9 @@
-/*
 using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
+using UnityEngine.Events;
 
 /// <summary>
 /// Atomic한 상태이상을 가진 EntityAffector이다. 사용하기위해 이 객체의 Affect() 매서드를 호출하면 된다
@@ -16,30 +16,45 @@ using UnityEngine;
 /// * [2]: mTargetMeshRender : MeshRenderer
 /// </param>
 /// <returns></returns>
-public class EAD_PoisonState : EntityAffector
+public class TEST_EAD_PoisonState : EntityAffector
 {
-    PlayerData mPlayerData;
-    PlayerVisualData mPlayerVisualData;
-
     float mDurationTime;
     int mDamageAmount;
     Material mSkin;
     ParticleSystem mParticle;
+    ///////////////////////////////////////////
+    PlayerAction player;
+    PlayerVisualData playerVisualData;
 
-    public EAD_PoisonState(GameObject _owner, GameObject _target, object[] _params) : base(_owner, _target, _params)
+    ///////////////////////////////////////////
+    Sandbag sandbag;
+    ///////////////////////////////////////////
+    
+    List<UnityAction> Modifier;
+
+    public TEST_EAD_PoisonState(GameObject _owner, GameObject _target, object[] _params) : base(_owner, _target, _params)
     {
+        //Target은 의미 없을것이다.
         if (this.Params == null) { Debug.LogError("0: 유지시간 1:도트뎀 을 적어서 보내야함"); }
-        _target.TryGetComponent<PlayerData>(out mPlayerData);
-        _target.TryGetComponent<PlayerVisualData>(out mPlayerVisualData);
 
         mDurationTime = (float)Params[0];
         mDamageAmount = (int)Params[1];
         mSkin = (Material)Params[2];
         mParticle = (ParticleSystem)Params[3];
 
+        Modifier = new List<UnityAction>();
 
-        this.AsyncAffectorCoroutine.Add(VisualActivate());
         this.AsyncAffectorCoroutine.Add(DotDamage());
+        
+        if(_target.TryGetComponent<PlayerAction>(out PlayerAction playerData)){
+            _target.TryGetComponent<PlayerVisualData>(out playerVisualData);
+            Modifier.Add(Player_DotDamageModifier);
+            this.AsyncAffectorCoroutine.Add(PlayerVisualActivate());
+        }
+        else if (_target.TryGetComponent<Sandbag>(out Sandbag sandbag)){
+            Modifier.Add(SandBag_DotDamageModifier);
+        }
+
     }
     public override void Affect()
     {
@@ -51,21 +66,19 @@ public class EAD_PoisonState : EntityAffector
         while (mDurationTime > passedTime)
         {
             passedTime += 0.5f;
-            mPlayerData.numericData.CurHP -= mDamageAmount;
+            Modifier[0].Invoke();
             yield return YieldInstructionCache.WaitForSeconds(0.5f);
         }
     }
-    IEnumerator VisualActivate()
+
+    void Player_DotDamageModifier(){player.GetDamaged(mDamageAmount);}
+    void SandBag_DotDamageModifier(){sandbag.GetDamaged(mDamageAmount);}
+
+    IEnumerator PlayerVisualActivate()
     {
-        //mPlayerData.attributeData.mDebuffState[(int)E_DebuffState.Poisend]++;
-
-        mPlayerVisualData.skinModulator.SetSkinSets(1, mSkin);
-        mPlayerVisualData.particleModulator.ActivateParticle(mParticle, mDurationTime);
-
+        playerVisualData.skinModulator.SetSkinSets(1, mSkin);
+        playerVisualData.particleModulator.ActivateParticle(mParticle, mDurationTime);
         yield return YieldInstructionCache.WaitForSeconds(mDurationTime);
-
-        mPlayerVisualData.skinModulator.SetSkinSets(1, null);
-        //mPlayerData.attributeData.mDebuffState[(int)E_DebuffState.Poisend]--;
+        playerVisualData.skinModulator.SetSkinSets(1, null);
     }
 }
-*/

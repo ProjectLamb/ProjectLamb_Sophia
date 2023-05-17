@@ -36,8 +36,7 @@ Transform:
 --- !u!198 &1446978852374806083
 ParticleSystem:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 1746762047912470305, guid: 27132214ec3c74cc8980837569ded6fc,
-    type: 3}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1446978852374806094}
@@ -4916,8 +4915,7 @@ Transform:
 --- !u!198 &1446978852401036517
 ParticleSystem:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 1746762047953315207, guid: 27132214ec3c74cc8980837569ded6fc,
-    type: 3}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1446978852401036512}
@@ -9796,8 +9794,7 @@ Transform:
 --- !u!198 &1446978852740744037
 ParticleSystem:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 1746762047202580999, guid: 27132214ec3c74cc8980837569ded6fc,
-    type: 3}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1446978852740744032}
@@ -14682,8 +14679,7 @@ Transform:
 --- !u!198 &1446978853027966251
 ParticleSystem:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 1746762047519093833, guid: 27132214ec3c74cc8980837569ded6fc,
-    type: 3}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1446978853027966288}
@@ -14755,7 +14751,7 @@ ParticleSystem:
       m_RotationOrder: 4
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
-  scalingMode: 1
+  scalingMode: 0
   randomSeed: 0
   InitialModule:
     serializedVersion: 3
@@ -19513,8 +19509,7 @@ Transform:
 --- !u!198 &1446978853476171468
 ParticleSystem:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 1746762046877951918, guid: 27132214ec3c74cc8980837569ded6fc,
-    type: 3}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1446978853476171471}
@@ -24393,8 +24388,7 @@ Transform:
 --- !u!198 &1446978853772289268
 ParticleSystem:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 1746762046103420310, guid: 27132214ec3c74cc8980837569ded6fc,
-    type: 3}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1446978853772289271}
@@ -29273,8 +29267,7 @@ Transform:
 --- !u!198 &1446978854015425919
 ParticleSystem:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 1746762046330815517, guid: 27132214ec3c74cc8980837569ded6fc,
-    type: 3}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1446978854015425914}

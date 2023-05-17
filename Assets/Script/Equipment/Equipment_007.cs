@@ -17,7 +17,7 @@ public class Equipment_007 : Equipment {//, IPlayerDataApplicant{
         playerOuterData.MaxHP = 10;
     }
     public void ApplyActions() {
-        //??
+
     }
     /*
     public void ApplyData(ref PlayerData _playerData){
