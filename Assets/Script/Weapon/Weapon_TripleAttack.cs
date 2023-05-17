@@ -31,7 +31,9 @@ public class Weapon_TripleAttack : Weapon
         attackCount = attackCount + 1;
     }
     IEnumerator CoWaitUse(){
+        PlayerController.IsMoveAllow = false;
         yield return YieldInstructionCache.WaitForSeconds(weaponData.numericData.WeaponDelay);
         mIsReady = true;
+        PlayerController.IsMoveAllow = true;
     }
 }
