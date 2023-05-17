@@ -17,3 +17,13 @@ public enum E_BuffState{
 public enum E_SynergyState{
 
 }
+
+public enum Affector_PlayerState{
+    Move,
+    Dash,
+    Attack,
+    Skill,
+    GetDamaged,
+    Die,
+    Trigger,
+}

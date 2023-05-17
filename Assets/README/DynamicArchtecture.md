@@ -34,6 +34,7 @@ ebook:
 
 1. 클래스와 매서드를 분리 시켜 놓아 확장성 좋은 구조를 개발
 2. 실행자가 가지고 있지 않는 함수를 대신 실행시키는 구조가 필요
+3. 메서드를 에셋으로 저장 (스크립터블 오브젝트)
 
 ```
 예를들어, UI 시스템에 영향을 미치는 Equipment
@@ -59,8 +60,20 @@ Numeric & attribute
 ```
 
 #### 응용 디자인은 다음과 같다
-\# 스크립터블 오브젝트 : readonly하며 공유되며, 불변하는 데이터 & 에셋 적용 가능
-\# 커맨드 패턴 : 실행자와 동작자를 분리 시켜놓는 디자인
+##### \# 스크립터블 오브젝트 : readonly하며 공유되며, 불변하는 데이터 & 에셋 적용 가능
+
+* [스크립터블 오브젝트 ](https://felipuss.tistory.com/entry/%EB%8B%88%EC%95%99%ED%8C%BD%EC%9D%B4-%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%84%B0%EB%B8%94-%EC%98%A4%EB%B8%8C%EC%A0%9D%ED%8A%B8-%EA%B2%8C%EC%9E%84-%EA%B0%9C%EB%B0%9C-Unity-ScriptableObject)
+* [플라이 웨이트 패턴](https://felipuss.tistory.com/entry/%EB%8B%88%EC%95%99%ED%8C%BD%EC%9D%B4-%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5OOP-4-5-%EA%B5%AC%EC%A1%B0%ED%8C%A8%ED%84%B4-Flyweight-pattern)
+##### \# 커맨드 패턴 : 실행자와 동작자를 분리 시켜놓는 디자인 
+* [커맨드 패턴](https://felipuss.tistory.com/entry/%EB%8B%88%EC%95%99%ED%8C%BD%EC%9D%B4-%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5OOP-4-6-%ED%96%89%EB%8F%99%ED%8C%A8%ED%84%B4-Command-pattern?category=951238)
+
+##### \# Event Driven : 메소드를 객체화 시키는데 가장 핵심적인 기능
+* [옵저버 패턴](https://felipuss.tistory.com/entry/%EB%8B%88%EC%95%99%ED%8C%BD%EC%9D%B4-%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5OOP-4-6-%ED%96%89%EB%8F%99%ED%8C%A8%ED%84%B4-Observer-pattern)
+* [UnityEvent](https://felipuss.tistory.com/entry/%EB%8B%88%EC%95%99%ED%8C%BD%EC%9D%B4-%EC%9D%B4%EB%B2%A4%ED%8A%B8C-5-UnityEvent)
+* [Event Queue](https://github.com/Habrador/Unity-Programming-Patterns#14-event-queue)
+
+##### \# 서브클래스 샌드박스 패턴 : 상속을 통한 중복되는 코드 제거 && 추상클래스를 통해 다형성이 높고, 범용성이 높은 클래스 개발 
+* [서브클래스 샌드박스](https://felipuss.tistory.com/entry/%EB%8B%88%EC%95%99%ED%8C%BD%EC%9D%B4-%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5OOP-4-6-%ED%96%89%EB%8F%99%ED%8C%A8%ED%84%B4-Command-pattern)
 
 ### 다이나믹 시스템
 다이나믹 시스템은 
