@@ -10,28 +10,34 @@ using AYellowpaper.SerializedCollections;
 /// Attribute : bool, Dictionary, List 저장 <br/>
 /// * 디버프상타, 버프상테, 시너지 상태 
 /// </summary>
+[ExecuteInEditMode]
 public class PlayerData : MonoBehaviour
 {
     [System.Serializable]
-    public class Numeric {
+    public class Numeric
+    {
         [field: SerializeField]
         private int mMaxHP;
         [field: SerializeField]
         private int mCurHP;
 
-        public int MaxHP {
-            get{return mMaxHP;} 
-            set{
-                if(mMaxHP < 0) mMaxHP = 0;
+        public int MaxHP
+        {
+            get { return mMaxHP; }
+            set
+            {
+                if (mMaxHP < 0) mMaxHP = 0;
                 mMaxHP = value;
-                if(mMaxHP < CurHP) { CurHP = value;}
+                if (mMaxHP < CurHP) { CurHP = value; }
             }
         }
 
-        public int CurHP {
-            get {return mCurHP;}
-            set {
-                if(mCurHP < 0) mCurHP = 0;
+        public int CurHP
+        {
+            get { return mCurHP; }
+            set
+            {
+                if (mCurHP < 0) mCurHP = 0;
                 mCurHP = value;
             }
         }
@@ -41,55 +47,52 @@ public class PlayerData : MonoBehaviour
         [field: SerializeField]
         private int mCurStamina;
 
-        public int MaxStamina {get{return mMaxStamina;} set{mMaxStamina = value;}}
-        public int CurStamina {
-            get{return mCurStamina;} 
-            set {
-                if(mCurStamina < 0) mCurStamina = 0;
+        public int MaxStamina { get { return mMaxStamina; } set { mMaxStamina = value; } }
+        public int CurStamina
+        {
+            get { return mCurStamina; }
+            set
+            {
+                if (mCurStamina < 0) mCurStamina = 0;
                 mCurStamina = value;
             }
         }
 
         [field: SerializeField]
-        public float MoveSpeed {get; set;}
+        public float MoveSpeed { get; set; }
 
         [field: SerializeField]
-        public float Power {get; set;}
+        public float Power { get; set; }
+
 
         [field: SerializeField]
-        private float mRange;
-        public float Range {
-            get {return mRange;} 
-            set{
-                if(mRange < 0) mRange = 0;
-                mRange = value;
-            }
-        }
+        public float Luck { get; set; }
 
         [field: SerializeField]
-        float Luck {get; set;}
-        //https://stackoverflow.com/questions/6745224/iterate-through-class-fields-and-print-them
-        /*
-        public Numeric(){
-            foreach(var prop in typeof(Numeric).GetProperties()){
-                prop.SetValue(prop, 0f);
-                Debug.Log($"{prop.Name} = {prop.GetValue(this, null)}");
-            }
-        }*/
+        public float Defense { get; set; }
+
+        [field: SerializeField]
+        public float Tenacity { get; set; }
+        
         private int mGear;
-        public int Gear{
-            get{
+        public int Gear
+        {
+            get
+            {
                 return mGear;
             }
-            set{
+            set
+            {
                 mGear = value;
             }
         }
     }
-    public class Attribute{
-        public Dictionary<E_DebuffState, bool> mDebuffState;        
-        public Dictionary<E_BuffState, bool> mBuffState;
-        public Dictionary<E_SynergyState, bool> mSynergyState;
+    public class Attribute
+    {
+
+        public int[] mDebuffState = new int[101];
+        public int[] mBuffState = new int[101];
+        public bool[] mSynergyState = new bool[101];
     }
     public Numeric numericData;
     public Attribute attributeData;
@@ -99,14 +102,28 @@ public class PlayerData : MonoBehaviour
     public SerializedDictionary<string, Skill> skills = new SerializedDictionary<string, Skill>(); // 무기 클래스를 가져온다.
     public List<Equipment> equipments = new List<Equipment>(8);
 
-    private void Awake() {
-        if(weapon != null) weapon.playerData = this;
-        if(skills.ContainsKey("Q")) skills["Q"].playerData = this;
+    [System.Serializable]
+    public class Wealth
+    {
+        [field: SerializeField]
+        public int Gear { get; set; }
+        [field: SerializeField]
+        public int Frag { get; set; }
+    }
+    public Wealth wealthData;
+
+    [ContextMenu("Awake")]
+    private void Awake()
+    {
+        if (weapon != null) weapon.playerData = this;
+        if (skills.ContainsKey("Q")) skills["Q"].playerData = this;
     }
 
-    public void FakePlayerDataContructor(){
+    public void FakePlayerDataContructor()
+    {
         numericData = new PlayerData.Numeric();
         attributeData = new PlayerData.Attribute();
+        wealthData = new Wealth();
     }
 }
 

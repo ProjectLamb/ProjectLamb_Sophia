@@ -15,36 +15,50 @@ using UnityEngine;
 /// * [2]: mTargetMeshRender : MeshRenderer
 /// </param>
 /// <returns></returns>
-public class EAD_FreezeState : EntityAffector {
+public class EAD_FreezeState : EntityAffector
+{
     PlayerData mPlayerData;
     PlayerVisualData mPlayerVisualData;
-    
-    float   mDurationTime;
-    float   mSlowAmount;
+
+    float mDurationTime;
+    float mSlowAmount;
     Material mSkin;
-    
-    public EAD_FreezeState(GameObject _owner, GameObject _target, object[] _params) : base(_owner, _target, _params){
-        if(this.Params == null){Debug.LogError("0: 유지시간 1:도트뎀 을 적어서 보내야함");}
+    ParticleSystem mParticle;
+
+    public EAD_FreezeState(GameObject _owner, GameObject _target, object[] _params) : base(_owner, _target, _params)
+    {
+        if (this.Params == null) { Debug.LogError("0: 유지시간 1:도트뎀 을 적어서 보내야함"); }
         _target.TryGetComponent<PlayerData>(out mPlayerData);
         _target.TryGetComponent<PlayerVisualData>(out mPlayerVisualData);
 
         mDurationTime = (float)Params[0];
         mSlowAmount = (float)Params[1];
-        mSkin         = (Material)Params[2];
+        mSkin = (Material)Params[2];
         //mParticle     = (ParticleSystem)Params[3];
-        
-        this.AsyncAffectorCoroutine = Coroutine();
+
+        this.AsyncAffectorCoroutine.Add(Slow());
+        this.AsyncAffectorCoroutine.Add(VisualActivate());
     }
-    public override void Affect() {
+    public override void Affect()
+    {
         this.Target.GetComponent<IAffectableEntity>().AsyncAffectHandler(this.AsyncAffectorCoroutine);
     }
-    IEnumerator Coroutine() {
-        mPlayerVisualData.skinModulator.SetSkinSets(1, mSkin);
-        //mPlayerVisualData.particleModulator.ActivateParticle(mParticle, mDurationTime);
+    IEnumerator Slow()
+    {
         mPlayerData.numericData.MoveSpeed *= mSlowAmount;
         yield return YieldInstructionCache.WaitForSeconds(mDurationTime);
         mPlayerData.numericData.MoveSpeed /= mSlowAmount;
-    
+    }
+    IEnumerator VisualActivate()
+    {
+        mPlayerData.attributeData.mDebuffState[(int)E_DebuffState.Freeze]++;
+
+        mPlayerVisualData.skinModulator.SetSkinSets(1, mSkin);
+        //mPlayerVisualData.particleModulator.ActivateParticle(mParticle, mDurationTime);
+
+        yield return YieldInstructionCache.WaitForSeconds(mDurationTime);
+
         mPlayerVisualData.skinModulator.SetSkinSets(1, null);
+        mPlayerData.attributeData.mDebuffState[(int)E_DebuffState.Freeze]--;
     }
 }

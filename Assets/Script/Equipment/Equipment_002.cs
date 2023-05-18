@@ -5,13 +5,19 @@ using UnityEngine;
 using UnityEngine.Events;
 
 
-public class Equipment_002 : Equipment, IPlayerDataApplicant{
+public class Equipment_002 : Equipment { //, IPlayerDataApplicant{
     
     [SerializeField]
     public PlayerData.Numeric outerData;
     private void Awake() {
         equipmentName = "뼈치킨";
     }
+    public PlayerData.Numeric ApplyData(ref PlayerData _playerData) {
+        outerData.MaxHP     = 10;
+        outerData.MoveSpeed = 0.05f * _playerData.numericData.MoveSpeed;
+        return outerData;
+    }
+    /*
     public void ApplyData(ref PlayerData _playerData){
         if(this.mIsApplyed != false) return;
         this.mIsApplyed = true;
@@ -33,4 +39,5 @@ public class Equipment_002 : Equipment, IPlayerDataApplicant{
     }
 
     public override string ToString() => "";
+    */
 }
