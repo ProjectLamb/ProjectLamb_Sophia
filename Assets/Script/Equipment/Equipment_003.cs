@@ -5,13 +5,20 @@ using UnityEngine;
 using UnityEngine.Events;
 
 
-public class Equipment_003 : Equipment, IPlayerDataApplicant{
+public class Equipment_003 : Equipment {//, IPlayerDataApplicant{
     
     [SerializeField]
     public PlayerData.Numeric outerData;
     private void Awake() {
         equipmentName = "뒤집어진 양말";
+        outerData = new PlayerData.Numeric();
     }
+    public PlayerData.Numeric ApplyData(ref PlayerData _playerData) {
+        outerData.Power = 0.1f * _playerData.numericData.Power;
+        outerData.MaxHP = 15;
+        return outerData;
+    }
+    /*
     public void ApplyData(ref PlayerData _playerData){
         if(this.mIsApplyed != false) return;
         this.mIsApplyed = true;
@@ -34,4 +41,5 @@ public class Equipment_003 : Equipment, IPlayerDataApplicant{
     }
 
     public override string ToString() => "";
+    */
 }

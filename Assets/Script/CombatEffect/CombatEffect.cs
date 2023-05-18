@@ -44,6 +44,10 @@ public class CombatEffect : MonoBehaviour {
         this.weaponData = _wd;
     }
 
+    public int SendDamage(){
+        return (int)(playerData.numericData.Power * weaponData.numericData.DamageRatio);
+    }
+
     //public override string ToString() => $"playerData : {JsonUtility.ToJson(playerData)} weaponData : {JsonUtility.ToJson(weaponData)}";
     //public void SetDatas(PlayerData _pd, WeaponData _wd, SkillData _sd){}
 }
