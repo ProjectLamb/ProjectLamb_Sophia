@@ -24,7 +24,7 @@ public class EADA_DotDamageState : EntityAffector {
         _target.TryGetComponent<PlayerData>(out mPlayerData);
         mDurationTime = (float)Params[0];
         mDamageAmount = (int)Params[1];
-        this.AsyncAffectorCoroutine = Coroutine();
+        this.AsyncAffectorCoroutine.Add(Coroutine());
     }
     public override void Affect() {
         this.Target.GetComponent<IAffectableEntity>().AsyncAffectHandler(this.AsyncAffectorCoroutine);
