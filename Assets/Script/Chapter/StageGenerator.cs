@@ -57,6 +57,7 @@ public class StageGenerator : MonoBehaviour
     public GameObject tile;
     public GameObject wall;
     public GameObject transWall;
+    public GameObject shop;
     public GameObject[,] tileArray;
     public GameObject mob;
     public List<GameObject> mobArray;
@@ -181,49 +182,33 @@ public class StageGenerator : MonoBehaviour
         {
             instance = Instantiate(portal, tileArray[1, height / 2 + 1].transform.position, Quaternion.identity);
             instance.transform.GetChild(0).GetComponent<Portal>().PortalType = "east";
-            //instance.transform.GetComponent<Portal>().PortalType = "east";
             instance.transform.parent = transform.GetChild(2);
             portalCount++;
             portalArray[0] = instance;
-            // tileArray[1, height / 2 + 1].GetComponent<Renderer>().material.color = Color.cyan;
-            // tileArray[1, height / 2 + 1].tag = "Portal";
-            // tileArray[1, height / 2 + 1].GetComponent<Tile>().SetPortalType("east");
         }
         if (portalW)
         {
             instance = Instantiate(portal, tileArray[width, height / 2 + 1].transform.position, Quaternion.identity);
             instance.transform.GetChild(0).GetComponent<Portal>().PortalType = "west";
-            //instance.transform.GetComponent<Portal>().PortalType = "west";
             instance.transform.parent = transform.GetChild(2);
             portalCount++;
             portalArray[1] = instance;
-            // tileArray[width, height / 2 + 1].GetComponent<Renderer>().material.color = Color.cyan;
-            // tileArray[width, height / 2 + 1].tag = "Portal";
-            // tileArray[width, height / 2 + 1].GetComponent<Tile>().SetPortalType("west");
         }
         if (portalN)
         {
             instance = Instantiate(portal, tileArray[width / 2 + 1, 1].transform.position, Quaternion.identity);
             instance.transform.GetChild(0).GetComponent<Portal>().PortalType = "north";
-            //instance.transform.GetComponent<Portal>().PortalType = "north";
             instance.transform.parent = transform.GetChild(2);
             portalCount++;
             portalArray[2] = instance;
-            // tileArray[width / 2 + 1, 1].GetComponent<Renderer>().material.color = Color.cyan;
-            // tileArray[width / 2 + 1, 1].tag = "Portal";
-            // tileArray[width / 2 + 1, 1].GetComponent<Tile>().SetPortalType("north");
         }
         if (portalS)
         {
             instance = Instantiate(portal, tileArray[width / 2 + 1, height].transform.position, Quaternion.identity);
             instance.transform.GetChild(0).GetComponent<Portal>().PortalType = "south";
-            //instance.transform.GetComponent<Portal>().PortalType = "south";
             instance.transform.parent = transform.GetChild(2);
             portalCount++;
             portalArray[3] = instance;
-            // tileArray[width / 2 + 1, height].GetComponent<Renderer>().material.color = Color.cyan;
-            // tileArray[width / 2 + 1, height].tag = "Portal";
-            // tileArray[width / 2 + 1, height].GetComponent<Tile>().SetPortalType("south");
         }
     }
 
@@ -331,15 +316,34 @@ public class StageGenerator : MonoBehaviour
             InstantiateObstacle();
             InstantiateMob(mobCount);
         }
-        if (mType == "middleboss")
+        else if (mType == "shop")
         {
-            //InstantiateObstacle();
-            InstantiateMob(mobCount);
+            float x = 0;
+            float y = 0;
+            float z = 0;
+            GameObject instance;
+            if(portalE)
+            {
+                y = 180f;
+            }
+            else if (portalW)
+            {
+
+            }
+            else if (portalN)
+            {
+                y = 90f;
+            }
+            else if (portalS)
+            {
+                y = 270f;
+            }
+            instance = Instantiate(shop, transform.position, Quaternion.Euler(x, y, z));
+            instance.transform.parent = transform;
         }
         else if (mType == "hidden")
         {
-            //InstantiateObstacle();
-            InstantiateMob(mobCount);
+
         }
         else if (mType == "boss")
         {

@@ -76,6 +76,15 @@ public class PlayerData : MonoBehaviour
                 Debug.Log($"{prop.Name} = {prop.GetValue(this, null)}");
             }
         }*/
+        private int mGear;
+        public int Gear{
+            get{
+                return mGear;
+            }
+            set{
+                mGear = value;
+            }
+        }
     }
     public class Attribute{
         public Dictionary<E_DebuffState, bool> mDebuffState;        
