@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour
             playerAction.Move(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), IsReversedInput);
             if(Input.GetKeyDown(KeyCode.Space)){playerAction.Dash();}
         }
+
         if(IsAttackAllow){
             if(Input.GetKeyDown(KeyCode.Q)){playerAction.Skill("Q");}
             if(Input.GetKeyDown(KeyCode.E)){playerAction.Skill("E");}

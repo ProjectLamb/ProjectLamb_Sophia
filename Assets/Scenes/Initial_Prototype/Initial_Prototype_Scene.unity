@@ -124,75 +124,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1001 &475179132
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 6010878358661589265, guid: ab08eae4951b309478e7bb02aa64643b,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 6010878358661589265, guid: ab08eae4951b309478e7bb02aa64643b,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6010878358661589265, guid: ab08eae4951b309478e7bb02aa64643b,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6010878358661589265, guid: ab08eae4951b309478e7bb02aa64643b,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6010878358661589265, guid: ab08eae4951b309478e7bb02aa64643b,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6010878358661589265, guid: ab08eae4951b309478e7bb02aa64643b,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6010878358661589265, guid: ab08eae4951b309478e7bb02aa64643b,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6010878358661589265, guid: ab08eae4951b309478e7bb02aa64643b,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6010878358661589265, guid: ab08eae4951b309478e7bb02aa64643b,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6010878358661589265, guid: ab08eae4951b309478e7bb02aa64643b,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6010878358661589265, guid: ab08eae4951b309478e7bb02aa64643b,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6010878358661589267, guid: ab08eae4951b309478e7bb02aa64643b,
-        type: 3}
-      propertyPath: m_Name
-      value: Chapter
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: ab08eae4951b309478e7bb02aa64643b, type: 3}
 --- !u!1 &981197809
 GameObject:
   m_ObjectHideFlags: 0
@@ -308,12 +239,80 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
---- !u!1 &1997324328 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6010878358661589267, guid: ab08eae4951b309478e7bb02aa64643b,
-    type: 3}
-  m_PrefabInstance: {fileID: 475179132}
-  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1661089774
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 6010878358661589265, guid: ab08eae4951b309478e7bb02aa64643b,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6010878358661589265, guid: ab08eae4951b309478e7bb02aa64643b,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6010878358661589265, guid: ab08eae4951b309478e7bb02aa64643b,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6010878358661589265, guid: ab08eae4951b309478e7bb02aa64643b,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6010878358661589265, guid: ab08eae4951b309478e7bb02aa64643b,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6010878358661589265, guid: ab08eae4951b309478e7bb02aa64643b,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6010878358661589265, guid: ab08eae4951b309478e7bb02aa64643b,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6010878358661589265, guid: ab08eae4951b309478e7bb02aa64643b,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6010878358661589265, guid: ab08eae4951b309478e7bb02aa64643b,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6010878358661589265, guid: ab08eae4951b309478e7bb02aa64643b,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6010878358661589265, guid: ab08eae4951b309478e7bb02aa64643b,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6010878358661589267, guid: ab08eae4951b309478e7bb02aa64643b,
+        type: 3}
+      propertyPath: m_Name
+      value: Chapter
+      objectReference: {fileID: 0}
+    - target: {fileID: 6010878358661589267, guid: ab08eae4951b309478e7bb02aa64643b,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ab08eae4951b309478e7bb02aa64643b, type: 3}
 --- !u!4 &61380081815082812
 Transform:
   m_ObjectHideFlags: 0
@@ -2665,7 +2664,7 @@ GameObject:
   - component: {fileID: 6733144045818157977}
   - component: {fileID: 6733144045818157974}
   - component: {fileID: 6733144045818157975}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: Glass Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4663,7 +4662,7 @@ GameObject:
   - component: {fileID: 6733144045911487219}
   - component: {fileID: 6733144045911487216}
   - component: {fileID: 6733144045911487217}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: Glass Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12765,7 +12764,7 @@ GameObject:
   - component: {fileID: 6733144046288728222}
   - component: {fileID: 6733144046288728223}
   - component: {fileID: 6733144046288728220}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: Glass Plane 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13064,7 +13063,7 @@ GameObject:
   - component: {fileID: 6733144046310798350}
   - component: {fileID: 6733144046310798351}
   - component: {fileID: 6733144046310798348}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: Glass Plane 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13592,7 +13591,7 @@ GameObject:
   - component: {fileID: 6733144046337144538}
   - component: {fileID: 6733144046337144539}
   - component: {fileID: 6733144046337144536}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: Glass Plane 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -16285,7 +16284,7 @@ GameObject:
   - component: {fileID: 6733144046466861036}
   - component: {fileID: 6733144046466861037}
   - component: {fileID: 6733144046466861034}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: Glass Plane 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -18768,7 +18767,7 @@ GameObject:
   - component: {fileID: 6733144046585465131}
   - component: {fileID: 6733144046585465128}
   - component: {fileID: 6733144046585465129}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: Glass Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -18986,7 +18985,7 @@ GameObject:
   - component: {fileID: 6733144046602555710}
   - component: {fileID: 6733144046602555711}
   - component: {fileID: 6733144046602555708}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: Glass Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -21422,7 +21421,7 @@ GameObject:
   - component: {fileID: 6733144046741238421}
   - component: {fileID: 6733144046741238418}
   - component: {fileID: 6733144046741238419}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: Glass Plane 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -21603,7 +21602,7 @@ GameObject:
   - component: {fileID: 6733144046747602332}
   - component: {fileID: 6733144046747602333}
   - component: {fileID: 6733144046747602330}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: Glass Plane 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -23039,7 +23038,7 @@ GameObject:
   - component: {fileID: 6733144046814346790}
   - component: {fileID: 6733144046814346791}
   - component: {fileID: 6733144046814346788}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: Glass Plane 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24531,7 +24530,7 @@ GameObject:
   - component: {fileID: 6733144046874617939}
   - component: {fileID: 6733144046874617936}
   - component: {fileID: 6733144046874617937}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: Glass Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -30063,7 +30062,7 @@ MonoBehaviour:
   globalAudio: {fileID: 6733144046720186186}
   globalAffector: {fileID: 0}
   playerGameObject: {fileID: 243639901359974393}
-  ChapterGenerator: {fileID: 1997324328}
+  ChapterGenerator: {fileID: 0}
   currentStage: {fileID: 0}
 --- !u!1 &6733144047143372213
 GameObject:
@@ -33300,7 +33299,7 @@ GameObject:
   - component: {fileID: 6733144047290297021}
   - component: {fileID: 6733144047290297018}
   - component: {fileID: 6733144047290297019}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: Glass Plane 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -36191,7 +36190,7 @@ GameObject:
   - component: {fileID: 6733144047404476561}
   - component: {fileID: 6733144047404476590}
   - component: {fileID: 6733144047404476591}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: Glass Plane 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38167,7 +38166,7 @@ GameObject:
   - component: {fileID: 6733144047493903720}
   - component: {fileID: 6733144047493903721}
   - component: {fileID: 6733144047493903718}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: Glass Plane 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -39706,7 +39705,7 @@ GameObject:
   - component: {fileID: 6733144047587353689}
   - component: {fileID: 6733144047587353686}
   - component: {fileID: 6733144047587353687}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: Glass Plane 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -42886,7 +42885,7 @@ GameObject:
   - component: {fileID: 6733144047717611399}
   - component: {fileID: 6733144047717611396}
   - component: {fileID: 6733144047717611397}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: Glass Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -43910,7 +43909,7 @@ GameObject:
   - component: {fileID: 6733144047756619166}
   - component: {fileID: 6733144047756619167}
   - component: {fileID: 6733144047756619164}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: Glass Plane 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -46480,7 +46479,7 @@ GameObject:
   - component: {fileID: 6733144047846247501}
   - component: {fileID: 6733144047846247498}
   - component: {fileID: 6733144047846247499}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: Glass Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -46563,7 +46562,7 @@ GameObject:
   - component: {fileID: 6733144047846686308}
   - component: {fileID: 6733144047846686309}
   - component: {fileID: 6733144047846686306}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: Glass Plane 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -46661,7 +46660,7 @@ GameObject:
   - component: {fileID: 6733144047862057558}
   - component: {fileID: 6733144047862057559}
   - component: {fileID: 6733144047862057556}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: Glass Plane 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -47235,7 +47234,7 @@ GameObject:
   - component: {fileID: 6733144047888160260}
   - component: {fileID: 6733144047888160261}
   - component: {fileID: 6733144047888160258}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: Glass Plane 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -47729,7 +47728,7 @@ GameObject:
   - component: {fileID: 6733144047907565731}
   - component: {fileID: 6733144047907565728}
   - component: {fileID: 6733144047907565729}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: Glass Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -48160,7 +48159,7 @@ GameObject:
   - component: {fileID: 6733144047914317707}
   - component: {fileID: 6733144047914317704}
   - component: {fileID: 6733144047914317705}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: Glass Plane 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
