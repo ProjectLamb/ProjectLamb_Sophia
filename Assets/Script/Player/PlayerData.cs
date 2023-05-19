@@ -73,19 +73,6 @@ public class PlayerData : MonoBehaviour
 
         [field: SerializeField]
         public float Tenacity { get; set; }
-        
-        private int mGear;
-        public int Gear
-        {
-            get
-            {
-                return mGear;
-            }
-            set
-            {
-                mGear = value;
-            }
-        }
     }
     public class Attribute
     {

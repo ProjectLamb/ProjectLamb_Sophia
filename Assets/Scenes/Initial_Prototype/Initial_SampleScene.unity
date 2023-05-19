@@ -775,7 +775,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e27136bfbb2c34bc8953030b6da14b57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerData: {fileID: 0}
+  playerData: {fileID: 8441454539602430103}
   weaponData: {fileID: 0}
   weaponEffect:
   - {fileID: 6885677840220166500, guid: 1551035a2ed1440ca8db97c9ea1bcf2c, type: 3}
@@ -952,7 +952,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a591cbeee26c14dc0b04a05bdcd8434c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerData: {fileID: 0}
+  playerData: {fileID: 8441454539602430103}
   weaponData: {fileID: 0}
   skillData: {fileID: 0}
   skillEffect: {fileID: 4454791399166616469, guid: c34ea8064df7f4f3199a391ad0c76de6,
@@ -1578,6 +1578,7 @@ MonoBehaviour:
   numericData:
     <DamageRatio>k__BackingField: 0
     <WeaponDelay>k__BackingField: 0.2
+    mRange: 0
 --- !u!1 &2632218006674948730
 GameObject:
   m_ObjectHideFlags: 0
@@ -3521,8 +3522,9 @@ MonoBehaviour:
     mCurStamina: 3
     <MoveSpeed>k__BackingField: 50
     <Power>k__BackingField: 0
-    mRange: 0
     <Luck>k__BackingField: 0
+    <Defense>k__BackingField: 0
+    <Tenacity>k__BackingField: 0
   weapon: {fileID: 965060451608578926}
   skills:
     _serializedList:
@@ -3541,6 +3543,9 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  wealthData:
+    <Gear>k__BackingField: 0
+    <Frag>k__BackingField: 0
 --- !u!136 &8441454539602430105
 CapsuleCollider:
   m_ObjectHideFlags: 0
