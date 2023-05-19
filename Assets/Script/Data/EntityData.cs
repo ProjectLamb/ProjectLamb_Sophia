@@ -17,22 +17,24 @@ public abstract class EntityData {
     float mTenacity;
         public float Tenacity {get {return mTenacity;} set{mTenacity = value;}}
     
+    public ParticleSystem DieParticle;
     public UnityAction MoveState;
-    public UnityAction AttackState;
+    public UnityAction AttackState;     //몬스터 패턴 각각에 어텍 스테이트를 만들어야 할지도 있다.
     public UnityAction HitState;
     public UnityAction PhyiscTriggerState;// 콜라이더 닿으면
     public UnityAction DieState;
     
     public EntityData(ScriptableObjEntityData _entityScriptable) {
-        MaxHP      = _entityScriptable.maxHP;
-        CurHP      = MaxHP;
-        MoveSpeed  = _entityScriptable.moveSpeed;
-        Defence    = _entityScriptable.defence;
-        Tenacity   = _entityScriptable.tenacity;
-        MoveState  = () => {};
-        AttackState= () => {};
-        HitState   = () => {};
+        MaxHP           = _entityScriptable.maxHP;
+        CurHP           = MaxHP;
+        MoveSpeed       = _entityScriptable.moveSpeed;
+        Defence         = _entityScriptable.defence;
+        Tenacity        = _entityScriptable.tenacity;
+        DieParticle     = _entityScriptable.dieParticle;
+        MoveState       = () => {};
+        AttackState     = () => {}; 
+        HitState        = () => {};
         PhyiscTriggerState = () => {};// 콜라이더 닿으면
-        DieState   = () => {};
+        DieState        = () => {};
     }
 }

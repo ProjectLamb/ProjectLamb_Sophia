@@ -13,6 +13,7 @@ public class VFXBucket : MonoBehaviour {
     }
 
     public void VFXInstantiatorWithTime(ParticleSystem particleSystem, float lifeTime){
+        if(particleSystem == null) return;
         ParticleSystem particle = Instantiate(particleSystem, transform);
         particle.transform.localScale *= transform.localScale.z;
     }    
