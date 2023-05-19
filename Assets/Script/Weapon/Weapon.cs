@@ -8,7 +8,7 @@ using UnityEngine;
 public class Weapon : MonoBehaviour
 {
     public ScriptableObjWeaponData scriptableObjWeapon;
-    public WeaponData weaponData;
+    public static WeaponData weaponData;
 
     protected bool mIsReady = true;
     protected IEnumerator mCoWaitUse;

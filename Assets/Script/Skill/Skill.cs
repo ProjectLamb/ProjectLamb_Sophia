@@ -9,7 +9,7 @@ public class Skill : MonoBehaviour
     public WeaponData weaponData;
 
     public ScriptableObjSkillData scriptableObjSkillData;
-    public SkillData newSkillData;
+    public static SkillData newSkillData;
 
     bool mIsReady = true;
     IEnumerator mCoWaitUse;

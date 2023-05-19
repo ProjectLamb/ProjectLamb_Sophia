@@ -9,33 +9,39 @@ using UnityEngine.Events;
 /// * IDieAble : 죽는 Action , 인터페이스로 동작을 구현<br/>
 /// * IDamagable : 맞는 Action , 인터페이스로 동작을 구현
 /// </summary>
-public class Enemy : MonoBehaviour, IDieAble, IDamagable, IAffectable
+public class Enemy : MonoBehaviour, IEntityAddressable
 {
     public ScriptableObjEntityData scriptableObjEnemyData;
     EnemyData enemyData;
+    public EntityData GetEntityData(){return this.enemyData;}
+    
     Transform target;
-
-
-    public NavMeshAgent nav;
-    Rigidbody mRigidBody;
 
     public bool chase;
     public bool mIsDie;
 
-    public void Die()
+    public NavMeshAgent nav;
+    Rigidbody mRigidBody;
+
+    VisualModulator visualModulator;
+
+    public virtual void Die()
     {
+        enemyData.DieState.Invoke();
         chase = false;
         mRigidBody.velocity = Vector3.zero;
         Destroy(gameObject, 0.5f);
     }
 
-    public void GetDamaged(int _amount){
+    public virtual void GetDamaged(int _amount){
+        enemyData.HitState.Invoke();
         enemyData.CurHP -= _amount;
         if (enemyData.CurHP <= 0) {this.Die();}
     }
-    public void GetDamaged(int _amount, GameObject particle){
+    public virtual void GetDamaged(int _amount, GameObject particle){
+        enemyData.HitState.Invoke();
         enemyData.CurHP -= _amount;
-        //
+        visualModulator.Interact(particle);
         if (enemyData.CurHP <= 0) {this.Die();}
     }
     public void AffectHandler(List<UnityAction> _action){
@@ -48,6 +54,7 @@ public class Enemy : MonoBehaviour, IDieAble, IDamagable, IAffectable
 
     void Awake()
     {
+        TryGetComponent<VisualModulator>(out visualModulator);
         if(!TryGetComponent<Rigidbody>(out mRigidBody)){Debug.Log("컴포넌트 로드 실패 : Rigidbody");}
         if(!TryGetComponent<NavMeshAgent>(out nav)){Debug.Log("컴포넌트 로드 실패 : NavMeshAgent");}
         enemyData = new EnemyData(scriptableObjEnemyData);
@@ -72,6 +79,7 @@ public class Enemy : MonoBehaviour, IDieAble, IDamagable, IAffectable
 
         if (chase) { nav.enabled = true;}
         else {nav.enabled = false;}
+        nav.speed = enemyData.MoveSpeed;
     }
 
     private void OnDestroy() {
