@@ -4,10 +4,13 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerUI : MonoBehaviour {
-    public PlayerData playerData;
+    public Player Player;
     public Slider hpBar;
+    private void Awake() {
+        
+    }
 
     private void Update() {
-        hpBar.value = playerData.numericData.CurHP;
+        hpBar.value = Player.playerData.CurHP;
     }
 }
