@@ -4,34 +4,19 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.AI;
 
-public class Sandbag : MonoBehaviour, IDieAble, IDamagable, IAffectable
-{
-    [field : SerializeField]
-    private int mMaxHP;
-        public int MaxHP {
-            get{return mMaxHP;} 
-            set{mMaxHP = value;}
-        }
-
-    [field : SerializeField]
-    private int mCurHP;
-        public int CurHP {
-             get{return mCurHP;} 
-             set{
-                mCurHP = value;
-                hpChangedEvent.Invoke();
-            }
-        }
-    
-    public int MoveSpeed {get;set;}
+public class Sandbag : MonoBehaviour, IEntityAddressable
+{    
+    public ScriptableObjEntityData scriptableObjEnemyData;
+    EnemyData enemyData;
+    public EntityData GetEntityData(){return this.enemyData;}
 
     public UnityEvent hpChangedEvent;
     public GameObject model;
     public ProjectileBucket projectileBucket;
-    public ScriptableObjectEnemy sandbagData;
-
     public Transform LookAtTarget;
     public Projectile[] Projectiles;
+
+    public HealthBar healthBar;
 
     Animator animator;
     AnimEventInvoker animEventInvoker;
@@ -47,11 +32,10 @@ public class Sandbag : MonoBehaviour, IDieAble, IDamagable, IAffectable
         model.TryGetComponent<Animator>(out animator);
         model.TryGetComponent<AnimEventInvoker>(out animEventInvoker);
         TryGetComponent<VisualModulator>(out visualModulator);
-        this.MaxHP = sandbagData.MaxHP;
-        this.CurHP = this.MaxHP;
-        this.MoveSpeed = sandbagData.MoveSpeed;
-        sandbagData.DeadParticle.GetComponent<ParticleCallback>().onDestroyEvent.AddListener(DestroySelf);
+        enemyData = new EnemyData(scriptableObjEnemyData);
+        enemyData.DieParticle.GetComponent<ParticleCallback>().onDestroyEvent.AddListener(DestroySelf);
         LookAtTarget = GameManager.Instance.playerGameObject.transform;
+        healthBar.entityData = this.enemyData;
     }
     private void Start() {
         Debug.Log("Catch");
@@ -65,24 +49,27 @@ public class Sandbag : MonoBehaviour, IDieAble, IDamagable, IAffectable
 
     public void GetDamaged(int _amount){
         if(mIsDie == true) {return;}
-        this.CurHP -= _amount;
+        enemyData.CurHP -= _amount;
         animator.SetTrigger("DoHit");
-        if (this.CurHP <= 0) {Die();}
+        enemyData.HitState.Invoke();
+        if (enemyData.CurHP <= 0) {Die();}
     }
 
     public void GetDamaged(int _amount, GameObject particle){
         if(mIsDie == true) {return;}
-        this.CurHP -= _amount;
+        enemyData.CurHP -= _amount;
+        enemyData.HitState.Invoke();
         visualModulator.Interact(particle);
         animator.SetTrigger("DoHit");
-        if (this.CurHP <= 0) {Die();}
+        if (enemyData.CurHP <= 0) {Die();}
     }
 
     public void Die(){ 
+        enemyData.DieState.Invoke();
         mIsDie = true;
         GetComponent<Collider>().enabled = false;
         animator.SetTrigger("DoDie");
-        visualModulator.vfxModulator.VFXInstantiator(sandbagData.DeadParticle);
+        visualModulator.vfxModulator.VFXInstantiator(enemyData.DieParticle);
     }
 
     public void DestroySelf(){
@@ -103,12 +90,14 @@ public class Sandbag : MonoBehaviour, IDieAble, IDamagable, IAffectable
 
     [ContextMenu("평타", false, int.MaxValue)]
     void InstantiateProjectiles1(){
+        enemyData.AttackState.Invoke();
         //Find Instantiate On This Animator Events;
         animator.SetTrigger("DoAttack");
     }
 
     [ContextMenu("범위데미지",false, int.MaxValue)]
     void InstantiateProjectiles2(){
+        enemyData.AttackState.Invoke();
         //Find Instantiate On This Animator Events;
         animator.SetTrigger("DoJump");
     }

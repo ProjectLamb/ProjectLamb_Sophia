@@ -25,12 +25,11 @@ public class Projectile : MonoBehaviour {
         if(spawnOwner.tag == other.gameObject.tag) {return;}
 
         //전달 타겟 찾기
-        IDamagable damagebleEntity = other.gameObject.GetComponent<IDamagable>();
-        IAffectable affectableEntity = other.gameObject.GetComponent<IAffectable>();
+        IEntityAddressable entityAddressable = other.gameObject.GetComponent<IEntityAddressable>();
 
         //전달 하기
-        damagebleEntity.GetDamaged(_amount: 5, OnHitSubEmmiter);
-        affectableEntity.AsyncAffectHandler(new PoisonState(other.gameObject).AsyncAffectorCoroutine);
+        entityAddressable.GetDamaged(_amount: 5, OnHitSubEmmiter);
+        new FreezeState(other.gameObject).Modifiy(entityAddressable);
     }
 
     //여기를 통해서 이 스크립트를 실행한 놈을 호출 할 수 있다.
