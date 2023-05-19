@@ -1,3 +1,4 @@
+using UnityEngine;
 /// <summary>
 /// 죽는것에 대한 Action
 /// </summary>
@@ -19,8 +20,15 @@ public interface IInteractable {
 public interface IDamagable
 {
    public void GetDamaged(int _amount);
+   public void GetDamaged(int _amount, GameObject obj);
 }
 
 public interface IVisuallyInteractable {
-    public void Interact();
+    public void Interact(DebuffData debuffData);
+    public void Interact(ParticleSystem particleSystem);
+    public void Revert();
+}
+
+public interface ColliderHandeler{
+    public void HandleCollider(){}
 }

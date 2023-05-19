@@ -12,11 +12,6 @@ public class HealthBar : MonoBehaviour
     public Gradient gradient;
 
     private void Awake() {
-        sandbag = GetComponentInParent<Sandbag>();
-    }
-
-    private void Start(){
-        sandbag.hpChangedEvent += SetSlider;
         fill.color = gradient.Evaluate(1f);
     }
 

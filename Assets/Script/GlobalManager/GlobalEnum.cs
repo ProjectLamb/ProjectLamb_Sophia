@@ -18,12 +18,10 @@ public enum E_SynergyState{
 
 }
 
+
+
+//EntityState.cs 에 또 정의함
+
 public enum Affector_PlayerState{
-    Move,
-    Dash,
-    Attack,
-    Skill,
-    GetDamaged,
-    Die,
-    Trigger,
+    Move, Dash, Attack, Skill, GetDamaged, Die, Trigger,
 }

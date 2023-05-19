@@ -10,7 +10,7 @@ public class Weapon : MonoBehaviour
     [HideInInspector]
     public PlayerData playerData;
     public WeaponData weaponData;
-    public List<GameObject> weaponEffect;
+    public List<Projectile> weaponEffect;
 
     protected bool mIsReady = true;
     protected IEnumerator mCoWaitUse;
@@ -26,11 +26,12 @@ public class Weapon : MonoBehaviour
         StartCoroutine(mCoWaitUse);
         Vector3 EffectRotate = transform.eulerAngles;
         EffectRotate += weaponEffect[0].transform.eulerAngles;
-        Instantiate(weaponEffect[0], transform.position, Quaternion.Euler(EffectRotate)).GetComponent<CombatEffect>().SetDatas(this.playerData, this.weaponData);
+        weaponEffect[0].InstanciateProjectile(gameObject, transform, Quaternion.Euler(EffectRotate));
     }
 
     public virtual IEnumerator CoWaitUse(){
         yield return YieldInstructionCache.WaitForSeconds(weaponData.numericData.WeaponDelay);
         mIsReady = true;
     }
+
 }
