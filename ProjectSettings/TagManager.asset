@@ -4,14 +4,13 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Shootable
   - Mesh
   - Wall
   - Enemy
   - Portal
-  - FxTemporaire
-  - CombatEffect
   - Door
+  - PlayerProjectile
+  - EnemyProjectile
   layers:
   - Default
   - TransparentFX
@@ -24,9 +23,9 @@ TagManager:
   - Lighting
   - Ground
   - Postprocessing
-  - Entity
-  - EntityGround
-  - Player
+  - 
+  - 
+  - 
   - 
   - 
   - 

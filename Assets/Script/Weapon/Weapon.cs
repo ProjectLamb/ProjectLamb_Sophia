@@ -7,16 +7,15 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-    [HideInInspector]
-    public PlayerData playerData;
-    public WeaponData weaponData;
-    public List<GameObject> weaponEffect;
+    public ScriptableObjWeaponData scriptableObjWeapon;
+    public static WeaponData weaponData;
 
     protected bool mIsReady = true;
     protected IEnumerator mCoWaitUse;
     
     private void Awake() {
-        if(!TryGetComponent<WeaponData>(out weaponData)) {Debug.Log("컴포넌트 로드 실패 : WeaponData");}
+        //if(!TryGetComponent<WeaponData>(out weaponData)) {Debug.Log("컴포넌트 로드 실패 : WeaponData");}
+        weaponData = new WeaponData(scriptableObjWeapon);
     }
 
     public virtual void Use(){
@@ -25,12 +24,13 @@ public class Weapon : MonoBehaviour
         mCoWaitUse = CoWaitUse();
         StartCoroutine(mCoWaitUse);
         Vector3 EffectRotate = transform.eulerAngles;
-        EffectRotate += weaponEffect[0].transform.eulerAngles;
-        Instantiate(weaponEffect[0], transform.position, Quaternion.Euler(EffectRotate)).GetComponent<CombatEffect>().SetDatas(this.playerData, this.weaponData);
+        EffectRotate += weaponData.Projectile[0].transform.eulerAngles;
+        weaponData.Projectile[0].InstanciateProjectile(gameObject, transform, Quaternion.Euler(EffectRotate));
     }
 
     public virtual IEnumerator CoWaitUse(){
-        yield return YieldInstructionCache.WaitForSeconds(weaponData.numericData.WeaponDelay);
+        yield return YieldInstructionCache.WaitForSeconds(weaponData.WeaponDelay);
         mIsReady = true;
     }
+
 }
