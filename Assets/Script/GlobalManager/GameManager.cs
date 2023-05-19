@@ -24,9 +24,6 @@ public class GameManager : MonoBehaviour
     public GlobalEvent globalEvent;
     [HideInInspector]
     public GlobalAudio globalAudio;
-    [HideInInspector]
-    public GlobalAffector globalAffector;
-
     public GameObject playerGameObject;
     public GameObject ChapterGenerator;
     public GameObject currentStage;
@@ -58,6 +55,5 @@ public class GameManager : MonoBehaviour
     void InitializeComponents(){
         if(globalEvent == null) globalEvent = GetComponentInChildren<GlobalEvent>();
         if(globalAudio == null) globalAudio = GetComponentInChildren<GlobalAudio>();
-        if(globalAffector == null) globalAffector = GetComponentInChildren<GlobalAffector>();
     }
 }

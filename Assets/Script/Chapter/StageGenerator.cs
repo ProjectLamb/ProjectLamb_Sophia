@@ -248,7 +248,7 @@ public class StageGenerator : MonoBehaviour
     public void SetOnStage()
     {
         if (!mIsClear)
-            GameManager.Instance.playerGameObject.GetComponent<PlayerAction>().isPortal = false;
+            GameManager.Instance.playerGameObject.GetComponent<Player>().isPortal = false;
         GameManager.Instance.currentStage = this.gameObject;
         foreach (var m in mobArray)
         {
