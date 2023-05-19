@@ -4,12 +4,10 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Shootable
   - Mesh
   - Wall
   - Enemy
   - Portal
-  - FxTemporaire
   - Door
   - PlayerProjectile
   - EnemyProjectile
@@ -25,9 +23,9 @@ TagManager:
   - Lighting
   - Ground
   - Postprocessing
-  - Entity
-  - EntityGround
-  - Player
+  - 
+  - 
+  - 
   - 
   - 
   - 
