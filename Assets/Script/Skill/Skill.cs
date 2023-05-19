@@ -4,21 +4,20 @@ using UnityEngine;
 
 public class Skill : MonoBehaviour
 {
-    [HideInInspector]
-    public PlayerData playerData;
     
     [HideInInspector]
     public WeaponData weaponData;
-    public SkillData skillData;
 
-    public GameObject skillEffect;
+    public ScriptableObjSkillData scriptableObjSkillData;
+    public SkillData newSkillData;
 
     bool mIsReady = true;
     IEnumerator mCoWaitUse;
 
     private void Awake() {
         //if(!TryGetComponent<WeaponData>(out weaponData)) {Debug.Log("컴포넌트 로드 실패 : WeaponData");}
-        if(!TryGetComponent<SkillData>(out skillData)) {Debug.Log("컴포넌트 로드 실패 : SkillData");}
+        //if(!TryGetComponent<SkillData>(out skillData)) {Debug.Log("컴포넌트 로드 실패 : SkillData");}
+        newSkillData = new SkillData(scriptableObjSkillData);
     }
     public void Use(){
         if(!mIsReady) return;

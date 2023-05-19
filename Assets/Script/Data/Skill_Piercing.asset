@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb99ac07861a14da8929a8ba60118141, type: 3}
+  m_Name: Skill_Piercing
+  m_EditorClassIdentifier: 
+  skillType: 1
+  skillName: "\uCC0C\uB974\uAE30"
+  skillDescription: "\uD14C\uC2A4\uD2B8\uC6A9 \uCC0C\uB974\uAE30"
+  sprite: {fileID: 0}
+  skillInfo:
+  - numericArray: 7d000000af000000e1000000
+  - numericArray: 000000000000000000000000
+  - numericArray: 000000000000000000000000
+  projectile: {fileID: 1835940064742333706, guid: c34ea8064df7f4f3199a391ad0c76de6,
+    type: 3}
