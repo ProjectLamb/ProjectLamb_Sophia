@@ -15,7 +15,7 @@ using Random = UnityEngine.Random;
 
 
 
-public class Player : MonoBehaviour, IAffectable, IDamagable
+public class Player : MonoBehaviour, IEntityAddressable
 {
     /////////////////////////////////////////////////////////////////////////////////
     /*********************************************************************************
@@ -29,6 +29,7 @@ public class Player : MonoBehaviour, IAffectable, IDamagable
     public ScriptableObjPlayerData scriptableObjPlayerData;
     [SerializeField]
     public PlayerData playerData;
+    public EntityData GetEntityData(){return this.playerData;}
 
     [SerializeField]
     public Weapon weapon;
@@ -57,7 +58,6 @@ public class Player : MonoBehaviour, IAffectable, IDamagable
     bool mIsDie;                 // 대쉬를 했는지 
     Animator anim;
     public GameObject model;
-    public VFXBucket vFXBucket;
     public LayerMask groundMask;                  // 바닥을 인식하는 마스크
 
     public Dictionary<Affector_PlayerState, UnityAction> dynamicsDic;
@@ -106,6 +106,7 @@ public class Player : MonoBehaviour, IAffectable, IDamagable
     /// <param name="_vAxis">A, D 인픗 수치</param>
     public void Move(float _hAxis, float _vAxis, bool _reverse)
     {
+        playerData.MoveState.Invoke();
         if(_reverse){ _hAxis *= -1; _vAxis *= -1;}
         Vector3 AngleToVector(float _angle)
         {
@@ -171,21 +172,27 @@ public class Player : MonoBehaviour, IAffectable, IDamagable
     public void Attack()
     {
         anim.SetTrigger("DoAttack");
+        playerData.AttackState.Invoke();
         Turning(() => weapon?.Use());
     }
     
     public void Skill(string key)
     {
-        if(skills[(int)E_SkillKey.Q]) {Turning(() => skills[(int)E_SkillKey.Q].Use());}
+        if(skills[(int)E_SkillKey.Q]) {
+            playerData.SkillState.Invoke();
+            Turning(() => skills[(int)E_SkillKey.Q].Use());
+        }
     }
 
     public void GetDamaged(int _amount){
+        playerData.HitState.Invoke();
         playerData.CurHP -= (int)(_amount * 100/(100 + playerData.Defence));
         
         if(playerData.CurHP <= 0) {Die();}
     }
 
     public void GetDamaged(int _amount, GameObject particle){
+        playerData.HitState.Invoke();
         playerData.CurHP -= (int)(_amount * 100/(100+playerData.Defence));
         visualModulator.Interact(particle);
         if(playerData.CurHP <= 0) {Die();}

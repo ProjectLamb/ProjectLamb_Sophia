@@ -10,9 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dedfbca66a0b74227a93438e1709a818, type: 3}
-  m_Name: Enemy_Template
+  m_Name: Sandbag
   m_EditorClassIdentifier: 
-  maxHP: 100
-  moveSpeed: 5
+  dieParticle: {fileID: 5724422084065114389, guid: af98d17f147974a44b1a9677683b6d00,
+    type: 3}
+  maxHP: 1000
+  moveSpeed: 0
   defence: 0
   tenacity: 0

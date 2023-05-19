@@ -8,7 +8,9 @@ public class VisualModulator : MonoBehaviour, IVisuallyInteractable
     public VFXBucket    vfxModulator;
 
     public void Interact(DebuffData debuffData){
+        if(debuffData.entitySkin == null) return;
         skinModulator.SetSkinSets(1, debuffData.entitySkin);
+        if(debuffData.particles == null) return;
         vfxModulator.VFXInstantiatorWithTime(debuffData.particles, debuffData.durationTime);
     }
     

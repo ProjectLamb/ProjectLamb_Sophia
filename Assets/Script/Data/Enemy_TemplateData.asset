@@ -9,10 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 39236e70fcbf3494d939671f948d30f5, type: 3}
-  m_Name: SandBagData
+  m_Script: {fileID: 11500000, guid: dedfbca66a0b74227a93438e1709a818, type: 3}
+  m_Name: Enemy_TemplateData
   m_EditorClassIdentifier: 
-  DeadParticle: {fileID: 5724422084050133109, guid: af98d17f147974a44b1a9677683b6d00,
+  dieParticle: {fileID: 5724422084065114389, guid: af98d17f147974a44b1a9677683b6d00,
     type: 3}
-  MaxHP: 1000
-  MoveSpeed: 0
+  maxHP: 100
+  moveSpeed: 20
+  defence: 0
+  tenacity: 0
