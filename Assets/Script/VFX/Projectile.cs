@@ -7,8 +7,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 public class Projectile : MonoBehaviour {
-    public GameObject HitEffect;
-    public float HitBoxLifeTime;
+    public GameObject OnHitSubEmmiter;
+
     public Dictionary<Affector_PlayerState ,IModifier> Modifiers;
     
     [HideInInspector]
@@ -29,7 +29,7 @@ public class Projectile : MonoBehaviour {
         IAffectable affectableEntity = other.gameObject.GetComponent<IAffectable>();
 
         //전달 하기
-        damagebleEntity.GetDamaged(_amount: 5, HitEffect);
+        damagebleEntity.GetDamaged(_amount: 5, OnHitSubEmmiter);
         affectableEntity.AsyncAffectHandler(new PoisonState(other.gameObject).AsyncAffectorCoroutine);
     }
 

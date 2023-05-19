@@ -26,13 +26,13 @@ public class Weapon_TripleAttack : Weapon
         mCoWaitUse = CoWaitUse();
         StartCoroutine(mCoWaitUse);
         Vector3 EffectRotate = transform.eulerAngles;
-        EffectRotate += weaponEffect[attackCount].transform.eulerAngles;
+        EffectRotate += weaponData.Projectile[attackCount].transform.eulerAngles;
         //Instantiate(weaponEffect[attackCount], transform.position, Quaternion.Euler(EffectRotate)).GetComponent<CombatEffect>().SetDatas(this.playerData, this.weaponData);
         attackCount = attackCount + 1;
     }
     public override IEnumerator CoWaitUse(){
         PlayerController.IsMoveAllow = false;
-        yield return YieldInstructionCache.WaitForSeconds(weaponData.numericData.WeaponDelay);
+        yield return YieldInstructionCache.WaitForSeconds(weaponData.WeaponDelay);
         mIsReady = true;
         PlayerController.IsMoveAllow = true;
     }
