@@ -5,10 +5,16 @@ using UnityEngine;
 public class Billboard : MonoBehaviour
 {
     private Transform mainCam;
-
+    private Canvas canvas;
+    
+    private void Awake() {
+        TryGetComponent<Canvas>(out canvas);
+    }
+    
     private void Start()
     {
         mainCam = Camera.main.transform;
+        canvas.worldCamera = Camera.main;
     }
 
     private void Update() {

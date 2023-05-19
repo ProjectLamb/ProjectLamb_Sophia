@@ -29,7 +29,7 @@ public class PlayerData : MonoBehaviour
             }
         }
 
-        public int CurHP {
+        public int CurHP {         
             get {return mCurHP;}
             set {
                 if(mCurHP < 0) mCurHP = 0;
@@ -102,23 +102,3 @@ public class PlayerData : MonoBehaviour
         wealthData = new Wealth();
     }
 }
-
-/*
-```cs
-데커스데이터 {
-    데커스수치 수치;
-    데커스상태 상태;
-}
-
-데커스수치 {
-    int 현재체력; int 최대체력;
-    int 현재스테미나; int 최대스테미나;
-    float 현재이동속도;
-
-    float 공격력;
-    float 사거리;
-    float 공격속도;
-    
-    float 운; //치명타확률 회피율
-}
-*/

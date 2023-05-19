@@ -15,7 +15,7 @@ using Random = UnityEngine.Random;
 
 
 
-public class PlayerAction : MonoBehaviour, IAffectableEntity
+public class PlayerAction : MonoBehaviour, IAffectable, IDamagable
 {
     /////////////////////////////////////////////////////////////////////////////////
     /*********************************************************************************
@@ -50,10 +50,10 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
     Animator anim;
     public GameObject model;
     public VFXBucket vFXBucket;
-
     public LayerMask groundMask;                  // 바닥을 인식하는 마스크
 
     public Dictionary<Affector_PlayerState, UnityAction> dynamicsDic;
+    VisualModulator visualModulator;
 
 
     /*********************************************************************************
@@ -72,6 +72,7 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
     {
         if (!TryGetComponent<PlayerData>(out playerData)) { Debug.Log("컴포넌트 로드 실패 : PlayerData"); }
         if (!TryGetComponent<Rigidbody>(out mRigidbody)) { Debug.Log("컴포넌트 로드 실패 : Rigidbody"); }
+        if (!TryGetComponent<VisualModulator>(out visualModulator)) { Debug.Log("컴포넌트 로드 실패 : VisualModulator"); }
         isPortal = true;
         anim = model.GetComponent<Animator>();
         dynamicsDic = new Dictionary<Affector_PlayerState, UnityAction>();
@@ -163,6 +164,7 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
         anim.SetTrigger("DoAttack");
         Turning(() => playerData.weapon?.Use());
     }
+    
     public void Skill(string key)
     {
         if(playerData.skills.ContainsKey("Q")) {Turning(() => playerData.skills["Q"].Use());}
@@ -170,39 +172,18 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
 
     public void GetDamaged(int _amount){
         playerData.numericData.CurHP -= (int)(_amount * 100/(100+playerData.numericData.Defense));
+        
         if(this.playerData.numericData.CurHP <= 0) {Die();}
     }
-    public void Die(){}
 
-    //맞는 콜라이더도 있을것이고, 그렇다..
-    void OnTriggerEnter(Collider collider)
-    {
-        /*
-        void PRINT_GAMEOBJECT_COMPONENTS(){
-            List<Component> components = collider.GetComponents<Component>().ToList();
-            foreach(var item in components){
-                Debug.Log($"Component {item} ComponentName : {item.name}, ComponentTag {item.tag}");
-            }
-        }
-        PRINT_GAMEOBJECT_COMPONENTS();
-        */
-        //전투 이펙트다.
-        if (collider.tag == "EnemyProjectile" && !mIsDie){
-            Debug.Log($"{gameObject.name} triggerEnter");
-            if(collider.TryGetComponent<CombatEffect>(out CombatEffect projectile)){
-                if(projectile.Modifiers.TryGetValue(Affector_PlayerState.Attack, out EntityAffector debuffs)) {
-                    if(ChanceToDodge()){Debug.Log("Dodged"); return;}
-                    vFXBucket.VFXInstantiator(projectile.hitEffect);
-                    debuffs.Affect();
-                    GetDamaged(5);
-                } 
-                return;
-            }
-        }
-        if(collider.TryGetComponent<Equipment>(out Equipment equipment)){
-            return;
-        }
+    public void GetDamaged(int _amount, GameObject particle){
+        playerData.numericData.CurHP -= (int)(_amount * 100/(100+playerData.numericData.Defense));
+        visualModulator.Interact(particle);
+        if(this.playerData.numericData.CurHP <= 0) {Die();}
     }
+
+
+    public void Die(){}
 
     void Turning(UnityAction action)
     {
@@ -225,14 +206,15 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
         }
         action.Invoke();
     }
-
     
     public void AffectHandler(List<UnityAction> _action){
         _action.ForEach(E => E.Invoke());
     }
+
     public void AsyncAffectHandler(List<IEnumerator> _coroutine){
         _coroutine.ForEach(E => StartCoroutine(E));
     }
+
     /*********************************************************************************
     *
     * Modifier
