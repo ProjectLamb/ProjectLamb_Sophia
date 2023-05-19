@@ -9,29 +9,6 @@ using UnityEngine.Events;
 * 먹었을떄 적용되며, 해제될떄 적용 될것
 *
 *********************************************************************************/
-public interface IPlayerDataApplicant {
-    public void ApplyData(ref PlayerData _playerData){
-
-    }
-    public void ApplyRemove(ref PlayerData _playerData){}
-}
-public interface IWeaponDataApplicant {
-    public void ApplyData(ref WeaponData _weaponData){
-
-    }
-    public void ApplyRemove(ref WeaponData _weaponData){}
-}
-public interface ISkillDataApplicant {
-    public void ApplyData(ref SkillData _skillData){
-
-    }
-    public void ApplyRemove(ref SkillData _skillData){}
-}
-
-public interface IActiveSelf {
-
-}
-
 
 public abstract class Equipment : MonoBehaviour{
     [Header("부품 이름")]
