@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7197044651974471632}
   - component: {fileID: 8400319411493755307}
   - component: {fileID: 3006422029990276965}
-  - component: {fileID: 1390633585716351246}
+  - component: {fileID: 7228446207623736202}
   m_Layer: 0
   m_Name: AttackProjectile
   m_TagString: EnemyProjectile
@@ -28,7 +28,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6983035142778730967}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0, y: -2, z: 12}
+  m_LocalPosition: {x: -0, y: 0, z: 5}
   m_LocalScale: {x: 10, y: 10, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -98,7 +98,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &1390633585716351246
+--- !u!114 &7228446207623736202
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -107,17 +107,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 6983035142778730967}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03d19418626064e338f5b28d436dce10, type: 3}
+  m_Script: {fileID: 11500000, guid: 9f478f9564f574ff689ac83050a7b650, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitEffect: {fileID: 1446978853027966288, guid: 27132214ec3c74cc8980837569ded6fc,
+  HitEffect: {fileID: 1446978853027966288, guid: 27132214ec3c74cc8980837569ded6fc,
     type: 3}
-  hitBox: {fileID: 3006422029990276965}
-  playerData: {fileID: 0}
-  HitEvents:
-    m_PersistentCalls:
-      m_Calls: []
-  mSkin: {fileID: 2100000, guid: 2627f59b7772e437799b99cda6ddde34, type: 2}
-  mParticle: {fileID: 1612651750294655368, guid: 11251ebd7feff449db991e3ba437069d,
-    type: 3}
-  isUseDynamicSystem: 1
+  HitBoxLifeTime: 1010
+  spawnOwner: {fileID: 0}

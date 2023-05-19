@@ -26,7 +26,7 @@ public class Skill : MonoBehaviour
         mCoWaitUse = CoWaitUse();
         StartCoroutine(mCoWaitUse);
 
-        Instantiate(skillEffect, transform.position, transform.rotation).GetComponent<CombatEffect>().SetDatas(this.playerData, this.weaponData);
+        //Instantiate(skillEffect, transform.position, transform.rotation).GetComponent<CombatEffect>().SetDatas(this.playerData, this.weaponData);
     }
     IEnumerator CoWaitUse(){
         yield return YieldInstructionCache.WaitForSeconds(1f);

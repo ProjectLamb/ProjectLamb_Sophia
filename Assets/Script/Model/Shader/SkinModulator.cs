@@ -27,12 +27,19 @@ public class SkinModulator : MonoBehaviour
     }
 
     public void SetSkinSets(int _index, Material _skin){
-        if(_skin == null) {_skin = TransMaterial;}
         mSkinMaterials[_index] = _skin;
         for(int j = 0; j < skinnedMeshRenderers.Length; j++){
             skinnedMeshRenderers[j].sharedMaterials = mSkinMaterials.ToArray();
         }
     }
+
+    public void SetSkinSets(int _index) {
+        mSkinMaterials[_index] = TransMaterial;
+        for(int j = 0; j < skinnedMeshRenderers.Length; j++){
+            skinnedMeshRenderers[j].sharedMaterials = mSkinMaterials.ToArray();
+        }
+    }
+
     public void AddSkinSets(Material _skin){
         mSkinMaterials.Add(_skin);
     }

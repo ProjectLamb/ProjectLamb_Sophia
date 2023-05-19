@@ -12,8 +12,7 @@ GameObject:
   - component: {fileID: 3547149294161389694}
   - component: {fileID: 8400319411493755307}
   - component: {fileID: 569173466491979382}
-  - component: {fileID: 3396963839679922036}
-  - component: {fileID: 875255223085394953}
+  - component: {fileID: 7250227762233782948}
   m_Layer: 0
   m_Name: JumpProjectile
   m_TagString: EnemyProjectile
@@ -100,7 +99,7 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -8778724664457932112, guid: 2f3f5fc949fea6f46b038941d7fd2e4c, type: 3}
---- !u!114 &3396963839679922036
+--- !u!114 &7250227762233782948
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -109,27 +108,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 6983035142778730967}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 231369df76962475bae05b8f0d71a191, type: 3}
+  m_Script: {fileID: 11500000, guid: 9f478f9564f574ff689ac83050a7b650, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitEffect: {fileID: 1446978853027966288, guid: 27132214ec3c74cc8980837569ded6fc,
+  HitEffect: {fileID: 1446978853027966288, guid: 27132214ec3c74cc8980837569ded6fc,
     type: 3}
---- !u!114 &875255223085394953
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6983035142778730967}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03d19418626064e338f5b28d436dce10, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hitEffect: {fileID: 1446978853027966288, guid: 27132214ec3c74cc8980837569ded6fc,
-    type: 3}
-  hitBox: {fileID: 569173466491979382}
-  playerData: {fileID: 0}
-  HitEvents:
-    m_PersistentCalls:
-      m_Calls: []
+  HitBoxLifeTime: 1010
+  spawnOwner: {fileID: 0}
