@@ -518,7 +518,7 @@ PrefabInstance:
     - target: {fileID: 2735030516623181699, guid: c6c8706211f194706b90866ad4106f8a,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2735030516623181702, guid: c6c8706211f194706b90866ad4106f8a,
         type: 3}
@@ -1514,6 +1514,50 @@ MonoBehaviour:
     type: 2}
   playerData:
     DieParticle: {fileID: 0}
+  pipelineData:
+    <MaxHP>k__BackingField: 0
+    <CurHP>k__BackingField: 0
+    <MoveSpeed>k__BackingField: 0
+    <Defence>k__BackingField: 0
+    <Tenacity>k__BackingField: 0
+    <MaxStamina>k__BackingField: 0
+    <CurStamina>k__BackingField: 0
+    <Power>k__BackingField: 0
+    <Luck>k__BackingField: 0
+    <Gear>k__BackingField: 0
+    <Frag>k__BackingField: 0
+    <DamageRatio>k__BackingField: 0
+    <WeaponDelay>k__BackingField: 0
+    <Range>k__BackingField: 0
+    <Ammo>k__BackingField: 0
+    SkillInfos:
+    - numericArray: 000000000000000000000000
+      skillDelay:
+      - 0
+      - 0
+      - 0
+      durateTime:
+      - 0
+      - 0
+      - 0
+    - numericArray: 000000000000000000000000
+      skillDelay:
+      - 0
+      - 0
+      - 0
+      durateTime:
+      - 0
+      - 0
+      - 0
+    - numericArray: 000000000000000000000000
+      skillDelay:
+      - 0
+      - 0
+      - 0
+      durateTime:
+      - 0
+      - 0
+      - 0
   weapon: {fileID: 803013838}
   skills:
   - {fileID: 5770372847655980824}
