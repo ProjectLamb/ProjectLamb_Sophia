@@ -15,7 +15,7 @@ using Random = UnityEngine.Random;
 
 
 
-public class Player : MonoBehaviour, IEntityAddressable
+public class Player : MonoBehaviour, IPipelineAddressable
 {
     /////////////////////////////////////////////////////////////////////////////////
     /*********************************************************************************
@@ -28,8 +28,12 @@ public class Player : MonoBehaviour, IEntityAddressable
     //public PlayerData playerData;           // 플레이어가 가지는 모든 데이터
     public ScriptableObjPlayerData scriptableObjPlayerData;
     [SerializeField]
-    public PlayerData playerData;
-    public EntityData GetEntityData(){return this.playerData;}
+    public PlayerData playerData; //플레이어의 함수로 인해 변할 수 있다.
+    public EntityData GetEntityData() {return this.playerData;}
+
+    //고유성을 가지고 있다는것이 특징이라서 Static하면 안되지 않을까?
+    public PipelineData pipelineData; //무조건 외부의 작용으로 인해 변하는것이다.
+    public PipelineData GetPipelineData() {return this.pipelineData;}
 
     [SerializeField]
     public Weapon weapon;
@@ -37,6 +41,7 @@ public class Player : MonoBehaviour, IEntityAddressable
     [SerializeField]
     public Skill[] skills;
     Rigidbody mRigidbody;
+
 
     /*********************************************************************************
     *
@@ -60,7 +65,6 @@ public class Player : MonoBehaviour, IEntityAddressable
     public GameObject model;
     public LayerMask groundMask;                  // 바닥을 인식하는 마스크
 
-    public Dictionary<Affector_PlayerState, UnityAction> dynamicsDic;
     VisualModulator visualModulator;
 
 
@@ -79,24 +83,16 @@ public class Player : MonoBehaviour, IEntityAddressable
     void Awake()
     {
         playerData = new PlayerData(scriptableObjPlayerData);
-        //// playerData : if (!TryGetComponent<PlayerData>(out playerData)) { Debug.Log("컴포넌트 로드 실패 : PlayerData"); }
+        pipelineData = new PipelineData();
         if (!TryGetComponent<Rigidbody>(out mRigidbody)) { Debug.Log("컴포넌트 로드 실패 : Rigidbody"); }
         if (!TryGetComponent<VisualModulator>(out visualModulator)) { Debug.Log("컴포넌트 로드 실패 : VisualModulator"); }
         isPortal = true;
         anim = model.GetComponent<Animator>();
-        dynamicsDic = new Dictionary<Affector_PlayerState, UnityAction>();
-        foreach(Affector_PlayerState E in (Affector_PlayerState[])Enum.GetValues(typeof(Affector_PlayerState))){
-            dynamicsDic.Add(E, () => {});
-        }
-        /*
-        foreach(KeyValuePair<Affector_PlayerState, UnityAction> kvp in dynamicsDic){
-            Debug.Log($"{kvp.Key}, {kvp.Value}");
-        }
-        */
     }
 
-    void Update()
-    {
+    [ContextMenu("파이프라인 출력")]
+    public void PrintPipeline(){
+        Debug.Log(pipelineData.ToString());
     }
 
     /// <summary>
@@ -107,26 +103,27 @@ public class Player : MonoBehaviour, IEntityAddressable
     public void Move(float _hAxis, float _vAxis, bool _reverse)
     {
         playerData.MoveState.Invoke();
-        if(_reverse){ _hAxis *= -1; _vAxis *= -1;}
-        Vector3 AngleToVector(float _angle)
-        {
+
+        float MoveSpeed = playerData.MoveSpeed + pipelineData.MoveSpeed;
+        
+        Vector3 AngleToVector(float _angle) {
             _angle *= Mathf.Deg2Rad;
             return new Vector3(Mathf.Sin(_angle), 0, Mathf.Cos(_angle));
         }
-
-        if (mRigidbody.velocity.magnitude > playerData.MoveSpeed) return; 
+        
+        if(_reverse){ _hAxis *= -1; _vAxis *= -1;}
+        
+        
+        if (mRigidbody.velocity.magnitude > MoveSpeed) return; 
 
         mMoveVec = AngleToVector(Camera.main.transform.eulerAngles.y + 90f) * _hAxis + AngleToVector(Camera.main.transform.eulerAngles.y) * _vAxis;
         mMoveVec = mMoveVec.normalized;
 
-        bool IsBorder()
-        {
-            return Physics.Raycast(transform.position, mMoveVec.normalized, 2, LayerMask.GetMask("Wall"));
-        }
-
+        bool IsBorder(){return Physics.Raycast(transform.position, mMoveVec.normalized, 2, LayerMask.GetMask("Wall"));}
+        
         if (!IsBorder())
         {
-            Vector3 rbVel = mMoveVec * playerData.MoveSpeed;
+            Vector3 rbVel = mMoveVec * MoveSpeed;
             mRigidbody.velocity = rbVel;
             if(mMoveVec != Vector3.zero){
                 mRotate = Quaternion.LookRotation(mMoveVec);
@@ -137,7 +134,7 @@ public class Player : MonoBehaviour, IEntityAddressable
 
     /// <summary>
     /// 이 함수가 실행되면 대쉬가 된다.
-    /// </summary>
+    /// /// </summary>
     public void Dash()
     {
         IEnumerator CoWaitDash()

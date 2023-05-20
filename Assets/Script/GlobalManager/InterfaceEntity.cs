@@ -33,6 +33,7 @@ public interface ColliderHandeler{
     public void HandleCollider(){}
 }
 
-public interface IEntityAddressable : IDamagable, IDieAble, IAffectable {
+public interface IPipelineAddressable : IDamagable, IDieAble, IAffectable {
     public EntityData GetEntityData();
+    public PipelineData GetPipelineData();
 }

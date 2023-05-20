@@ -4,11 +4,14 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.AI;
 
-public class Sandbag : MonoBehaviour, IEntityAddressable
+public class Sandbag : MonoBehaviour, IPipelineAddressable
 {    
     public ScriptableObjEntityData scriptableObjEnemyData;
     EnemyData enemyData;
     public EntityData GetEntityData(){return this.enemyData;}
+
+    PipelineData pipelineData;
+    public PipelineData GetPipelineData(){return this.pipelineData;}
 
     public UnityEvent hpChangedEvent;
     public GameObject model;
@@ -24,7 +27,7 @@ public class Sandbag : MonoBehaviour, IEntityAddressable
     bool mIsDie;
     /*********************************************************************************
     *
-    *
+    * 
     *
     *********************************************************************************/
 
@@ -35,7 +38,7 @@ public class Sandbag : MonoBehaviour, IEntityAddressable
         enemyData = new EnemyData(scriptableObjEnemyData);
         enemyData.DieParticle.GetComponent<ParticleCallback>().onDestroyEvent.AddListener(DestroySelf);
         LookAtTarget = GameManager.Instance.playerGameObject.transform;
-        healthBar.entityData = this.enemyData;
+        healthBar.pipelineData = this.pipelineData;
     }
     private void Start() {
         Debug.Log("Catch");
