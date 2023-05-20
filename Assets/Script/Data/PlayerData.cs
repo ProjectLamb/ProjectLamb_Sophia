@@ -14,7 +14,7 @@ public class PlayerData : EntityData {
     public int MaxStamina {get; set;}
     public int CurStamina {get; set;}
     public float Power {get; set;}
-    public float Luck {get; set;}
+    public int Luck {get; set;}
     public int Gear {get; set;}
     public int Frag {get; set;}
 //  public UnityAction mMoveState;
