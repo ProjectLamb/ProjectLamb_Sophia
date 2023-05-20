@@ -1,9 +1,9 @@
+/*
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-
-public class PipelineData {
+public class PipelineProjectileData {
     // Equipmetn data의 합산
     // 최종의 데이터로 날아갈 놈 이걸 어떻게 정해야 할까?
 
@@ -58,7 +58,7 @@ public class PipelineData {
             //////////////////////////////////////////////////////
             public float SkillDelay, durateTime;
             //////////////////////////////////////////////////////
-            public Dictionary<Affector_PlayerState, UnityAction> dynamicsDic;
+            //public Dictionary<Affector_PlayerState, UnityAction> dynamicsDic; 이젠 이거 필요 없다.
         }
         // Get도 하는데 Set또한 한다.
             // Gets 예를들어 체력 비례 데미지를 준다.
@@ -96,9 +96,7 @@ public class PipelineData {
         // 버프를 받는 효과
         // UI를 변경하는 효과
     
-    /*
         플레이어는 플레이어 데이터만 가지고 있나?
             무기의 컴포넌트를 제외하고는 맞는것 같다.
             무기는 무기 데이터만 가져야도 한다.
-    */
-}
+*/
