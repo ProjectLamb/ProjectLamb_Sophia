@@ -9,11 +9,13 @@ using UnityEngine.Events;
 /// * IDieAble : 죽는 Action , 인터페이스로 동작을 구현<br/>
 /// * IDamagable : 맞는 Action , 인터페이스로 동작을 구현
 /// </summary>
-public class Enemy : MonoBehaviour, IEntityAddressable
+public class Enemy : MonoBehaviour, IPipelineAddressable
 {
     public ScriptableObjEntityData scriptableObjEnemyData;
     EnemyData enemyData;
-    public EntityData GetEntityData(){return this.enemyData;}
+    public EntityData GetEntityData() {return this.enemyData;}
+    PipelineData pipelineData;
+    public PipelineData GetPipelineData(){return this.pipelineData;}
     
     Transform target;
 
@@ -54,10 +56,11 @@ public class Enemy : MonoBehaviour, IEntityAddressable
 
     void Awake()
     {
+
         TryGetComponent<VisualModulator>(out visualModulator);
         if(!TryGetComponent<Rigidbody>(out mRigidBody)){Debug.Log("컴포넌트 로드 실패 : Rigidbody");}
         if(!TryGetComponent<NavMeshAgent>(out nav)){Debug.Log("컴포넌트 로드 실패 : NavMeshAgent");}
-        enemyData = new EnemyData(scriptableObjEnemyData);
+        pipelineData = new PipelineData();
         chase = false;
         target = GameManager.Instance?.playerGameObject?.transform;
         mIsDie = false;

@@ -11,15 +11,15 @@ public class FreezeState : DebuffState{
     * 리시버들 
     *  
     *********************************************************************************/
-    IEntityAddressable entityAddressable;
+    IPipelineAddressable pipelineAddressable;
     IVisuallyInteractable visuallyInteractable;
 
-    EntityData entityData;
+    PipelineData pipelineData;
 
     public FreezeState(GameObject _target) {
         debuffData = GlobalModifierResources.Instance.debuffDatas[(int)E_DebuffState.Freeze];
-        entityAddressable = _target.GetComponent<IEntityAddressable>();
-        entityData = entityAddressable.GetEntityData();
+        pipelineAddressable = _target.GetComponent<IPipelineAddressable>();
+        pipelineData = pipelineAddressable.GetPipelineData();
         visuallyInteractable = _target.GetComponent<IVisuallyInteractable>();
         this.AsyncAffectorCoroutine = new List<IEnumerator>();
         this.Affector = new List<UnityAction>();
@@ -32,9 +32,9 @@ public class FreezeState : DebuffState{
     }
 
     IEnumerator SetSlow(){
-        entityData.MoveSpeed *= 0.01f;
+        pipelineData.MoveSpeed *= 0.01f;
         yield return YieldInstructionCache.WaitForSeconds(debuffData.durationTime);
-        entityData.MoveSpeed *= 0.01f;
+        pipelineData.MoveSpeed *= 0.01f;
     }
     
     IEnumerator VisualActivate(){

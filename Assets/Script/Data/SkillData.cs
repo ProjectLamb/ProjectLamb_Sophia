@@ -5,8 +5,8 @@ using UnityEngine.Events;
 public class SkillData {
     public E_SkillType SkillType;
     public string SkillName;
-    public string SkillDescription;
     public SkillInfo[] SkillInfos;
+    public string SkillDescription;
 
     public Projectile SkillProjectile;
     
