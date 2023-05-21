@@ -239,6 +239,12 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
+--- !u!1 &1586778093 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6010878358661589267, guid: ab08eae4951b309478e7bb02aa64643b,
+    type: 3}
+  m_PrefabInstance: {fileID: 1661089774}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1661089774
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1146,7 +1152,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerData: {fileID: 0}
   isPortal: 1
-  isNowMove: 0
   groundMask:
     serializedVersion: 2
     m_Bits: 6857
@@ -30063,7 +30068,7 @@ MonoBehaviour:
   globalAudio: {fileID: 6733144046720186186}
   globalAffector: {fileID: 0}
   playerGameObject: {fileID: 243639901359974393}
-  ChapterGenerator: {fileID: 0}
+  ChapterGenerator: {fileID: 1586778093}
   currentStage: {fileID: 0}
 --- !u!1 &6733144047143372213
 GameObject:
