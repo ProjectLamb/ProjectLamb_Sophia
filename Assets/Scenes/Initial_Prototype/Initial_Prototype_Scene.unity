@@ -1146,6 +1146,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerData: {fileID: 0}
   isPortal: 1
+  isNowMove: 0
   groundMask:
     serializedVersion: 2
     m_Bits: 6857

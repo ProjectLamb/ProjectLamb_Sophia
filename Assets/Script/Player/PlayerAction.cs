@@ -36,7 +36,6 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
     /// </summary>
 
     public bool isPortal;
-    public bool isNowMove;
     Vector3 mMoveVec;               // 음직이는 방향을 얻어오는데 사용한다.
     Quaternion mRotate;             // 회전하는데 사용한다.
     bool mIsBorder;                 // 벽에 부딛혔는지 감지
@@ -65,20 +64,12 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
         if (!TryGetComponent<PlayerData>(out playerData)) { Debug.Log("컴포넌트 로드 실패 : PlayerData"); }
         if (!TryGetComponent<Rigidbody>(out mRigidbody)) { Debug.Log("컴포넌트 로드 실패 : Rigidbody"); }
         isPortal = true;
-        isNowMove = false;
         model = transform.GetChild(0).gameObject;
         anim = model.GetComponent<Animator>();
     }
 
     void Update()
     {
-    }
-
-    void FixedUpdate()
-    {
-        if(!isNowMove){
-            MouseTurning();
-        }
     }
 
     /// <summary>
@@ -110,12 +101,8 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
             Vector3 rbVel = mMoveVec * playerData.numericData.MoveSpeed;
             mRigidbody.velocity = rbVel;
             if(mMoveVec != Vector3.zero){
-                isNowMove = true;
                 mRotate = Quaternion.LookRotation(mMoveVec);
                 transform.rotation = Quaternion.Slerp(transform.rotation,mRotate, 0.6f);
-            }
-            else{
-                isNowMove = false;
             }
         }
     }
@@ -199,7 +186,7 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
 
     void Turning(UnityAction action)
     {
-        float camRayLength = 100f;          // 씬으로 보내는 카메라의 Ray 길이
+        float camRayLength = 1000f;          // 씬으로 보내는 카메라의 Ray 길이
         // 마우스 커서에서 씬을 향해 발사되는 Ray 생성
         Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -218,28 +205,6 @@ public class PlayerAction : MonoBehaviour, IAffectableEntity
         }
         action.Invoke();
     }
-
-    public void MouseTurning() // 마우스가 있는 방향을 플레이어가 바라보도록
-    {
-        float camRayLength = 100f;          // 씬으로 보내는 카메라의 Ray 길이
-        // 마우스 커서에서 씬을 향해 발사되는 Ray 생성
-        Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-        // Hit된 오브젝트의 정보를 담는것
-        RaycastHit groundHit;
-
-        // 레이캐스트 시작
-        if (Physics.Raycast(camRay, out groundHit, camRayLength, groundMask))
-        {
-            // 마우스 눌린곳, 플레이어 위치 계산
-            Vector3 playerToMouse = groundHit.point - transform.position;
-            playerToMouse.y = 0f;
-            Quaternion newRotatation = Quaternion.LookRotation(playerToMouse) * Quaternion.Euler(0, -45, 0);
-            // 플레이어가 바라보는 방향 설정
-            mRigidbody.MoveRotation(newRotatation);
-        }
-    }
-
     
     public void AffectHandler(List<UnityAction> _action){
         _action.ForEach(E => E.Invoke());
