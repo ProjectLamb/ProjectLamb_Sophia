@@ -4,73 +4,79 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.AI;
 
-public class Sandbag : MonoBehaviour, IPipelineAddressable
+public class Sandbag : Enemy
 {    
-    public ScriptableObjEntityData scriptableObjEnemyData;
-    EnemyData enemyData;
-    public EntityData GetEntityData(){return this.enemyData;}
+    //public EnemyData enemyData;
+    //public EntityData GetEntityData() {return this.enemyData;}
+    //PipelineData pipelineData;
+    //public PipelineData GetPipelineData(){return this.pipelineData;}
 
-    PipelineData pipelineData;
-    public PipelineData GetPipelineData(){return this.pipelineData;}
+    //public GameObject model;
+    //Rigidbody RigidBody;
 
-    public UnityEvent hpChangedEvent;
-    public GameObject model;
-    public ProjectileBucket projectileBucket;
-    public Transform LookAtTarget;
-    public Projectile[] Projectiles;
+    //public NavMeshAgent nav;
+    //public Transform target;
+    //public bool chase;
+    //public bool mIsDie;
 
-    public HealthBar healthBar;
+    //public Projectile[] Projectiles;
 
-    Animator animator;
-    AnimEventInvoker animEventInvoker;
-    VisualModulator visualModulator;
-    bool mIsDie;
+    //public ProjectileBucket projectileBucket;
+    //Animator animator;
+    //AnimEventInvoker animEventInvoker;
+    //VisualModulator visualModulator;
     /*********************************************************************************
     *
     * 
     *
     *********************************************************************************/
 
-    private void Awake() {
-        model.TryGetComponent<Animator>(out animator);
-        model.TryGetComponent<AnimEventInvoker>(out animEventInvoker);
-        TryGetComponent<VisualModulator>(out visualModulator);
-        enemyData = new EnemyData(scriptableObjEnemyData);
-        enemyData.DieParticle.GetComponent<ParticleCallback>().onDestroyEvent.AddListener(DestroySelf);
-        LookAtTarget = GameManager.Instance.playerGameObject.transform;
-        healthBar.pipelineData = this.pipelineData;
+    protected override void Awake() {
+        TryGetComponent<VisualModulator>(out this.visualModulator);
+        TryGetComponent<Rigidbody>(out this.rigidBody);
+        TryGetComponent<NavMeshAgent>(out this.nav);
+        TryGetComponent<Collider>(out collider);
+        
+        model.TryGetComponent<Animator>(out this.animator);
+        model.TryGetComponent<AnimEventInvoker>(out this.animEventInvoker);
+        
+        this.pipelineData = new PipelineData();        
+        this.enemyData.DieParticle.GetComponent<ParticleCallback>().onDestroyEvent.AddListener(DestroySelf);
+        this.objectiveTarget = GameManager.Instance.playerGameObject.transform;
+        
+        //healthBar.pipelineData = this.pipelineData;
     }
     private void Start() {
         Debug.Log("Catch");
         animEventInvoker.animCallback[(int)Enum_AnimState.Attack].AddListener( () => {
-            projectileBucket.ProjectileInstantiator(Projectiles[0]);
+            projectileBucket.ProjectileInstantiator(projectiles[0], E_ProjectileType.Attack);
         });
         animEventInvoker.animCallback[(int)Enum_AnimState.Jump].AddListener(() => {
-            projectileBucket.ProjectileInstantiator(Projectiles[1]);
+            projectileBucket.ProjectileInstantiator(projectiles[1], E_ProjectileType.Attack);
         });
     }
 
-    public void GetDamaged(int _amount){
-        if(mIsDie == true) {return;}
+    public override void GetDamaged(int _amount){
+        if(this.isDie == true) {return;}
+        enemyData.HitStateRef.Invoke(ref _amount);
         enemyData.CurHP -= _amount;
         animator.SetTrigger("DoHit");
-        enemyData.HitState.Invoke();
         if (enemyData.CurHP <= 0) {Die();}
     }
 
-    public void GetDamaged(int _amount, GameObject particle){
-        if(mIsDie == true) {return;}
+    public override void GetDamaged(int _amount, GameObject particle){
+        if(this.isDie == true) {return;}
+        enemyData.HitStateRef.Invoke(ref _amount);
         enemyData.CurHP -= _amount;
-        enemyData.HitState.Invoke();
         visualModulator.Interact(particle);
         animator.SetTrigger("DoHit");
         if (enemyData.CurHP <= 0) {Die();}
     }
 
-    public void Die(){ 
+    public override void Die(){ 
         enemyData.DieState.Invoke();
-        mIsDie = true;
-        GetComponent<Collider>().enabled = false;
+        isDie = true;
+        collider.enabled = false;
         animator.SetTrigger("DoDie");
         visualModulator.vfxModulator.VFXInstantiator(enemyData.DieParticle);
     }
@@ -93,14 +99,12 @@ public class Sandbag : MonoBehaviour, IPipelineAddressable
 
     [ContextMenu("평타", false, int.MaxValue)]
     void InstantiateProjectiles1(){
-        enemyData.AttackState.Invoke();
         //Find Instantiate On This Animator Events;
         animator.SetTrigger("DoAttack");
     }
 
     [ContextMenu("범위데미지",false, int.MaxValue)]
     void InstantiateProjectiles2(){
-        enemyData.AttackState.Invoke();
         //Find Instantiate On This Animator Events;
         animator.SetTrigger("DoJump");
     }

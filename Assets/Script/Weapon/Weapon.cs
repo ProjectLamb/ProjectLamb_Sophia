@@ -16,10 +16,14 @@ using UnityEngine;
 // 프리펩으로 다양화를 시키겠지.
 // 스크립터블을 없에는 방향으로 생각해보자.
 
+public enum E_WeaponType {
+    melee, ranger, mage
+}
+
 public class Weapon : MonoBehaviour
 {
-    public ScriptableObjWeaponData scriptableObjWeapon;
     public WeaponData weaponData;
+    EntityData entityData;
 
     protected bool mIsReady = true;
     protected IEnumerator mCoWaitUse;
@@ -29,14 +33,18 @@ public class Weapon : MonoBehaviour
         weaponData = new WeaponData(scriptableObjWeapon);
     }
 
-    public virtual void Use(){
+    private void Start() {
+        entityData = GetComponentInParent<IPipelineAddressable>().GetEntityData();
+    }
+
+    public virtual void Use(PipelineData pipelineData){
         if(!mIsReady) return;
         mIsReady = false;
         mCoWaitUse = CoWaitUse();
         StartCoroutine(mCoWaitUse);
         Vector3 EffectRotate = transform.eulerAngles;
         EffectRotate += weaponData.Projectile[0].transform.eulerAngles;
-        weaponData.Projectile[0].InstanciateProjectile(gameObject, transform, Quaternion.Euler(EffectRotate));
+        weaponData.Projectile[0].InstanciateProjectile(entityData, pipelineData, E_ProjectileType.Attack,transform, Quaternion.Euler(EffectRotate));
     }
 
     public virtual IEnumerator CoWaitUse(){

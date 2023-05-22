@@ -16,7 +16,7 @@ public class Weapon_TripleAttack : Weapon
         }
     }
 
-    public override void Use(){
+    public override void Use(PipelineData pipelineData){
         SubUse();
     }
     

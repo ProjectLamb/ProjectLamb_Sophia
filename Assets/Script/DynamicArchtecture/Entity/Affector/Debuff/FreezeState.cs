@@ -14,13 +14,12 @@ public class FreezeState : DebuffState{
     IPipelineAddressable pipelineAddressable;
     IVisuallyInteractable visuallyInteractable;
 
-    PipelineData pipelineData;
-
     public FreezeState(GameObject _target) {
         debuffData = GlobalModifierResources.Instance.debuffDatas[(int)E_DebuffState.Freeze];
         pipelineAddressable = _target.GetComponent<IPipelineAddressable>();
-        pipelineData = pipelineAddressable.GetPipelineData();
         visuallyInteractable = _target.GetComponent<IVisuallyInteractable>();
+        this.pipelineData = pipelineAddressable.GetPipelineData();
+        this.entityData   = pipelineAddressable.GetEntityData();
         this.AsyncAffectorCoroutine = new List<IEnumerator>();
         this.Affector = new List<UnityAction>();
         this.AsyncAffectorCoroutine.Add(VisualActivate());
@@ -32,14 +31,14 @@ public class FreezeState : DebuffState{
     }
 
     IEnumerator SetSlow(){
-        pipelineData.MoveSpeed *= 0.01f;
-        yield return YieldInstructionCache.WaitForSeconds(debuffData.durationTime);
-        pipelineData.MoveSpeed *= 0.01f;
+        pipelineData.MoveSpeed = -entityData.MoveSpeed;
+        yield return YieldInstructionCache.WaitForSeconds(debuffData.durationTime * (1 - pipelineData.Tenacity));
+        pipelineData.MoveSpeed = 0;
     }
     
     IEnumerator VisualActivate(){
         visuallyInteractable.Interact(this.debuffData);
-        yield return YieldInstructionCache.WaitForSeconds(debuffData.durationTime);
+        yield return YieldInstructionCache.WaitForSeconds(debuffData.durationTime * (1 - pipelineData.Tenacity));
         visuallyInteractable.Revert();
     }
 }
