@@ -10,7 +10,7 @@ public class ProjectileBucket : MonoBehaviour {
         sandbag = GetComponentInParent<Sandbag>();
     }
     
-    public void ProjectileInstantiator(Projectile projectile){
-        Destroy(projectile.InstanciateProjectile(gameObject, transform), 0.6f);
+    public void ProjectileInstantiator(Projectile projectile, E_ProjectileType type){
+        Destroy(projectile.InstanciateProjectile(sandbag.GetEntityData(), sandbag.GetPipelineData(), type, transform), 0.6f);
     }
 }

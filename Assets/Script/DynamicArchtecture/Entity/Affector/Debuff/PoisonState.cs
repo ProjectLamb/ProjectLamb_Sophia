@@ -20,8 +20,12 @@ public class PoisonState : DebuffState {
 
     public PoisonState(GameObject _target){
         debuffData = GlobalModifierResources.Instance.debuffDatas[(int)E_DebuffState.Poisend];
-        pipelineAddressable = _target.GetComponent<IPipelineAddressable>();
+
+        pipelineAddressable  =  _target.GetComponent<IPipelineAddressable>();
         visuallyInteractable = _target.GetComponent<IVisuallyInteractable>();
+
+        this.pipelineData = pipelineAddressable.GetPipelineData();
+        this.entityData   = pipelineAddressable.GetEntityData();
         this.AsyncAffectorCoroutine = new List<IEnumerator>();
         this.Affector = new List<UnityAction>();
         this.AsyncAffectorCoroutine.Add(VisualActivate());
@@ -35,7 +39,7 @@ public class PoisonState : DebuffState {
 
     IEnumerator DotDamage(){
         float passedTime = 0;
-        while(debuffData.durationTime > passedTime){
+        while((debuffData.durationTime * (1 - pipelineData.Tenacity)) > passedTime){
             passedTime += 0.5f;
             pipelineAddressable.GetDamaged(debuffData.damageAmount);
             yield return YieldInstructionCache.WaitForSeconds(0.5f);
@@ -44,7 +48,7 @@ public class PoisonState : DebuffState {
 
     IEnumerator VisualActivate(){
         visuallyInteractable.Interact(this.debuffData);
-        yield return YieldInstructionCache.WaitForSeconds(debuffData.durationTime);
+        yield return YieldInstructionCache.WaitForSeconds(debuffData.durationTime * (1 - pipelineData.Tenacity));
         visuallyInteractable.Revert();
     }
 }

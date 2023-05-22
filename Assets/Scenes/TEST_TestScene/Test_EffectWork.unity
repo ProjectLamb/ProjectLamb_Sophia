@@ -489,7 +489,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   globalEvent: {fileID: 644889197}
   globalAudio: {fileID: 0}
-  globalUI: {fileID: 0}
   playerGameObject: {fileID: 0}
   ChapterGenerator: {fileID: 0}
   currentStage: {fileID: 0}
@@ -538,11 +537,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a591cbeee26c14dc0b04a05bdcd8434c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerData: {fileID: 0}
-  weaponData: {fileID: 0}
-  skillData: {fileID: 0}
-  skillEffect: {fileID: 4454791399166616469, guid: c34ea8064df7f4f3199a391ad0c76de6,
-    type: 3}
+  scriptableObjSkillData: {fileID: 0}
 --- !u!4 &1345514042
 Transform:
   m_ObjectHideFlags: 0
@@ -588,8 +583,66 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b21c0ad5cd274b0db422445d613a3ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerData: {fileID: 0}
+  scriptableObjPlayerData: {fileID: 0}
+  playerData:
+    mEntityTag: 
+    mMaxHP: 0
+    mCurHP: 0
+    mMoveSpeed: 0
+    mDefence: 0
+    mTenacity: 0
+    mPower: 0
+    mAttackSpeed: 0
+    DieParticle: {fileID: 0}
+  pipelineData:
+    <MaxHP>k__BackingField: 0
+    <CurHP>k__BackingField: 0
+    <MoveSpeed>k__BackingField: 0
+    <Defence>k__BackingField: 0
+    <Tenacity>k__BackingField: 0
+    <MaxStamina>k__BackingField: 0
+    <CurStamina>k__BackingField: 0
+    <Power>k__BackingField: 0
+    <AttackSpeed>k__BackingField: 0
+    <Luck>k__BackingField: 0
+    <Gear>k__BackingField: 0
+    <Frag>k__BackingField: 0
+    <DamageRatio>k__BackingField: 0
+    <WeaponDelay>k__BackingField: 0
+    <Range>k__BackingField: 0
+    <Ammo>k__BackingField: 0
+    SkillInfos:
+    - numericArray: 000000000000000000000000
+      skillDelay:
+      - 0
+      - 0
+      - 0
+      durateTime:
+      - 0
+      - 0
+      - 0
+    - numericArray: 000000000000000000000000
+      skillDelay:
+      - 0
+      - 0
+      - 0
+      durateTime:
+      - 0
+      - 0
+      - 0
+    - numericArray: 000000000000000000000000
+      skillDelay:
+      - 0
+      - 0
+      - 0
+      durateTime:
+      - 0
+      - 0
+      - 0
+  weapon: {fileID: 0}
+  skills: []
   isPortal: 0
+  model: {fileID: 0}
   groundMask:
     serializedVersion: 2
     m_Bits: 0
@@ -621,75 +674,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 361d04609a6374c4093d6bb2a47d52d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1001 &1612651750346212010
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 1612651750294655369, guid: 11251ebd7feff449db991e3ba437069d,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 1612651750294655369, guid: 11251ebd7feff449db991e3ba437069d,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1612651750294655369, guid: 11251ebd7feff449db991e3ba437069d,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1612651750294655369, guid: 11251ebd7feff449db991e3ba437069d,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1612651750294655369, guid: 11251ebd7feff449db991e3ba437069d,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 1612651750294655369, guid: 11251ebd7feff449db991e3ba437069d,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 1612651750294655369, guid: 11251ebd7feff449db991e3ba437069d,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1612651750294655369, guid: 11251ebd7feff449db991e3ba437069d,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1612651750294655369, guid: 11251ebd7feff449db991e3ba437069d,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: -90
-      objectReference: {fileID: 0}
-    - target: {fileID: 1612651750294655369, guid: 11251ebd7feff449db991e3ba437069d,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1612651750294655369, guid: 11251ebd7feff449db991e3ba437069d,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1612651750294655370, guid: 11251ebd7feff449db991e3ba437069d,
-        type: 3}
-      propertyPath: m_Name
-      value: State_Poison
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 11251ebd7feff449db991e3ba437069d, type: 3}
 --- !u!1 &3469110108837514420
 GameObject:
   m_ObjectHideFlags: 0
@@ -858,6 +842,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e82240e7c4dc4b5d9299261ffbab2b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
+  scriptableObjEnemyData: {fileID: 0}
   chase: 0
   mIsDie: 0
+  nav: {fileID: 0}

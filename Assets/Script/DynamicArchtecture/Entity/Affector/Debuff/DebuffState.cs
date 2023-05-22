@@ -6,4 +6,6 @@ using UnityEngine.Events;
 public abstract class DebuffState {
     public List<IEnumerator> AsyncAffectorCoroutine;
     public List<UnityAction> Affector;
+    public PipelineData pipelineData;
+    public EntityData entityData;
 }
