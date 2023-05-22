@@ -21,7 +21,7 @@ public class HealthBar : MonoBehaviour
     private void Start(){
         entityData = pipelineAddressable.GetEntityData();
         pipelineData = pipelineAddressable.GetPipelineData();
-        entityData.UIChangeState += SetSlider;        
+        entityData.UIAffectState += SetSlider;        
     }
 
     private void Update() {

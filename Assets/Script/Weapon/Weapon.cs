@@ -16,12 +16,10 @@ using UnityEngine;
 // 프리펩으로 다양화를 시키겠지.
 // 스크립터블을 없에는 방향으로 생각해보자.
 
-public enum E_WeaponType {
-    melee, ranger, mage
-}
 
 public class Weapon : MonoBehaviour
 {
+    public ScriptableObjWeaponData scriptableObjWeapon;
     public WeaponData weaponData;
     EntityData entityData;
 

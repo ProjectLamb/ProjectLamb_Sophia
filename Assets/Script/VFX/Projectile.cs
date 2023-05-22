@@ -35,7 +35,7 @@ public class Projectile : MonoBehaviour {
             case E_ProjectileType.Attack :
                 int DamageAmount = (int)((this.spawnOwner.Power + this.pipelineData.Power));
                 pipelineAddressable.GetDamaged(DamageAmount, OnHitSubEmmiter);
-                spawnOwner.ProjectileShooter.Invoke(other.gameObject);
+                spawnOwner.ProjectileShootState.Invoke(other.gameObject);
                 break;
             case E_ProjectileType.Nutral :
                 Debug.Log("중립 투사체, 이건 버프용으로도 사용 가능");

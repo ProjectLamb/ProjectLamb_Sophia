@@ -11,12 +11,11 @@ public class PlayerData : EntityData {
 //  public float MoveSpeed {get {return mMoveSpeed;} set{mMoveSpeed = value;}}
 //  public float Defence {get {return mDefence;} set{mDefence = value;}}
 //  public float Tenacity {get {return mTenacity;} set{mTenacity = value;}}
-    public int MaxStamina {get; set;}
-    public int CurStamina {get; set;}
-    public float Power {get; set;}
-    public int Luck {get; set;}
-    public int Gear {get; set;}
-    public int Frag {get; set;}
+    [field : SerializeField]public int MaxStamina {get; set;}
+    [field : SerializeField]public int CurStamina {get; set;}
+    [field : SerializeField]public int Luck {get; set;}
+    [field : SerializeField]public int Gear {get; set;}
+    [field : SerializeField]public int Frag {get; set;}
 //  public UnityAction mMoveState;
 //  public UnityAction mAttackState;
 //  public UnityAction mHitState;

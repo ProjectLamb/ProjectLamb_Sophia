@@ -8,7 +8,7 @@ using Random = UnityEngine.Random;
 
 public class Equipment_009 : AbstractEquipment { //, IPlayerDataApplicant{
     
-    private ActionRef<int> HitState;
+    private UnityActionRef<int> HitState;
     private void Awake() {
         InitEquipment();
     }

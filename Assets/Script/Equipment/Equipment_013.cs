@@ -23,11 +23,11 @@ public class Equipment_013 : AbstractEquipment { //, IPlayerDataApplicant{
     public override void Equip(Player _player, int _selectIndex) {
         if(!this.mIsInitialized){InitEquipment();}
         this.player = _player;
-        _player.playerData.ProjectileShooter += Projectile;
+        _player.playerData.ProjectileShootState += Projectile;
     }
 
     public override void Unequip(Player _player, int _selectIndex){
-        _player.playerData.ProjectileShooter -= Projectile;
+        _player.playerData.ProjectileShootState-= Projectile;
     }
 
     //디버프를 얘가 만든다면?

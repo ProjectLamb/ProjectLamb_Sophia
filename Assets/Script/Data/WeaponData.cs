@@ -3,15 +3,15 @@ using UnityEngine;
 using UnityEngine.Events;
 
 public class WeaponData {
-    public E_WeaponType WeaponType;
-    public string WeaponName;
-    public string WeaponDescription;
+    [field : SerializeField] public E_WeaponType WeaponType;
+    [field : SerializeField] public string WeaponName;
+    [field : SerializeField] public string WeaponDescription;
     
-    public float DamageRatio {get; set;}
-    public float WeaponDelay {get; set;}
-    public float Range {get; set;}
+    [field : SerializeField] public float DamageRatio {get; set;}
+    [field : SerializeField] public float WeaponDelay {get; set;}
+    [field : SerializeField] public float Range {get; set;}
         
-            private int mAmmo;
+    [field : SerializeField] private int mAmmo;
 
     public int Ammo {
         get{
@@ -28,6 +28,7 @@ public class WeaponData {
         }
     }
 
+    [field : SerializeField]
     public List<Projectile> Projectile;
 
     public UnityAction UseState;
