@@ -33,9 +33,9 @@ public class Sandbag : Enemy
 
     protected override void Awake() {
         TryGetComponent<VisualModulator>(out this.visualModulator);
-        TryGetComponent<Rigidbody>(out this.rigidBody);
+        TryGetComponent<Rigidbody>(out this.entityRigidbody);
         TryGetComponent<NavMeshAgent>(out this.nav);
-        TryGetComponent<Collider>(out collider);
+        TryGetComponent<Collider>(out this.entityCollider);
         
         model.TryGetComponent<Animator>(out this.animator);
         model.TryGetComponent<AnimEventInvoker>(out this.animEventInvoker);
@@ -44,10 +44,8 @@ public class Sandbag : Enemy
         this.enemyData.DieParticle.GetComponent<ParticleCallback>().onDestroyEvent.AddListener(DestroySelf);
         this.objectiveTarget = GameManager.Instance.playerGameObject.transform;
         
-        //healthBar.pipelineData = this.pipelineData;
     }
     private void Start() {
-        Debug.Log("Catch");
         animEventInvoker.animCallback[(int)Enum_AnimState.Attack].AddListener( () => {
             projectileBucket.ProjectileInstantiator(projectiles[0], E_ProjectileType.Attack);
         });
@@ -76,27 +74,24 @@ public class Sandbag : Enemy
     public override void Die(){ 
         enemyData.DieState.Invoke();
         isDie = true;
-        collider.enabled = false;
+        this.entityCollider.enabled = false;
         animator.SetTrigger("DoDie");
         visualModulator.vfxModulator.VFXInstantiator(enemyData.DieParticle);
     }
 
-    public void DestroySelf(){
-        Destroy(gameObject);
-    }
+    
+    //public void AffectHandler(List<UnityAction> _Action) {
+    //    _Action.ForEach(E => E.Invoke());
+    //}
+    
+    //public void AsyncAffectHandler(List<IEnumerator> _Coroutine) {
+    //    _Coroutine.ForEach(E => StartCoroutine(E));
+    //}
 
-    public void AffectHandler(List<UnityAction> _Action) {
-        _Action.ForEach(E => E.Invoke());
-    }
-
-    public void AsyncAffectHandler(List<IEnumerator> _Coroutine) {
-        _Coroutine.ForEach(E => StartCoroutine(E));
-    }
-
-    private void Update() {
-        if(!mIsDie)transform.LookAt(LookAtTarget);
-    }
-
+    //private void Update() {
+    //    if(!this.isDie)transform.LookAt(objectiveTarget);
+    //}
+    
     [ContextMenu("평타", false, int.MaxValue)]
     void InstantiateProjectiles1(){
         //Find Instantiate On This Animator Events;

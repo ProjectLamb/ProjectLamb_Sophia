@@ -11,6 +11,7 @@ using UnityEngine.Events;
 /// </summary>
 public class Enemy : MonoBehaviour, IPipelineAddressable
 {
+    public ScriptableObjEntityData scriptableObjEnemyData;
     [field : SerializeField]
     public EnemyData enemyData;
     public EntityData GetEntityData() {return this.enemyData;}
@@ -20,8 +21,8 @@ public class Enemy : MonoBehaviour, IPipelineAddressable
     public PipelineData GetPipelineData(){return this.pipelineData;}
 
     public GameObject model;
-    public Rigidbody rigidBody;
-    public Collider collider;
+    public Rigidbody entityRigidbody;
+    public Collider entityCollider;
 
     public NavMeshAgent nav;
     public Transform objectiveTarget;
@@ -40,7 +41,7 @@ public class Enemy : MonoBehaviour, IPipelineAddressable
         enemyData.DieState.Invoke();
         isDie = true;
         chase = false;
-        rigidBody.velocity = Vector3.zero;
+        entityRigidbody.velocity = Vector3.zero;
         Invoke("DestroySelf", 0.5f);
     }
 
@@ -73,13 +74,14 @@ public class Enemy : MonoBehaviour, IPipelineAddressable
     protected virtual void Awake()
     {
         TryGetComponent<VisualModulator>(out visualModulator);
-        TryGetComponent<Rigidbody>(out rigidBody);
+        TryGetComponent<Rigidbody>(out entityRigidbody);
         TryGetComponent<NavMeshAgent>(out nav);
-        TryGetComponent<Collider>(out collider);
+        TryGetComponent<Collider>(out entityCollider);
         
         model.TryGetComponent<Animator>(out animator);
         model.TryGetComponent<AnimEventInvoker>(out animEventInvoker);
         
+        enemyData = new EnemyData(scriptableObjEnemyData);
         pipelineData = new PipelineData();
         enemyData.DieParticle.GetComponent<ParticleCallback>().onDestroyEvent.AddListener(DestroySelf);
 

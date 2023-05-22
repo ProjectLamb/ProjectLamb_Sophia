@@ -24,8 +24,7 @@ public class Player : MonoBehaviour, IPipelineAddressable
     *
     *********************************************************************************/
 
-    //[HideInInspector]
-    //public PlayerData playerData;           // 플레이어가 가지는 모든 데이터
+    public ScriptableObjPlayerData scriptableObjPlayerData;
     [SerializeField]
     public PlayerData playerData; //플레이어의 함수로 인해 변할 수 있다.
         public EntityData GetEntityData() {return playerData;}
@@ -83,6 +82,7 @@ public class Player : MonoBehaviour, IPipelineAddressable
     *********************************************************************************/
     void Awake()
     {
+        playerData = new PlayerData(scriptableObjPlayerData);
         pipelineData = new PipelineData();
         if (!TryGetComponent<Rigidbody>(out mRigidbody)) { Debug.Log("컴포넌트 로드 실패 : Rigidbody"); }
         if (!TryGetComponent<VisualModulator>(out visualModulator)) { Debug.Log("컴포넌트 로드 실패 : VisualModulator"); }
