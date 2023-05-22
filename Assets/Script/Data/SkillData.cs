@@ -3,16 +3,14 @@ using UnityEngine.Events;
 
 [System.Serializable]
 public class SkillData {
-    public E_SkillType SkillType;
-    public string SkillName;
-    public SkillInfo[] SkillInfos;
-    public string SkillDescription;
-
-    public Projectile SkillProjectile;
-    
-    public UnityAction UseState;
-    public UnityAction ChangeState;
-    public UnityAction LevelUpState;
+    [field : SerializeField]public E_SkillType SkillType;
+    [field : SerializeField]public string SkillName;
+    [field : SerializeField]public SkillInfo[] SkillInfos;
+    [field : SerializeField]public string SkillDescription;
+    [field : SerializeField]public Projectile SkillProjectile;
+    [field : SerializeField]public UnityAction UseState;
+    [field : SerializeField]public UnityAction ChangeState;
+    [field : SerializeField]public UnityAction LevelUpState;
     
     public SkillData(ScriptableObjSkillData _skillScriptable) {
         SkillType = _skillScriptable.skillType;

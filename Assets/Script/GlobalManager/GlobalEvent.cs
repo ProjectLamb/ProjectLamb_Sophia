@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public delegate void ActionRef<T>(ref T item);
+public delegate void UnityActionRef<T>(ref T input);
 
 public class GlobalEvent : MonoBehaviour
 {
