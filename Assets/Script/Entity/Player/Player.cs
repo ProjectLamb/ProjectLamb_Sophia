@@ -14,7 +14,6 @@ using Random = UnityEngine.Random;
 /// </summary>
 
 
-
 public class Player : MonoBehaviour, IPipelineAddressable
 {
     /////////////////////////////////////////////////////////////////////////////////
@@ -24,7 +23,6 @@ public class Player : MonoBehaviour, IPipelineAddressable
     *
     *********************************************************************************/
 
-    public ScriptableObjPlayerData scriptableObjPlayerData;
     [SerializeField]
     public PlayerData playerData; //플레이어의 함수로 인해 변할 수 있다.
         public EntityData GetEntityData() {return playerData;}
@@ -32,8 +30,8 @@ public class Player : MonoBehaviour, IPipelineAddressable
     //고유성을 가지고 있다는것이 특징이라서 Static하면 안되지 않을까?
     
     [field : SerializeField]
-    public PipelineData pipelineData; //무조건 외부의 작용으로 인해 변하는것이다.
-        public PipelineData GetPipelineData() {return pipelineData;}
+    public AddingData addingData; //무조건 외부의 작용으로 인해 변하는것이다.
+        public AddingData GetAddingData() {return addingData;}
 
     [SerializeField]
     public Weapon weapon;
@@ -82,8 +80,7 @@ public class Player : MonoBehaviour, IPipelineAddressable
     *********************************************************************************/
     void Awake()
     {
-        playerData = new PlayerData(scriptableObjPlayerData);
-        pipelineData = new PipelineData();
+        addingData = new AddingData();
         if (!TryGetComponent<Rigidbody>(out mRigidbody)) { Debug.Log("컴포넌트 로드 실패 : Rigidbody"); }
         if (!TryGetComponent<VisualModulator>(out visualModulator)) { Debug.Log("컴포넌트 로드 실패 : VisualModulator"); }
         isPortal = true;
@@ -92,7 +89,7 @@ public class Player : MonoBehaviour, IPipelineAddressable
 
     [ContextMenu("파이프라인 출력")]
     public void PrintPipeline(){
-        Debug.Log(pipelineData.ToString());
+        Debug.Log(addingData.ToString());
     }
 
     /// <summary>
@@ -104,7 +101,7 @@ public class Player : MonoBehaviour, IPipelineAddressable
     {
         playerData.MoveState.Invoke();
 
-        float MoveSpeed = playerData.MoveSpeed + pipelineData.MoveSpeed;
+        float MoveSpeed = playerData.MoveSpeed + addingData.MoveSpeed;
         
         Vector3 AngleToVector(float _angle) {
             _angle *= Mathf.Deg2Rad;
@@ -131,7 +128,7 @@ public class Player : MonoBehaviour, IPipelineAddressable
             }
         }
     }
-
+    
     /// <summary>
     /// 이 함수가 실행되면 대쉬가 된다.
     /// /// </summary>
@@ -170,14 +167,14 @@ public class Player : MonoBehaviour, IPipelineAddressable
     {
         playerData.AttackState.Invoke();
         anim.SetTrigger("DoAttack");
-        Turning(() => weapon?.Use(pipelineData));
+        Turning(() => weapon?.Use(addingData));
     }
     
     public void Skill(string key)
     {
         if(skills[(int)E_SkillKey.Q]) {
             playerData.SkillState.Invoke();
-            Turning(() => skills[(int)E_SkillKey.Q].Use(pipelineData));
+            Turning(() => skills[(int)E_SkillKey.Q].Use(addingData));
         }
     }
 
@@ -203,7 +200,9 @@ public class Player : MonoBehaviour, IPipelineAddressable
 
     void Turning(UnityAction action)
     {
-        float camRayLength = 100f;          // 씬으로 보내는 카메라의 Ray 길이
+        //100으로 해서 바닥을 인식 못했었다. 더 길게 하는게 좋다.
+        float camRayLength = 500f;          // 씬으로 보내는 카메라의 Ray 길이
+
         // 마우스 커서에서 씬을 향해 발사되는 Ray 생성
         Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
 

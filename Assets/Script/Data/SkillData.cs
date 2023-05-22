@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -7,18 +8,13 @@ public class SkillData {
     [field : SerializeField]public string SkillName;
     [field : SerializeField]public SkillInfo[] SkillInfos;
     [field : SerializeField]public string SkillDescription;
-    [field : SerializeField]public Projectile SkillProjectile;
+    [field : SerializeField]public List<Projectile> SkillProjectile;
     [field : SerializeField]public UnityAction UseState;
     [field : SerializeField]public UnityAction ChangeState;
     [field : SerializeField]public UnityAction LevelUpState;
     
-    public SkillData(ScriptableObjSkillData _skillScriptable) {
-        SkillType = _skillScriptable.skillType;
-        SkillName = _skillScriptable.skillName;
-        SkillDescription = _skillScriptable.skillDescription;
-        SkillInfos = _skillScriptable.skillInfo;
-        SkillProjectile = _skillScriptable.projectile;
-        
+    public SkillData() {
+        SkillProjectile = new List<Projectile>();
         UseState = () => {};
         ChangeState = () => {};
         LevelUpState = () => {};

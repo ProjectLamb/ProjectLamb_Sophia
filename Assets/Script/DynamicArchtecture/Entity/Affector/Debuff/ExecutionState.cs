@@ -19,7 +19,7 @@ public class ExecutionState : DebuffState{
         pipelineAddressable = _target.GetComponent<IPipelineAddressable>();
         visuallyInteractable = _target.GetComponent<IVisuallyInteractable>();
 
-        this.pipelineData = pipelineAddressable.GetPipelineData();
+        this.addingData = pipelineAddressable.GetAddingData();
         this.entityData   = pipelineAddressable.GetEntityData();
         this.AsyncAffectorCoroutine = new List<IEnumerator>();
         this.Affector = new List<UnityAction>();
@@ -40,7 +40,7 @@ public class ExecutionState : DebuffState{
     
     IEnumerator VisualActivate(){
         visuallyInteractable.Interact(this.debuffData);
-        yield return YieldInstructionCache.WaitForSeconds(debuffData.durationTime * (1 - this.pipelineData.Tenacity));
+        yield return YieldInstructionCache.WaitForSeconds(debuffData.durationTime * (1 - this.addingData.Tenacity));
         visuallyInteractable.Revert();
     }
 }

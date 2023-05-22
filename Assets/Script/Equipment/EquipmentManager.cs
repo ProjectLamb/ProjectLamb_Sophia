@@ -17,7 +17,7 @@ public class EquipmentManager : MonoBehaviour{
         }
     }
 
-    public void CalculatePipeline(){
+    public void CalculateAddingData(){
         
     }
 
