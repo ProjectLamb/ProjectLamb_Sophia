@@ -25,11 +25,11 @@ public class Equipment_022 : AbstractEquipment { //, IPlayerDataApplicant{
     public override void Equip(Player _player, int _selectIndex) {
         if(!this.mIsInitialized){InitEquipment();}        
         this.player = _player;
-        _player.playerData.ProjectileShooter += Projectile;
+        _player.playerData.ProjectileShootState += Projectile;
     }
 
     public override void Unequip(Player _player, int _selectIndex){
-        _player.playerData.ProjectileShooter -= Projectile;
+        _player.playerData.ProjectileShootState -= Projectile;
     }
 
     public void Freeze(GameObject _target){

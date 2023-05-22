@@ -535,12 +535,12 @@ PrefabInstance:
     - target: {fileID: 2735030516623181699, guid: c6c8706211f194706b90866ad4106f8a,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2735030516623181702, guid: c6c8706211f194706b90866ad4106f8a,
         type: 3}
       propertyPath: m_RootOrder
-      value: 9
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 2735030516623181702, guid: c6c8706211f194706b90866ad4106f8a,
         type: 3}
@@ -668,6 +668,37 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4859b310e36d54e0686d796ce572b21f, type: 3}
+--- !u!1 &2120611749
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2120611750}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2120611750
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2120611749}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -152.1, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &61380081815082812
 Transform:
   m_ObjectHideFlags: 0
@@ -1539,6 +1570,11 @@ MonoBehaviour:
     mPower: 0
     mAttackSpeed: 0
     DieParticle: {fileID: 0}
+    <MaxStamina>k__BackingField: 0
+    <CurStamina>k__BackingField: 0
+    <Luck>k__BackingField: 0
+    <Gear>k__BackingField: 0
+    <Frag>k__BackingField: 0
   pipelineData:
     <MaxHP>k__BackingField: 0
     <CurHP>k__BackingField: 0
@@ -2400,7 +2436,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a591cbeee26c14dc0b04a05bdcd8434c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scriptableObjSkillData: {fileID: 11400000, guid: 4ec956ae07ec341c5b05c99e597db570,
+  scriptableObjSkillData: {fileID: 11400000, guid: 352e37fd5b14c4178a07f6488f7c4d19,
     type: 2}
 --- !u!1 &5770372847655980825
 GameObject:

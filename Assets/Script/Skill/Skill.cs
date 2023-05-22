@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Skill : MonoBehaviour
 {
-    
+    public ScriptableObjSkillData scriptableObjSkillData;
     [HideInInspector]
     public WeaponData weaponData;
     public static SkillData newSkillData;
@@ -16,7 +16,7 @@ public class Skill : MonoBehaviour
     private void Awake() {
         //if(!TryGetComponent<WeaponData>(out weaponData)) {Debug.Log("컴포넌트 로드 실패 : WeaponData");}
         //if(!TryGetComponent<SkillData>(out skillData)) {Debug.Log("컴포넌트 로드 실패 : SkillData");}
-        //newSkillData = new SkillData(scriptableObjSkillData);
+        newSkillData = new SkillData(scriptableObjSkillData);
     }
     public void Start(){
         entityData = GetComponentInParent<IPipelineAddressable>().GetEntityData();

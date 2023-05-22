@@ -7,7 +7,7 @@ using UnityEngine.Events;
 
 public class Equipment_004 : AbstractEquipment { //, IPlayerDataApplicant{
     
-    private ActionRef<int> HitState;
+    private UnityActionRef<int> HitState;
     private void Awake() {
         InitEquipment();
     }
