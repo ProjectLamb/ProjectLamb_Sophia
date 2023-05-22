@@ -11,37 +11,48 @@ using UnityEngine.Events;
 /// </summary>
 public class Enemy : MonoBehaviour, IPipelineAddressable
 {
-    public ScriptableObjEntityData scriptableObjEnemyData;
-    EnemyData enemyData;
+    [field : SerializeField]
+    public EnemyData enemyData;
     public EntityData GetEntityData() {return this.enemyData;}
-    PipelineData pipelineData;
-    public PipelineData GetPipelineData(){return this.pipelineData;}
     
-    Transform target;
+    [field : SerializeField]
+    public PipelineData pipelineData;
+    public PipelineData GetPipelineData(){return this.pipelineData;}
 
-    public bool chase;
-    public bool mIsDie;
+    public GameObject model;
+    public Rigidbody rigidBody;
+    public Collider collider;
 
     public NavMeshAgent nav;
-    Rigidbody mRigidBody;
+    public Transform objectiveTarget;
+    public bool chase;
+    public bool isDie;
 
-    VisualModulator visualModulator;
+    public Projectile[] projectiles;
+
+    public ProjectileBucket projectileBucket;
+    public Animator animator;
+    public AnimEventInvoker animEventInvoker;
+    public VisualModulator visualModulator;
 
     public virtual void Die()
     {
         enemyData.DieState.Invoke();
+        isDie = true;
         chase = false;
-        mRigidBody.velocity = Vector3.zero;
-        Destroy(gameObject, 0.5f);
+        rigidBody.velocity = Vector3.zero;
+        Invoke("DestroySelf", 0.5f);
     }
 
     public virtual void GetDamaged(int _amount){
-        enemyData.HitState.Invoke();
+        if(isDie == true) {return;}
+        enemyData.HitStateRef.Invoke(ref _amount);
         enemyData.CurHP -= _amount;
         if (enemyData.CurHP <= 0) {this.Die();}
     }
     public virtual void GetDamaged(int _amount, GameObject particle){
-        enemyData.HitState.Invoke();
+        if(isDie == true) {return;}
+        enemyData.HitStateRef.Invoke(ref _amount);
         enemyData.CurHP -= _amount;
         visualModulator.Interact(particle);
         if (enemyData.CurHP <= 0) {this.Die();}
@@ -54,38 +65,51 @@ public class Enemy : MonoBehaviour, IPipelineAddressable
         _coroutine.ForEach(E => StartCoroutine(E));
     }
 
-    void Awake()
-    {
-
-        TryGetComponent<VisualModulator>(out visualModulator);
-        if(!TryGetComponent<Rigidbody>(out mRigidBody)){Debug.Log("컴포넌트 로드 실패 : Rigidbody");}
-        if(!TryGetComponent<NavMeshAgent>(out nav)){Debug.Log("컴포넌트 로드 실패 : NavMeshAgent");}
-        pipelineData = new PipelineData();
-        chase = false;
-        target = GameManager.Instance?.playerGameObject?.transform;
-        mIsDie = false;
+    public void DestroySelf(){
+        Destroy(gameObject);
     }
 
-    void FixedUpdate()
+
+    protected virtual void Awake()
     {
+        TryGetComponent<VisualModulator>(out visualModulator);
+        TryGetComponent<Rigidbody>(out rigidBody);
+        TryGetComponent<NavMeshAgent>(out nav);
+        TryGetComponent<Collider>(out collider);
+        
+        model.TryGetComponent<Animator>(out animator);
+        model.TryGetComponent<AnimEventInvoker>(out animEventInvoker);
+        
+        pipelineData = new PipelineData();
+        enemyData.DieParticle.GetComponent<ParticleCallback>().onDestroyEvent.AddListener(DestroySelf);
+
+        chase = false;
+        objectiveTarget = GameManager.Instance?.playerGameObject?.transform;
+        isDie = false;
+    }
+
+    protected virtual void FixedUpdate()
+    {
+        /***************************/
         if(GameManager.Instance?.globalEvent.IsGamePaused == true){return;}
-        if (chase)
-        {
-            nav.SetDestination(target.position);
+        /***************************/
+        if (chase) {
+            nav.SetDestination(objectiveTarget.position);
         }
     }
 
     // Update is called once per frame
-    void Update()
+    protected virtual void Update()
     {
+        /***************************/
         if(GameManager.Instance?.globalEvent.IsGamePaused == true){return;}
-
+        /***************************/
         if (chase) { nav.enabled = true;}
         else {nav.enabled = false;}
-        nav.speed = enemyData.MoveSpeed;
+        nav.speed = (enemyData.MoveSpeed + pipelineData.MoveSpeed);
     }
 
-    private void OnDestroy() {
+    protected virtual void OnDestroy() {
         if(transform.parent.parent == null) return;
         if(!transform.parent.parent.TryGetComponent<StageGenerator>(out StageGenerator roomGenerator)){Debug.Log("컴포넌트 로드 실패 : NavMeshAgent");}
         roomGenerator.DecreaseCurrentMobCount();

@@ -16,6 +16,9 @@ public class VFXBucket : MonoBehaviour {
         if(particleSystem == null) return;
         ParticleSystem particle = Instantiate(particleSystem, transform);
         particle.transform.localScale *= transform.localScale.z;
+        if(particleSystem.transform.rotation.y < 0){
+            particle.transform.position += transform.position.y * Vector3.down;
+        }
     }    
     public void VFXInstantiator(GameObject obj){
         GameObject vFX = Instantiate(obj, transform);

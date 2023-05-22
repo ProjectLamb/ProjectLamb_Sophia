@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+public delegate void ActionRef<T>(ref T item);
+
 public class GlobalEvent : MonoBehaviour
 {
 
@@ -63,7 +65,6 @@ public class GlobalEvent : MonoBehaviour
         {
             if (!IsGamePaused)
             {
-                Debug.Log(CurrentTimeScale);
                 passedTime += (Time.deltaTime / mDurateTime);
                 ContinouseTimeScale += valueGap * (Time.deltaTime / mDurateTime);
                 CurrentTimeScale = ContinouseTimeScale;

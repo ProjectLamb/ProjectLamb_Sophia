@@ -26,14 +26,15 @@ public class Player : MonoBehaviour, IPipelineAddressable
 
     //[HideInInspector]
     //public PlayerData playerData;           // 플레이어가 가지는 모든 데이터
-    public ScriptableObjPlayerData scriptableObjPlayerData;
     [SerializeField]
     public PlayerData playerData; //플레이어의 함수로 인해 변할 수 있다.
-    public EntityData GetEntityData() {return this.playerData;}
+        public EntityData GetEntityData() {return playerData;}
 
     //고유성을 가지고 있다는것이 특징이라서 Static하면 안되지 않을까?
+    
+    [field : SerializeField]
     public PipelineData pipelineData; //무조건 외부의 작용으로 인해 변하는것이다.
-    public PipelineData GetPipelineData() {return this.pipelineData;}
+        public PipelineData GetPipelineData() {return pipelineData;}
 
     [SerializeField]
     public Weapon weapon;
@@ -82,7 +83,6 @@ public class Player : MonoBehaviour, IPipelineAddressable
     *********************************************************************************/
     void Awake()
     {
-        playerData = new PlayerData(scriptableObjPlayerData);
         pipelineData = new PipelineData();
         if (!TryGetComponent<Rigidbody>(out mRigidbody)) { Debug.Log("컴포넌트 로드 실패 : Rigidbody"); }
         if (!TryGetComponent<VisualModulator>(out visualModulator)) { Debug.Log("컴포넌트 로드 실패 : VisualModulator"); }
@@ -168,28 +168,31 @@ public class Player : MonoBehaviour, IPipelineAddressable
     /// </summary>
     public void Attack()
     {
-        anim.SetTrigger("DoAttack");
         playerData.AttackState.Invoke();
-        Turning(() => weapon?.Use());
+        anim.SetTrigger("DoAttack");
+        Turning(() => weapon?.Use(pipelineData));
     }
     
     public void Skill(string key)
     {
         if(skills[(int)E_SkillKey.Q]) {
             playerData.SkillState.Invoke();
-            Turning(() => skills[(int)E_SkillKey.Q].Use());
+            Turning(() => skills[(int)E_SkillKey.Q].Use(pipelineData));
         }
     }
 
     public void GetDamaged(int _amount){
-        playerData.HitState.Invoke();
         playerData.CurHP -= (int)(_amount * 100/(100 + playerData.Defence));
         
         if(playerData.CurHP <= 0) {Die();}
     }
 
     public void GetDamaged(int _amount, GameObject particle){
-        playerData.HitState.Invoke();
+        //_amount의 값이 갑자기 바뀌어야 한다.
+        playerData.HitStateRef.Invoke(ref _amount);
+        Debug.Log(_amount);
+        if(_amount == 0) return;
+        
         playerData.CurHP -= (int)(_amount * 100/(100+playerData.Defence));
         visualModulator.Interact(particle);
         if(playerData.CurHP <= 0) {Die();}
@@ -233,13 +236,7 @@ public class Player : MonoBehaviour, IPipelineAddressable
     * Modifier
     *
     *********************************************************************************/
-
-    public bool ChanceToDodge(){
-        if(Random.Range(0f, 100f) <= 5f + playerData.Luck){
-            return true;
-        }
-        return false;
-    }
+    
     /*********************************************************************************
     *
     * 장비
