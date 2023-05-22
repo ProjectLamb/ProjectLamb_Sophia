@@ -8,8 +8,8 @@ public class Sandbag : Enemy
 {    
     //public EnemyData enemyData;
     //public EntityData GetEntityData() {return this.enemyData;}
-    //PipelineData pipelineData;
-    //public PipelineData GetPipelineData(){return this.pipelineData;}
+    //AddingData addingData;
+    //public AddingData GetAddingData(){return this.addingData;}
 
     //public GameObject model;
     //Rigidbody RigidBody;
@@ -40,7 +40,7 @@ public class Sandbag : Enemy
         model.TryGetComponent<Animator>(out this.animator);
         model.TryGetComponent<AnimEventInvoker>(out this.animEventInvoker);
         
-        this.pipelineData = new PipelineData();        
+        this.addingData = new AddingData();        
         this.enemyData.DieParticle.GetComponent<ParticleCallback>().onDestroyEvent.AddListener(DestroySelf);
         this.objectiveTarget = GameManager.Instance.playerGameObject.transform;
         

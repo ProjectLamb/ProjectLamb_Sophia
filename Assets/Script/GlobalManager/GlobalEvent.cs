@@ -4,6 +4,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+/// <summary>
+/// Ref, Out에 대한 이해가 필요하다
+/// > 함수 매개변수를 Call by Reference 하기 위해서 사용한다. <br/>
+/// > Call By Value매개변수는 함수값 VS 함수 호출자 위치값 별개의 값이 된다. <br/>
+/// > 따라서 함수에서 변경된값을 외부 호출자 위치에도 적용 시키려면 Ref라는 문법을 써야한다  <br/>
+/// </summary>
+/// <param name="input"></param>
+/// <typeparam name="T"></typeparam>
 public delegate void UnityActionRef<T>(ref T input);
 
 public class GlobalEvent : MonoBehaviour

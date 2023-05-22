@@ -11,11 +11,12 @@ public class PlayerData : EntityData {
 //  public float MoveSpeed {get {return mMoveSpeed;} set{mMoveSpeed = value;}}
 //  public float Defence {get {return mDefence;} set{mDefence = value;}}
 //  public float Tenacity {get {return mTenacity;} set{mTenacity = value;}}
-    [field : SerializeField]public int MaxStamina {get; set;}
-    [field : SerializeField]public int CurStamina {get; set;}
-    [field : SerializeField]public int Luck {get; set;}
-    [field : SerializeField]public int Gear {get; set;}
-    [field : SerializeField]public int Frag {get; set;}
+    [field : SerializeField] public int MaxStamina {get; set;}
+    [field : SerializeField] public int CurStamina {get; set;}
+    [field : SerializeField] public float StaminaRestoreRatio {get; set;}
+    [field : SerializeField] public int Luck {get; set;}
+    [field : SerializeField] public int Gear {get; set;}
+    [field : SerializeField] public int Frag {get; set;}
 //  public UnityAction mMoveState;
 //  public UnityAction mAttackState;
 //  public UnityAction mHitState;
@@ -25,13 +26,7 @@ public class PlayerData : EntityData {
     public UnityAction InteractState;
     public UnityAction UpdateState;
 
-    public PlayerData(ScriptableObjPlayerData _playerScriptable) : base(_playerScriptable) {
-        this.MaxStamina = _playerScriptable.maxStamina;
-        this.CurStamina = this.MaxStamina;
-        this.Power = _playerScriptable.power;
-        this.Luck = _playerScriptable.luck;
-        this.Gear = _playerScriptable.gear;
-        this.Frag = _playerScriptable.frag;
+    public PlayerData() : base() {
         SkillState = () => {};
         InteractState = () => {};
         UpdateState = () => {};

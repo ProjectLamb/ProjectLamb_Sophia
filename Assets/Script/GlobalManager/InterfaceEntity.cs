@@ -35,5 +35,5 @@ public interface ColliderHandeler{
 
 public interface IPipelineAddressable : IDamagable, IDieAble, IAffectable {
     public EntityData GetEntityData();
-    public PipelineData GetPipelineData();
+    public AddingData GetAddingData();
 }

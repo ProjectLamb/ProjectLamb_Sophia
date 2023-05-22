@@ -20,14 +20,14 @@ public class Equipment_012 : AbstractEquipment { //, IPlayerDataApplicant{
 
     public override void Equip(Player _player, int _selectIndex) {
         if(!this.mIsInitialized){InitEquipment();}
-        _player.pipelineData.MaxHP   += 10;
-        _player.pipelineData.Power   += 10;
+        _player.addingData.MaxHP   += 10;
+        _player.addingData.Power   += 10;
         _player.transform.localScale += _player.transform.localScale * 0.25f;
     }
 
     public override void Unequip(Player _player, int _selectIndex){
-        _player.pipelineData.MaxHP   -= 10;
-        _player.pipelineData.Power   -= 10;
+        _player.addingData.MaxHP   -= 10;
+        _player.addingData.Power   -= 10;
         _player.transform.localScale -= _player.transform.localScale * 0.25f;
     }
 }

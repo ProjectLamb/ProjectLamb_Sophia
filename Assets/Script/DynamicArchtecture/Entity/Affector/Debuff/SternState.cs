@@ -18,7 +18,7 @@ public class SternState : DebuffState{
         debuffData = GlobalModifierResources.Instance.debuffDatas[(int)E_DebuffState.Stern];
         pipelineAddressable = _target.GetComponent<IPipelineAddressable>();
         visuallyInteractable = _target.GetComponent<IVisuallyInteractable>();
-        this.pipelineData = pipelineAddressable.GetPipelineData();
+        this.addingData = pipelineAddressable.GetAddingData();
         this.entityData   = pipelineAddressable.GetEntityData();
         this.AsyncAffectorCoroutine = new List<IEnumerator>();
         this.Affector = new List<UnityAction>();
@@ -31,14 +31,14 @@ public class SternState : DebuffState{
     }
 
     IEnumerator SetStern(){
-        this.pipelineData.MoveSpeed = -entityData.MoveSpeed;
-        yield return YieldInstructionCache.WaitForSeconds(debuffData.durationTime * (1 - this.pipelineData.Tenacity));
-        this.pipelineData.MoveSpeed = 0;
+        this.addingData.MoveSpeed = -entityData.MoveSpeed;
+        yield return YieldInstructionCache.WaitForSeconds(debuffData.durationTime * (1 - this.addingData.Tenacity));
+        this.addingData.MoveSpeed = 0;
     }
     
     IEnumerator VisualActivate(){
         visuallyInteractable.Interact(this.debuffData);
-        yield return YieldInstructionCache.WaitForSeconds(debuffData.durationTime * (1 - this.pipelineData.Tenacity));
+        yield return YieldInstructionCache.WaitForSeconds(debuffData.durationTime * (1 - this.addingData.Tenacity));
         visuallyInteractable.Revert();
     }
 }

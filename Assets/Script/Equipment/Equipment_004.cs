@@ -21,11 +21,11 @@ public class Equipment_004 : AbstractEquipment { //, IPlayerDataApplicant{
     }
     public override void Equip(Player _player, int _selectIndex) {
         if(!this.mIsInitialized){InitEquipment();}
-        _player.pipelineData.Power += (int)(_player.playerData.Power * 0.1f);
+        _player.addingData.Power += (int)(_player.playerData.Power * 0.1f);
         _player.playerData.HitStateRef += HitState;
     }
     public override void Unequip(Player _player, int _selectIndex){
-        _player.pipelineData.Power -= (int)(_player.playerData.Power * 0.1f);
+        _player.addingData.Power -= (int)(_player.playerData.Power * 0.1f);
         _player.playerData.HitStateRef -= HitState;
     }
     public void MoreDamage(ref int _amount) {
