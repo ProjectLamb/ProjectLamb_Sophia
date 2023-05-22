@@ -18,12 +18,12 @@ public class Equipment_007 : AbstractEquipment { //, IPlayerDataApplicant{
     }
     public override void Equip(Player _player, int _selectIndex) {
         if(!this.mIsInitialized){InitEquipment();}
-        _player.pipelineData.MaxHP -= 10;
-        _player.pipelineData.Tenacity = 0.5f;
+        _player.addingData.MaxHP -= 10;
+        _player.addingData.Tenacity = 0.5f;
     }
 
     public override void Unequip(Player _player, int _selectIndex){
-        _player.pipelineData.MaxHP += 10;
-        _player.pipelineData.Tenacity = 0;
+        _player.addingData.MaxHP += 10;
+        _player.addingData.Tenacity = 0;
     }
 }

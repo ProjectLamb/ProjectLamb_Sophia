@@ -34,16 +34,11 @@ public abstract class EntityData {
     public UnityAction PhyiscTriggerState;// 콜라이더 닿으면
     public UnityAction DieState;
     public UnityAction<GameObject> ProjectileShootState;
+    
     public UnityActionRef<int> HitStateRef;
     public UnityAction UIAffectState;
     
-    public EntityData(ScriptableObjEntityData _entityScriptable) {
-        MaxHP           = _entityScriptable.maxHP;
-        CurHP           = MaxHP;
-        MoveSpeed       = _entityScriptable.moveSpeed;
-        Defence         = _entityScriptable.defence;
-        Tenacity        = _entityScriptable.tenacity;
-        DieParticle     = _entityScriptable.dieParticle;
+    public EntityData() {
         MoveState       = () => {};
         AttackState     = () => {}; 
         HitState        = () => {};

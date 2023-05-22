@@ -2,6 +2,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+public enum E_WeaponType {
+    melee, ranger, mage
+}
+
+[System.Serializable]
 public class WeaponData {
     [field : SerializeField] public E_WeaponType WeaponType;
     [field : SerializeField] public string WeaponName;
@@ -29,26 +34,15 @@ public class WeaponData {
     }
 
     [field : SerializeField]
-    public List<Projectile> Projectile;
+    public List<Projectile> AttackProjectiles;
 
     public UnityAction UseState;
     public UnityAction ChangeState;
     public UnityAction ReLoadState; 
 
-    public WeaponData(ScriptableObjWeaponData _weaponScriptable) {
-        this.WeaponType = _weaponScriptable.weaponType;
-        this.WeaponName = _weaponScriptable.weaponName;
-        this.WeaponDescription = _weaponScriptable.weaponDescription;
-        this.DamageRatio = _weaponScriptable.damageRatio;
-        this.WeaponDelay = _weaponScriptable.weaponDelay;
-        this.Range = _weaponScriptable.range;
-        this.Projectile = new List<Projectile>(_weaponScriptable.projectiles);
+    public WeaponData() {
+        this.AttackProjectiles = new List<Projectile>();
         UseState = () => {};
         ChangeState = () => {};
-
-        if(WeaponType == E_WeaponType.ranger){
-            this.Ammo = _weaponScriptable.ammo;
-            ReLoadState = () => {};
-        }
     }
 }

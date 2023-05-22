@@ -11,14 +11,13 @@ using UnityEngine.Events;
 /// </summary>
 public class Enemy : MonoBehaviour, IPipelineAddressable
 {
-    public ScriptableObjEntityData scriptableObjEnemyData;
     [field : SerializeField]
     public EnemyData enemyData;
     public EntityData GetEntityData() {return this.enemyData;}
     
     [field : SerializeField]
-    public PipelineData pipelineData;
-    public PipelineData GetPipelineData(){return this.pipelineData;}
+    public AddingData addingData;
+    public AddingData GetAddingData(){return this.addingData;}
 
     public GameObject model;
     public Rigidbody entityRigidbody;
@@ -80,9 +79,8 @@ public class Enemy : MonoBehaviour, IPipelineAddressable
         
         model.TryGetComponent<Animator>(out animator);
         model.TryGetComponent<AnimEventInvoker>(out animEventInvoker);
-        
-        enemyData = new EnemyData(scriptableObjEnemyData);
-        pipelineData = new PipelineData();
+
+        addingData = new AddingData();
         enemyData.DieParticle.GetComponent<ParticleCallback>().onDestroyEvent.AddListener(DestroySelf);
 
         chase = false;
@@ -108,7 +106,7 @@ public class Enemy : MonoBehaviour, IPipelineAddressable
         /***************************/
         if (chase) { nav.enabled = true;}
         else {nav.enabled = false;}
-        nav.speed = (enemyData.MoveSpeed + pipelineData.MoveSpeed);
+        nav.speed = (enemyData.MoveSpeed + addingData.MoveSpeed);
     }
 
     protected virtual void OnDestroy() {
