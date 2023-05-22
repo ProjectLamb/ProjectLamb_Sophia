@@ -22,8 +22,7 @@ using UnityEngine.Events;
 /// 디버깅 : 모든 멤버를 ToString화 할 수 있다.
 ///     > pipeline.ToString();
 [System.Serializable]
-public class PipelineData {
-    
+public class PipelineData {    
     [field : SerializeField] public int      MaxHP       {get; set;}
     [field : SerializeField] public int      CurHP       {get; set;}
     [field : SerializeField] public float    MoveSpeed   {get; set;}
@@ -31,7 +30,9 @@ public class PipelineData {
     [field : SerializeField] public float    Tenacity    {get; set;}
     [field : SerializeField] public int      MaxStamina  {get; set;}
     [field : SerializeField] public int      CurStamina  {get; set;}
-    [field : SerializeField] public float    Power       {get; set;}
+    [field : SerializeField] public float    StaminaRecoveryRation  {get; set;}
+    [field : SerializeField] public int      Power       {get; set;}
+    [field : SerializeField] public float    AttackSpeed {get; set;}
     [field : SerializeField] public int      Luck        {get; set;}
     [field : SerializeField] public int      Gear        {get; set;}
     [field : SerializeField] public int      Frag        {get; set;}
@@ -48,7 +49,9 @@ public class PipelineData {
         Tenacity    = 0f;
         MaxStamina  = 0;
         CurStamina  = 0;
-        Power       = 0f;
+        StaminaRecoveryRation = 0f;
+        Power       = 0;
+        AttackSpeed = 0f;
         Luck        = 0;
         Gear        = 0;
         Frag        = 0;
@@ -59,7 +62,7 @@ public class PipelineData {
         SkillInfos = new SkillInfo[3];
         for(int i = 0; i < 3; i++){SkillInfos[i] = new SkillInfo();}
     }
-        public static PipelineData operator +(PipelineData x, EntityData y)
+    public static PipelineData operator +(PipelineData x, EntityData y)
     {
         PipelineData res = new PipelineData();
         res.MaxHP = x.MaxHP +y.MaxHP;
@@ -67,6 +70,8 @@ public class PipelineData {
         res.MoveSpeed = x.MoveSpeed +y.MoveSpeed;
         res.Defence = x.Defence +y.Defence;
         res.Tenacity = x.Tenacity +y.Tenacity;
+        res.Power   = x.Power + y.Power;
+        res.AttackSpeed = x.AttackSpeed + y.AttackSpeed;
         return res;
     }
     public static PipelineData operator +(PipelineData x, PlayerData y)
@@ -79,7 +84,8 @@ public class PipelineData {
         res.Tenacity = x.Tenacity +y.Tenacity;
         res.MaxStamina = x.MaxStamina +y.MaxStamina;
         res.CurStamina = x.CurStamina +y.CurStamina;
-        res.Power = x.Power +y.Power;
+        res.Power   = x.Power + y.Power;
+        res.AttackSpeed = x.AttackSpeed + y.AttackSpeed;
         res.Luck = x.Luck +y.Luck;
         res.Gear = x.Gear +y.Gear;
         res.Frag = x.Frag +y.Frag;
@@ -118,6 +124,8 @@ public class PipelineData {
         res.MoveSpeed = x.MoveSpeed *y.MoveSpeed;
         res.Defence = x.Defence *y.Defence;
         res.Tenacity = x.Tenacity *y.Tenacity;
+        res.Power = x.Power * y.Power;
+        res.AttackSpeed = x.AttackSpeed * y.AttackSpeed;
         return res;
     }
     public static PipelineData operator *(PipelineData x, PlayerData y)
@@ -130,7 +138,8 @@ public class PipelineData {
         res.Tenacity = x.Tenacity *y.Tenacity;
         res.MaxStamina = x.MaxStamina *y.MaxStamina;
         res.CurStamina = x.CurStamina *y.CurStamina;
-        res.Power = x.Power *y.Power;
+        res.Power   = x.Power * y.Power;
+        res.AttackSpeed = x.AttackSpeed * y.AttackSpeed;
         res.Luck = x.Luck *y.Luck;
         res.Gear = x.Gear *y.Gear;
         res.Frag = x.Frag *y.Frag;
@@ -166,6 +175,8 @@ public class PipelineData {
         res.MoveSpeed = x.MoveSpeed +y.MoveSpeed;
         res.Defence = x.Defence +y.Defence;
         res.Tenacity = x.Tenacity +y.Tenacity;
+        res.Power = x.Power + y.Power;
+        res.AttackSpeed = x.AttackSpeed + y.AttackSpeed;
         return res;
     }
     public static PipelineData operator +(PlayerData y, PipelineData x)
@@ -179,6 +190,7 @@ public class PipelineData {
         res.MaxStamina = x.MaxStamina +y.MaxStamina;
         res.CurStamina = x.CurStamina +y.CurStamina;
         res.Power = x.Power +y.Power;
+        res.AttackSpeed = x.AttackSpeed +y.AttackSpeed;
         res.Luck = x.Luck +y.Luck;
         res.Gear = x.Gear +y.Gear;
         res.Frag = x.Frag +y.Frag;
@@ -216,7 +228,9 @@ public class PipelineData {
         res.CurHP = x.CurHP *y.CurHP;
         res.MoveSpeed = x.MoveSpeed *y.MoveSpeed;
         res.Defence = x.Defence *y.Defence;
-        res.Tenacity = x.Tenacity *y.Tenacity;
+        res.Tenacity = x.Tenacity *y.Tenacity;        
+        res.Power = x.Power * y.Power;
+        res.AttackSpeed = x.AttackSpeed * y.AttackSpeed;
         return res;
     }
     public static PipelineData operator *(PlayerData y, PipelineData x)
@@ -230,6 +244,7 @@ public class PipelineData {
         res.MaxStamina = x.MaxStamina *y.MaxStamina;
         res.CurStamina = x.CurStamina *y.CurStamina;
         res.Power = x.Power *y.Power;
+        res.AttackSpeed = x.AttackSpeed * y.AttackSpeed;
         res.Luck = x.Luck *y.Luck;
         res.Gear = x.Gear *y.Gear;
         res.Frag = x.Frag *y.Frag;
@@ -257,6 +272,217 @@ public class PipelineData {
         }
         return res;
     }
+    
+        public static PipelineData operator -(PipelineData x, EntityData y)
+    {
+        PipelineData res = new PipelineData();
+        res.MaxHP = x.MaxHP -y.MaxHP;
+        res.CurHP = x.CurHP -y.CurHP;
+        res.MoveSpeed = x.MoveSpeed -y.MoveSpeed;
+        res.Defence = x.Defence -y.Defence;
+        res.Tenacity = x.Tenacity -y.Tenacity;
+        res.Power = x.Power - y.Power;
+        res.AttackSpeed = x.AttackSpeed - y.AttackSpeed;
+        return res;
+    }
+    public static PipelineData operator -(PipelineData x, PlayerData y)
+    {
+        PipelineData res = new PipelineData();
+        res.MaxHP = x.MaxHP -y.MaxHP;
+        res.CurHP = x.CurHP -y.CurHP;
+        res.MoveSpeed = x.MoveSpeed -y.MoveSpeed;
+        res.Defence = x.Defence -y.Defence;
+        res.Tenacity = x.Tenacity -y.Tenacity;
+        res.MaxStamina = x.MaxStamina -y.MaxStamina;
+        res.CurStamina = x.CurStamina -y.CurStamina;
+        res.Power = x.Power -y.Power;
+        res.AttackSpeed = x.AttackSpeed -y.AttackSpeed;
+        res.Luck = x.Luck -y.Luck;
+        res.Gear = x.Gear -y.Gear;
+        res.Frag = x.Frag -y.Frag;
+        return res;
+    }
+    public static PipelineData operator -(PipelineData x, WeaponData y)
+    {
+        PipelineData res = new PipelineData();
+        res.DamageRatio     = x.DamageRatio - y.DamageRatio;
+        res.WeaponDelay     = x.WeaponDelay - y.WeaponDelay;
+        res.Range           = x.Range - y.Range;
+        if(y.WeaponType == E_WeaponType.ranger){
+            res.Ammo= x.Ammo - y.Ammo;
+        }
+        else {
+            Debug.Log("무기가 range가 아니면 Ammo는 더하지 않음");
+        }
+        return res;
+    }
+    public static PipelineData operator -(PipelineData x, SkillData y){
+        PipelineData res = new PipelineData();
+        for(int i = 0; i < 3; i++){
+            for(int j =0; j < 3; j++){
+                res.SkillInfos[i].numericArray[j]   = x.SkillInfos[i].numericArray[j] - y.SkillInfos[i].numericArray[j];
+                res.SkillInfos[i].skillDelay[j]     = x.SkillInfos[i].skillDelay[j] - y.SkillInfos[i].skillDelay[j];
+                res.SkillInfos[i].durateTime[j]     = x.SkillInfos[i].durateTime[j] - y.SkillInfos[i].durateTime[j];
+            }
+        }
+        return res;
+    }
+    public static PipelineData operator /(PipelineData x, EntityData y)
+    {
+        PipelineData res = new PipelineData();
+        res.MaxHP = x.MaxHP /((y.MaxHP < 0.001f)? 1 : y.MaxHP);
+        res.CurHP = x.CurHP /((y.CurHP < 0.001f)? 1 : y.CurHP);
+        res.MoveSpeed = x.MoveSpeed /((y.MoveSpeed < 0.001f)? 1 : y.MoveSpeed);
+        res.Defence = x.Defence /((y.Defence < 0.001f)? 1 : y.Defence);
+        res.Tenacity = x.Tenacity /((y.Tenacity < 0.001f)? 1 : y.Tenacity);
+        res.Power = x.Power / ((y.Power < 0.001f)? 1 : y.Power);
+        res.AttackSpeed = x.AttackSpeed / ((y.AttackSpeed < 0.001f)? 1 : y.AttackSpeed);
+        return res;
+    }
+    public static PipelineData operator /(PipelineData x, PlayerData y)
+    {
+        PipelineData res = new PipelineData();
+        res.MaxHP = x.MaxHP /((y.MaxHP < 0.001f) ? 1 : y.MaxHP);
+        res.CurHP = x.CurHP /((y.CurHP < 0.001f) ? 1 : y.CurHP);
+        res.MoveSpeed = x.MoveSpeed /((y.MoveSpeed < 0.001f) ? 1 : y.MoveSpeed);
+        res.Defence = x.Defence /((y.Defence < 0.001f) ? 1 : y.Defence);
+        res.Tenacity = x.Tenacity /((y.Tenacity < 0.001f) ? 1 : y.Tenacity);
+        res.MaxStamina = x.MaxStamina /((y.MaxStamina < 0.001f) ? 1 : y.MaxStamina);
+        res.CurStamina = x.CurStamina /((y.CurStamina < 0.001f) ? 1 : y.CurStamina);
+        res.Power = x.Power / ((y.Power < 0.001f)? 1 : y.Power);
+        res.AttackSpeed = x.AttackSpeed / ((y.AttackSpeed < 0.001f)? 1 : y.AttackSpeed);
+        res.Luck = x.Luck /((y.Luck < 0.001f) ? 1 : y.Luck);
+        res.Gear = x.Gear /((y.Gear < 0.001f) ? 1 : y.Gear);
+        res.Frag = x.Frag /((y.Frag < 0.001f) ? 1 : y.Frag);
+        return res;
+    }
+    public static PipelineData operator /(PipelineData x, WeaponData y)
+    {
+        PipelineData res = new PipelineData();
+        res.DamageRatio     = x.DamageRatio / ((y.DamageRatio < 0.001f) ? 1 : y.DamageRatio);
+        res.WeaponDelay     = x.WeaponDelay / ((y.WeaponDelay < 0.001f) ? 1 : y.WeaponDelay);
+        res.Range           = x.Range / ((y.Range < 0.001f) ? 1 : y.Range);
+        if(y.WeaponType == E_WeaponType.ranger){
+            res.Ammo= x.Ammo / ((y.Ammo < 0.001f) ? 1 : y.Ammo);
+        }
+        return res;
+    }
+    public static PipelineData operator /(PipelineData x, SkillData y){
+        PipelineData res = new PipelineData();
+        for(int i = 0; i < 3; i++){
+            for(int j =0; j < 3; j++){
+                res.SkillInfos[i].numericArray[j]   = x.SkillInfos[i].numericArray[j] / ((y.SkillInfos[i].numericArray[j] < 0.001f) ? 1 : y.SkillInfos[i].numericArray[j]) ;
+                res.SkillInfos[i].skillDelay[j]     = x.SkillInfos[i].skillDelay[j] / ((y.SkillInfos[i].skillDelay[j] < 0.001f) ? 1 : y.SkillInfos[i].skillDelay[j]) ;
+                res.SkillInfos[i].durateTime[j]     = x.SkillInfos[i].durateTime[j] / ((y.SkillInfos[i].durateTime[j] < 0.001f) ? 1 : y.SkillInfos[i].durateTime[j]) ;
+            }
+        }
+        return res;
+    }
+        public static PipelineData operator -(EntityData x, PipelineData y)
+    {
+        PipelineData res = new PipelineData();
+        res.MaxHP = x.MaxHP -y.MaxHP;
+        res.CurHP = x.CurHP -y.CurHP;
+        res.MoveSpeed = x.MoveSpeed -y.MoveSpeed;
+        res.Defence = x.Defence -y.Defence;
+        res.Tenacity = x.Tenacity -y.Tenacity;
+        res.Power = x.Power - y.Power;
+        res.AttackSpeed = x.AttackSpeed - y.AttackSpeed;
+        return res;
+    }
+    public static PipelineData operator -(PlayerData y, PipelineData x)
+    {
+        PipelineData res = new PipelineData();
+        res.MaxHP = x.MaxHP -y.MaxHP;
+        res.CurHP = x.CurHP -y.CurHP;
+        res.MoveSpeed = x.MoveSpeed -y.MoveSpeed;
+        res.Defence = x.Defence -y.Defence;
+        res.Tenacity = x.Tenacity -y.Tenacity;
+        res.MaxStamina = x.MaxStamina -y.MaxStamina;
+        res.CurStamina = x.CurStamina -y.CurStamina;
+        res.Power = x.Power - y.Power;
+        res.AttackSpeed = x.AttackSpeed - y.AttackSpeed;
+        res.Luck = x.Luck -y.Luck;
+        res.Gear = x.Gear -y.Gear;
+        res.Frag = x.Frag -y.Frag;
+        return res;
+    }
+    public static PipelineData operator -(WeaponData y, PipelineData x)
+    {
+        PipelineData res = new PipelineData();
+        res.DamageRatio     = x.DamageRatio - y.DamageRatio;
+        res.WeaponDelay     = x.WeaponDelay - y.WeaponDelay;
+        res.Range           = x.Range - y.Range;
+        if(y.WeaponType == E_WeaponType.ranger){
+            res.Ammo= x.Ammo - y.Ammo;
+        }
+        else {
+            Debug.Log("무기가 range가 아니면 Ammo는 더하지 않음");
+        }
+        return res;
+    }
+    public static PipelineData operator -(SkillData y, PipelineData x){
+        PipelineData res = new PipelineData();
+        for(int i = 0; i < 3; i++){
+            for(int j =0; j < 3; j++){
+                res.SkillInfos[i].numericArray[j]   = x.SkillInfos[i].numericArray[j] - y.SkillInfos[i].numericArray[j];
+                res.SkillInfos[i].skillDelay[j]     = x.SkillInfos[i].skillDelay[j] - y.SkillInfos[i].skillDelay[j];
+                res.SkillInfos[i].durateTime[j]     = x.SkillInfos[i].durateTime[j] - y.SkillInfos[i].durateTime[j];
+            }
+        }
+        return res;
+    }
+    public static PipelineData operator /(EntityData y, PipelineData x)
+    {
+        PipelineData res = new PipelineData();
+        res.MaxHP = x.MaxHP / ((y.MaxHP < 0.001f) ? 1 : y.MaxHP);
+        res.CurHP = x.CurHP / ((y.CurHP < 0.001f) ? 1 : y.CurHP);
+        res.MoveSpeed = x.MoveSpeed / ((y.MoveSpeed < 0.001f) ? 1 : y.MoveSpeed);
+        res.Defence = x.Defence / ((y.Defence < 0.001f) ? 1 : y.Defence);
+        res.Tenacity = x.Tenacity / ((y.Tenacity < 0.001f) ? 1 : y.Tenacity);
+        res.Power = x.Power - ((y.Power < 0.001f) ? 1 : y.Power);
+        res.AttackSpeed = x.AttackSpeed - ((y.AttackSpeed < 0.001f) ? 1 : y.AttackSpeed);
+        return res;
+    }
+    public static PipelineData operator /(PlayerData y, PipelineData x)
+    {
+        PipelineData res = new PipelineData();
+        res.MaxHP = x.MaxHP / ((y.MaxHP < 0.001f) ? 1 : y.MaxHP);
+        res.CurHP = x.CurHP / ((y.CurHP < 0.001f) ? 1 : y.CurHP);
+        res.MoveSpeed = x.MoveSpeed / ((y.MoveSpeed < 0.001f) ? 1 : y.MoveSpeed);
+        res.Defence = x.Defence / ((y.Defence < 0.001f) ? 1 : y.Defence);
+        res.Tenacity = x.Tenacity / ((y.Tenacity < 0.001f) ? 1 : y.Tenacity);
+        res.MaxStamina = x.MaxStamina / ((y.MaxStamina < 0.001f) ? 1 : y.MaxStamina);
+        res.CurStamina = x.CurStamina / ((y.CurStamina < 0.001f) ? 1 : y.CurStamina);
+        res.Power = x.Power - ((y.Power < 0.001f) ? 1 : y.Power);
+        res.AttackSpeed = x.AttackSpeed - ((y.AttackSpeed < 0.001f) ? 1 : y.AttackSpeed);
+        res.Luck = x.Luck / ((y.Luck < 0.001f) ? 1 : y.Luck);
+        res.Gear = x.Gear / ((y.Gear < 0.001f) ? 1 : y.Gear);
+        res.Frag = x.Frag / ((y.Frag < 0.001f) ? 1 : y.Frag);
+        return res;
+    }
+    public static PipelineData operator /(WeaponData y, PipelineData x)
+    {
+        PipelineData res = new PipelineData();
+        res.DamageRatio     = x.DamageRatio / ((y.DamageRatio < 0.001f) ? 1 : y.DamageRatio);
+        res.WeaponDelay     = x.WeaponDelay / ((y.WeaponDelay < 0.001f) ? 1 : y.WeaponDelay);
+        res.Range           = x.Range / ((y.Range < 0.001f) ? 1 : y.Range);
+        if(y.WeaponType == E_WeaponType.ranger){
+            res.Ammo= x.Ammo / ((y.Ammo < 0.001f) ? 1 : y.Ammo);
+        }
+        return res;
+    }
+    public static PipelineData operator /(SkillData y, PipelineData x){
+        PipelineData res = new PipelineData();
+        for(int i = 0; i < 3; i++){
+            for(int j =0; j < 3; j++){
+                res.SkillInfos[i].numericArray[j]   = x.SkillInfos[i].numericArray[j] / ((y.SkillInfos[i].numericArray[j] < 0.001f) ? 1 : y.SkillInfos[i].numericArray[j]);
+                res.SkillInfos[i].skillDelay[j]     = x.SkillInfos[i].skillDelay[j] / ((y.SkillInfos[i].skillDelay[j] < 0.001f) ? 1 : y.SkillInfos[i].skillDelay[j]);
+                res.SkillInfos[i].durateTime[j]     = x.SkillInfos[i].durateTime[j] / ((y.SkillInfos[i].durateTime[j] < 0.001f) ? 1 : y.SkillInfos[i].durateTime[j]);
+            }
+        }
+        return res;
+    }
     public static PipelineData operator +(PipelineData x, PipelineData y){
         PipelineData res = new PipelineData();
         res.MaxHP       = x.MaxHP       + y.MaxHP;
@@ -267,6 +493,7 @@ public class PipelineData {
         res.MaxStamina  = x.MaxStamina  + y.MaxStamina;
         res.CurStamina  = x.CurStamina  + y.CurStamina;
         res.Power       = x.Power       + y.Power;
+        res.AttackSpeed = x.AttackSpeed + y.AttackSpeed;
         res.Luck        = x.Luck        + y.Luck;
         res.Gear        = x.Gear        + y.Gear;
         res.Frag        = x.Frag        + y.Frag;
@@ -283,6 +510,33 @@ public class PipelineData {
         }
         return res;
     }
+    public static PipelineData operator -(PipelineData x, PipelineData y){
+        PipelineData res = new PipelineData();
+        res.MaxHP       = x.MaxHP       - y.MaxHP;
+        res.CurHP       = x.CurHP       - y.CurHP;
+        res.MoveSpeed   = x.MoveSpeed   - y.MoveSpeed;
+        res.Defence     = x.Defence     - y.Defence;
+        res.Tenacity    = x.Tenacity    - y.Tenacity;
+        res.MaxStamina  = x.MaxStamina  - y.MaxStamina;
+        res.CurStamina  = x.CurStamina  - y.CurStamina;
+        res.Power       = x.Power       - y.Power;
+        res.AttackSpeed = x.AttackSpeed - y.AttackSpeed;
+        res.Luck        = x.Luck        - y.Luck;
+        res.Gear        = x.Gear        - y.Gear;
+        res.Frag        = x.Frag        - y.Frag;
+        res.DamageRatio = x.DamageRatio - y.DamageRatio;
+        res.WeaponDelay = x.WeaponDelay - y.WeaponDelay;
+        res.Range       = x.Range       - y.Range;
+        res.Ammo        = x.Ammo        - y.Ammo;
+        for(int i = 0; i < 3; i++){
+            for(int j = 0; j < 3; j++){
+                res.SkillInfos[i].numericArray[j]   = x.SkillInfos[i].numericArray[j] - y.SkillInfos[i].numericArray[j];
+                res.SkillInfos[i].skillDelay[j]     = x.SkillInfos[i].skillDelay[j] - y.SkillInfos[i].skillDelay[j];
+                res.SkillInfos[i].durateTime[j]     = x.SkillInfos[i].durateTime[j] - y.SkillInfos[i].durateTime[j];
+            }
+        }
+        return res;
+    }
     public static PipelineData operator *(PipelineData x, PipelineData y){
         PipelineData res = new PipelineData();
         res.MaxHP       = x.MaxHP       * y.MaxHP;
@@ -293,6 +547,7 @@ public class PipelineData {
         res.MaxStamina  = x.MaxStamina  * y.MaxStamina;
         res.CurStamina  = x.CurStamina  * y.CurStamina;
         res.Power       = x.Power       * y.Power;
+        res.AttackSpeed = x.AttackSpeed * y.AttackSpeed;
         res.Luck        = x.Luck        * y.Luck;
         res.Gear        = x.Gear        * y.Gear;
         res.Frag        = x.Frag        * y.Frag;
@@ -310,8 +565,36 @@ public class PipelineData {
         return res;
     }
 
+    public static PipelineData operator /(PipelineData x, PipelineData y){
+        PipelineData res = new PipelineData();
+        res.MaxHP       = x.MaxHP       / ((y.MaxHP < 0.001f) ? 1 : y.MaxHP);
+        res.CurHP       = x.CurHP       / ((y.CurHP < 0.001f) ? 1 : y.CurHP);
+        res.MoveSpeed   = x.MoveSpeed   / ((y.MoveSpeed < 0.001f) ? 1 : y.MoveSpeed);
+        res.Defence     = x.Defence     / ((y.Defence < 0.001f) ? 1 : y.Defence);
+        res.Tenacity    = x.Tenacity    / ((y.Tenacity < 0.001f) ? 1 : y.Tenacity);
+        res.MaxStamina  = x.MaxStamina  / ((y.MaxStamina < 0.001f) ? 1 : y.MaxStamina);
+        res.CurStamina  = x.CurStamina  / ((y.CurStamina < 0.001f) ? 1 : y.CurStamina);
+        res.Power       = x.Power       / ((y.Power < 0.001f) ? 1 : y.Power);
+        res.AttackSpeed = x.AttackSpeed / ((y.AttackSpeed < 0.001f) ? 1 : y.AttackSpeed);
+        res.Luck        = x.Luck        / ((y.Luck < 0.001f) ? 1 : y.Luck);
+        res.Gear        = x.Gear        / ((y.Gear < 0.001f) ? 1 : y.Gear);
+        res.Frag        = x.Frag        / ((y.Frag < 0.001f) ? 1 : y.Frag);
+        res.DamageRatio = x.DamageRatio / ((y.DamageRatio < 0.001f) ? 1 : y.DamageRatio);
+        res.WeaponDelay = x.WeaponDelay / ((y.WeaponDelay < 0.001f) ? 1 : y.WeaponDelay);
+        res.Range       = x.Range       / ((y.Range < 0.001f) ? 1 : y.Range);
+        res.Ammo        = x.Ammo        / ((y.Ammo < 0.001f) ? 1 : y.Ammo);
+        for(int i = 0; i < 3; i++){
+            for(int j = 0; j < 3; j++){
+                res.SkillInfos[i].numericArray[j]   = x.SkillInfos[i].numericArray[j] / ((y.SkillInfos[i].numericArray[j] < 0.001f)? 1 : y.SkillInfos[i].numericArray[j]);
+                res.SkillInfos[i].skillDelay[j]     = x.SkillInfos[i].skillDelay[j] / ((y.SkillInfos[i].skillDelay[j] < 0.001f)? 1 : y.SkillInfos[i].skillDelay[j]);
+                res.SkillInfos[i].durateTime[j]     = x.SkillInfos[i].durateTime[j] / ((y.SkillInfos[i].durateTime[j] < 0.001f)? 1 : y.SkillInfos[i].durateTime[j]);
+            }
+        }
+        return res;
+    }
+
     public override string ToString(){
-        string PlayerString = $"MaxHP : {MaxHP}, CurHP : {CurHP}, MoveSpeed : {MoveSpeed}, Defence : {Defence}, Tenacity : {Tenacity}, MaxStamina : {MaxStamina}, CurStamina : {CurStamina}, Power : {Power}, Luck : {Luck}, Gear : {Gear}, Frag : {Frag} \n";
+        string PlayerString = $"MaxHP : {MaxHP}, CurHP : {CurHP}, MoveSpeed : {MoveSpeed}, Defence : {Defence}, Tenacity : {Tenacity}, MaxStamina : {MaxStamina}, CurStamina : {CurStamina}, Power : {Power}, AttackSpeed : {AttackSpeed}, Luck : {Luck}, Gear : {Gear}, Frag : {Frag} \n";
         string WeaponString = $"DamageRatio : {DamageRatio}, WeaponDelay : {WeaponDelay}, Range : {Range}, Ammo : {Ammo}\n";
         string SkillString = "";
         for(int i = 0; i < 3; i++){
@@ -341,6 +624,8 @@ public class PipelineData {
         _entity.MoveSpeed = this.MoveSpeed;
         _entity.Defence = this.Defence;
         _entity.Tenacity = this.Tenacity;
+        _entity.Power = this.Power;
+        _entity.AttackSpeed = this.AttackSpeed;
     }
     public void PipeToPlayer(ref PlayerData _player){
         _player.MaxHP   = this.MaxHP;
@@ -351,6 +636,7 @@ public class PipelineData {
         _player.MaxStamina  = this.MaxStamina;
         _player.CurStamina  = this.CurStamina;
         _player.Power   = this.Power;
+        _player.AttackSpeed = this.AttackSpeed;
         _player.Luck    = this.Luck;
         _player.Gear    = this.Gear;
         _player.Frag    = this.Frag;

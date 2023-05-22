@@ -12,16 +12,20 @@ public class HealthBar : MonoBehaviour
     public Image fill;
     public Gradient gradient;
 
+    IPipelineAddressable pipelineAddressable;
     private void Awake() {
+        pipelineAddressable = GetComponentInParent<IPipelineAddressable>();
         fill.color = gradient.Evaluate(1f);
-        entityData = GetComponentInParent<IPipelineAddressable>().GetEntityData();
-        pipelineData = GetComponentInParent<IPipelineAddressable>().GetPipelineData();
-        if(entityData != null) {Debug.Log($"{entityData}");}
     }
 
     private void Start(){
-        entityData.HitState += SetSlider;
-        Debug.Log("Tagged");
+        entityData = pipelineAddressable.GetEntityData();
+        pipelineData = pipelineAddressable.GetPipelineData();
+        entityData.UIChangeState += SetSlider;        
+    }
+
+    private void Update() {
+        SetSlider();
     }
 
     public void SetSlider(){
