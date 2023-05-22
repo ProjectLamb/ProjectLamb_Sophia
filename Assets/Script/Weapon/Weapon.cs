@@ -19,30 +19,26 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-    public ScriptableObjWeaponData scriptableObjWeapon;
+    [SerializeField]
     public WeaponData weaponData;
     EntityData entityData;
 
     protected bool mIsReady = true;
     protected IEnumerator mCoWaitUse;
     
-    private void Awake() {
-        //if(!TryGetComponent<WeaponData>(out weaponData)) {Debug.Log("컴포넌트 로드 실패 : WeaponData");}
-        weaponData = new WeaponData(scriptableObjWeapon);
-    }
 
     private void Start() {
         entityData = GetComponentInParent<IPipelineAddressable>().GetEntityData();
     }
 
-    public virtual void Use(PipelineData pipelineData){
+    public virtual void Use(AddingData _addingData){
         if(!mIsReady) return;
         mIsReady = false;
         mCoWaitUse = CoWaitUse();
         StartCoroutine(mCoWaitUse);
         Vector3 EffectRotate = transform.eulerAngles;
-        EffectRotate += weaponData.Projectile[0].transform.eulerAngles;
-        weaponData.Projectile[0].InstanciateProjectile(entityData, pipelineData, E_ProjectileType.Attack,transform, Quaternion.Euler(EffectRotate));
+        EffectRotate += weaponData.AttackProjectiles[0].transform.eulerAngles;
+        weaponData.AttackProjectiles[0].InstanciateProjectile(entityData, _addingData, E_ProjectileType.Attack,transform, Quaternion.Euler(EffectRotate));
     }
 
     public virtual IEnumerator CoWaitUse(){

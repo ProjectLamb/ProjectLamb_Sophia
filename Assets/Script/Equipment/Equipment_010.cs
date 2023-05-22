@@ -24,7 +24,7 @@ public class Equipment_010 : AbstractEquipment { //, IPlayerDataApplicant{
         this.player = _player;
         if(_selectIndex == 0){
             if(!this.mIsInitialized){InitEquipment();}
-            _player.pipelineData.AttackSpeed += _player.playerData.AttackSpeed * 0.2f;
+            _player.addingData.AttackSpeed += _player.playerData.AttackSpeed * 0.2f;
         }
         if(_selectIndex == 1){
             if(!this.mIsInitialized){InitEquipment();}
@@ -34,7 +34,7 @@ public class Equipment_010 : AbstractEquipment { //, IPlayerDataApplicant{
 
     public override void Unequip(Player _player, int _selectIndex){
         if(_selectIndex == 0){
-            _player.pipelineData.AttackSpeed -= _player.playerData.AttackSpeed * 0.2f;
+            _player.addingData.AttackSpeed -= _player.playerData.AttackSpeed * 0.2f;
         }
         if(_selectIndex == 1){
             _player.playerData.AttackState -= AttackState;

@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class HealthBar : MonoBehaviour
 {
     public EntityData entityData;
-    public PipelineData pipelineData;
+    public AddingData addingData;
     public Slider slider;
     public Image fill;
     public Gradient gradient;
@@ -20,7 +20,7 @@ public class HealthBar : MonoBehaviour
 
     private void Start(){
         entityData = pipelineAddressable.GetEntityData();
-        pipelineData = pipelineAddressable.GetPipelineData();
+        addingData = pipelineAddressable.GetAddingData();
         entityData.UIAffectState += SetSlider;        
     }
 
@@ -29,7 +29,7 @@ public class HealthBar : MonoBehaviour
     }
 
     public void SetSlider(){
-        PipelineData calPipeline = pipelineData + entityData;
+        AddingData calPipeline = addingData + entityData;
         slider.value = (((float)calPipeline.CurHP / (float)calPipeline.MaxHP) * slider.maxValue);
         fill.color = gradient.Evaluate(slider.normalizedValue);
         //slider.value = ((float)sandbag.sandbagData.CurHP / sandbag.sandbagData.MaxHP) * slider.maxValue;

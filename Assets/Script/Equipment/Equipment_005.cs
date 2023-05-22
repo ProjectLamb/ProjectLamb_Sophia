@@ -18,9 +18,9 @@ public class Equipment_005 : AbstractEquipment { //, IPlayerDataApplicant{
     }
     public override void Equip(Player _player, int _selectIndex) {
         if(!this.mIsInitialized){InitEquipment();}
-        _player.pipelineData.Power += (_player.playerData.Gear / 10);
+        _player.addingData.Power += (_player.playerData.Gear / 10);
     }
     public override void Unequip(Player _player, int _selectIndex){
-        _player.pipelineData.Power -= (_player.playerData.Gear / 10);
+        _player.addingData.Power -= (_player.playerData.Gear / 10);
     }
 }

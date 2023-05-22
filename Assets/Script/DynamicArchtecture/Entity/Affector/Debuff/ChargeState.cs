@@ -16,7 +16,7 @@ public class ChargeState : DebuffState{
     public ChargeState(GameObject _AttackOwner) {
         pipelineAddressable = _AttackOwner.GetComponent<IPipelineAddressable>();
         
-        this.pipelineData = pipelineAddressable.GetPipelineData();
+        this.addingData = pipelineAddressable.GetAddingData();
         this.entityData   = pipelineAddressable.GetEntityData();
         this.AsyncAffectorCoroutine = new List<IEnumerator>();
         this.Affector = new List<UnityAction>();

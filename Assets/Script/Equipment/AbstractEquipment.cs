@@ -53,7 +53,7 @@ public abstract class AbstractEquipment : MonoBehaviour {
     public Sprite sprite;
     
     //[field : SerializeField]
-    //public PipelineData pipelineData;
+    //public AddingData addingData;
     
     //갑자기 여태 매개변수로 받다가 이걸 사용하는 이유.
     public UnityAction EquipState;
@@ -61,7 +61,8 @@ public abstract class AbstractEquipment : MonoBehaviour {
     public UnityAction UpdateState;
     public bool mIsInitialized = false;
 
-    protected PipelineData pipelineData;
+    [SerializeField]
+    public AddingData addingData;
     protected Player player;
 
     public virtual void InitEquipment(){}
