@@ -88,9 +88,12 @@ public class Sandbag : Enemy
     //    _Coroutine.ForEach(E => StartCoroutine(E));
     //}
 
-    //private void Update() {
-    //    if(!this.isDie)transform.LookAt(objectiveTarget);
-    //}
+    protected override void Update() {
+        /***************************/
+        if(GameManager.Instance?.globalEvent.IsGamePaused == true){return;}
+        /***************************/
+        if(!this.isDie)transform.LookAt(objectiveTarget);
+    }
     
     [ContextMenu("평타", false, int.MaxValue)]
     void InstantiateProjectiles1(){

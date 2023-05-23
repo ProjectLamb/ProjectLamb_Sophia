@@ -8,7 +8,6 @@ using Random = UnityEngine.Random;
 
 public class Equipment_030 : AbstractEquipment { //, IPlayerDataApplicant{
     private UnityAction<GameObject> Projectile;
-    bool isCritical = false;
     private void Awake() {
         InitEquipment();
     }
