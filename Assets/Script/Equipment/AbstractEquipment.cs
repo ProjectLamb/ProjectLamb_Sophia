@@ -63,6 +63,11 @@ public abstract class AbstractEquipment : MonoBehaviour {
 
     [SerializeField]
     public AddingData addingData;
+    /*
+        1. Base값을 가져오기 위한 수단
+            2. Equip, Unequip 외의 Player 매개변수를 안받는 함수에서도 Base 값을 가져오기 위해서
+            3. 심지어 State를 더하기 위해서 사용한다.
+    */
     protected Player player;
 
     public virtual void InitEquipment(){}
