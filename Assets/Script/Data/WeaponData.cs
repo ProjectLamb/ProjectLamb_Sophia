@@ -36,13 +36,13 @@ public class WeaponData {
     [field : SerializeField]
     public List<Projectile> AttackProjectiles;
 
-    public UnityAction UseState;
-    public UnityAction ChangeState;
-    public UnityAction ReLoadState; 
-
+    public UnityAction WeaponUseState;
+    public UnityAction WeaponChangeState;
+    public UnityAction WeaponReLoadState; 
     public WeaponData() {
         this.AttackProjectiles = new List<Projectile>();
-        UseState = () => {};
-        ChangeState = () => {};
+        WeaponUseState = () => {};
+        WeaponChangeState = () => {};
+        WeaponReLoadState = () => {};
     }
 }
