@@ -9,15 +9,15 @@ using UnityEngine.Events;
 /// * IDieAble : 죽는 Action , 인터페이스로 동작을 구현<br/>
 /// * IDamagable : 맞는 Action , 인터페이스로 동작을 구현
 /// </summary>
-public class Enemy : MonoBehaviour, IPipelineAddressable
+public class Enemy : MonoBehaviour, IEntityAddressable
 {
     [field : SerializeField]
     public EnemyData enemyData;
     public EntityData GetEntityData() {return this.enemyData;}
     
     [field : SerializeField]
-    public AddingData addingData;
-    public AddingData GetAddingData(){return this.addingData;}
+    public MasterData addingData;
+    public MasterData GetAddingData(){return this.addingData;}
 
     public GameObject model;
     public Rigidbody entityRigidbody;
@@ -80,7 +80,7 @@ public class Enemy : MonoBehaviour, IPipelineAddressable
         model.TryGetComponent<Animator>(out animator);
         model.TryGetComponent<AnimEventInvoker>(out animEventInvoker);
 
-        addingData = new AddingData();
+        addingData = new MasterData();
         enemyData.DieParticle.GetComponent<ParticleCallback>().onDestroyEvent.AddListener(DestroySelf);
 
         chase = false;

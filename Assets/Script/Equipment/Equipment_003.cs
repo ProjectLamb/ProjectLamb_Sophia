@@ -7,23 +7,17 @@ using UnityEngine.Events;
 
 
 public class Equipment_003 : AbstractEquipment { //, IPlayerDataApplicant{
-    private void Awake() {
-        InitEquipment();
-    }
-    public override void InitEquipment()
+    public override void InitEquipment(Player _player, int _selectIndex)
     {
         equipmentName = "뒤집어진 양말";
         this.EquipState = () => {};
         this.UnequipState = () => {};
         this.UpdateState = () => {};
-    }
-    public override void Equip(Player _player, int _selectIndex) {
-        if(!this.mIsInitialized){InitEquipment();}
-        _player.addingData.Power += (int)(_player.playerData.Power * 0.1f);
-        _player.addingData.MaxHP -= 15;
-    }
-    public override void Unequip(Player _player, int _selectIndex){
-        _player.addingData.Power -= (int)(_player.playerData.Power * 0.1f);
-        _player.addingData.MaxHP += 15;
+
+        if(_selectIndex == 0) {
+            this.equipmentData.Power -= (int)(_player.playerData.Power * 0.1f);
+            this.equipmentData.MaxHP += 15;
+        }
+        this.mIsInitialized = true;
     }
 }

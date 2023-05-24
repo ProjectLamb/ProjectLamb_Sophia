@@ -17,10 +17,10 @@ public class Skill : MonoBehaviour
         //if(!TryGetComponent<SkillData>(out skillData)) {Debug.Log("컴포넌트 로드 실패 : SkillData");}
     }
     public void Start(){
-        entityData = GetComponentInParent<IPipelineAddressable>().GetEntityData();
+        entityData = GetComponentInParent<IEntityAddressable>().GetEntityData();
 
     }
-    public void Use(AddingData AddingData){
+    public void Use(MasterData AddingData){
         if(!mIsReady) return;
         mIsReady = false;
         mCoWaitUse = CoWaitUse();

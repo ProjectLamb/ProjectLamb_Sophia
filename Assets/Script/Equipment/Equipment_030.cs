@@ -8,32 +8,24 @@ using Random = UnityEngine.Random;
 
 public class Equipment_030 : AbstractEquipment { //, IPlayerDataApplicant{
     private UnityAction<GameObject> Projectile;
-    private void Awake() {
-        InitEquipment();
-    }
-    public override void InitEquipment()
+    public override void InitEquipment(Player _player, int _selectIndex)
     {
         equipmentName = "러다이트 운동 지령서";
         this.EquipState = () => {};
         this.UnequipState = () => {};
         this.UpdateState = () => {};
         this.Projectile += (GameObject obj) => {Execution(obj);};
-    }
-
-    public override void Equip(Player _player, int _selectIndex) {
-        if(!this.mIsInitialized){InitEquipment();}        
         this.player = _player;
-        _player.playerData.ProjectileShootState += Projectile;
-    }
-
-    public override void Unequip(Player _player, int _selectIndex){
-        _player.playerData.ProjectileShootState -= Projectile;
+        if(_selectIndex == 0){
+            _player.playerData.ProjectileShootState += Projectile;
+        }
     }
 
     public void Execution(GameObject _target){
-        if(this.player.playerData.Luck + 5 < (int)Random.Range(0, 100)){ 
-            IPipelineAddressable pipelineAddressable = _target.GetComponent<IPipelineAddressable>();
-            new ExecutionState(_target).Modifiy(pipelineAddressable);
+        int Luck = this.player.playerData.Luck + this.player.equipmentManager.AddingData.Luck + 5;
+        if(Luck + 5 < (int)Random.Range(0, 100)){ 
+            IEntityAddressable entityAddressable = _target.GetComponent<IEntityAddressable>();
+            new ExecutionState(_target).Modifiy(entityAddressable);
         }
     }
 }

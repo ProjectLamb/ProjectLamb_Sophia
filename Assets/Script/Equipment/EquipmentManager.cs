@@ -4,46 +4,40 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class EquipmentManager : MonoBehaviour{
-    public Player player;
     public List<AbstractEquipment> equipments;
+    
+    public Player player;
     public Collider playerCollider;
+
+    [SerializeField]
+    private MasterData mAddingData;
+    public  MasterData AddingData {get; set;}
+    
     private void Awake() {
-        if(equipments == null) {equipments = new List<AbstractEquipment>(12);}
-        if(player == null) player = GetComponentInParent<Player>();
+        // ?? 연산은 왼쪽이 null이냐에 따라 아니냐에 따라 값 대입
+        // null체크 할빠에 이게 차라리 좀 빠를듯
+        equipments ??= new List<AbstractEquipment>(12);
+        player ??= GetComponentInParent<Player>();
     }
-    private void Start() {
+
+    /// <summary>
+    /// 장비를 장착하거나, 해제하거나, 어떤 버프 이벤트가 들어오면 실행한다.
+    /// </summary>
+    public void CalculateFinalData(){
+        AddingData.Clear();
         foreach(AbstractEquipment E in equipments){
-            E.InitEquipment();
+            AddingData += E.equipmentData;
         }
     }
 
-    public void CalculateAddingData(){
-        
+    public void Equip(AbstractEquipment equipment){
+        equipment.InitEquipment(player);
+        equipments.Add(equipment);
+        CalculateFinalData();
     }
 
-    [ContextMenu("모두 장착")]
-    public void EquipAll(){
-        foreach(AbstractEquipment E in equipments){
-            E.Equip(player, 0);
-        }
-    }
-    [ContextMenu("모두 해제")]
-    public void UnequipAll(){
-        foreach(AbstractEquipment E in equipments){
-            E.Unequip(player, 0);
-        }  
-    }
-
-    [ContextMenu("1번 인덱스로 장착")]
-    public void EquipAll_1(){
-        foreach(AbstractEquipment E in equipments){
-            E.Equip(player, 1);
-        }
-    }
-    [ContextMenu("1번 인덱스로 모두 해제")]
-    public void UnequipAll_1(){
-        foreach(AbstractEquipment E in equipments){
-            E.Unequip(player, 1);
-        }  
+    public void Unequip(AbstractEquipment equipment){
+        equipments.Remove(equipment);
+        CalculateFinalData();
     }
 }
