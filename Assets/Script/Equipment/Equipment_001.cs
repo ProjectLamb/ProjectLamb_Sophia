@@ -6,26 +6,17 @@ using UnityEngine.Events;
 
 public class Equipment_001 : AbstractEquipment {
     public float multipyMoveSpeed;
-    private void Awake() {
-        InitEquipment();
-    }
-    public override void InitEquipment()
+    public override void InitEquipment(Player _player, int _selectIndex)
     {
         equipmentName = "식어버린 피자 한조각";
 
         this.EquipState = () => {};
         this.UnequipState = () => {};
         this.UpdateState = () => {};
+        if(_selectIndex == 0) {
+            this.equipmentData.MaxHP += 10;
+            this.equipmentData.MoveSpeed -= _player.playerData.MoveSpeed * 0.05f;
+        }
         this.mIsInitialized = true;
-    }
-    public override void Equip(Player _player, int _selectIndex){
-        if(!this.mIsInitialized){InitEquipment();}
-        _player.addingData.MaxHP += 10;
-        _player.addingData.MoveSpeed -= _player.playerData.MoveSpeed * 0.05f;
-    }
-
-    public override void Unequip(Player _player, int _selectIndex){
-        _player.addingData.MaxHP -= 10;
-        _player.addingData.MoveSpeed += _player.playerData.MoveSpeed * 0.05f;
     }
 }

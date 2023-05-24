@@ -55,22 +55,24 @@ public abstract class AbstractEquipment : MonoBehaviour {
     //[field : SerializeField]
     //public AddingData addingData;
     
-    //갑자기 여태 매개변수로 받다가 이걸 사용하는 이유.
+    // 갑자기 여태 매개변수로 받다가 이걸 사용하는 이유.
     public UnityAction EquipState;
     public UnityAction UnequipState;
     public UnityAction UpdateState;
     public bool mIsInitialized = false;
 
     [SerializeField]
-    public AddingData addingData;
+    public MasterData equipmentData;
     /*
         1. Base값을 가져오기 위한 수단
             2. Equip, Unequip 외의 Player 매개변수를 안받는 함수에서도 Base 값을 가져오기 위해서
             3. 심지어 State를 더하기 위해서 사용한다.
+
+        굳이 플레이어가 아닐지라도 베이스 데이터를 가져와야 하는 날이 오지 않을까?
+            나중에 생각해보자 일단
     */
     protected Player player;
 
-    public virtual void InitEquipment(){}
-    public virtual void Equip(Player _player, int _selectIndex){}
-    public virtual void Unequip(Player _player, int _selectIndex){}
+    public virtual void InitEquipment(Player _player, int _selectIndex){}
+    public void InitEquipment(Player _player){this.InitEquipment(_player,0);}
 }

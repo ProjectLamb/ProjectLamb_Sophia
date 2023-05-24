@@ -9,30 +9,22 @@ using Random = UnityEngine.Random;
 
 public class Equipment_022 : AbstractEquipment { //, IPlayerDataApplicant{
     private UnityAction<GameObject> Projectile;
-    private void Awake() {
-        InitEquipment();
-    }
-    public override void InitEquipment()
+
+    public override void InitEquipment(Player _player, int _selectIndex)
     {
         equipmentName = "얼어붙은 투구";
         this.EquipState = () => {};
         this.UnequipState = () => {};
         this.UpdateState = () => {};
         this.Projectile += (GameObject obj) => {Freeze(obj);};
-    }
-
-    public override void Equip(Player _player, int _selectIndex) {
-        if(!this.mIsInitialized){InitEquipment();}        
         this.player = _player;
-        _player.playerData.ProjectileShootState += Projectile;
-    }
-
-    public override void Unequip(Player _player, int _selectIndex){
-        _player.playerData.ProjectileShootState -= Projectile;
+        if(_selectIndex == 0){
+            _player.playerData.ProjectileShootState += Projectile;
+        }
     }
 
     public void Freeze(GameObject _target){
-        IPipelineAddressable pipelineAddressable = _target.GetComponent<IPipelineAddressable>();
-        new FreezeState(_target).Modifiy(pipelineAddressable);
+        IEntityAddressable entityAddressable = _target.GetComponent<IEntityAddressable>();
+        new FreezeState(_target).Modifiy(entityAddressable);
     }
 }

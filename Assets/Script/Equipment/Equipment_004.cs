@@ -7,28 +7,23 @@ using UnityEngine.Events;
 
 public class Equipment_004 : AbstractEquipment { //, IPlayerDataApplicant{
     
-    private UnityActionRef<int> HitState;
-    private void Awake() {
-        InitEquipment();
-    }
-    public override void InitEquipment()
+    private UnityActionRef<int> HitStateRef;
+    public override void InitEquipment(Player _player, int _selectIndex)
     {
         equipmentName = "디지털 파편 조각";
         this.EquipState = () => {};
         this.UnequipState = () => {};
         this.UpdateState = () => {};
-        HitState += (ref int i) => {MoreDamage(ref i);};
+        HitStateRef += (ref int i) => {Defence(ref i);};
+
+        if(_selectIndex == 0) {
+            this.equipmentData.Power += (int)(_player.playerData.Power * 0.1f);
+            this.equipmentData.HitStateRef += HitStateRef;
+        }
+        this.mIsInitialized = true;
     }
-    public override void Equip(Player _player, int _selectIndex) {
-        if(!this.mIsInitialized){InitEquipment();}
-        _player.addingData.Power += (int)(_player.playerData.Power * 0.1f);
-        _player.playerData.HitStateRef += HitState;
-    }
-    public override void Unequip(Player _player, int _selectIndex){
-        _player.addingData.Power -= (int)(_player.playerData.Power * 0.1f);
-        _player.playerData.HitStateRef -= HitState;
-    }
-    public void MoreDamage(ref int _amount) {
-        _amount += (int)(_amount * 0.1f);
+
+    public void Defence(ref int _amount) {
+        _amount += (int)(_amount * 0.1f); // 디펜스의 반대는 더 많이 맞는다는것으로
     }
 }

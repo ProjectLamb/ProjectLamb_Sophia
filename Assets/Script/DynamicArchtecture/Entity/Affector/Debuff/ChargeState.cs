@@ -10,25 +10,22 @@ public class ChargeState : DebuffState{
     * 리시버들 
     *  
     *********************************************************************************/
-    IPipelineAddressable pipelineAddressable;
+    IEntityAddressable entityAddressable;
     IVisuallyInteractable visuallyInteractable;
 
-    public ChargeState(GameObject _AttackOwner) {
-        pipelineAddressable = _AttackOwner.GetComponent<IPipelineAddressable>();
-        
-        this.addingData = pipelineAddressable.GetAddingData();
-        this.entityData   = pipelineAddressable.GetEntityData();
+    public ChargeState(Player _attackOwner) {        
+        this.addingData = _attackOwner.equipmentManager.AddingData; //Debuff State 참고 // 앞으로 Debuff 대신 모듈레이터로
+        this.entityData   = _attackOwner.playerData;
         this.AsyncAffectorCoroutine = new List<IEnumerator>();
         this.Affector = new List<UnityAction>();
-        
-        this.AsyncAffectorCoroutine.Add(ChargeAttack());
+        this.AsyncAffectorCoroutine.Add(ChargeAttack(_attackOwner.JustAttack));
     }
 
     public void Modifiy(IAffectable affectableEntity) {
         affectableEntity.AsyncAffectHandler(this.AsyncAffectorCoroutine);
     }
     
-    IEnumerator ChargeAttack(){
+    IEnumerator ChargeAttack(UnityAction _attackState){
         bool holding = false;
         if(Input.GetMouseButton(0)){
             holding = true;
@@ -46,10 +43,10 @@ public class ChargeState : DebuffState{
             if(holding == true){
                 Debug.Log("충전공격 준비 완료");
                 yield return new WaitUntil(()=>{return Input.GetMouseButtonUp(0);});
-                Debug.Log("공격 발사 한대");
-                Debug.Log("공격 발사 두대");
-                Debug.Log("공격 발사 세대");
-                Debug.Log("공격 발사 네대 다 맞았다~");
+                for(int i = 0 ; i < 4; i++){
+                    _attackState.Invoke();
+                    yield return YieldInstructionCache.WaitForSeconds(0.125f);
+                }
             }
         }
     }

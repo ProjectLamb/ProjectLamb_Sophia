@@ -7,33 +7,26 @@ using UnityEngine.Events;
 using Random = UnityEngine.Random;
 
 public class Equipment_009 : AbstractEquipment { //, IPlayerDataApplicant{
-    
     private UnityActionRef<int> HitState;
-    private void Awake() {
-        InitEquipment();
-    }
-    public override void InitEquipment()
+
+    public override void InitEquipment(Player _player, int _selectIndex)
     {
         equipmentName = "조명탄";
         this.EquipState = () => {};
         this.UnequipState = () => {};
         this.UpdateState = () => {};
-        HitState += (ref int _amount) => {Dodged(ref _amount);};
-    }
-
-    public override void Equip(Player _player, int _selectIndex) {
-        if(!this.mIsInitialized){InitEquipment();}
         this.player = _player;
-        _player.playerData.HitStateRef += HitState;
-    }
-
-    public override void Unequip(Player _player, int _selectIndex){
-        _player.playerData.HitStateRef -= HitState;
+        HitState += (ref int _amount) => {Dodged(ref _amount);};
+        if(_selectIndex == 0) {
+            this.equipmentData.HitStateRef += HitState;
+        }
+        this.mIsInitialized = true;
     }
 
     //디버프를 얘가 만든다면?
     public void Dodged(ref int amount) {
-        if(this.player.playerData.Luck + 5 >= (int)Random.Range(0, 100)){ 
+        int Luck = 5 + this.player.equipmentManager.AddingData.Luck + this.player.playerData.Luck;
+        if(Luck >= (int)Random.Range(0, 100)){ 
             amount = 0;
         }
     }
