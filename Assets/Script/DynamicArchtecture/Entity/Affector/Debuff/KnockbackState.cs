@@ -10,7 +10,7 @@ public class KnockBackState : DebuffState{
     * 리시버들 
     *  
     *********************************************************************************/
-    IPipelineAddressable pipelineAddressable;
+    IEntityAddressable entityAddressable;
     public Rigidbody KnockBacktarget;
     public Rigidbody AttackOwner;
 

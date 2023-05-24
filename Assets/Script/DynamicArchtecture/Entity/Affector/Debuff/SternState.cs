@@ -11,15 +11,14 @@ public class SternState : DebuffState{
     * 리시버들 
     *  
     *********************************************************************************/
-    IPipelineAddressable pipelineAddressable;
+    IEntityAddressable entityAddressable;
     IVisuallyInteractable visuallyInteractable;
 
     public SternState(GameObject _target) {
         debuffData = GlobalModifierResources.Instance.debuffDatas[(int)E_DebuffState.Stern];
-        pipelineAddressable = _target.GetComponent<IPipelineAddressable>();
+        entityAddressable = _target.GetComponent<IEntityAddressable>();
         visuallyInteractable = _target.GetComponent<IVisuallyInteractable>();
-        this.addingData = pipelineAddressable.GetAddingData();
-        this.entityData   = pipelineAddressable.GetEntityData();
+        this.entityData   = entityAddressable.GetEntityData();
         this.AsyncAffectorCoroutine = new List<IEnumerator>();
         this.Affector = new List<UnityAction>();
         this.AsyncAffectorCoroutine.Add(VisualActivate());

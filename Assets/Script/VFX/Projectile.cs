@@ -17,7 +17,8 @@ public class Projectile : MonoBehaviour {
     
     [HideInInspector]
     public EntityData spawnOwner;
-    public AddingData addingData;
+
+    public int AttackDamage;
     Collider HitCollider;
     
     private void Awake() {
@@ -27,14 +28,13 @@ public class Projectile : MonoBehaviour {
     private void OnTriggerEnter(Collider other) {
         if(this.spawnOwner.EntityTag == other.gameObject.tag) {return;}
         //전달 타겟 찾기
-        IPipelineAddressable pipelineAddressable = other.gameObject.GetComponent<IPipelineAddressable>();
-        if(pipelineAddressable == null) return;
+        IEntityAddressable entityAddressable = other.gameObject.GetComponent<IEntityAddressable>();
+        if(entityAddressable == null) return;
 
         //전달 하기
         switch(this.projectileType) {
             case E_ProjectileType.Attack :
-                int DamageAmount = (int)((this.spawnOwner.Power + this.addingData.Power));
-                pipelineAddressable.GetDamaged(DamageAmount, OnHitSubEmmiter);
+                entityAddressable.GetDamaged(-1);
                 spawnOwner.ProjectileShootState.Invoke(other.gameObject);
                 break;
             case E_ProjectileType.Nutral :
@@ -43,20 +43,20 @@ public class Projectile : MonoBehaviour {
         }
     }
 
-    public void SetProjectileData(EntityData _owner, AddingData _AddingData, E_ProjectileType _type){
+    public void SetProjectileData(EntityData _owner, MasterData _AddingData, E_ProjectileType _type){
         this.spawnOwner = _owner;
-        this.addingData = _AddingData;
+        //this.addingData = _AddingData;
         this.projectileType = _type;
     }
     //여기를 통해서 이 스크립트를 실행한 놈을 호출 할 수 있다.
-    public GameObject InstanciateProjectile(EntityData _owner, AddingData _AddingData,E_ProjectileType _type, Transform parent){
+    public GameObject InstanciateProjectile(EntityData _owner, MasterData _AddingData,E_ProjectileType _type, Transform parent){
         GameObject ProjectileObj = Instantiate(gameObject, parent);
         ProjectileObj.GetComponent<Projectile>().SetProjectileData(_owner, _AddingData,_type);
         ProjectileObj.transform.position += Vector3.forward * transform.position.z;
         return ProjectileObj;
     }
 
-    public GameObject InstanciateProjectile(EntityData _owner, AddingData _AddingData, E_ProjectileType _type, Transform parent, Quaternion _rotate){
+    public GameObject InstanciateProjectile(EntityData _owner, MasterData _AddingData, E_ProjectileType _type, Transform parent, Quaternion _rotate){
         GameObject ProjectileObj = Instantiate(gameObject, parent.position, _rotate);
         ProjectileObj.GetComponent<Projectile>().SetProjectileData(_owner, _AddingData, _type);
         ProjectileObj.transform.localScale *= 10;

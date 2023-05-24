@@ -6,24 +6,17 @@ using UnityEngine.Events;
 
 
 public class Equipment_007 : AbstractEquipment { //, IPlayerDataApplicant{
-    private void Awake() {
-        InitEquipment();
-    }
-    public override void InitEquipment()
+    public override void InitEquipment(Player _player, int _selectIndex)
     {
         equipmentName = "유통기한 지난 전투 식량";
         this.EquipState = () => {};
         this.UnequipState = () => {};
         this.UpdateState = () => {};
-    }
-    public override void Equip(Player _player, int _selectIndex) {
-        if(!this.mIsInitialized){InitEquipment();}
-        _player.addingData.MaxHP -= 10;
-        _player.addingData.Tenacity = 0.5f;
-    }
-
-    public override void Unequip(Player _player, int _selectIndex){
-        _player.addingData.MaxHP += 10;
-        _player.addingData.Tenacity = 0;
+        
+        if(_selectIndex == 0) {
+            this.equipmentData.MaxHP -= 10;
+            this.equipmentData.Tenacity += 0.5f;
+        }
+        this.mIsInitialized = true;
     }
 }
