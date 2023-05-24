@@ -11,16 +11,16 @@ public class ExecutionState : DebuffState{
     * 리시버들 
     *  
     *********************************************************************************/
-    IPipelineAddressable pipelineAddressable;
+    IEntityAddressable entityAddressable;
     IVisuallyInteractable visuallyInteractable;
 
     public ExecutionState(GameObject _target) {
         debuffData = GlobalModifierResources.Instance.debuffDatas[(int)E_DebuffState.Execution];
-        pipelineAddressable = _target.GetComponent<IPipelineAddressable>();
+        entityAddressable = _target.GetComponent<IEntityAddressable>();
         visuallyInteractable = _target.GetComponent<IVisuallyInteractable>();
 
-        this.addingData = pipelineAddressable.GetAddingData();
-        this.entityData   = pipelineAddressable.GetEntityData();
+        //this.addingData = entityAddressable.GetAddingData();
+        this.entityData   = entityAddressable.GetEntityData();
         this.AsyncAffectorCoroutine = new List<IEnumerator>();
         this.Affector = new List<UnityAction>();
         this.Affector.Add(Execution);
@@ -35,7 +35,7 @@ public class ExecutionState : DebuffState{
     }
 
     public void Execution (){
-        pipelineAddressable.GetDamaged(1234567890);
+        entityAddressable.GetDamaged(1234567890);
     }
     
     IEnumerator VisualActivate(){

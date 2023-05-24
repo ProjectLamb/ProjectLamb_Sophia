@@ -10,7 +10,7 @@ public class PoisonState : DebuffState {
     * 리시버들 
     *  
     *********************************************************************************/
-    IPipelineAddressable pipelineAddressable;
+    IEntityAddressable entityAddressable;
     IVisuallyInteractable visuallyInteractable;
     
     //타겟에 맞는 데이터에 따라서 실행될 어펙터는 다르다.
@@ -21,11 +21,10 @@ public class PoisonState : DebuffState {
     public PoisonState(GameObject _target){
         debuffData = GlobalModifierResources.Instance.debuffDatas[(int)E_DebuffState.Poisend];
 
-        pipelineAddressable  =  _target.GetComponent<IPipelineAddressable>();
+        entityAddressable  =  _target.GetComponent<IEntityAddressable>();
         visuallyInteractable = _target.GetComponent<IVisuallyInteractable>();
 
-        this.addingData = pipelineAddressable.GetAddingData();
-        this.entityData   = pipelineAddressable.GetEntityData();
+        this.entityData   = entityAddressable.GetEntityData();
         this.AsyncAffectorCoroutine = new List<IEnumerator>();
         this.Affector = new List<UnityAction>();
         this.AsyncAffectorCoroutine.Add(VisualActivate());
@@ -41,7 +40,7 @@ public class PoisonState : DebuffState {
         float passedTime = 0;
         while((debuffData.durationTime * (1 - addingData.Tenacity)) > passedTime){
             passedTime += 0.5f;
-            pipelineAddressable.GetDamaged(debuffData.damageAmount);
+            entityAddressable.GetDamaged(debuffData.damageAmount);
             yield return YieldInstructionCache.WaitForSeconds(0.5f);
         }
     }

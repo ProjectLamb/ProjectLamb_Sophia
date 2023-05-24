@@ -40,7 +40,7 @@ public class Sandbag : Enemy
         model.TryGetComponent<Animator>(out this.animator);
         model.TryGetComponent<AnimEventInvoker>(out this.animEventInvoker);
         
-        this.addingData = new AddingData();        
+        this.addingData = new MasterData();        
         this.enemyData.DieParticle.GetComponent<ParticleCallback>().onDestroyEvent.AddListener(DestroySelf);
         this.objectiveTarget = GameManager.Instance.playerGameObject.transform;
         

@@ -16,7 +16,7 @@ public class Weapon_TripleAttack : Weapon
         }
     }
 
-    public override void Use(AddingData AddingData){
+    public override void Use(MasterData AddingData){
         SubUse();
     }
     

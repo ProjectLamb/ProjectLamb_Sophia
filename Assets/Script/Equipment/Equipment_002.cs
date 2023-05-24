@@ -4,24 +4,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-
 public class Equipment_002 : AbstractEquipment { //, IPlayerDataApplicant{
-    private void Awake() {
-        InitEquipment();
-    }
-    public override void InitEquipment(){
+    public override void InitEquipment(Player _player, int _selectIndex)
+    {
         equipmentName = "뼈치킨";
         this.EquipState = () => {};
         this.UnequipState = () => {};
         this.UpdateState = () => {};
-    }
-    public override void Equip(Player _player, int _selectIndex) {
-        if(!this.mIsInitialized){InitEquipment();}
-        _player.addingData.MaxHP -= 10;
-        _player.addingData.MoveSpeed += _player.playerData.MoveSpeed * 0.05f;
-    }
-    public override void Unequip(Player _player, int _selectIndex){
-        _player.addingData.MaxHP += 10;
-        _player.addingData.MoveSpeed -= _player.playerData.MoveSpeed * 0.05f;
+        if(_selectIndex == 0) {
+            this.equipmentData.MaxHP -= 10;
+            this.equipmentData.MoveSpeed += _player.playerData.MoveSpeed * 0.05f;
+        }
+        this.mIsInitialized = true;
     }
 }

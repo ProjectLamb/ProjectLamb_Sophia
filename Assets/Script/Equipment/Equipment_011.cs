@@ -9,45 +9,39 @@ using Random = UnityEngine.Random;
 public class Equipment_011 : AbstractEquipment { //, IPlayerDataApplicant{
     
     private UnityAction AttackState;
+    int originBasePower;
+    int originAddPower;
     bool isCritical = false;
-    private void Awake() {
-        InitEquipment();
-    }
-    public override void InitEquipment()
+    public override void InitEquipment(Player _player, int _selectIndex)
     {
         equipmentName = "노란색 레고블럭";
         this.EquipState = () => {};
         this.UnequipState = () => {};
         this.UpdateState = () => {};
-    }
-
-    public override void Equip(Player _player, int _selectIndex) {
-        if(!this.mIsInitialized){InitEquipment();}
         this.player = _player;
-        _player.addingData.MaxHP  -= 10;
-        _player.addingData.MoveSpeed -= _player.playerData.MoveSpeed * 0.1f;
-        _player.addingData.AttackSpeed += _player.playerData.AttackSpeed;
-        _player.playerData.AttackState += Critical;
-    }
-
-    public override void Unequip(Player _player, int _selectIndex){
-        _player.addingData.MaxHP  += 10;
-        _player.addingData.MoveSpeed += _player.playerData.MoveSpeed * 0.1f;
-        _player.addingData.AttackSpeed -= _player.playerData.AttackSpeed;
-        _player.playerData.AttackState -= Critical;
+        AttackState += () => {Critical();};
+        if(_selectIndex == 0){
+            this.equipmentData.MaxHP -= 10;
+            this.equipmentData.MoveSpeed -= _player.playerData.MoveSpeed * 0.1f;
+            this.equipmentData.AttackSpeed += _player.playerData.AttackSpeed * 0.1f;
+            originBasePower = _player.playerData.Power;
+            originAddPower = _player.equipmentManager.AddingData.Power;
+            this.equipmentData.AttackState += AttackState;
+        }
     }
 
     //디버프를 얘가 만든다면?
     public void Critical() {
-        if(this.player.playerData.Luck + 5 < (int)Random.Range(0, 100)){ 
+        int Luck = this.player.playerData.Luck + this.player.equipmentManager.AddingData.Luck + 5;
+        if(Luck < (int)Random.Range(0, 100)){ 
             if(isCritical == false) {
-                this.player.addingData.Power += this.player.playerData.Power * 5; 
+                this.player.playerData.Power = originBasePower * 5; 
                 isCritical = true;
             }
         }
         else {
             if(isCritical == true){ 
-                this.player.addingData.Power -= this.player.playerData.Power * 5;
+                this.player.playerData.Power = originBasePower; 
                 isCritical = false;
             }
         }

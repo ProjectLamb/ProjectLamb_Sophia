@@ -21,6 +21,13 @@ public class SkillInfo
             this.durateTime[j] = 0;
         }
     }
+    public void Clear() {
+        for(int j = 0; j < 3; j++){
+            this.numericArray[j] = 0;
+            this.skillDelay[j] = 0;
+            this.durateTime[j] = 0;
+        }
+    }
 }
 public enum E_SkillType {
     Neutral, Weapon

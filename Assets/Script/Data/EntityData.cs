@@ -30,17 +30,19 @@ public abstract class EntityData {
     [field : SerializeField] public ParticleSystem DieParticle;
     public UnityAction MoveState;
     public UnityAction AttackState;     //몬스터 패턴 각각에 어텍 스테이트를 만들어야 할지도 있다.
+    public UnityActionRef<int> AttackStateRef;
     public UnityAction HitState;
+    public UnityActionRef<int> HitStateRef;
     public UnityAction PhyiscTriggerState;// 콜라이더 닿으면
     public UnityAction DieState;
     public UnityAction<GameObject> ProjectileShootState;
     
-    public UnityActionRef<int> HitStateRef;
     public UnityAction UIAffectState;
     
     public EntityData() {
         MoveState       = () => {};
         AttackState     = () => {}; 
+        AttackStateRef     = (ref int i) => {};
         HitState        = () => {};
         HitStateRef     = (ref int i) => {};
         ProjectileShootState = (obj) => {};

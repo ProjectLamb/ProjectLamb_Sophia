@@ -14,7 +14,7 @@ using Random = UnityEngine.Random;
 /// </summary>
 
 
-public class Player : MonoBehaviour, IPipelineAddressable
+public class Player : MonoBehaviour, IEntityAddressable
 {
     /////////////////////////////////////////////////////////////////////////////////
     /*********************************************************************************
@@ -29,15 +29,12 @@ public class Player : MonoBehaviour, IPipelineAddressable
 
     //고유성을 가지고 있다는것이 특징이라서 Static하면 안되지 않을까?
     
-    [field : SerializeField]
-    public AddingData addingData; //무조건 외부의 작용으로 인해 변하는것이다.
-        public AddingData GetAddingData() {return addingData;}
-
     [SerializeField]
     public Weapon weapon;
 
     [SerializeField]
     public Skill[] skills;
+    public EquipmentManager equipmentManager;
     Rigidbody mRigidbody;
 
 
@@ -80,7 +77,6 @@ public class Player : MonoBehaviour, IPipelineAddressable
     *********************************************************************************/
     void Awake()
     {
-        addingData = new AddingData();
         if (!TryGetComponent<Rigidbody>(out mRigidbody)) { Debug.Log("컴포넌트 로드 실패 : Rigidbody"); }
         if (!TryGetComponent<VisualModulator>(out visualModulator)) { Debug.Log("컴포넌트 로드 실패 : VisualModulator"); }
         isPortal = true;
@@ -89,7 +85,7 @@ public class Player : MonoBehaviour, IPipelineAddressable
 
     [ContextMenu("파이프라인 출력")]
     public void PrintPipeline(){
-        Debug.Log(addingData.ToString());
+        Debug.Log(equipmentManager.AddingData.ToString());
     }
 
     /// <summary>
@@ -100,8 +96,8 @@ public class Player : MonoBehaviour, IPipelineAddressable
     public void Move(float _hAxis, float _vAxis, bool _reverse)
     {
         playerData.MoveState.Invoke();
-
-        float MoveSpeed = playerData.MoveSpeed + addingData.MoveSpeed;
+        
+        float MoveSpeed = playerData.MoveSpeed + equipmentManager.AddingData.MoveSpeed;
         
         Vector3 AngleToVector(float _angle) {
             _angle *= Mathf.Deg2Rad;
@@ -109,7 +105,7 @@ public class Player : MonoBehaviour, IPipelineAddressable
         }
         
         if(_reverse){ _hAxis *= -1; _vAxis *= -1;}
-        
+
         
         if (mRigidbody.velocity.magnitude > MoveSpeed) return; 
 
@@ -167,14 +163,23 @@ public class Player : MonoBehaviour, IPipelineAddressable
     {
         playerData.AttackState.Invoke();
         anim.SetTrigger("DoAttack");
-        Turning(() => weapon?.Use(addingData));
+        Turning(() => weapon?.Use(equipmentManager.AddingData));
+    }
+    //Equipment_010과 의존 관계다 
+    // 슈슈슉 충전공격후 여러번 때리는것
+    // 좋지 않은 구조니 하루빨리 개선사항을 고민하자.
+    // 이렇게 공격 방식이 바뀌는 매커니즘을 다루는 커플링을 줄일까?
+    public void JustAttack(){
+        Turning(() => {
+            weapon?.Use(equipmentManager.AddingData);
+        });
     }
     
     public void Skill(string key)
     {
         if(skills[(int)E_SkillKey.Q]) {
             playerData.SkillState.Invoke();
-            Turning(() => skills[(int)E_SkillKey.Q].Use(addingData));
+            Turning(() => skills[(int)E_SkillKey.Q].Use(equipmentManager.AddingData));
         }
     }
 

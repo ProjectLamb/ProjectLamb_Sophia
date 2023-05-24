@@ -8,42 +8,24 @@ using Random = UnityEngine.Random;
 
 public class Equipment_010 : AbstractEquipment { //, IPlayerDataApplicant{
     private UnityAction AttackState;
-    private void Awake() {
-        InitEquipment();
-    }
-    public override void InitEquipment()
+    public override void InitEquipment(Player _player, int _selectIndex)
     {
         equipmentName = "슉슈슉..";
         this.EquipState = () => {};
         this.UnequipState = () => {};
         this.UpdateState = () => {};
         this.AttackState += () => {ChargeAttack();};
-    }
-
-    public override void Equip(Player _player, int _selectIndex) {
         this.player = _player;
         if(_selectIndex == 0){
-            if(!this.mIsInitialized){InitEquipment();}
-            _player.addingData.AttackSpeed += _player.playerData.AttackSpeed * 0.2f;
+            this.equipmentData.AttackSpeed += _player.playerData.AttackSpeed * 0.2f;
+            this.equipmentData.AttackState += AttackState;
         }
-        if(_selectIndex == 1){
-            if(!this.mIsInitialized){InitEquipment();}
-            _player.playerData.AttackState += AttackState;
-        }
-    }
-
-    public override void Unequip(Player _player, int _selectIndex){
-        if(_selectIndex == 0){
-            _player.addingData.AttackSpeed -= _player.playerData.AttackSpeed * 0.2f;
-        }
-        if(_selectIndex == 1){
-            _player.playerData.AttackState -= AttackState;
-        }
+        this.mIsInitialized = true;
     }
 
     //디버프를 얘가 만든다면?
     public void ChargeAttack() {
-        IPipelineAddressable pipelineAddressable = this.player.GetComponent<IPipelineAddressable>();
-        new ChargeState(this.player.gameObject).Modifiy(pipelineAddressable);
+        IEntityAddressable entityAddressable = this.player.GetComponent<IEntityAddressable>();
+        new ChargeState(this.player).Modifiy(entityAddressable);
     }
 }

@@ -42,11 +42,12 @@ public class MasterData {
     //////////////////////////////////////////////////////
     public UnityAction MoveState;
     public UnityAction AttackState;     //몬스터 패턴 각각에 어텍 스테이트를 만들어야 할지도 있다.
+    public UnityActionRef<int> AttackStateRef;
     public UnityAction HitState;
+    public UnityActionRef<int> HitStateRef;
     public UnityAction PhyiscTriggerState;// 콜라이더 닿으면
     public UnityAction DieState;
     public UnityAction<GameObject> ProjectileShootState;
-    public UnityActionRef<int> HitStateRef;
     public UnityAction UIAffectState;
     //////////////////////////////////////////////////////
     public UnityAction SkillState;
@@ -87,6 +88,7 @@ public class MasterData {
 
         MoveState       = () => {};
         AttackState     = () => {}; 
+        AttackStateRef  = (ref int i) => {};
         HitState        = () => {};
         HitStateRef     = (ref int i) => {};
         ProjectileShootState = (obj) => {};
@@ -108,6 +110,7 @@ public class MasterData {
             SkillLevelUpState[i] = () => {};
         }
     }
+    
     /*
     public static MasterData operator +(MasterData x, EntityData y)
     {
@@ -203,6 +206,51 @@ public class MasterData {
     public static MasterData operator +(WeaponData y, MasterData x) { return y + x; }
     public static MasterData operator +(SkillData y, MasterData x)  { return y + x; }
     */
+    
+    public void Clear(){
+        MaxHP       = 0;
+        CurHP       = 0;
+        MoveSpeed   = 0f;
+        Defence     = 0f;
+        Tenacity    = 0f;
+        MaxStamina  = 0;
+        CurStamina  = 0;
+        StaminaRestoreRatio = 0f;
+        Power       = 0;
+        AttackSpeed = 0f;
+        Luck        = 0;
+        Gear        = 0;
+        Frag        = 0;
+        DamageRatio = 0f;
+        WeaponDelay = 0f;
+        Range       = 0f;
+        Ammo        = 0;
+        for(int i = 0; i < 3; i++){SkillInfos[i].Clear();}
+
+        MoveState       = () => {};
+        AttackState     = () => {}; 
+        AttackStateRef     = (ref int i) => {};
+        HitState        = () => {};
+        HitStateRef     = (ref int i) => {};
+        ProjectileShootState = (obj) => {};
+        PhyiscTriggerState = () => {};// 콜라이더 닿으면
+        DieState        = () => {};
+        UIAffectState   = () => {};
+
+        SkillState = () => {};
+        InteractState = () => {};
+        UpdateState = () => {};
+        
+        WeaponUseState = () => {};
+        WeaponChangeState = () => {};
+        WeaponReLoadState = () => {};
+
+        for(int i = 0; i < 3; i++){
+            SkillUseState[i] = () => {};
+            SkillChangeState[i] = () => {};
+            SkillLevelUpState[i] = () => {};
+        }
+    }
     public static MasterData operator +(MasterData x, MasterData y){
         MasterData res = new MasterData();
         res.MaxHP       = x.MaxHP       + y.MaxHP;
@@ -232,6 +280,7 @@ public class MasterData {
 
         res.MoveState       = x.MoveState + y.MoveState;
         res.AttackState     = x.AttackState + y.AttackState;
+        res.AttackStateRef     = x.AttackStateRef + y.AttackStateRef;
         res.HitState        = x.HitState + y.HitState;
         res.HitStateRef     = x.HitStateRef + y.HitStateRef;
         res.ProjectileShootState = x.ProjectileShootState + y.ProjectileShootState;
@@ -291,6 +340,7 @@ public class MasterData {
 
         _entity.MoveState = this.MoveState;
         _entity.AttackState = this.AttackState;
+        _entity.AttackStateRef = this.AttackStateRef;
         _entity.HitState = this.HitState;
         _entity.HitStateRef = this.HitStateRef;
         _entity.ProjectileShootState = this.ProjectileShootState;
@@ -315,6 +365,7 @@ public class MasterData {
         
         _player.MoveState = this.MoveState;
         _player.AttackState = this.AttackState;
+        _player.AttackStateRef = this.AttackStateRef;
         _player.HitState = this.HitState;
         _player.HitStateRef = this.HitStateRef;
         _player.ProjectileShootState = this.ProjectileShootState;

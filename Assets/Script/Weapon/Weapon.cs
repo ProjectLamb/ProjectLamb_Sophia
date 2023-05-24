@@ -28,16 +28,17 @@ public class Weapon : MonoBehaviour
     
 
     private void Start() {
-        entityData = GetComponentInParent<IPipelineAddressable>().GetEntityData();
+        entityData = GetComponentInParent<IEntityAddressable>().GetEntityData();
     }
 
-    public virtual void Use(AddingData _addingData){
+    public virtual void Use(MasterData _addingData){
         if(!mIsReady) return;
         mIsReady = false;
         mCoWaitUse = CoWaitUse();
         StartCoroutine(mCoWaitUse);
         Vector3 EffectRotate = transform.eulerAngles;
         EffectRotate += weaponData.AttackProjectiles[0].transform.eulerAngles;
+
         weaponData.AttackProjectiles[0].InstanciateProjectile(entityData, _addingData, E_ProjectileType.Attack,transform, Quaternion.Euler(EffectRotate));
     }
 
@@ -45,5 +46,4 @@ public class Weapon : MonoBehaviour
         yield return YieldInstructionCache.WaitForSeconds(weaponData.WeaponDelay);
         mIsReady = true;
     }
-
 }
