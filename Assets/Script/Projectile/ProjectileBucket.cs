@@ -11,6 +11,6 @@ public class ProjectileBucket : MonoBehaviour {
     }
     
     public void ProjectileInstantiator(Projectile projectile, E_ProjectileType type){
-        Destroy(projectile.InstanciateProjectile(sandbag.GetEntityData(), sandbag.GetAddingData(), type, transform), 0.6f);
+        //Destroy(projectile.InstanciateProjectile(sandbag.GetEntityData(), sandbag.GetAddingData(), type, transform), 0.6f);
     }
 }

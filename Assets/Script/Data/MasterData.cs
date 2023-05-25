@@ -36,8 +36,8 @@ public class MasterData {
     [field : SerializeField] public float    DamageRatio {get; set;}
     [field : SerializeField] public float    WeaponDelay {get; set;}
     [field : SerializeField] public float    Range       {get; set;}
-    [field : SerializeField] public int      Ammo        {get; set;}
-    public SkillInfo[] SkillInfos;
+    //[field : SerializeField] public int      Ammo        {get; set;}
+    public SkillRankInfo[] SkillRankInfos;
 
     //////////////////////////////////////////////////////
     public UnityAction MoveState;
@@ -61,9 +61,9 @@ public class MasterData {
     //////////////////////////////////////////////////////
     
     //Index는 E_SkillKey
-    public UnityAction[] SkillUseState;
-    public UnityAction[] SkillChangeState;
-    public UnityAction[] SkillLevelUpState;
+    public UnityAction SkillUseState;
+    public UnityAction SkillLevelUpState;
+    public UnityAction SkillChangeState;
     
     public MasterData(){
         MaxHP       = 0;
@@ -82,9 +82,9 @@ public class MasterData {
         DamageRatio = 0f;
         WeaponDelay = 0f;
         Range       = 0f;
-        Ammo        = 0;
-        SkillInfos = new SkillInfo[3];
-        for(int i = 0; i < 3; i++){SkillInfos[i] = new SkillInfo();}
+        //Ammo        = 0;
+        SkillRankInfos = new SkillRankInfo[3];
+        for(int i = 0; i < 3; i++){SkillRankInfos[i] = new SkillRankInfo();}
 
         MoveState       = () => {};
         AttackState     = () => {}; 
@@ -104,108 +104,10 @@ public class MasterData {
         WeaponChangeState = () => {};
         WeaponReLoadState = () => {};
 
-        for(int i = 0; i < 3; i++){
-            SkillUseState[i] = () => {};
-            SkillChangeState[i] = () => {};
-            SkillLevelUpState[i] = () => {};
-        }
+        SkillUseState = () => {};
+        SkillLevelUpState = () => {};
+        SkillChangeState = () => {};
     }
-    
-    /*
-    public static MasterData operator +(MasterData x, EntityData y)
-    {
-        MasterData res = new MasterData();
-        res.MaxHP = x.MaxHP +y.MaxHP;
-        res.CurHP = x.CurHP +y.CurHP;
-        res.MoveSpeed = x.MoveSpeed +y.MoveSpeed;
-        res.Defence = x.Defence +y.Defence;
-        res.Tenacity = x.Tenacity +y.Tenacity;
-        res.Power   = x.Power + y.Power;
-        res.AttackSpeed = x.AttackSpeed + y.AttackSpeed;
-        
-        res.MoveState       =   x.MoveState + y.MoveState;
-        res.AttackState     =   x.AttackState + y.AttackState;
-        res.HitState        =   x.HitState + y.HitState;
-        res.HitStateRef     =   x.HitStateRef + y.HitStateRef;
-        res.ProjectileShootState =  x.ProjectileShootState + y.ProjectileShootState;
-        res.PhyiscTriggerState =    x.PhyiscTriggerState + y.PhyiscTriggerState;
-        res.DieState        =   x.DieState + y.DieState;
-        res.UIAffectState   =   x.UIAffectState + y.UIAffectState;
-        return res;
-    }
-    public static MasterData operator +(MasterData x, PlayerData y)
-    {
-        MasterData res = new MasterData();
-        res.MaxHP = x.MaxHP +y.MaxHP;
-        res.CurHP = x.CurHP +y.CurHP;
-        res.MoveSpeed = x.MoveSpeed +y.MoveSpeed;
-        res.Defence = x.Defence +y.Defence;
-        res.Tenacity = x.Tenacity +y.Tenacity;
-        res.Power   = x.Power + y.Power;
-        res.AttackSpeed = x.AttackSpeed + y.AttackSpeed;
-
-        res.MaxStamina = x.MaxStamina +y.MaxStamina;
-        res.CurStamina = x.CurStamina +y.CurStamina;
-        res.StaminaRestoreRatio = x.StaminaRestoreRatio + y.StaminaRestoreRatio;
-        res.Luck = x.Luck +y.Luck;
-        res.Gear = x.Gear +y.Gear;
-        res.Frag = x.Frag +y.Frag;
-
-        res.MoveState       =   x.MoveState + y.MoveState;
-        res.AttackState     =   x.AttackState + y.AttackState;
-        res.HitState        =   x.HitState + y.HitState;
-        res.HitStateRef     =   x.HitStateRef + y.HitStateRef;
-        res.ProjectileShootState =  x.ProjectileShootState + y.ProjectileShootState;
-        res.PhyiscTriggerState =    x.PhyiscTriggerState + y.PhyiscTriggerState;
-        res.DieState        =   x.DieState + y.DieState;
-        res.UIAffectState   =   x.UIAffectState + y.UIAffectState;
-
-        res.SkillState = x.SkillState + y.SkillState;
-        res.InteractState = x.InteractState + y.InteractState;
-        res.UpdateState = x.UpdateState + y.UpdateState;
-        return res;
-    }
-    public static MasterData operator +(MasterData x, WeaponData y)
-    {
-        MasterData res = new MasterData();
-        res.DamageRatio     = x.DamageRatio + y.DamageRatio;
-        res.WeaponDelay     = x.WeaponDelay + y.WeaponDelay;
-        res.Range           = x.Range + y.Range;
-        
-        res.WeaponUseState = x.WeaponUseState + y.WeaponUseState;
-        res.WeaponChangeState = x.WeaponChangeState + y.WeaponChangeState;
-
-        if(y.WeaponType == E_WeaponType.ranger){
-            res.Ammo= x.Ammo + y.Ammo;
-            res.WeaponReLoadState = x.WeaponReLoadState + y.WeaponReLoadState;
-        }
-        else {
-            Debug.Log("무기가 range가 아니면 Ammo는 더하지 않음");
-        }
-
-        
-        return res;
-    }
-    public static MasterData operator +(MasterData x, SkillData y){
-        MasterData res = new MasterData();
-
-        for(int i = 0; i < 3; i++){
-            for(int j =0; j < 3; j++){
-                res.SkillInfos[i].numericArray[j]   = x.SkillInfos[i].numericArray[j] + y.SkillInfos[i].numericArray[j];
-                res.SkillInfos[i].skillDelay[j]     = x.SkillInfos[i].skillDelay[j] + y.SkillInfos[i].skillDelay[j];
-                res.SkillInfos[i].durateTime[j]     = x.SkillInfos[i].durateTime[j] + y.SkillInfos[i].durateTime[j];
-            }
-        }
-        res.SkillUseState[(int)y.CurrentSkillKey] = y.SkillUseState;
-        res.SkillChangeState[(int)y.CurrentSkillKey] = y.SkillChangeState;
-        res.SkillLevelUpState[(int)y.CurrentSkillKey] = y.SkillLevelUpState;
-        return res;
-    }
-    public static MasterData operator +(EntityData x, MasterData y) { return y + x; }
-    public static MasterData operator +(PlayerData y, MasterData x) { return y + x; }
-    public static MasterData operator +(WeaponData y, MasterData x) { return y + x; }
-    public static MasterData operator +(SkillData y, MasterData x)  { return y + x; }
-    */
     
     public void Clear(){
         MaxHP       = 0;
@@ -224,8 +126,8 @@ public class MasterData {
         DamageRatio = 0f;
         WeaponDelay = 0f;
         Range       = 0f;
-        Ammo        = 0;
-        for(int i = 0; i < 3; i++){SkillInfos[i].Clear();}
+        //Ammo        = 0;
+        for(int i = 0; i < 3; i++){SkillRankInfos[i].Clear();}
 
         MoveState       = () => {};
         AttackState     = () => {}; 
@@ -245,11 +147,57 @@ public class MasterData {
         WeaponChangeState = () => {};
         WeaponReLoadState = () => {};
 
+        SkillUseState = () => {};
+        SkillLevelUpState = () => {};
+        SkillChangeState = () => {};
+    }
+
+    public MasterData Clone(){
+        MasterData res = new MasterData();
+        res.MaxHP       = this.MaxHP;
+        res.CurHP       = this.CurHP;
+        res.MoveSpeed   = this.MoveSpeed;
+        res.Defence     = this.Defence;
+        res.Tenacity    = this.Tenacity;
+        res.MaxStamina  = this.MaxStamina;
+        res.CurStamina  = this.CurStamina;
+        res.StaminaRestoreRatio  = this.StaminaRestoreRatio;
+        res.Power       = this.Power;
+        res.AttackSpeed = this.AttackSpeed;
+        res.Luck        = this.Luck;
+        res.Gear        = this.Gear;
+        res.Frag        = this.Frag;
+        res.DamageRatio = this.DamageRatio;
+        res.WeaponDelay = this.WeaponDelay;
+        res.Range       = this.Range;
+        //res.Ammo        = x.Ammo        + y.Ammo;
         for(int i = 0; i < 3; i++){
-            SkillUseState[i] = () => {};
-            SkillChangeState[i] = () => {};
-            SkillLevelUpState[i] = () => {};
+            for(int j = 0; j < 3; j++){
+                res.SkillRankInfos[i].numericArray[j]   = this.SkillRankInfos[i].numericArray[j];
+                res.SkillRankInfos[i].skillDelay[j]     = this.SkillRankInfos[i].skillDelay[j];
+                res.SkillRankInfos[i].durateTime[j]     = this.SkillRankInfos[i].durateTime[j];
+            }
         }
+
+        res.MoveState       = this.MoveState;
+        res.AttackState     = this.AttackState;
+        res.AttackStateRef     = this.AttackStateRef;
+        res.HitState        = this.HitState;
+        res.HitStateRef     = this.HitStateRef;
+        res.ProjectileShootState = this.ProjectileShootState;
+        res.PhyiscTriggerState = this.PhyiscTriggerState;
+        res.DieState        = this.DieState;
+        res.UIAffectState   = this.UIAffectState;
+        res.SkillState      = this.SkillState;
+        res.InteractState   = this.InteractState;
+        res.UpdateState     = this.UpdateState;
+        res.WeaponUseState = this.WeaponUseState;
+        res.WeaponChangeState = this.WeaponChangeState;
+        res.WeaponReLoadState = this.WeaponReLoadState;
+        res.SkillUseState = this.SkillUseState;
+        res.SkillLevelUpState = this.SkillLevelUpState;
+        res.SkillChangeState = this.SkillChangeState;
+        return res;
     }
     public static MasterData operator +(MasterData x, MasterData y){
         MasterData res = new MasterData();
@@ -269,12 +217,12 @@ public class MasterData {
         res.DamageRatio = x.DamageRatio + y.DamageRatio;
         res.WeaponDelay = x.WeaponDelay + y.WeaponDelay;
         res.Range       = x.Range       + y.Range;
-        res.Ammo        = x.Ammo        + y.Ammo;
+        //res.Ammo        = x.Ammo        + y.Ammo;
         for(int i = 0; i < 3; i++){
             for(int j = 0; j < 3; j++){
-                res.SkillInfos[i].numericArray[j]   = x.SkillInfos[i].numericArray[j] + y.SkillInfos[i].numericArray[j];
-                res.SkillInfos[i].skillDelay[j]     = x.SkillInfos[i].skillDelay[j] + y.SkillInfos[i].skillDelay[j];
-                res.SkillInfos[i].durateTime[j]     = x.SkillInfos[i].durateTime[j] + y.SkillInfos[i].durateTime[j];
+                res.SkillRankInfos[i].numericArray[j]   = x.SkillRankInfos[i].numericArray[j] + y.SkillRankInfos[i].numericArray[j];
+                res.SkillRankInfos[i].skillDelay[j]     = x.SkillRankInfos[i].skillDelay[j] + y.SkillRankInfos[i].skillDelay[j];
+                res.SkillRankInfos[i].durateTime[j]     = x.SkillRankInfos[i].durateTime[j] + y.SkillRankInfos[i].durateTime[j];
             }
         }
 
@@ -296,17 +244,16 @@ public class MasterData {
         res.WeaponChangeState = x.WeaponChangeState + y.WeaponChangeState;
         res.WeaponReLoadState = x.WeaponReLoadState + y.WeaponReLoadState;
 
-        for(int i = 0; i < 3; i++){
-            res.SkillUseState[i] = x.SkillUseState[i] + y.SkillUseState[i];
-            res.SkillChangeState[i] = x.SkillChangeState[i] + y.SkillChangeState[i];
-            res.SkillLevelUpState[i] = x.SkillLevelUpState[i] + y.SkillLevelUpState[i];
-        }
+        res.SkillUseState = x.SkillUseState + y.SkillUseState;
+        res.SkillLevelUpState = x.SkillLevelUpState + y.SkillLevelUpState;
+        res.SkillChangeState = x.SkillChangeState + y.SkillChangeState;
         return res;
     }
 
     public override string ToString(){
         string PlayerString = $"MaxHP : {MaxHP}, CurHP : {CurHP}, MoveSpeed : {MoveSpeed}, Defence : {Defence}, Tenacity : {Tenacity}, MaxStamina : {MaxStamina}, CurStamina : {CurStamina}, StaminaRestoreRatio : {StaminaRestoreRatio}, Power : {Power}, AttackSpeed : {AttackSpeed}, Luck : {Luck}, Gear : {Gear}, Frag : {Frag} \n";
-        string WeaponString = $"DamageRatio : {DamageRatio}, WeaponDelay : {WeaponDelay}, Range : {Range}, Ammo : {Ammo}\n";
+        string WeaponString = $"DamageRatio : {DamageRatio}, WeaponDelay : {WeaponDelay}, Range : {Range}\n";
+        //string WeaponString = $"DamageRatio : {DamageRatio}, WeaponDelay : {WeaponDelay}, Range : {Range}, Ammo : {Ammo}\n";
         string SkillString = "";
         for(int i = 0; i < 3; i++){
             switch (i){
@@ -321,9 +268,9 @@ public class MasterData {
                     break;
             }
             for(int j = 0; j < 3; j++){
-                SkillString += $"NumericArray : {SkillInfos[i].numericArray[j]}, ";
-                SkillString += $"SkillDelay : {SkillInfos[i].skillDelay[j]}, ";
-                SkillString += $"DurateTime : {SkillInfos[i].durateTime[j]}\n";
+                SkillString += $"NumericArray : {SkillRankInfos[i].numericArray[j]}, ";
+                SkillString += $"SkillDelay : {SkillRankInfos[i].skillDelay[j]}, ";
+                SkillString += $"DurateTime : {SkillRankInfos[i].durateTime[j]}\n";
             }
         }
         return (PlayerString + WeaponString + SkillString);
@@ -383,25 +330,25 @@ public class MasterData {
 
         _weapon.WeaponUseState      =this.WeaponUseState;
         _weapon.WeaponChangeState   =this.WeaponChangeState;
-        if(_weapon.WeaponType == E_WeaponType.ranger){
-            _weapon.Ammo= this.Ammo;
-            _weapon.WeaponReLoadState   =this.WeaponReLoadState;
-        }
-        else {
-            Debug.Log("무기가 range가 아니면 Ammo는 더하지 않음");
-        }
+        //if(_weapon.WeaponType == E_WeaponType.ranger){
+        //    _weapon.Ammo= this.Ammo;
+        //    _weapon.WeaponReLoadState   =this.WeaponReLoadState;
+        //}
+        //else {
+        //    Debug.Log("무기가 range가 아니면 Ammo는 더하지 않음");
+        //}
     }
     public void PipeToSkill(ref SkillData _skill){
         for(int i = 0; i < 3; i++){
             for(int j =0; j < 3; j++){
-                _skill.SkillInfos[i].numericArray[j]   = this.SkillInfos[i].numericArray[j];
-                _skill.SkillInfos[i].skillDelay[j]     = this.SkillInfos[i].skillDelay[j];
-                _skill.SkillInfos[i].durateTime[j]     = this.SkillInfos[i].durateTime[j];
+                _skill.SkillRankInfos[i].numericArray[j]   = this.SkillRankInfos[i].numericArray[j];
+                _skill.SkillRankInfos[i].skillDelay[j]     = this.SkillRankInfos[i].skillDelay[j];
+                _skill.SkillRankInfos[i].durateTime[j]     = this.SkillRankInfos[i].durateTime[j];
             }
-            _skill.SkillUseState = this.SkillUseState[(int)_skill.CurrentSkillKey];
-            _skill.SkillChangeState = this.SkillChangeState[(int)_skill.CurrentSkillKey];
-            _skill.SkillLevelUpState = this.SkillLevelUpState[(int)_skill.CurrentSkillKey];
         }
+        _skill.SkillUseState = this.SkillUseState;
+        _skill.SkillLevelUpState = this.SkillLevelUpState;
+        _skill.SkillChangeState = this.SkillChangeState;
     }
     //  데미지 공식을 적을 수 있다.
 }
