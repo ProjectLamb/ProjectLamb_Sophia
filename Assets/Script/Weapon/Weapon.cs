@@ -20,18 +20,21 @@ using UnityEngine;
 public class Weapon : MonoBehaviour
 {
     [SerializeField]
+    private WeaponData mBaseWeaponData;
+    public WeaponData BaseWeaponData {get {return mBaseWeaponData;}}
+    
+    
+    [SerializeField]
     public WeaponData weaponData;
-    EntityData entityData;
 
     protected bool mIsReady = true;
     protected IEnumerator mCoWaitUse;
-    
 
-    private void Start() {
-        entityData = GetComponentInParent<IEntityAddressable>().GetEntityData();
+    private void Awake() {
+        weaponData = BaseWeaponData.Clone();
     }
 
-    public virtual void Use(MasterData _addingData){
+    public virtual void Use(int _amount){
         if(!mIsReady) return;
         mIsReady = false;
         mCoWaitUse = CoWaitUse();
@@ -39,7 +42,7 @@ public class Weapon : MonoBehaviour
         Vector3 EffectRotate = transform.eulerAngles;
         EffectRotate += weaponData.AttackProjectiles[0].transform.eulerAngles;
 
-        weaponData.AttackProjectiles[0].InstanciateProjectile(entityData, _addingData, E_ProjectileType.Attack,transform, Quaternion.Euler(EffectRotate));
+        //Projectile 생성 단, 전달데이터는 Owner이 누구인지, _amount만 전달하는것으로
     }
 
     public virtual IEnumerator CoWaitUse(){

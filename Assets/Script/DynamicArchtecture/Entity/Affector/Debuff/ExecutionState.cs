@@ -40,7 +40,7 @@ public class ExecutionState : DebuffState{
     
     IEnumerator VisualActivate(){
         visuallyInteractable.Interact(this.debuffData);
-        yield return YieldInstructionCache.WaitForSeconds(debuffData.durationTime * (1 - this.addingData.Tenacity));
+        yield return YieldInstructionCache.WaitForSeconds(debuffData.durationTime * (1 - this.entityData.Tenacity));
         visuallyInteractable.Revert();
     }
 }
