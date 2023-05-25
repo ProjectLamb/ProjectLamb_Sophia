@@ -47,7 +47,7 @@ public class MasterData {
     public UnityActionRef<int> HitStateRef;
     public UnityAction PhyiscTriggerState;// 콜라이더 닿으면
     public UnityAction DieState;
-    public UnityAction<GameObject> ProjectileShootState;
+    public UnityAction<IEntityAddressable> ProjectileShootState;
     public UnityAction UIAffectState;
     //////////////////////////////////////////////////////
     public UnityAction SkillState;
