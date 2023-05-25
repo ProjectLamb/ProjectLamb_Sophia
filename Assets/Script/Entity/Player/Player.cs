@@ -24,6 +24,10 @@ public class Player : MonoBehaviour, IEntityAddressable
     *********************************************************************************/
 
     [SerializeField]
+    private PlayerData mBasePlayerData;
+    public PlayerData BasePlayerData {get {return mBasePlayerData;}}
+    
+    [SerializeField]
     public PlayerData playerData; //플레이어의 함수로 인해 변할 수 있다.
         public EntityData GetEntityData() {return playerData;}
 
@@ -81,6 +85,8 @@ public class Player : MonoBehaviour, IEntityAddressable
         if (!TryGetComponent<VisualModulator>(out visualModulator)) { Debug.Log("컴포넌트 로드 실패 : VisualModulator"); }
         isPortal = true;
         anim = model.GetComponent<Animator>();
+
+        playerData = BasePlayerData.Clone();
     }
 
     [ContextMenu("파이프라인 출력")]
@@ -97,8 +103,6 @@ public class Player : MonoBehaviour, IEntityAddressable
     {
         playerData.MoveState.Invoke();
         
-        float MoveSpeed = playerData.MoveSpeed + equipmentManager.AddingData.MoveSpeed;
-        
         Vector3 AngleToVector(float _angle) {
             _angle *= Mathf.Deg2Rad;
             return new Vector3(Mathf.Sin(_angle), 0, Mathf.Cos(_angle));
@@ -107,7 +111,7 @@ public class Player : MonoBehaviour, IEntityAddressable
         if(_reverse){ _hAxis *= -1; _vAxis *= -1;}
 
         
-        if (mRigidbody.velocity.magnitude > MoveSpeed) return; 
+        if (mRigidbody.velocity.magnitude > playerData.MoveSpeed) return; 
 
         mMoveVec = AngleToVector(Camera.main.transform.eulerAngles.y + 90f) * _hAxis + AngleToVector(Camera.main.transform.eulerAngles.y) * _vAxis;
         mMoveVec = mMoveVec.normalized;
@@ -116,7 +120,7 @@ public class Player : MonoBehaviour, IEntityAddressable
         
         if (!IsBorder())
         {
-            Vector3 rbVel = mMoveVec * MoveSpeed;
+            Vector3 rbVel = mMoveVec * playerData.MoveSpeed;
             mRigidbody.velocity = rbVel;
             if(mMoveVec != Vector3.zero){
                 mRotate = Quaternion.LookRotation(mMoveVec);
@@ -163,7 +167,7 @@ public class Player : MonoBehaviour, IEntityAddressable
     {
         playerData.AttackState.Invoke();
         anim.SetTrigger("DoAttack");
-        Turning(() => weapon?.Use(equipmentManager.AddingData));
+        Turning(() => weapon?.Use(playerData.Power));
     }
     //Equipment_010과 의존 관계다 
     // 슈슈슉 충전공격후 여러번 때리는것
@@ -171,7 +175,7 @@ public class Player : MonoBehaviour, IEntityAddressable
     // 이렇게 공격 방식이 바뀌는 매커니즘을 다루는 커플링을 줄일까?
     public void JustAttack(){
         Turning(() => {
-            weapon?.Use(equipmentManager.AddingData);
+            weapon?.Use(playerData.Power);
         });
     }
     
@@ -179,7 +183,7 @@ public class Player : MonoBehaviour, IEntityAddressable
     {
         if(skills[(int)E_SkillKey.Q]) {
             playerData.SkillState.Invoke();
-            Turning(() => skills[(int)E_SkillKey.Q].Use(equipmentManager.AddingData));
+            Turning(() => skills[(int)E_SkillKey.Q].Use(playerData.Power));
         }
     }
 

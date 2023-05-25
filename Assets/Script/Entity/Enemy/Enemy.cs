@@ -11,19 +11,16 @@ using UnityEngine.Events;
 /// </summary>
 public class Enemy : MonoBehaviour, IEntityAddressable
 {
+    /**/
     [field : SerializeField]
     public EnemyData enemyData;
     public EntityData GetEntityData() {return this.enemyData;}
-    
-    [field : SerializeField]
-    public MasterData addingData;
-    public MasterData GetAddingData(){return this.addingData;}
 
     public GameObject model;
     public Rigidbody entityRigidbody;
     public Collider entityCollider;
 
-    public NavMeshAgent nav;
+    public UnityEngine.AI.NavMeshAgent nav;
     public Transform objectiveTarget;
     public bool chase;
     public bool isDie;
@@ -74,13 +71,12 @@ public class Enemy : MonoBehaviour, IEntityAddressable
     {
         TryGetComponent<VisualModulator>(out visualModulator);
         TryGetComponent<Rigidbody>(out entityRigidbody);
-        TryGetComponent<NavMeshAgent>(out nav);
+        TryGetComponent<UnityEngine.AI.NavMeshAgent>(out nav);
         TryGetComponent<Collider>(out entityCollider);
         
         model.TryGetComponent<Animator>(out animator);
         model.TryGetComponent<AnimEventInvoker>(out animEventInvoker);
 
-        addingData = new MasterData();
         enemyData.DieParticle.GetComponent<ParticleCallback>().onDestroyEvent.AddListener(DestroySelf);
 
         chase = false;
@@ -106,12 +102,12 @@ public class Enemy : MonoBehaviour, IEntityAddressable
         /***************************/
         if (chase) { nav.enabled = true;}
         else {nav.enabled = false;}
-        nav.speed = (enemyData.MoveSpeed + addingData.MoveSpeed);
+        nav.speed = enemyData.MoveSpeed;
     }
 
-    protected virtual void OnDestroy() {
-        if(transform.parent.parent == null) return;
-        if(!transform.parent.parent.TryGetComponent<StageGenerator>(out StageGenerator roomGenerator)){Debug.Log("컴포넌트 로드 실패 : NavMeshAgent");}
-        roomGenerator.DecreaseCurrentMobCount();
-    }
+    //protected virtual void OnDestroy() {
+    //    if(transform.parent.parent == null) return;
+    //    if(!transform.parent.parent.TryGetComponent<StageGenerator>(out StageGenerator roomGenerator)){Debug.Log("컴포넌트 로드 실패 : NavMeshAgent");}
+    //    roomGenerator.DecreaseCurrentMobCount();
+    //}
 }

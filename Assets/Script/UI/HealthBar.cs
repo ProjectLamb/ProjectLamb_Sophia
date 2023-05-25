@@ -7,7 +7,6 @@ using UnityEngine.UI;
 public class HealthBar : MonoBehaviour
 {
     public EntityData entityData;
-    public AddingData addingData;
     public Slider slider;
     public Image fill;
     public Gradient gradient;
@@ -29,8 +28,7 @@ public class HealthBar : MonoBehaviour
     }
 
     public void SetSlider(){
-        AddingData calPipeline = addingData + entityData;
-        slider.value = (((float)calPipeline.CurHP / (float)calPipeline.MaxHP) * slider.maxValue);
+        slider.value = (((float)entityData.CurHP / (float)entityData.MaxHP) * slider.maxValue);
         fill.color = gradient.Evaluate(slider.normalizedValue);
         //slider.value = ((float)sandbag.sandbagData.CurHP / sandbag.sandbagData.MaxHP) * slider.maxValue;
     }

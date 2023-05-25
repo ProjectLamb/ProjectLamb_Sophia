@@ -234,9 +234,63 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6830b8ac57ce84eeaa86d2f08aea30f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  equipments:
+  - {fileID: 6042595478063130100, guid: d039a161e395141cd803ecc538f3b32f, type: 3}
+  - {fileID: 1199978004760371886, guid: a3937a17fd2c1462ba9cbb14abbd643a, type: 3}
+  - {fileID: 6170018169434099597, guid: ab972e8ed02e94ad892315a01961f88e, type: 3}
+  - {fileID: 4530943047737759226, guid: 3e3ecd2255cba4b57b20a75e6280e8b7, type: 3}
+  - {fileID: 6853252937837033468, guid: 61e2d52b6cf67415bb485ce504207f4a, type: 3}
+  - {fileID: 918158967524842159, guid: 79cba9532b6524417b37d9980346ed95, type: 3}
+  - {fileID: 1530604297157938203, guid: 74e03df5c130c46dcaab436b8bc04730, type: 3}
+  - {fileID: 2414035607269125758, guid: 117731990930a4f3fb806fa1c58cc4e9, type: 3}
   player: {fileID: 2906788766718216227}
-  equipments: []
+  weapon: {fileID: 803013838}
   playerCollider: {fileID: 2906788766718216232}
+  mAddingData:
+    <MaxHP>k__BackingField: 0
+    <CurHP>k__BackingField: 0
+    <MoveSpeed>k__BackingField: 0
+    <Defence>k__BackingField: 0
+    <Tenacity>k__BackingField: 0
+    <MaxStamina>k__BackingField: 0
+    <CurStamina>k__BackingField: 0
+    <StaminaRestoreRatio>k__BackingField: 0
+    <Power>k__BackingField: 0
+    <AttackSpeed>k__BackingField: 0
+    <Luck>k__BackingField: 0
+    <Gear>k__BackingField: 0
+    <Frag>k__BackingField: 0
+    <DamageRatio>k__BackingField: 0
+    <WeaponDelay>k__BackingField: 0
+    <Range>k__BackingField: 0
+    SkillRankInfos:
+    - numericArray: 000000000000000000000000
+      skillDelay:
+      - 0
+      - 0
+      - 0
+      durateTime:
+      - 0
+      - 0
+      - 0
+    - numericArray: 000000000000000000000000
+      skillDelay:
+      - 0
+      - 0
+      - 0
+      durateTime:
+      - 0
+      - 0
+      - 0
+    - numericArray: 000000000000000000000000
+      skillDelay:
+      - 0
+      - 0
+      - 0
+      durateTime:
+      - 0
+      - 0
+      - 0
 --- !u!114 &826148951 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2735030516795961503, guid: c6c8706211f194706b90866ad4106f8a,
@@ -345,6 +399,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2287285462318149401, guid: ceb176b01beb54b318b963478086ff7b,
         type: 3}
+      propertyPath: mBaseWeaponData.WeaponName
+      value: Mace
+      objectReference: {fileID: 0}
+    - target: {fileID: 2287285462318149401, guid: ceb176b01beb54b318b963478086ff7b,
+        type: 3}
       propertyPath: weaponEffect.Array.data[0]
       value: 
       objectReference: {fileID: 4932522511171908422, guid: 67de3cd1a4589412b90183829912c8f6,
@@ -352,12 +411,12 @@ PrefabInstance:
     - target: {fileID: 2287285462318149401, guid: ceb176b01beb54b318b963478086ff7b,
         type: 3}
       propertyPath: weaponData.<DamageRatio>k__BackingField
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2287285462318149401, guid: ceb176b01beb54b318b963478086ff7b,
         type: 3}
       propertyPath: weaponData.<WeaponDelay>k__BackingField
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2287285462318149401, guid: ceb176b01beb54b318b963478086ff7b,
         type: 3}
@@ -367,6 +426,27 @@ PrefabInstance:
     - target: {fileID: 2287285462318149401, guid: ceb176b01beb54b318b963478086ff7b,
         type: 3}
       propertyPath: weaponData.AttackProjectiles.Array.data[0]
+      value: 
+      objectReference: {fileID: 4932522511171908422, guid: 67de3cd1a4589412b90183829912c8f6,
+        type: 3}
+    - target: {fileID: 2287285462318149401, guid: ceb176b01beb54b318b963478086ff7b,
+        type: 3}
+      propertyPath: mBaseWeaponData.<DamageRatio>k__BackingField
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2287285462318149401, guid: ceb176b01beb54b318b963478086ff7b,
+        type: 3}
+      propertyPath: mBaseWeaponData.<WeaponDelay>k__BackingField
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2287285462318149401, guid: ceb176b01beb54b318b963478086ff7b,
+        type: 3}
+      propertyPath: mBaseWeaponData.AttackProjectiles.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2287285462318149401, guid: ceb176b01beb54b318b963478086ff7b,
+        type: 3}
+      propertyPath: mBaseWeaponData.AttackProjectiles.Array.data[0]
       value: 
       objectReference: {fileID: 4932522511171908422, guid: 67de3cd1a4589412b90183829912c8f6,
         type: 3}
@@ -726,7 +806,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2735030517496124788, guid: c6c8706211f194706b90866ad4106f8a, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: c6c8706211f194706b90866ad4106f8a, type: 3}
 --- !u!1001 &1964105516
 PrefabInstance:
@@ -1661,7 +1742,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b21c0ad5cd274b0db422445d613a3ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerData:
+  mBasePlayerData:
     mEntityTag: Player
     mMaxHP: 100
     mCurHP: 100
@@ -1678,57 +1759,29 @@ MonoBehaviour:
     <Luck>k__BackingField: 0
     <Gear>k__BackingField: 0
     <Frag>k__BackingField: 0
-  addingData:
-    <MaxHP>k__BackingField: 0
-    <CurHP>k__BackingField: 0
-    <MoveSpeed>k__BackingField: 0
-    <Defence>k__BackingField: 0
-    <Tenacity>k__BackingField: 0
+  playerData:
+    mEntityTag: Player
+    mMaxHP: 0
+    mCurHP: 0
+    mMoveSpeed: 0
+    mDefence: 0
+    mTenacity: 0
+    mPower: 0
+    mAttackSpeed: 0
+    DieParticle: {fileID: 5724422084065114389, guid: af98d17f147974a44b1a9677683b6d00,
+      type: 3}
     <MaxStamina>k__BackingField: 0
     <CurStamina>k__BackingField: 0
     <StaminaRestoreRatio>k__BackingField: 0
-    <Power>k__BackingField: 0
-    <AttackSpeed>k__BackingField: 0
     <Luck>k__BackingField: 0
     <Gear>k__BackingField: 0
     <Frag>k__BackingField: 0
-    <DamageRatio>k__BackingField: 0
-    <WeaponDelay>k__BackingField: 0
-    <Range>k__BackingField: 0
-    <Ammo>k__BackingField: 0
-    SkillInfos:
-    - numericArray: 000000000000000000000000
-      skillDelay:
-      - 0
-      - 0
-      - 0
-      durateTime:
-      - 0
-      - 0
-      - 0
-    - numericArray: 000000000000000000000000
-      skillDelay:
-      - 0
-      - 0
-      - 0
-      durateTime:
-      - 0
-      - 0
-      - 0
-    - numericArray: 000000000000000000000000
-      skillDelay:
-      - 0
-      - 0
-      - 0
-      durateTime:
-      - 0
-      - 0
-      - 0
   weapon: {fileID: 803013838}
   skills:
   - {fileID: 5770372847655980824}
   - {fileID: 0}
   - {fileID: 0}
+  equipmentManager: {fileID: 812233847}
   isPortal: 0
   model: {fileID: 6689272997834610542}
   groundMask:
@@ -2539,10 +2592,72 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a591cbeee26c14dc0b04a05bdcd8434c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  newSkillData:
+  mBaseSkillData:
     SkillType: 0
+    CurrentSkillKey: 0
     SkillName: 
-    SkillInfos: []
+    SkillRankInfos:
+    - numericArray: 000000000000000000000000
+      skillDelay:
+      - 0
+      - 0
+      - 0
+      durateTime:
+      - 0
+      - 0
+      - 0
+    - numericArray: 000000000000000000000000
+      skillDelay:
+      - 0
+      - 0
+      - 0
+      durateTime:
+      - 0
+      - 0
+      - 0
+    - numericArray: 000000000000000000000000
+      skillDelay:
+      - 0
+      - 0
+      - 0
+      durateTime:
+      - 0
+      - 0
+      - 0
+    SkillDescription: 
+    SkillProjectile: []
+  SkillData:
+    SkillType: 0
+    CurrentSkillKey: 0
+    SkillName: 
+    SkillRankInfos:
+    - numericArray: 000000000000000000000000
+      skillDelay:
+      - 0
+      - 0
+      - 0
+      durateTime:
+      - 0
+      - 0
+      - 0
+    - numericArray: 000000000000000000000000
+      skillDelay:
+      - 0
+      - 0
+      - 0
+      durateTime:
+      - 0
+      - 0
+      - 0
+    - numericArray: 000000000000000000000000
+      skillDelay:
+      - 0
+      - 0
+      - 0
+      durateTime:
+      - 0
+      - 0
+      - 0
     SkillDescription: 
     SkillProjectile: []
 --- !u!1 &5770372847655980825
