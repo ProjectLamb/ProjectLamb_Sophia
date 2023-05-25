@@ -7,6 +7,7 @@ using UnityEngine;
 
 public class Weapon_TripleAttack : Weapon
 {
+    /*
     int mAttackCount = 0;
     int attackCount {
         get {return mAttackCount;}
@@ -36,4 +37,5 @@ public class Weapon_TripleAttack : Weapon
         mIsReady = true;
         PlayerController.IsMoveAllow = true;
     }
+    */
 }

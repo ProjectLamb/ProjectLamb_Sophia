@@ -40,6 +40,14 @@ public abstract class EntityData {
     public UnityAction UIAffectState;
     
     public EntityData() {
+        this.MaxHP       = 0;
+        this.CurHP       = 0;
+        this.MoveSpeed   = 0f;
+        this.Defence     = 0f;
+        this.Tenacity    = 0f;
+        this.Power       = 0;
+        this.AttackSpeed = 0f;
+
         MoveState       = () => {};
         AttackState     = () => {}; 
         AttackStateRef     = (ref int i) => {};
@@ -50,4 +58,9 @@ public abstract class EntityData {
         DieState        = () => {};
         UIAffectState   = () => {};
     }
+    // Abstract 는 new 할 수 없다.
+    //public static EntityData operator +(EntityData x, MasterData y) {
+    //    EntityData res = new EntityData();
+    //    return result;
+    //}
 }

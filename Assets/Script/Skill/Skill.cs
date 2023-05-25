@@ -5,9 +5,11 @@ using UnityEngine;
 public class Skill : MonoBehaviour
 {   
     [SerializeField]
-    public SkillData newSkillData;
-
-    EntityData entityData;
+    private SkillData mBaseSkillData;
+    public SkillData BaseSkillData {get {return BaseSkillData;}}
+    
+    [SerializeField]
+    public SkillData SkillData;
 
     bool mIsReady = true;
     IEnumerator mCoWaitUse;
@@ -17,15 +19,15 @@ public class Skill : MonoBehaviour
         //if(!TryGetComponent<SkillData>(out skillData)) {Debug.Log("컴포넌트 로드 실패 : SkillData");}
     }
     public void Start(){
-        entityData = GetComponentInParent<IEntityAddressable>().GetEntityData();
 
     }
-    public void Use(MasterData AddingData){
+    public void Use(int _amount){
         if(!mIsReady) return;
         mIsReady = false;
         mCoWaitUse = CoWaitUse();
         StartCoroutine(mCoWaitUse);
-
+        
+        //Projectile 생성 단, 전달데이터는 Owner이 누구인지, _amount만 전달하는것으로
         //Instantiate(skillEffect, transform.position, transform.rotation).GetComponent<CombatEffect>().SetDatas(this.playerData, this.weaponData);
     }
     IEnumerator CoWaitUse(){

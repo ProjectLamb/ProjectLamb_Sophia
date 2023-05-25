@@ -15,23 +15,6 @@ public class WeaponData {
     [field : SerializeField] public float DamageRatio {get; set;}
     [field : SerializeField] public float WeaponDelay {get; set;}
     [field : SerializeField] public float Range {get; set;}
-        
-    [field : SerializeField] private int mAmmo;
-
-    public int Ammo {
-        get{
-            if(this.WeaponType != E_WeaponType.ranger){
-                throw new System.Exception("원거리 무기가 아니므로 접근 불가능");
-            }
-            return mAmmo;
-        }
-        set {
-            if(this.WeaponType != E_WeaponType.ranger){
-                throw new System.Exception("원거리 무기가 아니므로 접근 불가능");
-            }
-            mAmmo = value;
-        }
-    }
 
     [field : SerializeField]
     public List<Projectile> AttackProjectiles;
@@ -40,9 +23,52 @@ public class WeaponData {
     public UnityAction WeaponChangeState;
     public UnityAction WeaponReLoadState; 
     public WeaponData() {
-        this.AttackProjectiles = new List<Projectile>();
+        AttackProjectiles = new List<Projectile>();
+
+        DamageRatio = 0f;
+        WeaponDelay = 0f;
+        Range       = 0f;
+
         WeaponUseState = () => {};
         WeaponChangeState = () => {};
         WeaponReLoadState = () => {};
+    }
+    public WeaponData Clone() {
+        WeaponData res = new WeaponData();
+        res.WeaponType  = this.WeaponType;
+        res.WeaponName  = this.WeaponName;
+        res.WeaponDescription   = this.WeaponDescription;
+        res.DamageRatio = this.DamageRatio;
+        res.WeaponDelay = this.WeaponDelay;
+        res.Range = this.Range;
+        
+        res.AttackProjectiles = this.AttackProjectiles;
+        
+        res.WeaponUseState = this.WeaponUseState;
+        res.WeaponChangeState = this.WeaponChangeState;
+        res.WeaponReLoadState = this.WeaponReLoadState;
+        return res;
+    }
+    public static WeaponData operator +(WeaponData x, MasterData y){
+        WeaponData res = new WeaponData();
+        res.DamageRatio = x.DamageRatio + y.DamageRatio;
+        res.WeaponDelay = x.WeaponDelay + y.WeaponDelay;
+        res.Range   = x.Range + y.Range;
+
+        res.WeaponUseState = x.WeaponUseState + y.WeaponUseState;
+        res.WeaponChangeState = x.WeaponChangeState + y.WeaponChangeState;
+        res.WeaponReLoadState = x.WeaponReLoadState + y.WeaponReLoadState;
+        return res;
+    }
+    public static WeaponData operator -(WeaponData x, MasterData y){
+        WeaponData res = new WeaponData();
+        res.DamageRatio = x.DamageRatio - y.DamageRatio;
+        res.WeaponDelay = x.WeaponDelay - y.WeaponDelay;
+        res.Range   = x.Range - y.Range;
+
+        res.WeaponUseState = x.WeaponUseState - y.WeaponUseState;
+        res.WeaponChangeState = x.WeaponChangeState - y.WeaponChangeState;
+        res.WeaponReLoadState = x.WeaponReLoadState - y.WeaponReLoadState;
+        return res;
     }
 }
