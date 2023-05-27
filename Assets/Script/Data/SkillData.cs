@@ -12,9 +12,9 @@ public class SkillData {
     [field : SerializeField]public List<Projectile> SkillProjectile;
     
     //Index는 E_SkillKey
-    [field : SerializeField]public UnityAction SkillUseState;
-    [field : SerializeField]public UnityAction SkillLevelUpState;
-    [field : SerializeField]public UnityAction SkillChangeState;
+    [field : SerializeField]public UnityAction SkillUseState = () => {};
+    [field : SerializeField]public UnityAction SkillLevelUpState = () => {};
+    [field : SerializeField]public UnityAction SkillChangeState = () => {};
     
     public SkillData() {
         SkillProjectile = new List<Projectile>();
@@ -25,9 +25,6 @@ public class SkillData {
         SkillRankInfos[(int)E_SkillKey.E] = new SkillRankInfo();
         SkillRankInfos[(int)E_SkillKey.R] = new SkillRankInfo();
         
-        SkillUseState = () => {};
-        SkillLevelUpState = () => {};
-        SkillChangeState = () => {};
     }
 
     public SkillData Clone(){
