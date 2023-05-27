@@ -30,12 +30,12 @@ public class Equipment_022 : AbstractEquipment { //, IPlayerDataApplicant{
         this.Projectile += (_owner, _target) => {Freeze(_owner, _target);};
         this.player = _player;
         if(_selectIndex == 0){
-            _player.playerData.ProjectileShootState += Projectile;
+            this.equipmentData.ProjectileShootState += Projectile;
         }
     }
 
     public void Freeze(Entity _owner, Entity _target){
         freezeAffector.Init(_owner, _target);
-        freezeAffector.Modifiy(_target);
+        freezeAffector.Modifiy((IAffectable)_target);
     }
 }

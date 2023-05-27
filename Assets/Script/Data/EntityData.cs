@@ -28,16 +28,16 @@ public abstract class EntityData {
     
     [field : SerializeField] public ParticleSystem DieParticle;
     
-    public UnityAction MoveState;
-    public UnityAction AttackState;     //몬스터 패턴 각각에 어텍 스테이트를 만들어야 할지도 있다.
-    public UnityActionRef<int> AttackStateRef;
-    public UnityAction HitState;
-    public UnityActionRef<int> HitStateRef;
-    public UnityAction PhyiscTriggerState;// 콜라이더 닿으면
-    public UnityAction DieState;
-    public UnityAction<Entity, Entity> ProjectileShootState;
+    public UnityAction MoveState = () => {};
+    public UnityAction AttackState = () => {};     //몬스터 패턴 각각에 어텍 스테이트를 만들어야 할지도 있다.
+    public UnityActionRef<int> AttackStateRef = (ref int i) => {};
+    public UnityAction HitState        = () => {};
+    public UnityActionRef<int> HitStateRef     = (ref int i) => {};
+    public UnityAction<Entity, Entity> ProjectileShootState = (owner, target) => {};
+    public UnityAction PhyiscTriggerState = () => {};// 콜라이더 닿으면
+    public UnityAction DieState = () => {};
     
-    public UnityAction UIAffectState;
+    public UnityAction UIAffectState = () => {};
     
     public EntityData() {
         MaxHP           = 0;
@@ -47,15 +47,5 @@ public abstract class EntityData {
         Tenacity        = 0f;
         Power           = 0;
         AttackSpeed     = 0f;
-
-        MoveState       = () => {};
-        AttackState     = () => {}; 
-        AttackStateRef  = (ref int i) => {};
-        HitState        = () => {};
-        HitStateRef     = (ref int i) => {};
-        ProjectileShootState = (owner, target) => {};
-        PhyiscTriggerState = () => {};// 콜라이더 닿으면
-        DieState        = () => {};
-        UIAffectState   = () => {};
     }
 }

@@ -40,6 +40,7 @@ public class EquipmentManager : MonoBehaviour{
             AddingData += E.equipmentData;
         }
         player.playerData = player.BasePlayerData + AddingData;
+        player.playerData.EntityTag = "Player";
         //weapon.weaponData = weapon.BaseWeaponData + AddingData;
     }
 

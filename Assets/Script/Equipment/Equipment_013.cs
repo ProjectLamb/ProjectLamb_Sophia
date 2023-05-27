@@ -28,7 +28,7 @@ public class Equipment_013 : AbstractEquipment { //, IPlayerDataApplicant{
         this.player = _player;
         this.Projectile += (_owner, _target) => {Knockback(_owner, _target);};   
         if(_selectIndex == 0){
-            _player.playerData.ProjectileShootState += Projectile;
+            this.equipmentData.ProjectileShootState += Projectile;
         }
     }
 
