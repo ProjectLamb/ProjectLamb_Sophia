@@ -25,19 +25,16 @@ public class Equipment_030 : AbstractEquipment { //, IPlayerDataApplicant{
         this.EquipState = () => {};
         this.UnequipState = () => {};
         this.UpdateState = () => {};
-        this.Projectile += (_owner, _target) => {Execution(_owner, _target);};
         this.player = _player;
+        this.Projectile += (Entity _owner, Entity _target) => {Execution(_owner, _target);};
         if(_selectIndex == 0){
-            _player.playerData.ProjectileShootState += Projectile;
+            this.equipmentData.ProjectileShootState += Projectile;
         }
+        this.mIsInitialized = true;
     }
 
     public void Execution(Entity _owner, Entity _target){
-        int Luck = this.player.playerData.Luck + this.player.equipmentManager.AddingData.Luck + 5;
-        if(Luck + 5 < (int)Random.Range(0, 100)){ 
-            IEntityAddressable entityAddressable = _target.GetComponent<IEntityAddressable>();
-            excuteAffector.Init(_owner, _target);
-            excuteAffector.Modifiy(_target);
-        }
+        excuteAffector.Init(_owner, _target);
+        excuteAffector.Modifiy((IAffectable)_target);
     }
 }

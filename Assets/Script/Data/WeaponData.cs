@@ -19,19 +19,15 @@ public class WeaponData {
     [field : SerializeField]
     public List<Projectile> AttackProjectiles;
 
-    public UnityAction WeaponUseState;
-    public UnityAction WeaponChangeState;
-    public UnityAction WeaponReLoadState; 
+    public UnityAction WeaponUseState = () => {};
+    public UnityAction WeaponChangeState = () => {};
+    public UnityAction WeaponReLoadState = () => {}; 
     public WeaponData() {
         AttackProjectiles = new List<Projectile>();
 
         DamageRatio = 0f;
         WeaponDelay = 0f;
         Range       = 0f;
-
-        WeaponUseState = () => {};
-        WeaponChangeState = () => {};
-        WeaponReLoadState = () => {};
     }
     public WeaponData Clone() {
         WeaponData res = new WeaponData();

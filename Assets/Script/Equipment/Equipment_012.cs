@@ -21,7 +21,7 @@ public class Equipment_012 : AbstractEquipment { //, IPlayerDataApplicant{
 
     public override void InitEquipment(Player _player, int _selectIndex)
     {
-        Vector3 ScaleSize = new Vector3(0.7f * 0.25f,0.7f * 0.25f,0.7f * 0.25f);
+        Vector3 ScaleSize = new Vector3(7f * 1.25f,7f * 1.25f,7f * 1.25f);
         equipmentName = "핑크 덤벨";
         this.EquipState = () => {};
         this.UnequipState = () => {};
