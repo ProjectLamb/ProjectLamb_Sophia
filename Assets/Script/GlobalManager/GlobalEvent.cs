@@ -19,6 +19,7 @@ public class GlobalEvent : MonoBehaviour
 
     public UnityEvent OnHitEvents;
     public UnityEvent PausedEvent;
+    public UnityEvent OnEnemyDieEvent;
 
     ///////////////////////////////////////////////////////////////////
     [Range(0, 1)]
@@ -84,4 +85,8 @@ public class GlobalEvent : MonoBehaviour
         mIsSlowed = false;
     }
     /////////////////////////////////////////////////////////////////
+
+    public void EnemyDie(){
+        OnEnemyDieEvent.Invoke();
+    }
 }

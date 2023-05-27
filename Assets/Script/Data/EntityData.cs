@@ -8,6 +8,8 @@ using UnityEngine.Events;
 // 엔티티를 구성하는 가장 Atomic한 데이터
 // 변동하는 데이터가 되는 녀석들이다.
 
+// 모든것은 올라가면 효과가 좋아지는 방식이다.
+
 public abstract class EntityData {
     [field : SerializeField] string mEntityTag;
     public string EntityTag {get {return mEntityTag;} set {mEntityTag = value;}}
@@ -23,10 +25,10 @@ public abstract class EntityData {
     public float Tenacity {get {return mTenacity;} set{mTenacity = value;}}
     [field : SerializeField] int mPower;
     public int Power {get {return mPower;} set{mPower = value;}}
-    [field : SerializeField] float mAttackSpeed;
-    public float AttackSpeed {get {return mAttackSpeed;} set{mAttackSpeed = value;}}
+    [field : SerializeField] float mAttackSpeed; 
     
-    [field : SerializeField] public ParticleSystem DieParticle;
+    public float AttackSpeed {get {return mAttackSpeed;} set{mAttackSpeed = value;}}
+   
     
     public UnityAction MoveState = () => {};
     public UnityAction AttackState = () => {};     //몬스터 패턴 각각에 어텍 스테이트를 만들어야 할지도 있다.

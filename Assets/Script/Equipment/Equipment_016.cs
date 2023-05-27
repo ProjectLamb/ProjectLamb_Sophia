@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Equipment_017 : AbstractEquipment {
+public class Equipment_016 : AbstractEquipment {
     //public string equipmentName;
     //public string description;
     //public Sprite sprite;
@@ -15,17 +15,26 @@ public class Equipment_017 : AbstractEquipment {
     //public UnityAction UnequipState;
     //public UnityAction UpdateState;
     //public bool mIsInitialized = false;
+    public EntityAffector fasterAffector;
+    private UnityAction EnemyDie;
 
     public override void InitEquipment(Player _player, int _selectIndex)
     {
-        equipmentName = "백호인형";
+        equipmentName = "조잡한 황금뱃지";
 
         this.EquipState = () => {};
         this.UnequipState = () => {};
         this.UpdateState = () => {};
+        this.player = _player;
+        this.EnemyDie += () => {Faster();};
         if(_selectIndex == 0) {
-            this.equipmentData.StaminaRestoreRatio += 10;
+            GameManager.Instance.globalEvent.OnEnemyDieEvent.AddListener(this.EnemyDie);
         }
         this.mIsInitialized = true;
+    }
+
+    public void Faster() {
+        fasterAffector.Init(this.player, this.player);
+        fasterAffector.Modifiy((IAffectable)this.player);
     }
 }
