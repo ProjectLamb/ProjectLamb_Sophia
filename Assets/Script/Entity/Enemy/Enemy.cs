@@ -79,7 +79,8 @@ public class Enemy : Entity
         this.model.TryGetComponent<Animator>(out animator);
         this.model.TryGetComponent<AnimEventInvoker>(out animEventInvoker);
 
-        enemyData.DieParticle.GetComponent<ParticleCallback>().onDestroyEvent.AddListener(DestroySelf);
+        this.DieParticle.GetComponent<ParticleCallback>().onDestroyEvent.AddListener(DestroySelf);
+        enemyData.DieState += GameManager.Instance.globalEvent.EnemyDie;
 
         chase = false;
         objectiveTarget = GameManager.Instance?.playerGameObject?.transform;

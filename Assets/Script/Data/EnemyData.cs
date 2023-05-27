@@ -13,7 +13,6 @@ public class EnemyData : EntityData {
         res.Tenacity = this.Tenacity;
         res.Power = this.Power;
         res.AttackSpeed = this.AttackSpeed;
-        res.DieParticle = this.DieParticle;
         res.MoveState       = this.MoveState;
         res.AttackState     = this.AttackState;
         res.AttackStateRef  = this.AttackStateRef;
