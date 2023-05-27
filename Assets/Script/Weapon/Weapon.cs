@@ -41,9 +41,11 @@ public class Weapon : MonoBehaviour
         mIsReady = false;
         mCoWaitUse = CoWaitUse();
         StartCoroutine(mCoWaitUse);
-        Vector3 EffectRotate = transform.eulerAngles;
-        EffectRotate += weaponData.AttackProjectiles[0].transform.eulerAngles;
-        Instantiate(mBaseWeaponData.AttackProjectiles[0]).InitializeByDamage(_amount, ownerEntity);
+        Vector3 effectRotate = transform.eulerAngles;
+        effectRotate += weaponData.AttackProjectiles[0].transform.eulerAngles;
+        //GameObject ProjectileObj = Instantiate(gameObject, parent);
+        //GameObject ProjectileObj = Instantiate(gameObject, parent.position, _rotate);
+        Instantiate(mBaseWeaponData.AttackProjectiles[0], transform.position, Quaternion.Euler(effectRotate)).InitializeByDamage(_amount, ownerEntity);
     }
 
     public virtual IEnumerator CoWaitUse(){
