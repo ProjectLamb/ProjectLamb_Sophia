@@ -121,10 +121,11 @@ public class Player : Entity {
     {
         IEnumerator CoWaitDash()
         {
+            float recoveryTime = 3f - (3f * (playerData.StaminaRestoreRatio / 100));
             mIsDashed = true;
             while (playerData.CurStamina < playerData.MaxStamina)
             {
-                yield return YieldInstructionCache.WaitForSeconds(3.0f);
+                yield return YieldInstructionCache.WaitForSeconds(recoveryTime);
                 playerData.CurStamina++;
             }
             mIsDashed = false;
@@ -192,4 +193,5 @@ public class Player : Entity {
             action.Invoke();
         }
     }
+
  }
