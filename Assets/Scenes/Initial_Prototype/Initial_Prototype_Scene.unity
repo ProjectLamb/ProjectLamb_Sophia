@@ -796,13 +796,13 @@ PrefabInstance:
         type: 3}
       propertyPath: projectiles.Array.data[0]
       value: 
-      objectReference: {fileID: 7228446207623736202, guid: 461343f6c5efd42e595d53d3c4a23943,
+      objectReference: {fileID: 2328153879076420345, guid: 461343f6c5efd42e595d53d3c4a23943,
         type: 3}
     - target: {fileID: 2735030516623181697, guid: c6c8706211f194706b90866ad4106f8a,
         type: 3}
       propertyPath: projectiles.Array.data[1]
       value: 
-      objectReference: {fileID: 7250227762233782948, guid: 16aaca7ef638d410a85a27f82923476d,
+      objectReference: {fileID: 3365067302898288901, guid: 16aaca7ef638d410a85a27f82923476d,
         type: 3}
     - target: {fileID: 2735030516623181699, guid: c6c8706211f194706b90866ad4106f8a,
         type: 3}
@@ -812,7 +812,7 @@ PrefabInstance:
     - target: {fileID: 2735030516623181699, guid: c6c8706211f194706b90866ad4106f8a,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2735030516623181702, guid: c6c8706211f194706b90866ad4106f8a,
         type: 3}
@@ -868,6 +868,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2735451393230218094, guid: c6c8706211f194706b90866ad4106f8a,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2735451393230218094, guid: c6c8706211f194706b90866ad4106f8a,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 2735451393230218094, guid: c6c8706211f194706b90866ad4106f8a,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 2735030517496124788, guid: c6c8706211f194706b90866ad4106f8a, type: 3}
@@ -17387,7 +17402,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &6733144046494565652
 Transform:
   m_ObjectHideFlags: 0
@@ -22375,7 +22390,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chrTr: {fileID: 243639901359974342}
-  offset: {x: -20, y: 30, z: 20}
+  offset: {x: -40, y: 60, z: 40}
 --- !u!114 &6733144046752285891
 MonoBehaviour:
   m_ObjectHideFlags: 0
