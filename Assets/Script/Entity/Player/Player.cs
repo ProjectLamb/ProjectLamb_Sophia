@@ -9,19 +9,13 @@ using UnityEngine.Events;
 using Component = UnityEngine.Component;
 using Random = UnityEngine.Random;
 
-/// <summary>
-/// 플레이어의 모든 동작을 담는 클래스다
-/// </summary>
+public class Player : Entity {
 
-
-public class Player : MonoBehaviour, IEntityAddressable
-{
-    /////////////////////////////////////////////////////////////////////////////////
-    /*********************************************************************************
-    *
-    * 클래스를 모아 놓는다.
-    *
-    *********************************************************************************/
+    /* 아래 4줄은 절때 활성화 하지마라. 상속받은 Entity에 이미 정의 되어 있다. */
+    //Collider entityCollider;
+    //Rigidbody entityRigidbody;
+    //VisualModulator visualModulator;
+    //GameObject model;
 
     [SerializeField]
     private PlayerData mBasePlayerData;
@@ -29,7 +23,6 @@ public class Player : MonoBehaviour, IEntityAddressable
     
     [SerializeField]
     public PlayerData playerData; //플레이어의 함수로 인해 변할 수 있다.
-        public EntityData GetEntityData() {return playerData;}
 
     //고유성을 가지고 있다는것이 특징이라서 Static하면 안되지 않을까?
     
@@ -39,14 +32,7 @@ public class Player : MonoBehaviour, IEntityAddressable
     [SerializeField]
     public Skill[] skills;
     public EquipmentManager equipmentManager;
-    Rigidbody mRigidbody;
-
-
-    /*********************************************************************************
-    *
-    * 플레이어 "액션"에 대해 필요한 변수들을 모아 놓는다.
-    *
-    *********************************************************************************/
+    public LayerMask groundMask;                  // 바닥을 인식하는 마스크
 
     /// <summary>
     /// RoomGenerator.cs에서 참조하는 변수 (리펙토링 필요해 보인다.) <br/>
@@ -61,57 +47,57 @@ public class Player : MonoBehaviour, IEntityAddressable
     bool mIsDashed;                 // 대쉬를 했는지 
     bool mIsDie;                 // 대쉬를 했는지 
     Animator anim;
-    public GameObject model;
-    public LayerMask groundMask;                  // 바닥을 인식하는 마스크
 
-    VisualModulator visualModulator;
-
-
-    /*********************************************************************************
-    *
-    * 코루틴, 액션을 모아 놓는다
-    *
-    *********************************************************************************/
     IEnumerator mCoWaitDash;        // StopCorutine을 사용하기 위해서는 코루틴 변수가 필요하다. 
 
-    /*********************************************************************************
-    *
-    *
-    *
-    *********************************************************************************/
-    void Awake()
-    {
-        if (!TryGetComponent<Rigidbody>(out mRigidbody)) { Debug.Log("컴포넌트 로드 실패 : Rigidbody"); }
-        if (!TryGetComponent<VisualModulator>(out visualModulator)) { Debug.Log("컴포넌트 로드 실패 : VisualModulator"); }
+    protected override void Awake(){
+        /*아래 3줄은 절때 활성화 하지마라. base.Awake() 에서 이미 이걸 하고 있다.*/
+        //if (!TryGetComponent<Collider>(out entityCollider)) { Debug.Log("컴포넌트 로드 실패 : Collider"); }
+        //if (!TryGetComponent<Rigidbody>(out entityRigidbody)) { Debug.Log("컴포넌트 로드 실패 : Rigidbody"); }
+        //if (!TryGetComponent<VisualModulator>(out visualModulator)) { Debug.Log("컴포넌트 로드 실패 : VisualModulator"); }
+        base.Awake();
         isPortal = true;
         anim = model.GetComponent<Animator>();
-
         playerData = BasePlayerData.Clone();
     }
-
-    [ContextMenu("파이프라인 출력")]
-    public void PrintPipeline(){
-        Debug.Log(equipmentManager.AddingData.ToString());
+    
+    public override EntityData GetEntityData() {return playerData;}
+    
+    public override void GetDamaged(int _amount){
+        playerData.CurHP -= (int)(_amount * 100/(100 + playerData.Defence));
+        if(playerData.CurHP <= 0) {Die();}
     }
 
-    /// <summary>
-    /// 이 함수가 실행되면 프레임 마다 캐릭터가 음직인다.
-    /// </summary>
-    /// <param name="_hAxis">W, S 인풋 수치</param>
-    /// <param name="_vAxis">A, D 인픗 수치</param>
-    public void Move(float _hAxis, float _vAxis, bool _reverse)
+    public override void GetDamaged(int _amount, GameObject particle){
+        //_amount의 값이 갑자기 바뀌어야 한다.
+        playerData.HitStateRef.Invoke(ref _amount);
+        Debug.Log(_amount);
+        if(_amount == 0) return;
+        
+        playerData.CurHP -= (int)(_amount * 100/(100+playerData.Defence));
+        visualModulator.Interact(particle);
+        if(playerData.CurHP <= 0) {Die();}
+    }
+
+    public override void Die(){Debug.Log("죽었다는 로직 작성하기");}
+    
+    public override void AffectHandler(List<UnityAction> _action){
+        _action.ForEach(E => E.Invoke());
+    }
+
+    public override void AsyncAffectHandler(List<IEnumerator> _coroutine){
+        _coroutine.ForEach(E => StartCoroutine(E));
+    }
+
+    public void Move(float _hAxis, float _vAxis)
     {
-        playerData.MoveState.Invoke();
         
         Vector3 AngleToVector(float _angle) {
             _angle *= Mathf.Deg2Rad;
             return new Vector3(Mathf.Sin(_angle), 0, Mathf.Cos(_angle));
         }
         
-        if(_reverse){ _hAxis *= -1; _vAxis *= -1;}
-
-        
-        if (mRigidbody.velocity.magnitude > playerData.MoveSpeed) return; 
+        if (this.entityRigidbody.velocity.magnitude > playerData.MoveSpeed) return; 
 
         mMoveVec = AngleToVector(Camera.main.transform.eulerAngles.y + 90f) * _hAxis + AngleToVector(Camera.main.transform.eulerAngles.y) * _vAxis;
         mMoveVec = mMoveVec.normalized;
@@ -121,17 +107,16 @@ public class Player : MonoBehaviour, IEntityAddressable
         if (!IsBorder())
         {
             Vector3 rbVel = mMoveVec * playerData.MoveSpeed;
-            mRigidbody.velocity = rbVel;
+            this.entityRigidbody.velocity = rbVel;
             if(mMoveVec != Vector3.zero){
                 mRotate = Quaternion.LookRotation(mMoveVec);
                 transform.rotation = Quaternion.Slerp(transform.rotation,mRotate, 0.6f);
+                
             }
+            playerData.MoveState.Invoke();
         }
     }
-    
-    /// <summary>
-    /// 이 함수가 실행되면 대쉬가 된다.
-    /// /// </summary>
+
     public void Dash()
     {
         IEnumerator CoWaitDash()
@@ -148,8 +133,8 @@ public class Player : MonoBehaviour, IEntityAddressable
         // 스테미나 false면 그냥 스킵
         if (playerData.CurStamina <= 0) return;
 
-        Vector3 dashPower = mMoveVec * -Mathf.Log(1 / mRigidbody.drag);
-        mRigidbody.AddForce(dashPower.normalized * playerData.MoveSpeed * 10, ForceMode.VelocityChange);
+        Vector3 dashPower = mMoveVec * -Mathf.Log(1 / this.entityRigidbody.drag);
+        this.entityRigidbody.AddForce(dashPower.normalized * playerData.MoveSpeed * 10, ForceMode.VelocityChange);
 
         if (playerData.CurStamina > 0) { playerData.CurStamina--; }
 
@@ -159,24 +144,21 @@ public class Player : MonoBehaviour, IEntityAddressable
             StartCoroutine(mCoWaitDash);
         }
     }
-
-    /// <summary>
-    /// Weapon 클래스를 참조해서 공격 을 실행한다.
-    /// </summary>
     public void Attack()
     {
-        playerData.AttackState.Invoke();
         anim.SetTrigger("DoAttack");
         Turning(() => weapon?.Use(playerData.Power));
+        playerData.AttackState.Invoke();
     }
-    //Equipment_010과 의존 관계다 
-    // 슈슈슉 충전공격후 여러번 때리는것
-    // 좋지 않은 구조니 하루빨리 개선사항을 고민하자.
-    // 이렇게 공격 방식이 바뀌는 매커니즘을 다루는 커플링을 줄일까?
+    
+    /// <summary>
+    /// Equipment_010과 의존 관계다 <br/>
+    /// 슈슈슉 충전공격후 여러번 때리는것 <br/>
+    /// 좋지 않은 구조니 하루빨리 개선사항을 고민하자. <br/>
+    /// 이렇게 공격 방식이 바뀌는 매커니즘을 다루는 커플링을 줄일까? <br/>
+    /// </summary>
     public void JustAttack(){
-        Turning(() => {
-            weapon?.Use(playerData.Power);
-        });
+        Turning(() => { weapon?.Use(playerData.Power); });
     }
     
     public void Skill(string key)
@@ -186,26 +168,6 @@ public class Player : MonoBehaviour, IEntityAddressable
             Turning(() => skills[(int)E_SkillKey.Q].Use(playerData.Power));
         }
     }
-
-    public void GetDamaged(int _amount){
-        playerData.CurHP -= (int)(_amount * 100/(100 + playerData.Defence));
-        
-        if(playerData.CurHP <= 0) {Die();}
-    }
-
-    public void GetDamaged(int _amount, GameObject particle){
-        //_amount의 값이 갑자기 바뀌어야 한다.
-        playerData.HitStateRef.Invoke(ref _amount);
-        Debug.Log(_amount);
-        if(_amount == 0) return;
-        
-        playerData.CurHP -= (int)(_amount * 100/(100+playerData.Defence));
-        visualModulator.Interact(particle);
-        if(playerData.CurHP <= 0) {Die();}
-    }
-
-
-    public void Die(){}
 
     void Turning(UnityAction action)
     {
@@ -226,44 +188,8 @@ public class Player : MonoBehaviour, IEntityAddressable
             playerToMouse.y = 0f;
             Quaternion newRotatation = Quaternion.LookRotation(playerToMouse) * Quaternion.Euler(0, -45, 0);
             // 플레이어가 바라보는 방향 설정
-            mRigidbody.MoveRotation(newRotatation);
-        }
-        action.Invoke();
-    }
-    
-    public void AffectHandler(List<UnityAction> _action){
-        _action.ForEach(E => E.Invoke());
-    }
-
-    public void AsyncAffectHandler(List<IEnumerator> _coroutine){
-        _coroutine.ForEach(E => StartCoroutine(E));
-    }
-
-    /*********************************************************************************
-    *
-    * Modifier
-    *
-    *********************************************************************************/
-    
-    /*********************************************************************************
-    *
-    * 장비
-    *
-    *********************************************************************************/
-    /*
-    [ContextMenu("Equip All Equipments")]
-    void Equip() { //적용이 되는지 확인만 하자
-        foreach(Equipment E in playerData.equipments){
-            IPlayerDataApplicant playerDataApplicant = (IPlayerDataApplicant)E;
-            playerDataApplicant?.ApplyData(ref this.playerData);
+            this.entityRigidbody.MoveRotation(newRotatation);
+            action.Invoke();
         }
     }
-    [ContextMenu("Dump All Equipments")]
-    void Dump() { //적용이 되는지 확인만 하자
-        foreach(Equipment E in playerData.equipments){
-            IPlayerDataApplicant playerDataApplicant = (IPlayerDataApplicant)E;
-            playerDataApplicant?.ApplyRemove(ref this.playerData);
-        }
-    }
-    */
  }

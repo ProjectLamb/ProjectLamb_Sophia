@@ -6,14 +6,27 @@ using UnityEngine.Events;
 
 
 public class Equipment_008 : AbstractEquipment { //, IPlayerDataApplicant{
-    private UnityAction<GameObject> Projectile;
+    //public string equipmentName;
+    //public string description;
+    //public Sprite sprite;
+    //[SerializeField]
+    //public MasterData equipmentData;
+    //protected Player player;
+    //public UnityAction EquipState;
+    //public UnityAction UnequipState;
+    //public UnityAction UpdateState;
+    //public bool mIsInitialized = false;
+    public EntityAffector sternAffector;
+
+    private UnityAction<Entity, Entity> Projectile;
     public override void InitEquipment(Player _player, int _selectIndex)
     {
         equipmentName = "황소용 올가미";
         this.EquipState = () => {};
         this.UnequipState = () => {};
-        this.UpdateState = () => {};   
-        this.Projectile += (GameObject obj) => {Sturn(obj);};
+        this.UpdateState = () => {};
+        this.player = _player;
+        this.Projectile += (Entity _owner, Entity _target) => {Sturn(_owner, _target);};
         if(_selectIndex == 0){
             this.equipmentData.ProjectileShootState += Projectile;
         }
@@ -21,8 +34,8 @@ public class Equipment_008 : AbstractEquipment { //, IPlayerDataApplicant{
     } 
     
     //디버프를 얘가 만든다면?
-    public void Sturn(GameObject _target) {
-        IEntityAddressable entityAddressable = _target.GetComponent<IEntityAddressable>();
-        new SternState(_target).Modifiy(entityAddressable);
+    public void Sturn(Entity _owner, Entity _target) {
+        sternAffector.Init(_owner, _target);
+        sternAffector.Modifiy((IAffectable)_target);
     }
 }

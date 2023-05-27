@@ -6,73 +6,76 @@ using UnityEngine.Events;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-public enum E_ProjectileType {
-    Attackor, Modifiers, Instantiator
-}
-
 /// <summary>
-/// 다음이 만족해야한다. <br/>
-///     > Entiy의 데이터와 로직에 접근이 가능해야한다. ✅ <br/>
-///     > 반대로 Entity를 DownCasting 하지 않는 선에서 데이터 수정을 해야한다. <br/>
-///     > 그리고 EntityData는 앞으로 변동이 가능하며, 그 자체가 Base가 아닌 FinalData로 구현한다. <br/>
-///     > Entity, Projectie에 의해 Instantiate되야 한다. ⚠️ <br/>
-///     > 룰렛(Projectile) 또한 Item을 내뿜는다. <br/>
-///     > OnCollision, OnTrigger이 구현되어 있다. ✅ <br/>
-///     > 즉시 삭제가 되든, 자가 삭제가 되든.. 가능하다. ✅ <br/>
-///     > 나를 생성한 OwnerEntity가 있으며, 간섭 타겟인 TargetEntity또한 알고 있다. ✅ <br/>
-///     > 플레이어의 공격 이펙트가 플레이어를 때려서는 안된다 <br/>
-///     > Attack하는 타입인지, Modifiy하는 타입인지 알수 있다. ✅ <br/>
-///     > 나를 생성한 OwnerEntity의 데이터를 참조해 전달 가능하기도 한데 Projectile자기 자신만이 가지고 있는 데이터또한 전달 가능하다 ⚠️ <br/>
-///     > 독데미지를 가지고 있는 플레이어 상태와 상관없이 Projectile <br/>
-///     > 밟으면 불데미지 입는 함정 <br/>
-///     > Equipment 데이터를 가지고 있는 <br/>
-///     > Gear + 100 올라가는 금화 <br/>
+/// Instantiate().Initialize(int amount, Entity owner)를 꼭 설정해야함 <br/>
+/// 초기화가 잘 되었는지 예외처리도 하겠다. 
 /// </summary>
-public class Projectile : MonoBehaviour, IDestroyHandler {
-    public E_ProjectileType projectileType;
-    /*자기 자신 또한 기본 전달자가 있다*/
-    public bool isMove;
-    public float moveSpeed;
-    public Rigidbody projectileRigid;
-    public Collider projectileCollider;
-    public Modulator projectileModulator;
-    
-    IEntityAddressable ownerEntity;
-    int? damageAmount = null;
+public class Projectile : MonoBehaviour {
+    public bool    isMove;
+    public bool    destroyBySelf;
+    public float   moveSpeed;
+    public float   destroyTime;
+    public List<EntityAffector> projectileEntityAffector;
+    public GameObject hitEffect = null;
+    public GameObject destroyEffect = null;
 
-    public void Initialize(IEntityAddressable _owner){ ownerEntity = _owner; }
-    public void Initialize(IEntityAddressable _owner, int transferAmount){
-        ownerEntity = _owner;
-        damageAmount = transferAmount;
+    
+    Entity  ownerEntity;
+    public int     damageAmount;
+    
+    ParticleSystem projectileParticle = null;
+    Collider projectileCollider = null;
+    Rigidbody projectileRigidBody = null;
+    bool    isInitialized = false;
+    Entity  targetEntity;
+
+    private void Awake() {
+        projectileEntityAffector ??= new List<EntityAffector>();
+        TryGetComponent<Collider>(out projectileCollider);
+        TryGetComponent<Rigidbody>(out projectileRigidBody);
+        TryGetComponent<ParticleSystem>(out projectileParticle);
     }
 
     private void Start() {
-        if(isMove) {projectileRigid.velocity = Vector3.forward;}
+        if(isMove) {projectileRigidBody.velocity = Vector3.forward;}
+        if(destroyBySelf == true)Destroy(gameObject, destroyTime);
     }
 
-    private void OnTrigger(Collision _other){
-        IEntityAddressable targetEntity = _other.gameObject.GetComponent<IEntityAddressable>();
+    private void OnDestroy() {
+        if(destroyEffect != null) Instantiate(destroyEffect);
+    }
+
+    public void DestroySelf(){
+        if(destroyEffect != null) Instantiate(destroyEffect);
+        Destroy(gameObject);
+    }
+
+
+    public void InitializeByDamage(int _damageAmount, Entity _genOwner){
+        if(_genOwner == null) {throw new System.Exception("투사체 생성 엔티티가 NULL임");}
+        this.damageAmount = _damageAmount; 
+        this.ownerEntity = _genOwner;
+        this.isInitialized = true;
+    }
+
+    public void Initialize(Entity _genOwner){
+        if(_genOwner == null) {throw new System.Exception("투사체 생성 엔티티가 NULL임");}
+        this.ownerEntity = _genOwner;
+        this.isInitialized = true;
+    }
+
+    private void OnTriggerEnter(Collider other) {
+        if(isInitialized == false) {throw new System.Exception("투사체가 초기화 되지 않음");}
+        if(damageAmount == 0) {Debug.Log("데미지가 0임 의도한 거 맞지?");}
+        other.TryGetComponent<Entity>(out targetEntity);
         if(ownerEntity.GetEntityData().EntityTag == targetEntity.GetEntityData().EntityTag){return;}
-        switch(projectileType) {
-            case E_ProjectileType.Attackor:
-                if(damageAmount == null){throw new System.Exception("전달된 데미지 값이 NULL 이다.");}
-                targetEntity.GetDamaged((int)damageAmount);
-                ownerEntity.GetEntityData().ProjectileShootState?.Invoke(_other.gameObject);
-                break;
-            case E_ProjectileType.Modifiers:
-                break;
-            case E_ProjectileType.Instantiator:
-                break;
-            default :
-                break;
-        }
-    }
-
-    public void DestroySelf(UnityAction _destroyCallback){
-        _destroyCallback?.Invoke();
-    }
-    public void DestroySelf(UnityAction _destroyCallback, float _time){
-        _destroyCallback?.Invoke();
-        Destroy(gameObject, _time);
+        targetEntity.GetDamaged(damageAmount, hitEffect);
+        //어? 분명 프로젝타일 자기자신이 가진 어펙터를 사용할 수 있어야 하는데 Entity가 필수 불가결하게 되는 상황이 생겼다..
+            //어떻게 해야하는거지 수정해야겠다.
+        //foreach (EntityAffector affector in projectileEntityAffector) {
+        //    affector.Init()
+        //    affector.Modifiy(targetEntity);
+        //}
+        ownerEntity.GetEntityData().ProjectileShootState?.Invoke(ownerEntity, targetEntity);
     }
 }

@@ -47,7 +47,7 @@ public class MasterData {
     public UnityActionRef<int> HitStateRef;
     public UnityAction PhyiscTriggerState;// 콜라이더 닿으면
     public UnityAction DieState;
-    public UnityAction<IEntityAddressable> ProjectileShootState;
+    public UnityAction<Entity, Entity> ProjectileShootState;
     public UnityAction UIAffectState;
     //////////////////////////////////////////////////////
     public UnityAction SkillState;
@@ -91,7 +91,7 @@ public class MasterData {
         AttackStateRef  = (ref int i) => {};
         HitState        = () => {};
         HitStateRef     = (ref int i) => {};
-        ProjectileShootState = (obj) => {};
+        ProjectileShootState = (_owner, _target) => {};
         PhyiscTriggerState = () => {};// 콜라이더 닿으면
         DieState        = () => {};
         UIAffectState   = () => {};
@@ -134,7 +134,7 @@ public class MasterData {
         AttackStateRef     = (ref int i) => {};
         HitState        = () => {};
         HitStateRef     = (ref int i) => {};
-        ProjectileShootState = (obj) => {};
+        ProjectileShootState = (_owner, _target) => {};
         PhyiscTriggerState = () => {};// 콜라이더 닿으면
         DieState        = () => {};
         UIAffectState   = () => {};
