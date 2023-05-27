@@ -9,16 +9,16 @@ using UnityEngine.Events;
 /// * IDieAble : 죽는 Action , 인터페이스로 동작을 구현<br/>
 /// * IDamagable : 맞는 Action , 인터페이스로 동작을 구현
 /// </summary>
-public class Enemy : MonoBehaviour, IEntityAddressable
+public class Enemy : Entity
 {
-    /**/
+    /* 아래 4줄은 절때 활성화 하지마라. 상속받은 Entity에 이미 정의 되어 있다. */
+    //public Collider entityCollider;
+    //public Rigidbody entityRigidbody;
+    //public VisualModulator visualModulator;
+    //public GameObject model;
+    
     [field : SerializeField]
     public EnemyData enemyData;
-    public EntityData GetEntityData() {return this.enemyData;}
-
-    public GameObject model;
-    public Rigidbody entityRigidbody;
-    public Collider entityCollider;
 
     public UnityEngine.AI.NavMeshAgent nav;
     public Transform objectiveTarget;
@@ -30,9 +30,9 @@ public class Enemy : MonoBehaviour, IEntityAddressable
     public ProjectileBucket projectileBucket;
     public Animator animator;
     public AnimEventInvoker animEventInvoker;
-    public VisualModulator visualModulator;
 
-    public virtual void Die()
+    public override EntityData GetEntityData() {return this.enemyData;}
+    public override void Die()
     {
         enemyData.DieState.Invoke();
         isDie = true;
@@ -41,24 +41,24 @@ public class Enemy : MonoBehaviour, IEntityAddressable
         Invoke("DestroySelf", 0.5f);
     }
 
-    public virtual void GetDamaged(int _amount){
+    public override void GetDamaged(int _amount){
         if(isDie == true) {return;}
         enemyData.HitStateRef.Invoke(ref _amount);
         enemyData.CurHP -= _amount;
         if (enemyData.CurHP <= 0) {this.Die();}
     }
-    public virtual void GetDamaged(int _amount, GameObject particle){
+    public override void GetDamaged(int _amount, GameObject particle){
         if(isDie == true) {return;}
         enemyData.HitStateRef.Invoke(ref _amount);
         enemyData.CurHP -= _amount;
         visualModulator.Interact(particle);
         if (enemyData.CurHP <= 0) {this.Die();}
     }
-    public void AffectHandler(List<UnityAction> _action){
+    public override void AffectHandler(List<UnityAction> _action){
         _action.ForEach(E => E.Invoke());
     }
 
-    public void AsyncAffectHandler(List<IEnumerator> _coroutine){
+    public override void AsyncAffectHandler(List<IEnumerator> _coroutine){
         _coroutine.ForEach(E => StartCoroutine(E));
     }
 
@@ -66,16 +66,18 @@ public class Enemy : MonoBehaviour, IEntityAddressable
         Destroy(gameObject);
     }
 
-
-    protected virtual void Awake()
+    protected override void Awake()
     {
-        TryGetComponent<VisualModulator>(out visualModulator);
-        TryGetComponent<Rigidbody>(out entityRigidbody);
+        /*아래 3줄은 절때 활성화 하지마라. base.Awake() 에서 이미 이걸 하고 있다.*/
+        //TryGetComponent<VisualModulator>(out visualModulator);
+        //TryGetComponent<Rigidbody>(out entityRigidbody);
+        //TryGetComponent<Collider>(out entityCollider);
+        base.Awake();
+
         TryGetComponent<UnityEngine.AI.NavMeshAgent>(out nav);
-        TryGetComponent<Collider>(out entityCollider);
         
-        model.TryGetComponent<Animator>(out animator);
-        model.TryGetComponent<AnimEventInvoker>(out animEventInvoker);
+        this.model.TryGetComponent<Animator>(out animator);
+        this.model.TryGetComponent<AnimEventInvoker>(out animEventInvoker);
 
         enemyData.DieParticle.GetComponent<ParticleCallback>().onDestroyEvent.AddListener(DestroySelf);
 
@@ -84,7 +86,7 @@ public class Enemy : MonoBehaviour, IEntityAddressable
         isDie = false;
     }
 
-    protected virtual void FixedUpdate()
+    private void FixedUpdate()
     {
         /***************************/
         if(GameManager.Instance?.globalEvent.IsGamePaused == true){return;}
@@ -94,8 +96,7 @@ public class Enemy : MonoBehaviour, IEntityAddressable
         }
     }
 
-    // Update is called once per frame
-    protected virtual void Update()
+    private void Update()
     {
         /***************************/
         if(GameManager.Instance?.globalEvent.IsGamePaused == true){return;}
@@ -104,10 +105,4 @@ public class Enemy : MonoBehaviour, IEntityAddressable
         else {nav.enabled = false;}
         nav.speed = enemyData.MoveSpeed;
     }
-
-    //protected virtual void OnDestroy() {
-    //    if(transform.parent.parent == null) return;
-    //    if(!transform.parent.parent.TryGetComponent<StageGenerator>(out StageGenerator roomGenerator)){Debug.Log("컴포넌트 로드 실패 : NavMeshAgent");}
-    //    roomGenerator.DecreaseCurrentMobCount();
-    //}
 }

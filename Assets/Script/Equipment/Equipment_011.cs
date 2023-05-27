@@ -7,6 +7,17 @@ using UnityEngine.Events;
 using Random = UnityEngine.Random;
 
 public class Equipment_011 : AbstractEquipment { //, IPlayerDataApplicant{
+    //public string equipmentName;
+    //public string description;
+    //public Sprite sprite;
+    //[SerializeField]
+    //public MasterData equipmentData;
+    //protected Player player;
+    //public UnityAction EquipState;
+    //public UnityAction UnequipState;
+    //public UnityAction UpdateState;
+    //public bool mIsInitialized = false;
+
     
     private UnityAction AttackState;
     int originBasePower;

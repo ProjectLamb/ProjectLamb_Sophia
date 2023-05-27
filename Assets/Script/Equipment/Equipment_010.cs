@@ -7,6 +7,17 @@ using UnityEngine.Events;
 using Random = UnityEngine.Random;
 
 public class Equipment_010 : AbstractEquipment { //, IPlayerDataApplicant{
+    //public string equipmentName;
+    //public string description;
+    //public Sprite sprite;
+    //[SerializeField]
+    //public MasterData equipmentData;
+    //protected Player player;
+    //public UnityAction EquipState;
+    //public UnityAction UnequipState;
+    //public UnityAction UpdateState;
+    //public bool mIsInitialized = false;
+    public EntityAffector chargeAttackAffector;
     private UnityAction AttackState;
     public override void InitEquipment(Player _player, int _selectIndex)
     {
@@ -25,7 +36,7 @@ public class Equipment_010 : AbstractEquipment { //, IPlayerDataApplicant{
 
     //디버프를 얘가 만든다면?
     public void ChargeAttack() {
-        IEntityAddressable entityAddressable = this.player.GetComponent<IEntityAddressable>();
-        new ChargeState(this.player).Modifiy(entityAddressable);
+        chargeAttackAffector.Init(this.player, this.player);
+        chargeAttackAffector.Modifiy((IAffectable)this.player);
     }
 }

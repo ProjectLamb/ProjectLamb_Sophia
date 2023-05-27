@@ -7,7 +7,18 @@ using UnityEngine.Events;
 using Random = UnityEngine.Random;
 
 public class Equipment_013 : AbstractEquipment { //, IPlayerDataApplicant{
-    private UnityAction<GameObject> Projectile;
+    //public string equipmentName;
+    //public string description;
+    //public Sprite sprite;
+    //[SerializeField]
+    //public MasterData equipmentData;
+    //protected Player player;
+    //public UnityAction EquipState;
+    //public UnityAction UnequipState;
+    //public UnityAction UpdateState;
+    //public bool mIsInitialized = false;
+    public EntityAffector KnockBackAffector;
+    private UnityAction<Entity, Entity> Projectile;
     public override void InitEquipment(Player _player, int _selectIndex)
     {
         equipmentName = "노동자의 망치";
@@ -15,15 +26,15 @@ public class Equipment_013 : AbstractEquipment { //, IPlayerDataApplicant{
         this.UnequipState = () => {};
         this.UpdateState = () => {};
         this.player = _player;
-        this.Projectile += (GameObject obj) => {Knockback(obj);};   
+        this.Projectile += (_owner, _target) => {Knockback(_owner, _target);};   
         if(_selectIndex == 0){
             _player.playerData.ProjectileShootState += Projectile;
         }
     }
 
     //디버프를 얘가 만든다면?
-    public void Knockback(GameObject _target) {
-        IEntityAddressable entityAddressable = _target.GetComponent<IEntityAddressable>();
-        new KnockBackState(this.player.gameObject, _target).Modifiy(entityAddressable);
+    public void Knockback(Entity _owner,Entity _target) {
+        KnockBackAffector.Init(this.player, _target);
+        KnockBackAffector.Modifiy((IAffectable)_target);
     }
 }

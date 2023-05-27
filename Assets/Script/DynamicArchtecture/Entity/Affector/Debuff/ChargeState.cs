@@ -4,24 +4,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class ChargeState : DebuffState{
-    /*********************************************************************************
-    * 
-    * 리시버들 
-    *  
-    *********************************************************************************/
-    IEntityAddressable entityAddressable;
-    IVisuallyInteractable visuallyInteractable;
-
-    public ChargeState(Player _attackOwner) {        
-        this.addingData = _attackOwner.equipmentManager.AddingData; //Debuff State 참고 // 앞으로 Debuff 대신 모듈레이터로
-        this.entityData   = _attackOwner.playerData;
-        this.AsyncAffectorCoroutine = new List<IEnumerator>();
-        this.Affector = new List<UnityAction>();
-        this.AsyncAffectorCoroutine.Add(ChargeAttack(_attackOwner.JustAttack));
+[CreateAssetMenu(fileName = "ChargeAttack", menuName = "ScriptableObject/EntityAffector/Owner/ChargeAttack", order = int.MaxValue)]
+public class ChargeState : EntityAffector {
+    public override void Init(Entity _owner, Entity _target){
+        base.Init(_owner, _target);
+        //사실 임시로 한거지만 
+        // 플레이어의 공격 매커니즘을 바꾸는 효과는 플레이어에게 정의해야하거나, 무기의 FSM을 정의하는게 맞아보인다.
+        // 종원이에게 FSM 방식 작성하게 요청하기
+        Player downcastPlayer = _owner as Player;
+        this.AsyncAffectorCoroutine.Add(ChargeAttack(downcastPlayer.JustAttack));
     }
 
-    public void Modifiy(IAffectable affectableEntity) {
+    public override void Modifiy(IAffectable affectableEntity) {
+        if(this.isInitialized == false) {throw new System.Exception("Affector 초기화 안됨 초기화 하고 사용해야함");}
         affectableEntity.AsyncAffectHandler(this.AsyncAffectorCoroutine);
     }
     
@@ -29,6 +24,7 @@ public class ChargeState : DebuffState{
         bool holding = false;
         if(Input.GetMouseButton(0)){
             holding = true;
+
             float holdTime = 0;
             while(holdTime < 1f){
                 if(Input.GetMouseButtonUp(0)){

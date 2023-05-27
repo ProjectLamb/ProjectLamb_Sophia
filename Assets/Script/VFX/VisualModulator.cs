@@ -7,15 +7,12 @@ public class VisualModulator : MonoBehaviour, IVisuallyInteractable
     public SkinModulator    skinModulator;
     public VFXBucket    vfxModulator;
 
-    public void Interact(DebuffData debuffData){
-        if(debuffData.entitySkin == null) return;
-        skinModulator.SetSkinSets(1, debuffData.entitySkin);
-        if(debuffData.particles == null) return;
-        vfxModulator.VFXInstantiatorWithTime(debuffData.particles, debuffData.durationTime);
+    public void InteractByMaterial(Material skin, float durationTime){
+        skinModulator.SetSkinSets(1, skin);
     }
     
-    public void Interact(ParticleSystem particleSystem){
-        vfxModulator.VFXInstantiator(particleSystem);
+    public void InteractByParticle(ParticleSystem particle, float durationTime){
+        vfxModulator.VFXInstantiator(particle);
     }
 
     public void Interact(GameObject obj) {

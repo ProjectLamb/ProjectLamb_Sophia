@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update() {
         if(IsMoveAllow){ 
-            Player.Move(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), IsReversedInput);
+            Player.Move(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
             if(Input.GetKeyDown(KeyCode.Space)){Player.Dash();}
         }
         if(IsAttackAllow){
