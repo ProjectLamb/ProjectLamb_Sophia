@@ -3,51 +3,45 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class PoisonState : DebuffState {
-    DebuffData debuffData;
-    /*********************************************************************************
-    * 
-    * 리시버들 
-    *  
-    *********************************************************************************/
-    IEntityAddressable entityAddressable;
-    IVisuallyInteractable visuallyInteractable;
-    
-    //타겟에 맞는 데이터에 따라서 실행될 어펙터는 다르다.
-    //근데 안해도 되는게, 어차피 인터페이스 접근해서 맞는놈만 가지고 작동 시키면 된다.
-    // 그렇게 되면 몬스터든, 아니든 상관이 없어진다.
-    //List<UnityAction> actions;
+[CreateAssetMenu(fileName = "Poison", menuName = "ScriptableObject/EntityAffector/Debuff/Poison", order = int.MaxValue)]
+public class PoisonState : EntityAffector {
+    /*아래 3줄은 EntityAffector 상속받아서 이미 있음*/
+    //protected List<IEnumerator> AsyncAffectorCoroutine;
+    //protected List<UnityAction> Affector;
+    //protected Entity targetEntity //protected Entity ownerEntity;
 
-    public PoisonState(GameObject _target){
-        debuffData = GlobalModifierResources.Instance.debuffDatas[(int)E_DebuffState.Poisend];
+    public float durationTime;
+    public Material skin;
+    public ParticleSystem particles;
 
-        entityAddressable  =  _target.GetComponent<IEntityAddressable>();
-        visuallyInteractable = _target.GetComponent<IVisuallyInteractable>();
-
-        this.entityData   = entityAddressable.GetEntityData();
-        this.AsyncAffectorCoroutine = new List<IEnumerator>();
-        this.Affector = new List<UnityAction>();
+    public override void Init(Entity _owner, Entity _target){
+        base.Init(_owner, _target);
         this.AsyncAffectorCoroutine.Add(VisualActivate());
         this.AsyncAffectorCoroutine.Add(DotDamage());
     }
 
-    public void Modifiy(IAffectable affectableEntity) {
+    public override void Modifiy(IAffectable affectableEntity) {
+        if(this.isInitialized == false) {throw new System.Exception("Affector 초기화 안됨 초기화 하고 사용해야함");}
         affectableEntity.AsyncAffectHandler(this.AsyncAffectorCoroutine);
     }
-    //new PoisonState
 
     IEnumerator DotDamage(){
         float passedTime = 0;
-        while((debuffData.durationTime * (1 - addingData.Tenacity)) > passedTime){
+        float tenacity =this.targetEntity.GetEntityData().Tenacity;
+        float dotDamageDurateTime = durationTime * (1 - tenacity);
+        while(dotDamageDurateTime > passedTime){
             passedTime += 0.5f;
-            entityAddressable.GetDamaged(debuffData.damageAmount);
+            this.targetEntity.GetDamaged((int)(this.ownerEntity.GetEntityData().Power * 0.25f));
             yield return YieldInstructionCache.WaitForSeconds(0.5f);
         }
     }
 
     IEnumerator VisualActivate(){
-        visuallyInteractable.Interact(this.debuffData);
-        yield return YieldInstructionCache.WaitForSeconds(debuffData.durationTime * (1 - addingData.Tenacity));
-        visuallyInteractable.Revert();
+        float tenacity =this.targetEntity.GetEntityData().Tenacity;
+        float visualDurateTime = durationTime * (1 - tenacity);
+        this.targetEntity.visualModulator.InteractByMaterial(skin, visualDurateTime);
+        this.targetEntity.visualModulator.InteractByParticle(particles, visualDurateTime);
+        yield return YieldInstructionCache.WaitForSeconds(visualDurateTime);
+        this.targetEntity.visualModulator.Revert();
     }
 }
