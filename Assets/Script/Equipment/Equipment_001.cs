@@ -5,7 +5,17 @@ using UnityEngine;
 using UnityEngine.Events;
 
 public class Equipment_001 : AbstractEquipment {
-    public float multipyMoveSpeed;
+    //public string equipmentName;
+    //public string description;
+    //public Sprite sprite;
+    //[SerializeField]
+    //public MasterData equipmentData;
+    //protected Player player;
+    //public UnityAction EquipState;
+    //public UnityAction UnequipState;
+    //public UnityAction UpdateState;
+    //public bool mIsInitialized = false;
+
     public override void InitEquipment(Player _player, int _selectIndex)
     {
         equipmentName = "식어버린 피자 한조각";

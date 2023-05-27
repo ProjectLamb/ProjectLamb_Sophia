@@ -4,27 +4,26 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.AI;
 
-public class Sandbag : Enemy
+public class Sandbag : Entity
 {    
-    //public EnemyData enemyData;
-    //public EntityData GetEntityData() {return this.enemyData;}
-    //AddingData addingData;
-    //public AddingData GetAddingData(){return this.addingData;}
-
+    /* 아래 4줄은 절때 활성화 하지마라. 상속받은 Entity에 이미 정의 되어 있다. */
+    //public Collider entityCollider;
+    //public Rigidbody entityRigidbody;
+    //public VisualModulator visualModulator;
     //public GameObject model;
-    //Rigidbody RigidBody;
 
-    //public NavMeshAgent nav;
-    //public Transform target;
-    //public bool chase;
-    //public bool mIsDie;
+    public EnemyData enemyData;
+    public override EntityData GetEntityData() {return this.enemyData;}
+    
+    public Transform objectiveTarget;
 
-    //public Projectile[] Projectiles;
+    public bool IsDie;
 
-    //public ProjectileBucket projectileBucket;
-    //Animator animator;
-    //AnimEventInvoker animEventInvoker;
-    //VisualModulator visualModulator;
+    public Projectile[] projectiles;
+
+    public ProjectileBucket projectileBucket;
+    Animator animator;
+    AnimEventInvoker animEventInvoker;
     /*********************************************************************************
     *
     * 
@@ -32,11 +31,12 @@ public class Sandbag : Enemy
     *********************************************************************************/
 
     protected override void Awake() {
-        TryGetComponent<VisualModulator>(out this.visualModulator);
-        TryGetComponent<Rigidbody>(out this.entityRigidbody);
-        TryGetComponent<NavMeshAgent>(out this.nav);
-        TryGetComponent<Collider>(out this.entityCollider);
-        
+        /*아래 4줄을 절대 활성화 시키지 마라*/
+        //TryGetComponent<Collider>(out entityCollider);
+        //TryGetComponent<Rigidbody>(out entityRigidbody);
+        //TryGetComponent<VisualModulator>(out visualModulator);
+        //model ??= transform.GetChild(0).Find("modle").gameObject;
+
         model.TryGetComponent<Animator>(out this.animator);
         model.TryGetComponent<AnimEventInvoker>(out this.animEventInvoker);
         
@@ -46,15 +46,15 @@ public class Sandbag : Enemy
     }
     private void Start() {
         animEventInvoker.animCallback[(int)Enum_AnimState.Attack].AddListener( () => {
-            projectileBucket.ProjectileInstantiator(projectiles[0], E_ProjectileType.Attack);
+            projectileBucket.ProjectileInstantiator(projectiles[0]);
         });
         animEventInvoker.animCallback[(int)Enum_AnimState.Jump].AddListener(() => {
-            projectileBucket.ProjectileInstantiator(projectiles[1], E_ProjectileType.Attack);
+            projectileBucket.ProjectileInstantiator(projectiles[1]);
         });
     }
 
     public override void GetDamaged(int _amount){
-        if(this.isDie == true) {return;}
+        if(IsDie == true) {return;}
         enemyData.HitStateRef.Invoke(ref _amount);
         enemyData.CurHP -= _amount;
         animator.SetTrigger("DoHit");
@@ -62,7 +62,7 @@ public class Sandbag : Enemy
     }
 
     public override void GetDamaged(int _amount, GameObject particle){
-        if(this.isDie == true) {return;}
+        if(IsDie == true) {return;}
         enemyData.HitStateRef.Invoke(ref _amount);
         enemyData.CurHP -= _amount;
         visualModulator.Interact(particle);
@@ -72,26 +72,29 @@ public class Sandbag : Enemy
 
     public override void Die(){ 
         enemyData.DieState.Invoke();
-        isDie = true;
+        IsDie = true;
         this.entityCollider.enabled = false;
         animator.SetTrigger("DoDie");
         visualModulator.vfxModulator.VFXInstantiator(enemyData.DieParticle);
     }
-
     
-    //public void AffectHandler(List<UnityAction> _Action) {
-    //    _Action.ForEach(E => E.Invoke());
-    //}
+    public override void AffectHandler(List<UnityAction> _Action) {
+        _Action.ForEach(E => E.Invoke());
+    }
     
-    //public void AsyncAffectHandler(List<IEnumerator> _Coroutine) {
-    //    _Coroutine.ForEach(E => StartCoroutine(E));
-    //}
+    public override void AsyncAffectHandler(List<IEnumerator> _Coroutine) {
+        _Coroutine.ForEach(E => StartCoroutine(E));
+    }
+    
+    public void DestroySelf(){
+        Destroy(gameObject);
+    }
 
-    protected override void Update() {
+    private void Update() {
         /***************************/
         if(GameManager.Instance?.globalEvent.IsGamePaused == true){return;}
         /***************************/
-        if(!this.isDie)transform.LookAt(objectiveTarget);
+        if(!IsDie)transform.LookAt(objectiveTarget);
     }
     
     [ContextMenu("평타", false, int.MaxValue)]

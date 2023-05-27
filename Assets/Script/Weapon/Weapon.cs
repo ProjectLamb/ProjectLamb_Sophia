@@ -22,16 +22,18 @@ public class Weapon : MonoBehaviour
     [SerializeField]
     private WeaponData mBaseWeaponData;
     public WeaponData BaseWeaponData {get {return mBaseWeaponData;}}
-    
-    
+       
     [SerializeField]
     public WeaponData weaponData;
+
+    private Entity ownerEntity;
 
     protected bool mIsReady = true;
     protected IEnumerator mCoWaitUse;
 
     private void Awake() {
         weaponData = BaseWeaponData.Clone();
+        ownerEntity = GetComponentInParent<Entity>();
     }
 
     public virtual void Use(int _amount){
@@ -41,8 +43,7 @@ public class Weapon : MonoBehaviour
         StartCoroutine(mCoWaitUse);
         Vector3 EffectRotate = transform.eulerAngles;
         EffectRotate += weaponData.AttackProjectiles[0].transform.eulerAngles;
-
-        //Projectile 생성 단, 전달데이터는 Owner이 누구인지, _amount만 전달하는것으로
+        Instantiate(mBaseWeaponData.AttackProjectiles[0]).InitializeByDamage(_amount, ownerEntity);
     }
 
     public virtual IEnumerator CoWaitUse(){

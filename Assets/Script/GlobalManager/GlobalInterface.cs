@@ -14,7 +14,8 @@ public interface IInteractable {
 }
 
 /// <summary>
-/// 맞았을떄 대한 인터페이스
+/// 맞았을떄 대한 인터페이스 
+/// 근데 이 GetDamage의 회의감?
 /// </summary>
 public interface IDamagable
 {
@@ -28,6 +29,10 @@ public interface IDamagable
 public interface IDieAble
 {
     public void Die();
+}
+
+public interface IModifier {
+    public void Modifiy(IAffectable _affectableEntity);
 }
 
 /*
@@ -44,8 +49,8 @@ public interface IEntityAddressable : IDamagable, IDieAble, IAffectable {
 
 
 public interface IVisuallyInteractable {
-    public void Interact(DebuffData debuffData);
-    public void Interact(ParticleSystem particleSystem);
+    public void InteractByMaterial(Material material, float dutateTime);
+    public void InteractByParticle(ParticleSystem particleSystem, float dutateTime);
     public void Revert();
 }
 

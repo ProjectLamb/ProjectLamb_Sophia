@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,6 +23,7 @@ internal static class YieldInstructionCache
 
     public static WaitForSeconds WaitForSeconds(float seconds)
     {
+        seconds = (float)Math.Round(seconds, 3);
         WaitForSeconds wfs;
         if (!_timeInterval.TryGetValue(seconds, out wfs))
             _timeInterval.Add(seconds, wfs = new WaitForSeconds(seconds));
