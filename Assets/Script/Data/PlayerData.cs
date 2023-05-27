@@ -22,9 +22,9 @@ public class PlayerData : EntityData {
 //  public UnityAction mHitState;
 //  public UnityAction mPhyiscTriggerState;// 콜라이더 닿으면
 //  public UnityAction mDieState;
-    public UnityAction SkillState;
-    public UnityAction InteractState;
-    public UnityAction UpdateState;
+    public UnityAction SkillState = () => {};
+    public UnityAction InteractState = () => {};
+    public UnityAction UpdateState = () => {};
 
     public PlayerData() : base() {
         this.MaxStamina  = 0;
@@ -33,10 +33,6 @@ public class PlayerData : EntityData {
         this.Luck        = 0;
         this.Gear        = 0;
         this.Frag        = 0;
-
-        SkillState = () => {};
-        InteractState = () => {};
-        UpdateState = () => {};
     }
 
     public PlayerData Clone(){

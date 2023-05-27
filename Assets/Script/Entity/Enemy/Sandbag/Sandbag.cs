@@ -11,7 +11,8 @@ public class Sandbag : Entity
     //public Rigidbody entityRigidbody;
     //public VisualModulator visualModulator;
     //public GameObject model;
-
+    
+    [SerializeField]
     public EnemyData enemyData;
     public override EntityData GetEntityData() {return this.enemyData;}
     
@@ -24,6 +25,7 @@ public class Sandbag : Entity
     public ProjectileBucket projectileBucket;
     Animator animator;
     AnimEventInvoker animEventInvoker;
+    public ImageGenerator imageGenerator;
     /*********************************************************************************
     *
     * 
@@ -42,7 +44,6 @@ public class Sandbag : Entity
         
         this.enemyData.DieParticle.GetComponent<ParticleCallback>().onDestroyEvent.AddListener(DestroySelf);
         this.objectiveTarget = GameManager.Instance.playerGameObject.transform;
-        
     }
     private void Start() {
         animEventInvoker.animCallback[(int)Enum_AnimState.Attack].AddListener( () => {
@@ -51,6 +52,7 @@ public class Sandbag : Entity
         animEventInvoker.animCallback[(int)Enum_AnimState.Jump].AddListener(() => {
             projectileBucket.ProjectileInstantiator(projectiles[1]);
         });
+        this.enemyData.HitStateRef = (ref int amount) => {imageGenerator.GenerateImage(amount);};
     }
 
     public override void GetDamaged(int _amount){

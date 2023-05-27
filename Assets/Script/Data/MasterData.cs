@@ -40,30 +40,30 @@ public class MasterData {
     public SkillRankInfo[] SkillRankInfos;
 
     //////////////////////////////////////////////////////
-    public UnityAction MoveState;
-    public UnityAction AttackState;     //몬스터 패턴 각각에 어텍 스테이트를 만들어야 할지도 있다.
-    public UnityActionRef<int> AttackStateRef;
-    public UnityAction HitState;
-    public UnityActionRef<int> HitStateRef;
-    public UnityAction PhyiscTriggerState;// 콜라이더 닿으면
-    public UnityAction DieState;
-    public UnityAction<Entity, Entity> ProjectileShootState;
-    public UnityAction UIAffectState;
+    public UnityAction MoveState       = () => {};
+    public UnityAction AttackState     = () => {}; 
+    public UnityActionRef<int> AttackStateRef  = (ref int i) => {};
+    public UnityAction HitState        = () => {};
+    public UnityActionRef<int> HitStateRef     = (ref int i) => {};
+    public UnityAction<Entity, Entity> ProjectileShootState = (_owner, _target) => {};
+    public UnityAction PhyiscTriggerState = () => {};
+    public UnityAction DieState        = () => {};
+    public UnityAction UIAffectState   = () => {};
     //////////////////////////////////////////////////////
-    public UnityAction SkillState;
-    public UnityAction InteractState;
-    public UnityAction UpdateState;
+    public UnityAction SkillState = () => {};
+    public UnityAction InteractState = () => {};
+    public UnityAction UpdateState = () => {};
     
     //////////////////////////////////////////////////////
-    public UnityAction WeaponUseState;
-    public UnityAction WeaponChangeState;
-    public UnityAction WeaponReLoadState;
+    public UnityAction WeaponUseState = () => {};
+    public UnityAction WeaponChangeState = () => {};
+    public UnityAction WeaponReLoadState = () => {};
     //////////////////////////////////////////////////////
     
     //Index는 E_SkillKey
-    public UnityAction SkillUseState;
-    public UnityAction SkillLevelUpState;
-    public UnityAction SkillChangeState;
+    public UnityAction SkillUseState = () => {};
+    public UnityAction SkillLevelUpState = () => {};
+    public UnityAction SkillChangeState = () => {};
     
     public MasterData(){
         MaxHP       = 0;
@@ -84,29 +84,8 @@ public class MasterData {
         Range       = 0f;
         //Ammo        = 0;
         SkillRankInfos = new SkillRankInfo[3];
-        for(int i = 0; i < 3; i++){SkillRankInfos[i] = new SkillRankInfo();}
+        for(int i = 0; i < 3; i++){SkillRankInfos[i] = new SkillRankInfo();}        
 
-        MoveState       = () => {};
-        AttackState     = () => {}; 
-        AttackStateRef  = (ref int i) => {};
-        HitState        = () => {};
-        HitStateRef     = (ref int i) => {};
-        ProjectileShootState = (_owner, _target) => {};
-        PhyiscTriggerState = () => {};// 콜라이더 닿으면
-        DieState        = () => {};
-        UIAffectState   = () => {};
-
-        SkillState = () => {};
-        InteractState = () => {};
-        UpdateState = () => {};
-        
-        WeaponUseState = () => {};
-        WeaponChangeState = () => {};
-        WeaponReLoadState = () => {};
-
-        SkillUseState = () => {};
-        SkillLevelUpState = () => {};
-        SkillChangeState = () => {};
     }
     
     public void Clear(){
