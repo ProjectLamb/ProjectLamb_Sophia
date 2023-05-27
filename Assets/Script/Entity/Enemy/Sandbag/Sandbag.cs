@@ -42,7 +42,7 @@ public class Sandbag : Entity
         model.TryGetComponent<Animator>(out this.animator);
         model.TryGetComponent<AnimEventInvoker>(out this.animEventInvoker);
         
-        this.enemyData.DieParticle.GetComponent<ParticleCallback>().onDestroyEvent.AddListener(DestroySelf);
+        this.DieParticle.GetComponent<ParticleCallback>().onDestroyEvent.AddListener(DestroySelf);
         this.objectiveTarget = GameManager.Instance.playerGameObject.transform;
     }
     private void Start() {
@@ -77,7 +77,7 @@ public class Sandbag : Entity
         IsDie = true;
         this.entityCollider.enabled = false;
         animator.SetTrigger("DoDie");
-        visualModulator.vfxModulator.VFXInstantiator(enemyData.DieParticle);
+        visualModulator.vfxModulator.VFXInstantiator(this.DieParticle);
     }
     
     public override void AffectHandler(List<UnityAction> _Action) {

@@ -1,10 +1,13 @@
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Equipment_017 : AbstractEquipment {
+using Random = UnityEngine.Random;
+
+public class Equipment_024 : AbstractEquipment { //, IPlayerDataApplicant{
     //public string equipmentName;
     //public string description;
     //public Sprite sprite;
@@ -15,17 +18,24 @@ public class Equipment_017 : AbstractEquipment {
     //public UnityAction UnequipState;
     //public UnityAction UpdateState;
     //public bool mIsInitialized = false;
+    public EntityAffector poisonAffector;
+    private UnityAction<Entity, Entity> Projectile;
 
     public override void InitEquipment(Player _player, int _selectIndex)
     {
-        equipmentName = "백호인형";
-
+        equipmentName = "독개구리";
         this.EquipState = () => {};
         this.UnequipState = () => {};
         this.UpdateState = () => {};
-        if(_selectIndex == 0) {
-            this.equipmentData.StaminaRestoreRatio += 10;
+        this.Projectile += (_owner, _target) => {Poison(_owner, _target);};
+        this.player = _player;
+        if(_selectIndex == 0){
+            this.equipmentData.ProjectileShootState += Projectile;
         }
-        this.mIsInitialized = true;
+    }
+
+    public void Poison(Entity _owner, Entity _target){
+        poisonAffector.Init(_owner, _target);
+        poisonAffector.Modifiy((IAffectable)_target);
     }
 }

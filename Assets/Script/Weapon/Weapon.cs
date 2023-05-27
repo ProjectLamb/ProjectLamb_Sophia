@@ -25,6 +25,7 @@ public class Weapon : MonoBehaviour
        
     [SerializeField]
     public WeaponData weaponData;
+    public List<Projectile> AttackProjectiles;
 
     private Entity ownerEntity;
 
@@ -38,18 +39,28 @@ public class Weapon : MonoBehaviour
 
     public virtual void Use(int _amount){
         if(!mIsReady) return;
-        mIsReady = false;
-        mCoWaitUse = CoWaitUse();
-        StartCoroutine(mCoWaitUse);
-        Vector3 effectRotate = transform.eulerAngles;
-        effectRotate += weaponData.AttackProjectiles[0].transform.eulerAngles;
+        Vector3     usePosition     = transform.position;
+        Quaternion  useForwardAngle = GetForwardingAngle();
+        Projectile  useProjectile   = AttackProjectiles[0];
+        useProjectile.transform.localScale *= weaponData.Range;
+        _amount = (int)(_amount * weaponData.DamageRatio);
         //GameObject ProjectileObj = Instantiate(gameObject, parent);
         //GameObject ProjectileObj = Instantiate(gameObject, parent.position, _rotate);
-        Instantiate(mBaseWeaponData.AttackProjectiles[0], transform.position, Quaternion.Euler(effectRotate)).InitializeByDamage(_amount, ownerEntity);
+        Instantiate(useProjectile, usePosition, useForwardAngle).InitializeByDamage(_amount, ownerEntity);
+        WaitWeaponDelay();
     }
 
-    public virtual IEnumerator CoWaitUse(){
-        yield return YieldInstructionCache.WaitForSeconds(weaponData.WeaponDelay);
+    public Quaternion GetForwardingAngle(){
+        return Quaternion.Euler(transform.eulerAngles + AttackProjectiles[0].transform.eulerAngles);
+    }
+    public IEnumerator CoWaitUse(float waitSecondTime){
+        mIsReady = false;
+        yield return YieldInstructionCache.WaitForSeconds(waitSecondTime);
         mIsReady = true;
     }
+    public void WaitWeaponDelay(){
+        float waitSecondTime = ownerEntity.GetEntityData().AttackSpeed * weaponData.WeaponDelay;
+        StartCoroutine(CoWaitUse(waitSecondTime));
+    }
+
 }

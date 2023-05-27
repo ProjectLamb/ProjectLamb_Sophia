@@ -37,11 +37,11 @@ public class EquipmentManager : MonoBehaviour{
         AddingData.Clear();
         foreach(AbstractEquipment E in equipments){
             E.InitEquipment(player);
-            AddingData += E.equipmentData;
+            AddingData = E.equipmentData;
         }
         player.playerData = player.BasePlayerData + AddingData;
         player.playerData.EntityTag = "Player";
-        //weapon.weaponData = weapon.BaseWeaponData + AddingData;
+        weapon.weaponData = weapon.BaseWeaponData + AddingData;
     }
 
     public void Equip(AbstractEquipment equipment){

@@ -14,6 +14,8 @@ public class Entity : MonoBehaviour, IEntityAddressable{
     public Rigidbody entityRigidbody;
     public VisualModulator visualModulator;
     public GameObject model;
+    public ParticleSystem DieParticle;
+
 
     protected virtual void Awake(){
         TryGetComponent<Collider>(out entityCollider);

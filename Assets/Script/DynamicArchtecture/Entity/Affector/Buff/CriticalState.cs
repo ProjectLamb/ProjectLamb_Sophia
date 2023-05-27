@@ -37,5 +37,6 @@ public class CriticalState : EntityAffector{
         this.ownerEntity.GetEntityData().Power *= 5;
         //어떤 Entity가 맞기 전까지는 활성화가 안꺼진다.
         yield return new WaitUntil(() => Input.GetMouseButtonDown(0));
+        this.ownerEntity.GetEntityData().Power = originPower;
     }
 }
