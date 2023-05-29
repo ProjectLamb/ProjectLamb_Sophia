@@ -54,13 +54,6 @@ public class Enemy : Entity
         visualModulator.Interact(particle);
         if (enemyData.CurHP <= 0) {this.Die();}
     }
-    public override void AffectHandler(List<UnityAction> _action){
-        _action.ForEach(E => E.Invoke());
-    }
-
-    public override void AsyncAffectHandler(List<IEnumerator> _coroutine){
-        _coroutine.ForEach(E => StartCoroutine(E));
-    }
 
     public void DestroySelf(){
         Destroy(gameObject);
@@ -85,6 +78,8 @@ public class Enemy : Entity
         chase = false;
         objectiveTarget = GameManager.Instance?.playerGameObject?.transform;
         isDie = false;
+        
+        affectorStacks = new Dictionary<E_AffectorType, List<IEnumerator>>();
     }
 
     private void FixedUpdate()
@@ -105,5 +100,31 @@ public class Enemy : Entity
         if (chase) { nav.enabled = true;}
         else {nav.enabled = false;}
         nav.speed = enemyData.MoveSpeed;
+    }
+
+    public Dictionary<E_AffectorType, List<IEnumerator>> affectorStacks;
+    public override void AsyncAffectHandler(E_AffectorType type, List<IEnumerator> _Coroutine){
+        if(affectorStacks.ContainsKey(type).Equals(false)){ 
+            affectorStacks.Add(type, _Coroutine); 
+        }
+        else {
+            StopAffector(affectorStacks[type]);
+        }
+        affectorStacks[type] = _Coroutine;
+        StartAffector(affectorStacks[type]);
+    }
+    public override void AffectHandler(List<UnityAction> _Action) {
+        _Action.ForEach((E) => E.Invoke());
+    }
+
+    public void StopAffector(List<IEnumerator> corutines){
+        foreach(IEnumerator coroutine in corutines){
+            StopCoroutine(coroutine);
+        }
+    }
+    public void StartAffector(List<IEnumerator> corutines){
+        foreach(IEnumerator coroutine in corutines){
+            StartCoroutine(coroutine);
+        }
     }
 }

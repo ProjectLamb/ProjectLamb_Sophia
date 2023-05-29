@@ -6,21 +6,19 @@ using UnityEngine.UI;
 
 public class HealthBar : MonoBehaviour
 {
-    public EntityData entityData;
+    Entity ownerEntity;
     public Slider slider;
     public Image fill;
     public Gradient gradient;
 
-    IEntityAddressable entityAddressable;
     private void Awake() {
-        entityAddressable = GetComponentInParent<IEntityAddressable>();
+        ownerEntity = GetComponentInParent<Entity>();
         fill.color = gradient.Evaluate(1f);
     }
 
     private void Start(){
-        entityData = entityAddressable.GetEntityData();
+        ownerEntity.GetEntityData().UIAffectState += SetSlider;
         //addingData = entityAddressable.GetAddingData();
-        entityData.UIAffectState += SetSlider;        
     }
 
     private void Update() {
@@ -28,7 +26,7 @@ public class HealthBar : MonoBehaviour
     }
 
     public void SetSlider(){
-        slider.value = (((float)entityData.CurHP / (float)entityData.MaxHP) * slider.maxValue);
+        slider.value = (((float)ownerEntity.GetEntityData().CurHP / (float)ownerEntity.GetEntityData().MaxHP) * slider.maxValue);
         fill.color = gradient.Evaluate(slider.normalizedValue);
         //slider.value = ((float)sandbag.sandbagData.CurHP / sandbag.sandbagData.MaxHP) * slider.maxValue;
     }
