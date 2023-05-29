@@ -242,7 +242,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   equipments:
-  - {fileID: -8273555844852011192, guid: 1bd6637333d3941a2b87ef53ab330ffd, type: 3}
+  - {fileID: -4039112567160269693, guid: 8c0d112967751455992c97ba2a8cb2ed, type: 3}
   player: {fileID: 2906788766718216227}
   weapon: {fileID: 803013838}
   playerCollider: {fileID: 2906788766718216232}
@@ -6316,8 +6316,8 @@ MonoBehaviour:
   tipTransform: {fileID: 7181508440584443414}
   baseTransform: {fileID: 6698452326382721363}
   meshParent: {fileID: 1955583778269061912}
-  trailFrameLength: 10
-  IsActivate: 1
+  trailFrameLength: 5
+  IsActivate: 0
 --- !u!4 &5195472776204501446
 Transform:
   m_ObjectHideFlags: 0

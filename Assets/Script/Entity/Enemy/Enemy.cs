@@ -28,6 +28,7 @@ public class Enemy : Entity
     public Projectile[] projectiles;
 
     public ProjectileBucket projectileBucket;
+    public ImageGenerator   imageGenerator;
     public Animator animator;
     public AnimEventInvoker animEventInvoker;
 
@@ -85,6 +86,10 @@ public class Enemy : Entity
         chase = false;
         objectiveTarget = GameManager.Instance?.playerGameObject?.transform;
         isDie = false;
+    }
+
+    private void Start() {
+        this.enemyData.HitStateRef = (ref int amount) => {imageGenerator.GenerateImage(amount);};
     }
 
     private void FixedUpdate()
