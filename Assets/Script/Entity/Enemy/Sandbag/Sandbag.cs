@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,11 +22,11 @@ public class Sandbag : Entity
     public bool IsDie;
 
     public Projectile[] projectiles;
-
     public ProjectileBucket projectileBucket;
-    Animator animator;
-    AnimEventInvoker animEventInvoker;
+           Animator animator;
+           AnimEventInvoker animEventInvoker;
     public ImageGenerator imageGenerator;
+    public VFXObject DieParticle;
     /*********************************************************************************
     *
     * 
@@ -38,12 +39,11 @@ public class Sandbag : Entity
         //TryGetComponent<Rigidbody>(out entityRigidbody);
         //TryGetComponent<VisualModulator>(out visualModulator);
         //model ??= transform.GetChild(0).Find("modle").gameObject;
-
+        base.Awake();
         model.TryGetComponent<Animator>(out this.animator);
         model.TryGetComponent<AnimEventInvoker>(out this.animEventInvoker);
         
         this.objectiveTarget = GameManager.Instance.playerGameObject.transform;
-        affectorStacks = new Dictionary<E_AffectorType, List<IEnumerator>>();
     }
     private void Start() {
         animEventInvoker.animCallback[(int)Enum_AnimState.Attack].AddListener( () => {
@@ -63,11 +63,11 @@ public class Sandbag : Entity
         if (enemyData.CurHP <= 0) {Die();}
     }
 
-    public override void GetDamaged(int _amount, GameObject particle){
+    public override void GetDamaged(int _amount, GameObject _obj){
         if(IsDie == true) {return;}
         enemyData.HitStateRef.Invoke(ref _amount);
         enemyData.CurHP -= _amount;
-        visualModulator.Interact(particle);
+        visualModulator.InteractByGameObject(_obj);
         animator.SetTrigger("DoHit");
         if (enemyData.CurHP <= 0) {Die();}
     }
@@ -77,7 +77,7 @@ public class Sandbag : Entity
         IsDie = true;
         this.entityCollider.enabled = false;
         animator.SetTrigger("DoDie");
-        visualModulator.vfxModulator.VFXInstantiator(this.DieParticle);
+        visualModulator.InteractByVFX(DieParticle);
     }
 
     public void DestroySelf(){
@@ -102,29 +102,19 @@ public class Sandbag : Entity
         //Find Instantiate On This Animator Events;
         animator.SetTrigger("DoJump");
     }
-
-        public Dictionary<E_AffectorType, List<IEnumerator>> affectorStacks;
-    public override void AsyncAffectHandler(E_AffectorType type, List<IEnumerator> _Coroutine){
-        if(affectorStacks.ContainsKey(type).Equals(false)){ 
-            affectorStacks.Add(type, _Coroutine); 
+    
+    public override void AffectHandler(AffectorStruct affectorStruct){
+        if(affectorStacks.ContainsKey(affectorStruct.affectorType).Equals(false)){ 
+            affectorStacks.Add(affectorStruct.affectorType, affectorStruct);
         }
         else {
-            StopAffector(affectorStacks[type]);
+            foreach(IEnumerator coroutine in affectorStacks[affectorStruct.affectorType].AsyncAffectorCoroutine){
+                StopCoroutine(coroutine);
+            }
         }
-        affectorStacks[type] = _Coroutine;
-        StartAffector(affectorStacks[type]);
-    }
-    public override void AffectHandler(List<UnityAction> _Action) {
-        _Action.ForEach((E) => E.Invoke());
-    }
-
-    public void StopAffector(List<IEnumerator> corutines){
-        foreach(IEnumerator coroutine in corutines){
-            StopCoroutine(coroutine);
-        }
-    }
-    public void StartAffector(List<IEnumerator> corutines){
-        foreach(IEnumerator coroutine in corutines){
+        affectorStacks[affectorStruct.affectorType].Affector.ForEach((E) => E.Invoke());
+        affectorStacks[affectorStruct.affectorType] = affectorStruct;
+        foreach(IEnumerator coroutine in affectorStacks[affectorStruct.affectorType].AsyncAffectorCoroutine){
             StartCoroutine(coroutine);
         }
     }

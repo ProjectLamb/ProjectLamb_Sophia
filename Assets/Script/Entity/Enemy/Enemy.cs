@@ -30,6 +30,7 @@ public class Enemy : Entity
     public ProjectileBucket projectileBucket;
     public Animator animator;
     public AnimEventInvoker animEventInvoker;
+    public ParticleSystem DieParticle;
 
     public override EntityData GetEntityData() {return this.enemyData;}
     public override void Die()
@@ -47,11 +48,11 @@ public class Enemy : Entity
         enemyData.CurHP -= _amount;
         if (enemyData.CurHP <= 0) {this.Die();}
     }
-    public override void GetDamaged(int _amount, GameObject particle){
+    public override void GetDamaged(int _amount, GameObject _obj){
         if(isDie == true) {return;}
         enemyData.HitStateRef.Invoke(ref _amount);
         enemyData.CurHP -= _amount;
-        visualModulator.Interact(particle);
+        visualModulator.InteractByGameObject(_obj);
         if (enemyData.CurHP <= 0) {this.Die();}
     }
 
@@ -72,14 +73,12 @@ public class Enemy : Entity
         this.model.TryGetComponent<Animator>(out animator);
         this.model.TryGetComponent<AnimEventInvoker>(out animEventInvoker);
 
-        this.DieParticle.GetComponent<ParticleCallback>().onDestroyEvent.AddListener(DestroySelf);
+        DieParticle.GetComponent<VFXObject>().onDestroyEvent.AddListener(DestroySelf);
         enemyData.DieState += GameManager.Instance.globalEvent.EnemyDie;
 
         chase = false;
         objectiveTarget = GameManager.Instance?.playerGameObject?.transform;
         isDie = false;
-        
-        affectorStacks = new Dictionary<E_AffectorType, List<IEnumerator>>();
     }
 
     private void FixedUpdate()
@@ -102,28 +101,18 @@ public class Enemy : Entity
         nav.speed = enemyData.MoveSpeed;
     }
 
-    public Dictionary<E_AffectorType, List<IEnumerator>> affectorStacks;
-    public override void AsyncAffectHandler(E_AffectorType type, List<IEnumerator> _Coroutine){
-        if(affectorStacks.ContainsKey(type).Equals(false)){ 
-            affectorStacks.Add(type, _Coroutine); 
+    public override void AffectHandler(AffectorStruct affectorStruct){
+        if(affectorStacks.ContainsKey(affectorStruct.affectorType).Equals(false)){ 
+            affectorStacks.Add(affectorStruct.affectorType, affectorStruct);
         }
         else {
-            StopAffector(affectorStacks[type]);
+            foreach(IEnumerator coroutine in affectorStacks[affectorStruct.affectorType].AsyncAffectorCoroutine){
+                StopCoroutine(coroutine);
+            }
         }
-        affectorStacks[type] = _Coroutine;
-        StartAffector(affectorStacks[type]);
-    }
-    public override void AffectHandler(List<UnityAction> _Action) {
-        _Action.ForEach((E) => E.Invoke());
-    }
-
-    public void StopAffector(List<IEnumerator> corutines){
-        foreach(IEnumerator coroutine in corutines){
-            StopCoroutine(coroutine);
-        }
-    }
-    public void StartAffector(List<IEnumerator> corutines){
-        foreach(IEnumerator coroutine in corutines){
+        affectorStacks[affectorStruct.affectorType].Affector.ForEach((E) => E.Invoke());
+        affectorStacks[affectorStruct.affectorType] = affectorStruct;
+        foreach(IEnumerator coroutine in affectorStacks[affectorStruct.affectorType].AsyncAffectorCoroutine){
             StartCoroutine(coroutine);
         }
     }
