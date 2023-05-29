@@ -29,7 +29,7 @@ public class KnockbackState : EntityAffector{
     }
 
     public void Knockback(){
-        Vector3 dir = this.ownerEntity.entityRigidbody.position - this.targetEntity.entityRigidbody.position; 
+        Vector3 dir =  this.targetEntity.entityRigidbody.position- this.ownerEntity.entityRigidbody.position; 
         Debug.Log(dir.normalized);
         this.targetEntity.entityRigidbody.AddForce(dir.normalized * knockBackForce, ForceMode.Impulse);
     }

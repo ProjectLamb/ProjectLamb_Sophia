@@ -21,9 +21,9 @@ public abstract class EntityAffector : ScriptableObject, IModifier {
     public abstract void Modifiy(IAffectable affectableEntity);
 
     public virtual void Init(Entity _owner, Entity _target){
+        this.affectorStruct = new AffectorStruct();
         this.isInitialized = true;
         ownerEntity = _owner;
         targetEntity = _target;
-        this.affectorStruct = new AffectorStruct();
     }
 }

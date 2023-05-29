@@ -33,7 +33,7 @@ public class Player : Entity {
     public Skill[] skills;
     public EquipmentManager equipmentManager;
     public LayerMask groundMask;                  // 바닥을 인식하는 마스크
-
+    public ImageGenerator imageGenerator;
     /// <summary>
     /// RoomGenerator.cs에서 참조하는 변수 (리펙토링 필요해 보인다.) <br/>
     /// * 포탈을 사용할수 있는지 없는지는 Map이 책임을 가져아 한다. <br/>
@@ -46,7 +46,7 @@ public class Player : Entity {
     bool mIsBorder;                 // 벽에 부딛혔는지 감지
     bool mIsDashed;                 // 대쉬를 했는지 
     bool mIsDie;                 // 대쉬를 했는지 
-    Animator anim;
+    public Animator anim;
 
     IEnumerator mCoWaitDash;        // StopCorutine을 사용하기 위해서는 코루틴 변수가 필요하다. 
     public ParticleSystem DieParticle;
@@ -60,6 +60,10 @@ public class Player : Entity {
         isPortal = true;
         anim = model.GetComponent<Animator>();
         playerData = BasePlayerData.Clone();
+    }
+
+    private void Start() {
+        this.playerData.HitStateRef = (ref int amount) => {imageGenerator.GenerateImage(amount);};
     }
     
     public override EntityData GetEntityData() {return playerData;}
@@ -84,7 +88,6 @@ public class Player : Entity {
 
     public void Move(float _hAxis, float _vAxis)
     {
-        
         Vector3 AngleToVector(float _angle) {
             _angle *= Mathf.Deg2Rad;
             return new Vector3(Mathf.Sin(_angle), 0, Mathf.Cos(_angle));
@@ -184,22 +187,6 @@ public class Player : Entity {
             // 플레이어가 바라보는 방향 설정
             this.entityRigidbody.MoveRotation(newRotatation);
             action.Invoke();
-        }
-    }
-
-    public override void AffectHandler(AffectorStruct affectorStruct){
-        if(affectorStacks.ContainsKey(affectorStruct.affectorType).Equals(false)){ 
-            affectorStacks.Add(affectorStruct.affectorType, affectorStruct);
-        }
-        else {
-            foreach(IEnumerator coroutine in affectorStacks[affectorStruct.affectorType].AsyncAffectorCoroutine){
-                StopCoroutine(coroutine);
-            }
-        }
-        affectorStacks[affectorStruct.affectorType].Affector.ForEach((E) => E.Invoke());
-        affectorStacks[affectorStruct.affectorType] = affectorStruct;
-        foreach(IEnumerator coroutine in affectorStacks[affectorStruct.affectorType].AsyncAffectorCoroutine){
-            StartCoroutine(coroutine);
         }
     }
  }
