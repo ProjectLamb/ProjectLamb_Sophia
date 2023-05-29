@@ -10,22 +10,25 @@ using Random = UnityEngine.Random;
 [CreateAssetMenu(fileName = "Critical", menuName = "ScriptableObject/EntityAffector/Buff/Critical", order = int.MaxValue)]
 public class CriticalState : EntityAffector{
     /*아래 3줄은 EntityAffector 상속받아서 이미 있음*/
-    //protected List<IEnumerator> AsyncAffectorCoroutine;
-    //protected List<UnityAction> Affector;
-    //protected Entity targetEntity 
-    //protected Entity ownerEntity;
-    
+//  protected AffectorStruct affectorStruct;
+    // affectorStruct.affectorType;
+    // affectorStruct.AsyncAffectorCoroutine;
+    // affectorStruct.Affector;
+//  protected Entity targetEntity;
+//  protected Entity ownerEntity;
+//  protected bool  isInitialized;
     public UnityAction activateTrigger;
 
     public override void Init(Entity _owner, Entity _target)
     {
         base.Init(_owner, _target);
+        this.affectorStruct.affectorType = E_StateType.CriticalAttack;
         //this.AsyncAffectorCoroutine.Add();
     }
 
     public override void Modifiy(IAffectable affectableEntity) {
         if(this.isInitialized == false) {throw new System.Exception("Affector 초기화 안됨 초기화 하고 사용해야함");}
-        affectableEntity.AsyncAffectHandler(this.affectorType,this.AsyncAffectorCoroutine);
+        affectableEntity.AffectHandler(affectorStruct);
     }
     
     //아;; 이거 이벤트 엄청 꼬이겠네. 
@@ -37,6 +40,7 @@ public class CriticalState : EntityAffector{
         this.ownerEntity.GetEntityData().Power *= 5;
         //어떤 Entity가 맞기 전까지는 활성화가 안꺼진다.
         yield return new WaitUntil(() => Input.GetMouseButtonDown(0));
+        yield return YieldInstructionCache.WaitForSeconds(0.1f);
         this.ownerEntity.GetEntityData().Power = originPower;
     }
 }

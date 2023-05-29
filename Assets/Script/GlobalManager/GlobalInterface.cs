@@ -20,7 +20,7 @@ public interface IInteractable {
 public interface IDamagable
 {
    public void GetDamaged(int _amount);
-   public void GetDamaged(int _amount, GameObject obj);
+   public void GetDamaged(int _amount, GameObject _obj);
 }
 
 /// <summary>
@@ -39,8 +39,7 @@ public interface IModifier {
 데이터 변환이 이루어 진다.
 */
 public interface IAffectable {
-    public void AsyncAffectHandler(E_AffectorType type, List<IEnumerator> _Coroutine);
-    public void AffectHandler(List<UnityAction> _Action);
+    public void AffectHandler(AffectorStruct affectorStruct);
 }
 
 public interface IEntityAddressable : IDamagable, IDieAble, IAffectable {

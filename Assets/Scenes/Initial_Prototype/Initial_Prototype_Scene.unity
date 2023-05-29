@@ -242,7 +242,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   equipments:
-  - {fileID: -4039112567160269693, guid: 8c0d112967751455992c97ba2a8cb2ed, type: 3}
+  - {fileID: -6761025126582908010, guid: 71fbc0abd69dc49b58480a10a1ba0463, type: 3}
   player: {fileID: 2906788766718216227}
   weapon: {fileID: 803013838}
   playerCollider: {fileID: 2906788766718216232}
@@ -876,7 +876,6 @@ GameObject:
   - component: {fileID: 2906788766718216227}
   - component: {fileID: 2906788766718216225}
   - component: {fileID: 2906788766718216233}
-  - component: {fileID: 2906788766718216234}
   m_Layer: 13
   m_Name: Player
   m_TagString: Player
@@ -2190,9 +2189,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2735030516708156345}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ed1a7e6ebead04ba79441c4f2d74bba6, type: 3}
+  m_Script: {fileID: 11500000, guid: 998a2eab8b4c047e0be26980786ae5d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mode: 0
   skinnedMeshRenderers:
   - {fileID: 2735030518314434238}
   - {fileID: 2735030517630139012}
@@ -2208,7 +2208,6 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 991de5a2305de47bb8079fdddabc4ae1, type: 2}
   - {fileID: 2100000, guid: d5cd7500883df47d0b872d352c0f25e1, type: 2}
   TransMaterial: {fileID: 2100000, guid: d5cd7500883df47d0b872d352c0f25e1, type: 2}
-  mode: 0
 --- !u!1 &2735030516708156345
 GameObject:
   m_ObjectHideFlags: 0
@@ -4012,7 +4011,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b654df9ac80224ff7bccacd1b632abf9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  VFXLists: []
 --- !u!1 &2735030517761957822
 GameObject:
   m_ObjectHideFlags: 0
@@ -4819,9 +4817,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   entityCollider: {fileID: 2735030518156765685}
   entityRigidbody: {fileID: 2735030518156765682}
-  visualModulator: {fileID: 2735030518156765687}
   model: {fileID: 2735030517522128620}
-  DieParticle: {fileID: 0}
+  visualModulator: {fileID: 2735030518156765687}
   enemyData:
     mEntityTag: Enemy
     mMaxHP: 1000
@@ -4838,6 +4835,7 @@ MonoBehaviour:
   - {fileID: 3365067302898288901, guid: 16aaca7ef638d410a85a27f82923476d, type: 3}
   projectileBucket: {fileID: 7293618143354604771}
   imageGenerator: {fileID: 1981335519}
+  DieParticle: {fileID: 0}
 --- !u!136 &2735030518156765685
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -4866,7 +4864,6 @@ GameObject:
   - component: {fileID: 1866279642289480361}
   - component: {fileID: 2735030518156765684}
   - component: {fileID: 2735030518156765687}
-  - component: {fileID: 2735030518156765688}
   m_Layer: 0
   m_Name: SandBag
   m_TagString: Enemy
@@ -4888,18 +4885,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skinModulator: {fileID: 2735030516708156343}
   vfxModulator: {fileID: 2735030517761957820}
---- !u!114 &2735030518156765688
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2735030518156765686}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 475edb614a0054b68a3bebf11ce827c9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!137 &2735030518161769336
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 0
@@ -5573,10 +5558,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   entityCollider: {fileID: 2906788766718216232}
   entityRigidbody: {fileID: 2906788766718216231}
-  visualModulator: {fileID: 2906788766718216233}
   model: {fileID: 6689272997834610542}
-  DieParticle: {fileID: 5724422084065114389, guid: af98d17f147974a44b1a9677683b6d00,
-    type: 3}
+  visualModulator: {fileID: 2906788766718216233}
   mBasePlayerData:
     mEntityTag: Player
     mMaxHP: 100
@@ -5617,6 +5600,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 6857
   isPortal: 0
+  DieParticle: {fileID: 5724422084065114389, guid: af98d17f147974a44b1a9677683b6d00,
+    type: 3}
 --- !u!54 &2906788766718216231
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -5661,18 +5646,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skinModulator: {fileID: 6733144046907194179}
   vfxModulator: {fileID: 743253761}
---- !u!114 &2906788766718216234
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 243639901359974393}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 475edb614a0054b68a3bebf11ce827c9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &3126212999366235554
 Transform:
   m_ObjectHideFlags: 0
@@ -29763,9 +29736,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 6733144046907194177}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ed1a7e6ebead04ba79441c4f2d74bba6, type: 3}
+  m_Script: {fileID: 11500000, guid: 998a2eab8b4c047e0be26980786ae5d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mode: 0
   skinnedMeshRenderers:
   - {fileID: 8820959593704808877}
   - {fileID: 2405011506427362875}
@@ -29777,7 +29751,6 @@ MonoBehaviour:
   - {fileID: 2100000, guid: c6bd53f2cbb4f4c7fb65753237622c68, type: 2}
   - {fileID: 2100000, guid: d5cd7500883df47d0b872d352c0f25e1, type: 2}
   TransMaterial: {fileID: 2100000, guid: d5cd7500883df47d0b872d352c0f25e1, type: 2}
-  mode: 0
 --- !u!1 &6733144046907315222
 GameObject:
   m_ObjectHideFlags: 0
