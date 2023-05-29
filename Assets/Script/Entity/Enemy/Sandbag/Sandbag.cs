@@ -104,17 +104,18 @@ public class Sandbag : Entity
     }
     
     public override void AffectHandler(AffectorStruct affectorStruct){
-        if(affectorStacks.ContainsKey(affectorStruct.affectorType).Equals(false)){ 
-            affectorStacks.Add(affectorStruct.affectorType, affectorStruct);
+        if(this.affectorStacks.ContainsKey(affectorStruct.affectorType).Equals(false)){ 
+            this.affectorStacks.Add(affectorStruct.affectorType, affectorStruct);
         }
         else {
-            foreach(IEnumerator coroutine in affectorStacks[affectorStruct.affectorType].AsyncAffectorCoroutine){
+            foreach(IEnumerator coroutine in this.affectorStacks[affectorStruct.affectorType].AsyncAffectorCoroutine){
                 StopCoroutine(coroutine);
             }
+            this.affectorStacks.Remove(affectorStruct.affectorType);
+            this.affectorStacks.Add(affectorStruct.affectorType, affectorStruct);
         }
-        affectorStacks[affectorStruct.affectorType].Affector.ForEach((E) => E.Invoke());
-        affectorStacks[affectorStruct.affectorType] = affectorStruct;
-        foreach(IEnumerator coroutine in affectorStacks[affectorStruct.affectorType].AsyncAffectorCoroutine){
+        this.affectorStacks[affectorStruct.affectorType].Affector.ForEach((E) => E.Invoke());
+        foreach(IEnumerator coroutine in this.affectorStacks[affectorStruct.affectorType].AsyncAffectorCoroutine){
             StartCoroutine(coroutine);
         }
     }

@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
@@ -15,14 +16,17 @@ using UnityEngine.Events;
 /// </summary>
 /// 
 [System.Serializable]
-public class AffectorStruct {
+public class AffectorStruct : ICloneable{
     [field : SerializeField] 
     public  E_StateType      affectorType;
     public  List<IEnumerator>   AsyncAffectorCoroutine = null;
     public  List<UnityAction>   Affector = null;
-    
+
     public AffectorStruct(){
         this.AsyncAffectorCoroutine  = new List<IEnumerator>();
         this.Affector                = new List<UnityAction>();
+    }
+    public object Clone(){
+        return this.MemberwiseClone();
     }
 }

@@ -15,11 +15,11 @@ public class Projectile : MonoBehaviour {
     public bool    isMove;
     public bool    destroyBySelf;
     public float   moveSpeed;
-    public float   destroyTime;
+    public float   destroyTime = 0.5f;
+    public float   colliderTime = 0.5f;
     public List<EntityAffector> projectileEntityAffector;
     public GameObject hitEffect = null;
     public GameObject destroyEffect = null;
-
     
     Entity  ownerEntity;
     public int     damageAmount;
@@ -37,9 +37,14 @@ public class Projectile : MonoBehaviour {
         TryGetComponent<ParticleSystem>(out projectileParticle);
     }
 
+    public void ColliderDisenabled(){
+        projectileCollider.enabled = false;
+    }
+
     private void Start() {
         if(isMove) {projectileRigidBody.velocity = Vector3.forward;}
         if(destroyBySelf == true)Destroy(gameObject, destroyTime);
+        Invoke("ColliderDisenabled", colliderTime);
     }
 
     private void OnDestroy() {
@@ -50,7 +55,6 @@ public class Projectile : MonoBehaviour {
         if(destroyEffect != null) Instantiate(destroyEffect);
         Destroy(gameObject);
     }
-
 
     public void InitializeByDamage(int _damageAmount, Entity _genOwner){
         if(_genOwner == null) {throw new System.Exception("투사체 생성 엔티티가 NULL임");}

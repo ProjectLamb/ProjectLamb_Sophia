@@ -34,7 +34,7 @@ public class PoisonState : EntityAffector {
         float dotDamageDurateTime = durationTime * (1 - tenacity);
         while(dotDamageDurateTime > passedTime){
             passedTime += 0.5f;
-            this.targetEntity.GetDamaged((int)(this.ownerEntity.GetEntityData().Power * 0.25f));
+            this.targetEntity.GetDamaged((int)(this.ownerEntity.GetEntityData().Power * 0.25f) + 1);
             yield return YieldInstructionCache.WaitForSeconds(0.5f);
         }
     }
