@@ -19,6 +19,7 @@ public abstract class EntityAffector : ScriptableObject, IModifier {
     protected Entity targetEntity;
     protected Entity ownerEntity;
     protected bool  isInitialized = false;
+    public    E_AffectorType affectorType;
 
     public abstract void Modifiy(IAffectable affectableEntity);
 

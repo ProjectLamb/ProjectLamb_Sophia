@@ -17,7 +17,7 @@ public class ChargeState : EntityAffector {
 
     public override void Modifiy(IAffectable affectableEntity) {
         if(this.isInitialized == false) {throw new System.Exception("Affector 초기화 안됨 초기화 하고 사용해야함");}
-        affectableEntity.AsyncAffectHandler(this.AsyncAffectorCoroutine);
+        affectableEntity.AsyncAffectHandler(this.affectorType,this.AsyncAffectorCoroutine);
     }
     
     IEnumerator ChargeAttack(UnityAction _attackState){
