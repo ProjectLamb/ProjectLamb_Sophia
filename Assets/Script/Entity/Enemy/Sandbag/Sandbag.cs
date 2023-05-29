@@ -42,8 +42,8 @@ public class Sandbag : Entity
         model.TryGetComponent<Animator>(out this.animator);
         model.TryGetComponent<AnimEventInvoker>(out this.animEventInvoker);
         
-        this.DieParticle.GetComponent<ParticleCallback>().onDestroyEvent.AddListener(DestroySelf);
         this.objectiveTarget = GameManager.Instance.playerGameObject.transform;
+        affectorStacks = new Dictionary<E_AffectorType, List<IEnumerator>>();
     }
     private void Start() {
         animEventInvoker.animCallback[(int)Enum_AnimState.Attack].AddListener( () => {
@@ -79,15 +79,7 @@ public class Sandbag : Entity
         animator.SetTrigger("DoDie");
         visualModulator.vfxModulator.VFXInstantiator(this.DieParticle);
     }
-    
-    public override void AffectHandler(List<UnityAction> _Action) {
-        _Action.ForEach(E => E.Invoke());
-    }
-    
-    public override void AsyncAffectHandler(List<IEnumerator> _Coroutine) {
-        _Coroutine.ForEach(E => StartCoroutine(E));
-    }
-    
+
     public void DestroySelf(){
         Destroy(gameObject);
     }
@@ -109,5 +101,31 @@ public class Sandbag : Entity
     void InstantiateProjectiles2(){
         //Find Instantiate On This Animator Events;
         animator.SetTrigger("DoJump");
+    }
+
+        public Dictionary<E_AffectorType, List<IEnumerator>> affectorStacks;
+    public override void AsyncAffectHandler(E_AffectorType type, List<IEnumerator> _Coroutine){
+        if(affectorStacks.ContainsKey(type).Equals(false)){ 
+            affectorStacks.Add(type, _Coroutine); 
+        }
+        else {
+            StopAffector(affectorStacks[type]);
+        }
+        affectorStacks[type] = _Coroutine;
+        StartAffector(affectorStacks[type]);
+    }
+    public override void AffectHandler(List<UnityAction> _Action) {
+        _Action.ForEach((E) => E.Invoke());
+    }
+
+    public void StopAffector(List<IEnumerator> corutines){
+        foreach(IEnumerator coroutine in corutines){
+            StopCoroutine(coroutine);
+        }
+    }
+    public void StartAffector(List<IEnumerator> corutines){
+        foreach(IEnumerator coroutine in corutines){
+            StartCoroutine(coroutine);
+        }
     }
 }

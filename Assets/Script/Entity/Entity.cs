@@ -28,6 +28,6 @@ public class Entity : MonoBehaviour, IEntityAddressable{
     public virtual void GetDamaged(int _amount){}
     public virtual void GetDamaged(int _amount, GameObject particle){}
     public virtual void Die(){}
-    public virtual void AsyncAffectHandler(List<IEnumerator> _Coroutine){}
+    public virtual void AsyncAffectHandler(E_AffectorType type, List<IEnumerator> _Coroutine){}
     public virtual void AffectHandler(List<UnityAction> _Action){}
 }
