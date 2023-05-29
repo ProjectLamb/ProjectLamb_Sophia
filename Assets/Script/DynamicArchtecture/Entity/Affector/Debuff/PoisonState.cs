@@ -5,10 +5,10 @@ using UnityEngine.Events;
 
 [CreateAssetMenu(fileName = "Poison", menuName = "ScriptableObject/EntityAffector/Debuff/Poison", order = int.MaxValue)]
 public class PoisonState : EntityAffector {
-    /*아래 3줄은 EntityAffector 상속받아서 이미 있음*/
-    //protected List<IEnumerator> AsyncAffectorCoroutine;
-    //protected List<UnityAction> Affector;
-    //protected Entity targetEntity //protected Entity ownerEntity;
+    /*아래 3줄은 EntityAffector 상속받아서 이미 있음*/ 
+    // protected List<IEnumerator> AsyncAffectorCoroutine;x
+    // protected List<UnityAction> Affector;x
+    // protected Entity targetEntity //protected Entity ownerEntity;
 
     public float durationTime;
     public Material skin;
@@ -25,7 +25,7 @@ public class PoisonState : EntityAffector {
         affectableEntity.AsyncAffectHandler(this.AsyncAffectorCoroutine);
     }
 
-    IEnumerator DotDamage(){
+    IEnumerator DotDamage() {
         float passedTime = 0;
         float tenacity =this.targetEntity.GetEntityData().Tenacity;
         float dotDamageDurateTime = durationTime * (1 - tenacity);
