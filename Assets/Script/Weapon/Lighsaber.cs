@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Lighsaber : MonoBehaviour
 {
@@ -22,20 +23,13 @@ public class Lighsaber : MonoBehaviour
 
     [SerializeField]
     [Tooltip("The mesh object with the mesh filter and mesh renderer")]
-    private GameObject _meshParent = null;
+    private GameObject   meshParent = null;
+    private MeshFilter   meshFilter = null;
+    private MeshRenderer meshRenderer = null;
 
     [SerializeField]
-    [Tooltip("The number of frame that the trail should be rendered for")]
-    private int _trailFrameLength = 3;
-
-    [SerializeField]
-    [ColorUsage(true, true)]
-    [Tooltip("The colour of the blade and trail")]
-    private Color _colour = Color.red;
-
-    [SerializeField]
-    [Tooltip("The amount of force applied to each side of a slice")]
-    private float _forceAppliedToCut = 3f;
+    [Tooltip("얼마나 긴 프레임동안 유지될것인가?")]
+    private int trailFrameLength = 3;
 
     private Mesh _mesh;
     private Vector3[] vertices;
@@ -43,37 +37,42 @@ public class Lighsaber : MonoBehaviour
     private int frameCount;
     private Vector3 previousTipPosition;
     private Vector3 previousBasePosition;
+    public bool IsActivate = false;
+
+    public UnityAction drawOn;
+    public UnityAction drawOff;
     
-    void Start()
+
+    void Awake()
     {
-        //Init mesh and triangles
-        _meshParent.transform.position = Vector3.zero;
         _mesh = new Mesh();
-        _meshParent.GetComponent<MeshFilter>().mesh = _mesh;
+        meshParent.TryGetComponent<MeshFilter>(out meshFilter);
+        meshParent.TryGetComponent<MeshRenderer>(out meshRenderer);
+        meshFilter.mesh = _mesh;
 
-        Material trailMaterial = Instantiate(_meshParent.GetComponent<MeshRenderer>().sharedMaterial);
-        trailMaterial.SetColor("Color_8F0C0815", _colour);
-        _meshParent.GetComponent<MeshRenderer>().sharedMaterial = trailMaterial;
-
-        Material bladeMaterial = Instantiate(blade.GetComponent<MeshRenderer>().sharedMaterial);
-        bladeMaterial.SetColor("Color_AF2E1BB", _colour);
-        blade.GetComponent<MeshRenderer>().sharedMaterial = bladeMaterial;
-
-        vertices = new Vector3[_trailFrameLength * NUMvertices];
+        vertices = new Vector3[trailFrameLength * NUMvertices];
         triangles = new int[vertices.Length];
-
+    }
+    private void Start() {
         //Set starting position for tip and base
         previousTipPosition = tipTransform.position;
         previousBasePosition = baseTransform.position;
+        drawOn = () => {
+            IsActivate = true;
+            meshFilter.mesh = _mesh;
+        };
+        drawOff = () => {
+            IsActivate = false;
+            meshParent = null;
+            _mesh = new Mesh();
+        };
     }
     
     void LateUpdate()
     {
+        if(!IsActivate) return;
         //Reset the frame count one we reach the frame length
-        if(frameCount == (_trailFrameLength * NUMvertices))
-        {
-            frameCount = 0;
-        }
+        if(frameCount == (trailFrameLength * NUMvertices)) { frameCount = 0; }
 
         //Draw first triangle vertices for back and front
         vertices[frameCount] = baseTransform.position;
@@ -112,6 +111,5 @@ public class Lighsaber : MonoBehaviour
         previousTipPosition = tipTransform.position;
         previousBasePosition = baseTransform.position;
         frameCount += NUMvertices;
-        _meshParent.transform.position = transform.position / 7;
     }
 }
