@@ -10,24 +10,23 @@ using Component = UnityEngine.Component;
 using Random = UnityEngine.Random;
 
 public class Entity : MonoBehaviour, IEntityAddressable{
-    public Collider entityCollider;
-    public Rigidbody entityRigidbody;
+    public Collider     entityCollider;
+    public Rigidbody    entityRigidbody;
+    public GameObject   model;
+    
     public VisualModulator visualModulator;
-    public GameObject model;
-    public ParticleSystem DieParticle;
-
+    public Dictionary<E_StateType, AffectorStruct> affectorStacks;
 
     protected virtual void Awake(){
         TryGetComponent<Collider>(out entityCollider);
         TryGetComponent<Rigidbody>(out entityRigidbody);
-        TryGetComponent<VisualModulator>(out visualModulator);
         model ??= transform.GetChild(0).Find("modle").gameObject;
+        affectorStacks = new Dictionary<E_StateType, AffectorStruct>();
     }
 
     public virtual EntityData GetEntityData(){return null;}
     public virtual void GetDamaged(int _amount){}
-    public virtual void GetDamaged(int _amount, GameObject particle){}
+    public virtual void GetDamaged(int _amount, GameObject _vfx){}
     public virtual void Die(){}
-    public virtual void AsyncAffectHandler(E_AffectorType type, List<IEnumerator> _Coroutine){}
-    public virtual void AffectHandler(List<UnityAction> _Action){}
+    public virtual void AffectHandler(AffectorStruct affectorStruct){}
 }

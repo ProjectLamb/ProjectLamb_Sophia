@@ -49,6 +49,7 @@ public class Player : Entity {
     Animator anim;
 
     IEnumerator mCoWaitDash;        // StopCorutine을 사용하기 위해서는 코루틴 변수가 필요하다. 
+    public ParticleSystem DieParticle;
 
     protected override void Awake(){
         /*아래 3줄은 절때 활성화 하지마라. base.Awake() 에서 이미 이걸 하고 있다.*/
@@ -59,9 +60,6 @@ public class Player : Entity {
         isPortal = true;
         anim = model.GetComponent<Animator>();
         playerData = BasePlayerData.Clone();
-
-
-        affectorStacks = new Dictionary<E_AffectorType, List<IEnumerator>>();
     }
     
     public override EntityData GetEntityData() {return playerData;}
@@ -71,14 +69,14 @@ public class Player : Entity {
         if(playerData.CurHP <= 0) {Die();}
     }
 
-    public override void GetDamaged(int _amount, GameObject particle){
+    public override void GetDamaged(int _amount, GameObject obj){
         //_amount의 값이 갑자기 바뀌어야 한다.
         playerData.HitStateRef.Invoke(ref _amount);
         Debug.Log(_amount);
         if(_amount == 0) return;
         
         playerData.CurHP -= (int)(_amount * 100/(100+playerData.Defence));
-        visualModulator.Interact(particle);
+        visualModulator.InteractByGameObject(obj);
         if(playerData.CurHP <= 0) {Die();}
     }
 
@@ -182,36 +180,26 @@ public class Player : Entity {
             // 마우스 눌린곳, 플레이어 위치 계산
             Vector3 playerToMouse = groundHit.point - transform.position;
             playerToMouse.y = 0f;
-            Quaternion newRotatation = Quaternion.LookRotation(playerToMouse) * Quaternion.Euler(0, -45, 0);
+            Quaternion newRotatation = Quaternion.LookRotation(playerToMouse);
             // 플레이어가 바라보는 방향 설정
             this.entityRigidbody.MoveRotation(newRotatation);
             action.Invoke();
         }
     }
 
-        public Dictionary<E_AffectorType, List<IEnumerator>> affectorStacks;
-        public override void AsyncAffectHandler(E_AffectorType type, List<IEnumerator> _Coroutine){
-            if(affectorStacks.ContainsKey(type).Equals(false)){ 
-                affectorStacks.Add(type, _Coroutine); 
-            }
-            else {
-                StopAffector(affectorStacks[type]);
-            }
-            affectorStacks[type] = _Coroutine;
-            StartAffector(affectorStacks[type]);
+    public override void AffectHandler(AffectorStruct affectorStruct){
+        if(affectorStacks.ContainsKey(affectorStruct.affectorType).Equals(false)){ 
+            affectorStacks.Add(affectorStruct.affectorType, affectorStruct);
         }
-        public override void AffectHandler(List<UnityAction> _Action) {
-            _Action.ForEach((E) => E.Invoke());
-        }
-
-        public void StopAffector(List<IEnumerator> corutines){
-            foreach(IEnumerator coroutine in corutines){
+        else {
+            foreach(IEnumerator coroutine in affectorStacks[affectorStruct.affectorType].AsyncAffectorCoroutine){
                 StopCoroutine(coroutine);
             }
         }
-        public void StartAffector(List<IEnumerator> corutines){
-            foreach(IEnumerator coroutine in corutines){
-                StartCoroutine(coroutine);
-            }
+        affectorStacks[affectorStruct.affectorType].Affector.ForEach((E) => E.Invoke());
+        affectorStacks[affectorStruct.affectorType] = affectorStruct;
+        foreach(IEnumerator coroutine in affectorStacks[affectorStruct.affectorType].AsyncAffectorCoroutine){
+            StartCoroutine(coroutine);
         }
+    }
  }

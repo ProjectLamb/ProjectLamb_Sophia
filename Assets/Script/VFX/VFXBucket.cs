@@ -5,36 +5,34 @@ using UnityEngine;
 using UnityEngine.AI;
 
 public class VFXBucket : MonoBehaviour {
-    public List<GameObject> VFXLists;
-    public void VFXInstantiatorWithTime(GameObject obj,float lifeTime){
-        GameObject vFX = Instantiate(obj, transform);
-        vFX.transform.localScale *= transform.localScale.z;
-        Destroy(vFX, lifeTime);
+    public Dictionary<E_StateType, VFXObject> visualStacks;
+    private void Awake() {
+        visualStacks = new Dictionary<E_StateType, VFXObject>();   
+    }
+    public void VFXInstantiator(VFXObject vfx){
+        VFXObject vfxObject = Instantiate(vfx, transform);
+        vfxObject.transform.localScale *= transform.localScale.z;
+        HandleNoneStacking(vfxObject);
+        vfxObject.Initialize(vfxObject.durateTime);
     }
 
-    public void VFXInstantiatorWithTime(ParticleSystem particleSystem, float lifeTime){
-        if(particleSystem == null) return;
-        ParticleSystem particle = Instantiate(particleSystem, transform);
-        particle.transform.localScale *= transform.localScale.z;
-        if(particleSystem.transform.rotation.y < 0){
-            particle.transform.position += transform.position.y * Vector3.down;
+    public void GameObjectInstantiator (GameObject obj){
+        GameObject effectObject = Instantiate(obj, transform);
+        effectObject.transform.localScale *= transform.localScale.z;
+    }
+
+    public void HandleStackingVFX(VFXObject vfxObject){
+        
+    }
+
+    public void HandleNoneStacking(VFXObject vfxObject){
+        if(visualStacks.ContainsKey(vfxObject.affectorType).Equals(false)) {
+            visualStacks.Add(vfxObject.affectorType, vfxObject);
         }
-    }    
-    public void VFXInstantiator(GameObject obj){
-        GameObject vFX = Instantiate(obj, transform);
-        vFX.transform.localScale *= transform.localScale.z;
-    }
-
-    public void VFXInstantiator(ParticleSystem particleSystem){
-        ParticleSystem particle = Instantiate(particleSystem, transform);
-        particle.transform.localScale *= transform.localScale.z;
-    }
-
-    public void VFXDestroyer(){
-        foreach(GameObject E in transform){
-            Destroy(E);
+        else {
+            Destroy(visualStacks[vfxObject.affectorType].gameObject);
+            visualStacks[vfxObject.affectorType] = vfxObject;
         }
-        //VFXLists.ForEach((E) => {Destroy(E);});
-        //VFXLists.Clear();
     }
+    public void VFXDestroyForce(E_StateType type){ Destroy(visualStacks[type].gameObject); }
 }
