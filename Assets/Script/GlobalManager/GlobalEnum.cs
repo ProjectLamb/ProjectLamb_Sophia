@@ -1,12 +1,8 @@
-public enum E_AffectorType{
+public enum E_StateType{
     //0 ~ 99 // 디버프
-    Burn        = 0     ,Poisend ,Bleed ,Contracted ,Freeze ,Confused ,Fearing ,Stern ,Bounded, Execution, KnockBack,
-    //100 ~ 199 //버프
-    MoveSpeedUp = 100   , TenacityUp, PowerUp, AttackSpeedUp, Barrier, Invisible, Invinvible, CriticalAttack
-}
-
-//EntityState.cs 에 또 정의함
-
-public enum Affector_PlayerState{
-    Move, Dash, Attack, Skill, GetDamaged, Die, Trigger
+    Move        = 0, Dash, Attack, Skill, GetDamaged, Die, Trigger,
+    //100 ~ 199 //디버프
+    Burn        = 100     ,Poisend ,Bleed ,Contracted ,Freeze ,Confused ,Fearing ,Stern ,Bounded, Execution, KnockBack,
+    //200 ~ 299
+    MoveSpeedUp = 200   , TenacityUp, PowerUp, AttackSpeedUp, Barrier, Invisible, Invinvible, CriticalAttack
 }
