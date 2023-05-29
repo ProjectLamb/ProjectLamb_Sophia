@@ -59,6 +59,9 @@ public class Player : Entity {
         isPortal = true;
         anim = model.GetComponent<Animator>();
         playerData = BasePlayerData.Clone();
+
+
+        affectorStacks = new Dictionary<E_AffectorType, List<IEnumerator>>();
     }
     
     public override EntityData GetEntityData() {return playerData;}
@@ -80,14 +83,6 @@ public class Player : Entity {
     }
 
     public override void Die(){Debug.Log("죽었다는 로직 작성하기");}
-    
-    public override void AffectHandler(List<UnityAction> _action){
-        _action.ForEach(E => E.Invoke());
-    }
-
-    public override void AsyncAffectHandler(List<IEnumerator> _coroutine){
-        _coroutine.ForEach(E => StartCoroutine(E));
-    }
 
     public void Move(float _hAxis, float _vAxis)
     {
@@ -194,4 +189,29 @@ public class Player : Entity {
         }
     }
 
+        public Dictionary<E_AffectorType, List<IEnumerator>> affectorStacks;
+        public override void AsyncAffectHandler(E_AffectorType type, List<IEnumerator> _Coroutine){
+            if(affectorStacks.ContainsKey(type).Equals(false)){ 
+                affectorStacks.Add(type, _Coroutine); 
+            }
+            else {
+                StopAffector(affectorStacks[type]);
+            }
+            affectorStacks[type] = _Coroutine;
+            StartAffector(affectorStacks[type]);
+        }
+        public override void AffectHandler(List<UnityAction> _Action) {
+            _Action.ForEach((E) => E.Invoke());
+        }
+
+        public void StopAffector(List<IEnumerator> corutines){
+            foreach(IEnumerator coroutine in corutines){
+                StopCoroutine(coroutine);
+            }
+        }
+        public void StartAffector(List<IEnumerator> corutines){
+            foreach(IEnumerator coroutine in corutines){
+                StartCoroutine(coroutine);
+            }
+        }
  }

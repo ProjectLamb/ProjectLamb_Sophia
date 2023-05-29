@@ -25,7 +25,7 @@ public class CriticalState : EntityAffector{
 
     public override void Modifiy(IAffectable affectableEntity) {
         if(this.isInitialized == false) {throw new System.Exception("Affector 초기화 안됨 초기화 하고 사용해야함");}
-        affectableEntity.AsyncAffectHandler(this.AsyncAffectorCoroutine);
+        affectableEntity.AsyncAffectHandler(this.affectorType,this.AsyncAffectorCoroutine);
     }
     
     //아;; 이거 이벤트 엄청 꼬이겠네. 
