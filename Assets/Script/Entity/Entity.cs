@@ -28,5 +28,6 @@ public class Entity : MonoBehaviour, IEntityAddressable{
     public virtual void GetDamaged(int _amount){}
     public virtual void GetDamaged(int _amount, GameObject _vfx){}
     public virtual void Die(){}
-    public virtual void AffectHandler(AffectorStruct affectorStruct){}
+    public virtual void AffectHandler(AffectorStruct _affectorStruct){
+    }
 }

@@ -29,10 +29,12 @@ public class VFXBucket : MonoBehaviour {
         if(visualStacks.ContainsKey(vfxObject.affectorType).Equals(false)) {
             visualStacks.Add(vfxObject.affectorType, vfxObject);
         }
-        else {
-            Destroy(visualStacks[vfxObject.affectorType].gameObject);
-            visualStacks[vfxObject.affectorType] = vfxObject;
+        if(!visualStacks[vfxObject.affectorType].Equals(null)){
+            Destroy(visualStacks[vfxObject.affectorType].gameObject); 
         }
+        visualStacks[vfxObject.affectorType] = vfxObject;
     }
-    public void VFXDestroyForce(E_StateType type){ Destroy(visualStacks[type].gameObject); }
+    public void VFXDestroyForce(E_StateType type){ 
+        if(!visualStacks[type].Equals(null)) Destroy(visualStacks[type].gameObject);
+    }
 }
