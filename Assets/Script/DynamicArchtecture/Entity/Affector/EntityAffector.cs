@@ -23,9 +23,9 @@ public abstract class EntityAffector : ScriptableObject, IModifier {
     public abstract void Modifiy(IAffectable affectableEntity);
 
     public virtual void Init(Entity _owner, Entity _target){
-        isInitialized = true;
-        ownerEntity = _owner;
-        targetEntity = _target;
+        this.isInitialized = true;
+        this.ownerEntity = _owner;
+        this.targetEntity = _target;
         this.AsyncAffectorCoroutine = new List<IEnumerator>();
         this.Affector = new List<UnityAction>();
     }
