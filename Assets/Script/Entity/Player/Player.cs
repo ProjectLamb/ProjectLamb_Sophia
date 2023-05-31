@@ -33,7 +33,7 @@ public class Player : Entity {
     public Skill[] skills;
     public EquipmentManager equipmentManager;
     public LayerMask groundMask;                  // 바닥을 인식하는 마스크
-
+    public ImageGenerator imageGenerator;
     /// <summary>
     /// RoomGenerator.cs에서 참조하는 변수 (리펙토링 필요해 보인다.) <br/>
     /// * 포탈을 사용할수 있는지 없는지는 Map이 책임을 가져아 한다. <br/>
@@ -46,9 +46,10 @@ public class Player : Entity {
     bool mIsBorder;                 // 벽에 부딛혔는지 감지
     bool mIsDashed;                 // 대쉬를 했는지 
     bool mIsDie;                 // 대쉬를 했는지 
-    Animator anim;
+    public Animator anim;
 
     IEnumerator mCoWaitDash;        // StopCorutine을 사용하기 위해서는 코루틴 변수가 필요하다. 
+    public ParticleSystem DieParticle;
 
     protected override void Awake(){
         /*아래 3줄은 절때 활성화 하지마라. base.Awake() 에서 이미 이걸 하고 있다.*/
@@ -60,6 +61,10 @@ public class Player : Entity {
         anim = model.GetComponent<Animator>();
         playerData = BasePlayerData.Clone();
     }
+
+    private void Start() {
+        this.playerData.HitStateRef = (ref int amount) => {imageGenerator.GenerateImage(amount);};
+    }
     
     public override EntityData GetEntityData() {return playerData;}
     
@@ -68,30 +73,21 @@ public class Player : Entity {
         if(playerData.CurHP <= 0) {Die();}
     }
 
-    public override void GetDamaged(int _amount, GameObject particle){
+    public override void GetDamaged(int _amount, GameObject obj){
         //_amount의 값이 갑자기 바뀌어야 한다.
         playerData.HitStateRef.Invoke(ref _amount);
         Debug.Log(_amount);
         if(_amount == 0) return;
         
         playerData.CurHP -= (int)(_amount * 100/(100+playerData.Defence));
-        visualModulator.Interact(particle);
+        visualModulator.InteractByGameObject(obj);
         if(playerData.CurHP <= 0) {Die();}
     }
 
     public override void Die(){Debug.Log("죽었다는 로직 작성하기");}
-    
-    public override void AffectHandler(List<UnityAction> _action){
-        _action.ForEach(E => E.Invoke());
-    }
-
-    public override void AsyncAffectHandler(List<IEnumerator> _coroutine){
-        _coroutine.ForEach(E => StartCoroutine(E));
-    }
 
     public void Move(float _hAxis, float _vAxis)
     {
-        
         Vector3 AngleToVector(float _angle) {
             _angle *= Mathf.Deg2Rad;
             return new Vector3(Mathf.Sin(_angle), 0, Mathf.Cos(_angle));
@@ -187,11 +183,18 @@ public class Player : Entity {
             // 마우스 눌린곳, 플레이어 위치 계산
             Vector3 playerToMouse = groundHit.point - transform.position;
             playerToMouse.y = 0f;
-            Quaternion newRotatation = Quaternion.LookRotation(playerToMouse) * Quaternion.Euler(0, -45, 0);
+            Quaternion newRotatation = Quaternion.LookRotation(playerToMouse);
             // 플레이어가 바라보는 방향 설정
             this.entityRigidbody.MoveRotation(newRotatation);
             action.Invoke();
         }
     }
 
- }
+    private void OnTriggerEnter(Collider other) {
+        if(other.tag != "Equipment"){return;}
+        AbstractEquipment triggerdEquipment = other.GetComponent<AbstractEquipment>();
+        equipmentManager.Equip(triggerdEquipment);
+        Debug.Log($"장비 장착! : {triggerdEquipment.equipmentName}");
+        Destroy(triggerdEquipment.gameObject);
+    }
+}
