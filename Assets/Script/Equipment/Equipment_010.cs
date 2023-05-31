@@ -36,7 +36,6 @@ public class Equipment_010 : AbstractEquipment { //, IPlayerDataApplicant{
 
     //디버프를 얘가 만든다면?
     public void ChargeAttack() {
-        chargeAttackAffector.Init(this.player, this.player);
-        chargeAttackAffector.Modifiy((IAffectable)this.player);
+        chargeAttackAffector.Init(this.player, this.player).Modifiy();
     }
 }

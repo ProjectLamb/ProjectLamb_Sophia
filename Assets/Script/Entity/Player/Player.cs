@@ -189,4 +189,12 @@ public class Player : Entity {
             action.Invoke();
         }
     }
- }
+
+    private void OnTriggerEnter(Collider other) {
+        if(other.tag != "Equipment"){return;}
+        AbstractEquipment triggerdEquipment = other.GetComponent<AbstractEquipment>();
+        equipmentManager.Equip(triggerdEquipment);
+        Debug.Log($"장비 장착! : {triggerdEquipment.equipmentName}");
+        Destroy(triggerdEquipment.gameObject);
+    }
+}

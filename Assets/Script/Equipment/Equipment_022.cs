@@ -35,7 +35,6 @@ public class Equipment_022 : AbstractEquipment { //, IPlayerDataApplicant{
     }
 
     public void Freeze(Entity _owner, Entity _target){
-        freezeAffector.Init(_owner, _target);
-        freezeAffector.Modifiy((IAffectable)_target);
+        freezeAffector.Init(_owner, _target).Modifiy();
     }
 }

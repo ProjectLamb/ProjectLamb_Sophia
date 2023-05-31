@@ -28,15 +28,6 @@ public class Lighsaber : MonoBehaviour
     [Tooltip("The number of frame that the trail should be rendered for")]
     private int _trailFrameLength = 3;
 
-    [SerializeField]
-    [ColorUsage(true, true)]
-    [Tooltip("The colour of the blade and trail")]
-    private Color _colour = Color.red;
-
-    [SerializeField]
-    [Tooltip("The amount of force applied to each side of a slice")]
-    private float _forceAppliedToCut = 3f;
-
     private Mesh _mesh;
     private Vector3[] vertices;
     private int[] triangles;
@@ -50,14 +41,6 @@ public class Lighsaber : MonoBehaviour
         _meshParent.transform.position = Vector3.zero;
         _mesh = new Mesh();
         _meshParent.GetComponent<MeshFilter>().mesh = _mesh;
-
-        Material trailMaterial = Instantiate(_meshParent.GetComponent<MeshRenderer>().sharedMaterial);
-        trailMaterial.SetColor("Color_8F0C0815", _colour);
-        _meshParent.GetComponent<MeshRenderer>().sharedMaterial = trailMaterial;
-
-        Material bladeMaterial = Instantiate(blade.GetComponent<MeshRenderer>().sharedMaterial);
-        bladeMaterial.SetColor("Color_AF2E1BB", _colour);
-        blade.GetComponent<MeshRenderer>().sharedMaterial = bladeMaterial;
 
         vertices = new Vector3[_trailFrameLength * NUMvertices];
         triangles = new int[vertices.Length];

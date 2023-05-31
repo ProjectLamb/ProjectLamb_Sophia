@@ -13,8 +13,8 @@ public class Entity : MonoBehaviour, IEntityAddressable{
     public Collider     entityCollider;
     public Rigidbody    entityRigidbody;
     public GameObject   model;
-    
     public VisualModulator visualModulator;
+    
     public Dictionary<E_StateType, AffectorStruct> affectorStacks;
 
     protected virtual void Awake(){
@@ -28,6 +28,5 @@ public class Entity : MonoBehaviour, IEntityAddressable{
     public virtual void GetDamaged(int _amount){}
     public virtual void GetDamaged(int _amount, GameObject _vfx){}
     public virtual void Die(){}
-    public virtual void AffectHandler(AffectorStruct _affectorStruct){
-    }
+    public virtual void AffectHandler(AffectorStruct _affectorStruct){}
 }
