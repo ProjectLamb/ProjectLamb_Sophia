@@ -32,7 +32,7 @@ public interface IDieAble
 }
 
 public interface IModifier {
-    public void Modifiy(IAffectable _affectableEntity);
+    public void Modifiy();
 }
 
 /*

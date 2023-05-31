@@ -12,18 +12,20 @@ EntityAffect의
 2. 이미 중복되는 코루틴 인가? 중복이 되면 어떻게 필터링을 할 수 있을지 고민해보자.
 */
 
-public abstract class EntityAffector : ScriptableObject, IModifier {
-    protected AffectorStruct affectorStruct;
-    protected Entity targetEntity;
-    protected Entity ownerEntity;
-    protected bool  isInitialized;
-
-    public abstract void Modifiy(IAffectable affectableEntity);
-
-    public virtual void Init(Entity _owner, Entity _target){
-        this.affectorStruct = new AffectorStruct();
-        this.isInitialized = true;
-        ownerEntity = _owner;
-        targetEntity = _target;
+public class EntityAffector : ScriptableObject, IModifier {
+    public AffectorStruct affectorStruct;
+    public Entity targetEntity;
+    public Entity ownerEntity;
+    public bool  isInitialized;
+    public virtual void Modifiy(){
+        if(this.isInitialized == false) {throw new System.Exception("Affector 초기화 안됨 초기화 하고 사용해야함");}
+        targetEntity.AffectHandler(affectorStruct);
+    }
+    public virtual EntityAffector Init(Entity _owner, Entity _target){
+        EntityAffector EAInstance = new EntityAffector();
+        EAInstance.affectorStruct = new AffectorStruct();
+        EAInstance.ownerEntity = _owner;
+        EAInstance.targetEntity = _target;
+        return EAInstance;
     }
 }
