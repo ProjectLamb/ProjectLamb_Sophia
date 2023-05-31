@@ -17,15 +17,21 @@ public class KnockbackState : EntityAffector{
 //  protected bool  isInitialized;
     public float knockBackForce;
 
-    public override void Init(Entity _owner, Entity _target){
-        base.Init(_owner, _target);
+    public KnockbackState(EntityAffector _eaData){
+        this.affectorStruct = _eaData.affectorStruct;
+        this.targetEntity   = _eaData.targetEntity;
+        this.ownerEntity    = _eaData.ownerEntity;
+        this.isInitialized  = _eaData.isInitialized;
         this.affectorStruct.affectorType = E_StateType.KnockBack;
         this.affectorStruct.Affector.Add(Knockback);
     }
 
-    public override void Modifiy(IAffectable affectableEntity) {
-        if(this.isInitialized == false) {throw new System.Exception("Affector 초기화 안됨 초기화 하고 사용해야함");}
-        affectableEntity.AffectHandler(affectorStruct);
+    public override EntityAffector Init(Entity _owner, Entity _target){
+        EntityAffector EAInstance = base.Init(_owner, _target);
+        KnockbackState Instance = new KnockbackState(EAInstance);
+        Instance.knockBackForce = this.knockBackForce;
+        Instance.isInitialized  = true;
+        return Instance;
     }
 
     public void Knockback(){

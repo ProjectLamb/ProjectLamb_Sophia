@@ -35,7 +35,6 @@ public class Equipment_024 : AbstractEquipment { //, IPlayerDataApplicant{
     }
 
     public void Poison(Entity _owner, Entity _target){
-        poisonAffector.Init(_owner, _target);
-        poisonAffector.Modifiy((IAffectable)_target);
+        poisonAffector.Init(_owner, _target).Modifiy();
     }
 }

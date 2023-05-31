@@ -5,25 +5,28 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [CreateAssetMenu(fileName = "ChargeAttack", menuName = "ScriptableObject/EntityAffector/Owner/ChargeAttack", order = int.MaxValue)]
-public class ChargeState : EntityAffector {
+public class ChargeState : EntityAffector, IModifier {
     /*아래 3줄은 EntityAffector 상속받아서 이미 있음*/
 //  protected AffectorStruct affectorStruct;
 //  protected Entity targetEntity;
 //  protected Entity ownerEntity;
 //  protected bool  isInitialized;
-
-    public override void Init(Entity _owner, Entity _target){
-        base.Init(_owner, _target);
+    private Player downcastPlayer;
+    public ChargeState(EntityAffector _eaData){
+        this.affectorStruct = _eaData.affectorStruct;
+        this.targetEntity   = _eaData.targetEntity;
+        this.ownerEntity    = _eaData.ownerEntity;
+        this.isInitialized  = _eaData.isInitialized;
+        this.affectorStruct.AsyncAffectorCoroutine.Add(ChargeAttack(downcastPlayer.JustAttack));
+    } 
+    public override EntityAffector Init(Entity _owner, Entity _target){
+        EntityAffector EAInstance = base.Init(_owner, _target);
+        ChargeState Instance = new ChargeState(EAInstance);
         //사실 임시로 한거지만 
         // 플레이어의 공격 매커니즘을 바꾸는 효과는 플레이어에게 정의해야하거나, 무기의 FSM을 정의하는게 맞아보인다.
         // 종원이에게 FSM 방식 작성하게 요청하기
-        Player downcastPlayer = _owner as Player;
-        this.affectorStruct.AsyncAffectorCoroutine.Add(ChargeAttack(downcastPlayer.JustAttack));
-    }
-
-    public override void Modifiy(IAffectable affectableEntity) {
-        if(this.isInitialized == false) {throw new System.Exception("Affector 초기화 안됨 초기화 하고 사용해야함");}
-        affectableEntity.AffectHandler(this.affectorStruct);
+        downcastPlayer = _owner as Player;
+        return Instance;
     }
     
     IEnumerator ChargeAttack(UnityAction _attackState){
