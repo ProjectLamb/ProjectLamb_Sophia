@@ -106,9 +106,6 @@ public class Enemy : Entity
         nav.speed = enemyData.MoveSpeed;
     }
     public override void AffectHandler(AffectorStruct affectorStruct){
-        affectorStruct.Affector.ForEach((E) => E.Invoke());
-        affectorStruct.AsyncAffectorCoroutine.ForEach((E) => StartCoroutine(E));
-        /*
         if(this.affectorStacks.ContainsKey(affectorStruct.affectorType).Equals(false)){ 
             this.affectorStacks.Add(affectorStruct.affectorType, affectorStruct);
         }
@@ -123,6 +120,5 @@ public class Enemy : Entity
         foreach(IEnumerator coroutine in affectorStruct.AsyncAffectorCoroutine){
             StartCoroutine(coroutine);
         }
-        */
     }
 }

@@ -19,16 +19,22 @@ public class CriticalState : EntityAffector{
 //  protected bool  isInitialized;
     public UnityAction activateTrigger;
 
-    public override void Init(Entity _owner, Entity _target)
-    {
-        base.Init(_owner, _target);
+    public CriticalState(EntityAffector _eaData){
+
+        this.affectorStruct = _eaData.affectorStruct;
+        this.targetEntity   = _eaData.targetEntity;
+        this.ownerEntity    = _eaData.ownerEntity;
+        this.isInitialized  = _eaData.isInitialized;
         this.affectorStruct.affectorType = E_StateType.CriticalAttack;
-        //this.AsyncAffectorCoroutine.Add();
+        this.affectorStruct.AsyncAffectorCoroutine.Add(CriticalAttack());
     }
 
-    public override void Modifiy(IAffectable affectableEntity) {
-        if(this.isInitialized == false) {throw new System.Exception("Affector 초기화 안됨 초기화 하고 사용해야함");}
-        affectableEntity.AffectHandler(affectorStruct);
+    public override EntityAffector Init(Entity _owner, Entity _target)
+    {
+        EntityAffector EAInstance = base.Init(_owner, _target);
+        CriticalState Instance = new CriticalState(EAInstance);
+        //this.AsyncAffectorCoroutine.Add();
+        return Instance;
     }
     
     //아;; 이거 이벤트 엄청 꼬이겠네. 

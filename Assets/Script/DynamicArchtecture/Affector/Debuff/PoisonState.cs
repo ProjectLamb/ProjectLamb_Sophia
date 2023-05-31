@@ -16,16 +16,23 @@ public class PoisonState : EntityAffector {
     public float durationTime;
     public  Material    skin;
     public  VFXObject   vfx;
-    public override void Init(Entity _owner, Entity _target){
-        base.Init(_owner, _target);
+    public PoisonState(EntityAffector _eaData){
+        this.affectorStruct = _eaData.affectorStruct;
+        this.targetEntity   = _eaData.targetEntity;
+        this.ownerEntity    = _eaData.ownerEntity;
+        this.isInitialized  = _eaData.isInitialized;
         this.affectorStruct.affectorType = E_StateType.Poisend;
         this.affectorStruct.AsyncAffectorCoroutine.Add(VisualActivate());
         this.affectorStruct.AsyncAffectorCoroutine.Add(DotDamage());
     }
-
-    public override void Modifiy(IAffectable affectableEntity) {
-        if(this.isInitialized == false) {throw new System.Exception("Affector 초기화 안됨 초기화 하고 사용해야함");}
-        affectableEntity.AffectHandler(this.affectorStruct);
+    public override EntityAffector Init(Entity _owner, Entity _target){
+        EntityAffector EAInstance = base.Init(_owner, _target);
+        PoisonState Instance = new PoisonState(EAInstance);
+        Instance.durationTime = this.durationTime;
+        Instance.skin = this.skin;
+        Instance.vfx = this.vfx;
+        Instance.isInitialized  = true;
+        return Instance;
     }
 
     IEnumerator DotDamage(){

@@ -16,7 +16,7 @@ using UnityEngine.Events;
 /// </summary>
 /// 
 [System.Serializable]
-public class AffectorStruct : ICloneable{
+public class AffectorStruct {
     [field : SerializeField] 
     public  E_StateType      affectorType;
     public  List<IEnumerator>   AsyncAffectorCoroutine = null;
@@ -25,8 +25,5 @@ public class AffectorStruct : ICloneable{
     public AffectorStruct(){
         this.AsyncAffectorCoroutine  = new List<IEnumerator>();
         this.Affector                = new List<UnityAction>();
-    }
-    public object Clone(){
-        return this.MemberwiseClone();
     }
 }

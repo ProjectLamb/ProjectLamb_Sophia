@@ -34,7 +34,7 @@ public class EntityAffectorVariator : ScriptableObject, IModifier {
     public void Init(Entity _owner, Entity _target){
         if(this.isAlreadyReseted) return;
         for(int i = 0; i < AsyncAffectorVariations.Length ; i++){
-            AsyncAffectorVariations[i].Init(_owner, _target);
+            this.AsyncAffectorVariations[i].Init(_owner, _target);
         }
     }
     
@@ -42,8 +42,8 @@ public class EntityAffectorVariator : ScriptableObject, IModifier {
     /// 장비나 버프에서 사용될 녀석
     /// </summary>
     /// <param name="affectableEntity"></param>
-    public void Modifiy(IAffectable affectableEntity){
+    public void Modifiy(){
         if(!this.isAlreadyReseted) {throw new System.Exception("Affector 초기화 안됨 초기화 하고 사용해야함");}
-        AsyncAffectorVariations[affectCount++].Modifiy(affectableEntity);
+        this.AsyncAffectorVariations[affectCount++].Modifiy();
     }
 }

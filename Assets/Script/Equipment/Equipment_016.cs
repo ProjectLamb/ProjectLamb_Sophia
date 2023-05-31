@@ -34,7 +34,6 @@ public class Equipment_016 : AbstractEquipment {
     }
 
     public void Faster() {
-        fasterAffector.Init(this.player, this.player);
-        fasterAffector.Modifiy((IAffectable)this.player);
+        fasterAffector.Init(this.player, this.player).Modifiy();
     }
 }

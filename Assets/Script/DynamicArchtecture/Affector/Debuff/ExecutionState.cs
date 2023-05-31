@@ -18,8 +18,12 @@ public class ExecutionState : EntityAffector{
     public Material skin;
     public VFXObject vfx;
 
-    public override void Init(Entity _owner, Entity _target){
-        base.Init(_owner, _target);
+    //자가 복제를 하는놈이다.
+    public ExecutionState(EntityAffector _eaData) {
+        this.affectorStruct = _eaData.affectorStruct;
+        this.targetEntity   = _eaData.targetEntity;
+        this.ownerEntity    = _eaData.ownerEntity;
+        this.isInitialized  = _eaData.isInitialized;
         this.affectorStruct.affectorType = E_StateType.Execution;
         this.affectorStruct.Affector.Add(Execution);
         this.affectorStruct.Affector.Add(GameManager.Instance.globalEvent.HandleTimeSlow);
@@ -27,13 +31,18 @@ public class ExecutionState : EntityAffector{
         this.affectorStruct.AsyncAffectorCoroutine.Add(VisualActivate());
     }
 
-    public override void Modifiy(IAffectable affectableEntity) {
-        if(this.isInitialized == false) {throw new System.Exception("Affector 초기화 안됨 초기화 하고 사용해야함");}
-        affectableEntity.AffectHandler(affectorStruct);
+    public override EntityAffector Init(Entity _owner, Entity _target){
+        EntityAffector EAInstance = base.Init(_owner, _target);
+        ExecutionState Instance = new ExecutionState(EAInstance);
+        Instance.durationTime   = this.durationTime;
+        Instance.skin           = this.skin;
+        Instance.vfx            = this.vfx;
+        Instance.isInitialized  = true;
+        return Instance;
     }
 
     public void Execution (){
-        this.targetEntity.GetDamaged((int)1<<16);
+        targetEntity.GetDamaged((int)1<<16);
     }
     
     IEnumerator VisualActivate(){
