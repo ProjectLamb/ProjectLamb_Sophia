@@ -2,25 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class VisualModulator : MonoBehaviour, IVisuallyInteractable
+public class VisualModulator : MonoBehaviour
 {
     public SkinModulator    skinModulator;
     public VFXBucket    vfxModulator;
 
-    public void InteractByMaterial(Material skin, float durationTime){
-        skinModulator.SetSkinSets(1, skin);
+    public void InteractByMaterial(Material skin){
+        skinModulator.ChangeSkin(skin);
     }
     
-    public void InteractByParticle(ParticleSystem particle, float durationTime){
-        vfxModulator.VFXInstantiator(particle);
+    public void InteractByVFX(VFXObject vfx){
+        vfxModulator.VFXInstantiator(vfx);
     }
 
-    public void Interact(GameObject obj) {
-        vfxModulator.VFXInstantiator(obj);
+    public void InteractByGameObject(GameObject obj){
+        vfxModulator.GameObjectInstantiator(obj);
     }
 
-    public void Revert(){
-        skinModulator.SetSkinSets(1);
-        //vfxModulator.VFXDestroyer();
+    public void Revert(E_StateType _type){
+        skinModulator.RevertSkin();
+        vfxModulator.VFXDestroyForce(_type);
     }
 }

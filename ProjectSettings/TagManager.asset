@@ -11,6 +11,7 @@ TagManager:
   - Door
   - PlayerProjectile
   - EnemyProjectile
+  - Equipment
   layers:
   - Default
   - TransparentFX

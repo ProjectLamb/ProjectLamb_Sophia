@@ -33,8 +33,7 @@ public class Equipment_013 : AbstractEquipment { //, IPlayerDataApplicant{
     }
 
     //디버프를 얘가 만든다면?
-    public void Knockback(Entity _owner,Entity _target) {
-        KnockBackAffector.Init(this.player, _target);
-        KnockBackAffector.Modifiy((IAffectable)_target);
+    public void Knockback(Entity _owner, Entity _target) {
+        KnockBackAffector.Init(_owner, _target).Modifiy();
     }
 }

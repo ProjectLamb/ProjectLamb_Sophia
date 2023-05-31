@@ -31,6 +31,8 @@ public class Enemy : Entity
     public ImageGenerator   imageGenerator;
     public Animator animator;
     public AnimEventInvoker animEventInvoker;
+    public ParticleSystem DieParticle;
+    public ImageGenerator imageGenerator;
 
     public override EntityData GetEntityData() {return this.enemyData;}
     public override void Die()
@@ -48,19 +50,12 @@ public class Enemy : Entity
         enemyData.CurHP -= _amount;
         if (enemyData.CurHP <= 0) {this.Die();}
     }
-    public override void GetDamaged(int _amount, GameObject particle){
+    public override void GetDamaged(int _amount, GameObject _obj){
         if(isDie == true) {return;}
         enemyData.HitStateRef.Invoke(ref _amount);
         enemyData.CurHP -= _amount;
-        visualModulator.Interact(particle);
+        visualModulator.InteractByGameObject(_obj);
         if (enemyData.CurHP <= 0) {this.Die();}
-    }
-    public override void AffectHandler(List<UnityAction> _action){
-        _action.ForEach(E => E.Invoke());
-    }
-
-    public override void AsyncAffectHandler(List<IEnumerator> _coroutine){
-        _coroutine.ForEach(E => StartCoroutine(E));
     }
 
     public void DestroySelf(){
@@ -80,7 +75,7 @@ public class Enemy : Entity
         this.model.TryGetComponent<Animator>(out animator);
         this.model.TryGetComponent<AnimEventInvoker>(out animEventInvoker);
 
-        this.DieParticle.GetComponent<ParticleCallback>().onDestroyEvent.AddListener(DestroySelf);
+        DieParticle.GetComponent<VFXObject>().onDestroyEvent.AddListener(DestroySelf);
         enemyData.DieState += GameManager.Instance.globalEvent.EnemyDie;
 
         chase = false;
@@ -110,5 +105,21 @@ public class Enemy : Entity
         if (chase) { nav.enabled = true;}
         else {nav.enabled = false;}
         nav.speed = enemyData.MoveSpeed;
+    }
+    public override void AffectHandler(AffectorStruct affectorStruct){
+        if(this.affectorStacks.ContainsKey(affectorStruct.affectorType).Equals(false)){ 
+            this.affectorStacks.Add(affectorStruct.affectorType, affectorStruct);
+        }
+        else {
+            foreach(IEnumerator coroutine in this.affectorStacks[affectorStruct.affectorType].AsyncAffectorCoroutine){
+                StopCoroutine(coroutine);
+            }
+            this.affectorStacks.Remove(affectorStruct.affectorType);
+            this.affectorStacks.Add(affectorStruct.affectorType, affectorStruct);
+        }
+        affectorStruct.Affector.ForEach((E) => E.Invoke());
+        foreach(IEnumerator coroutine in affectorStruct.AsyncAffectorCoroutine){
+            StartCoroutine(coroutine);
+        }
     }
 }

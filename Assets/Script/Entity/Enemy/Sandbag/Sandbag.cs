@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,11 +22,11 @@ public class Sandbag : Entity
     public bool IsDie;
 
     public Projectile[] projectiles;
-
     public ProjectileBucket projectileBucket;
-    Animator animator;
-    AnimEventInvoker animEventInvoker;
+           Animator animator;
+           AnimEventInvoker animEventInvoker;
     public ImageGenerator imageGenerator;
+    public VFXObject DieParticle;
     /*********************************************************************************
     *
     * 
@@ -38,11 +39,10 @@ public class Sandbag : Entity
         //TryGetComponent<Rigidbody>(out entityRigidbody);
         //TryGetComponent<VisualModulator>(out visualModulator);
         //model ??= transform.GetChild(0).Find("modle").gameObject;
-
+        base.Awake();
         model.TryGetComponent<Animator>(out this.animator);
         model.TryGetComponent<AnimEventInvoker>(out this.animEventInvoker);
         
-        this.DieParticle.GetComponent<ParticleCallback>().onDestroyEvent.AddListener(DestroySelf);
         this.objectiveTarget = GameManager.Instance.playerGameObject.transform;
     }
     private void Start() {
@@ -63,11 +63,11 @@ public class Sandbag : Entity
         if (enemyData.CurHP <= 0) {Die();}
     }
 
-    public override void GetDamaged(int _amount, GameObject particle){
+    public override void GetDamaged(int _amount, GameObject _obj){
         if(IsDie == true) {return;}
         enemyData.HitStateRef.Invoke(ref _amount);
         enemyData.CurHP -= _amount;
-        visualModulator.Interact(particle);
+        visualModulator.InteractByGameObject(_obj);
         animator.SetTrigger("DoHit");
         if (enemyData.CurHP <= 0) {Die();}
     }
@@ -77,17 +77,9 @@ public class Sandbag : Entity
         IsDie = true;
         this.entityCollider.enabled = false;
         animator.SetTrigger("DoDie");
-        visualModulator.vfxModulator.VFXInstantiator(this.DieParticle);
+        visualModulator.InteractByVFX(DieParticle);
     }
-    
-    public override void AffectHandler(List<UnityAction> _Action) {
-        _Action.ForEach(E => E.Invoke());
-    }
-    
-    public override void AsyncAffectHandler(List<IEnumerator> _Coroutine) {
-        _Coroutine.ForEach(E => StartCoroutine(E));
-    }
-    
+
     public void DestroySelf(){
         Destroy(gameObject);
     }
@@ -109,5 +101,22 @@ public class Sandbag : Entity
     void InstantiateProjectiles2(){
         //Find Instantiate On This Animator Events;
         animator.SetTrigger("DoJump");
+    }
+    
+    public override void AffectHandler(AffectorStruct affectorStruct){
+        if(this.affectorStacks.ContainsKey(affectorStruct.affectorType).Equals(false)){ 
+            this.affectorStacks.Add(affectorStruct.affectorType, affectorStruct);
+        }
+        else {
+            foreach(IEnumerator coroutine in this.affectorStacks[affectorStruct.affectorType].AsyncAffectorCoroutine){
+                StopCoroutine(coroutine);
+            }
+            this.affectorStacks.Remove(affectorStruct.affectorType);
+            this.affectorStacks.Add(affectorStruct.affectorType, affectorStruct);
+        }
+        this.affectorStacks[affectorStruct.affectorType].Affector.ForEach((E) => E.Invoke());
+        foreach(IEnumerator coroutine in this.affectorStacks[affectorStruct.affectorType].AsyncAffectorCoroutine){
+            StartCoroutine(coroutine);
+        }
     }
 }
