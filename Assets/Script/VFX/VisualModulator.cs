@@ -19,8 +19,10 @@ public class VisualModulator : MonoBehaviour
         vfxModulator.GameObjectInstantiator(obj);
     }
 
-    public void Revert(E_StateType _type){
+    public void RevertByMaterial(E_StateType _type){
         skinModulator.RevertSkin();
+    }
+    public void RevertByVFX(E_StateType _type){
         vfxModulator.VFXDestroyForce(_type);
     }
 }

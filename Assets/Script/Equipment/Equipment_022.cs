@@ -23,6 +23,7 @@ public class Equipment_022 : AbstractEquipment { //, IPlayerDataApplicant{
 
     public override void InitEquipment(Player _player, int _selectIndex)
     {
+        Debug.Log("InitEquipment");
         equipmentName = "얼어붙은 투구";
         this.EquipState = () => {};
         this.UnequipState = () => {};
@@ -35,6 +36,7 @@ public class Equipment_022 : AbstractEquipment { //, IPlayerDataApplicant{
     }
 
     public void Freeze(Entity _owner, Entity _target){
+        Debug.Log("Freeze Init");
         freezeAffector.Init(_owner, _target).Modifiy();
     }
 }

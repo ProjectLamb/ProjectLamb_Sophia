@@ -9,9 +9,9 @@ public class Lighsaber : MonoBehaviour
     //The number of vertices to create per frame
     private const int NUMvertices = 12;
 
-    [SerializeField]
-    [Tooltip("무기 모델")]
-    private GameObject blade = null;
+    //[SerializeField]
+    //[Tooltip("무기 모델")]
+    //private GameObject blade = null;
      
     [SerializeField]
     [Tooltip("트레일 생길 꼭데기")]

@@ -16,6 +16,8 @@ public class MoveFasterState : EntityAffector {
     public Material skin;
     public VFXObject vfx;
 
+    private float originMoveSpeed;
+
     public MoveFasterState(EntityAffector _eaData){
         this.affectorStruct = _eaData.affectorStruct;
         this.targetEntity   = _eaData.targetEntity;
@@ -37,7 +39,7 @@ public class MoveFasterState : EntityAffector {
     }
 
     IEnumerator Boost(){
-        float originMoveSpeed = this.ownerEntity.GetEntityData().MoveSpeed;
+        originMoveSpeed = this.ownerEntity.GetEntityData().MoveSpeed;
         this.ownerEntity.GetEntityData().MoveSpeed *= 1.2f; 
         yield return YieldInstructionCache.WaitForSeconds(durationTime);
         this.ownerEntity.GetEntityData().MoveSpeed = originMoveSpeed;
@@ -50,6 +52,7 @@ public class MoveFasterState : EntityAffector {
         this.targetEntity.visualModulator.InteractByMaterial(skin);
         this.targetEntity.visualModulator.InteractByVFX(vfx);
         yield return YieldInstructionCache.WaitForSeconds(visualDurateTime);
-        this.targetEntity.visualModulator.Revert(this.affectorStruct.affectorType);
+        this.targetEntity.visualModulator.RevertByMaterial(this.affectorStruct.affectorType);
+        this.targetEntity.visualModulator.RevertByVFX(this.affectorStruct.affectorType);
     }
 }

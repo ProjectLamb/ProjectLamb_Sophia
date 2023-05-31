@@ -70,7 +70,7 @@ public class SkillData {
         return res;
     }
 
-    public static SkillData operator +(SkillData x, MasterData y){
+    public static SkillData operator +(SkillData x, SkillData y){
         SkillData res = new SkillData();
 
         res.SkillRankInfos[(int)E_SkillKey.Q].numericArray[(int)E_SkillRank.Normal] = 
@@ -116,7 +116,7 @@ public class SkillData {
         return res;
     }
 
-    public static SkillData operator -(SkillData x, MasterData y){
+    public static SkillData operator -(SkillData x, SkillData y){
         SkillData res = new SkillData();
 
         res.SkillRankInfos[(int)E_SkillKey.Q].numericArray[(int)E_SkillRank.Normal] = 

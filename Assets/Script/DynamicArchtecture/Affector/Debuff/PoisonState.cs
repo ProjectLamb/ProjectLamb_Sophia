@@ -52,6 +52,7 @@ public class PoisonState : EntityAffector {
         this.targetEntity.visualModulator.InteractByMaterial(skin);
         this.targetEntity.visualModulator.InteractByVFX(vfx);
         yield return YieldInstructionCache.WaitForSeconds(visualDurateTime);
-        this.targetEntity.visualModulator.Revert(this.affectorStruct.affectorType);
+        this.targetEntity.visualModulator.RevertByMaterial(this.affectorStruct.affectorType);
+        this.targetEntity.visualModulator.RevertByVFX(this.affectorStruct.affectorType);
     }
 }
