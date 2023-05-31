@@ -26,10 +26,8 @@ public abstract class EntityData {
     [field : SerializeField] int mPower;
     public int Power {get {return mPower;} set{mPower = value;}}
     [field : SerializeField] float mAttackSpeed; 
-    
     public float AttackSpeed {get {return mAttackSpeed;} set{mAttackSpeed = value;}}
-   
-    
+       
     public UnityAction MoveState = () => {};
     public UnityAction AttackState = () => {};     //몬스터 패턴 각각에 어텍 스테이트를 만들어야 할지도 있다.
     public UnityActionRef<int> AttackStateRef = (ref int i) => {};

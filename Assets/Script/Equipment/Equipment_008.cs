@@ -35,7 +35,6 @@ public class Equipment_008 : AbstractEquipment { //, IPlayerDataApplicant{
     
     //디버프를 얘가 만든다면?
     public void Sturn(Entity _owner, Entity _target) {
-        sternAffector.Init(_owner, _target);
-        sternAffector.Modifiy((IAffectable)_target);
+        sternAffector.Init(_owner, _target).Modifiy();
     }
 }
