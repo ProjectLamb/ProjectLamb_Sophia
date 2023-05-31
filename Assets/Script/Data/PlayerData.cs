@@ -70,7 +70,7 @@ public class PlayerData : EntityData {
         return res;
     }
 
-    public static PlayerData operator +(PlayerData x, MasterData y){
+    public static PlayerData operator +(PlayerData x, PlayerData y){
         PlayerData res = new PlayerData();
         res.MaxHP = x.MaxHP +y.MaxHP;
         res.CurHP = x.CurHP +y.CurHP;
@@ -103,7 +103,7 @@ public class PlayerData : EntityData {
 
         return res;
     }
-    public static PlayerData operator -(PlayerData x, MasterData y){
+    public static PlayerData operator -(PlayerData x, PlayerData y){
         PlayerData res = new PlayerData();
         res.MaxHP = x.MaxHP -y.MaxHP;
         res.CurHP = x.CurHP -y.CurHP;
