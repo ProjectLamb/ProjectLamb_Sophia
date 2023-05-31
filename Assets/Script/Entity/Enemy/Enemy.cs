@@ -32,7 +32,6 @@ public class Enemy : Entity
     public Animator animator;
     public AnimEventInvoker animEventInvoker;
     public ParticleSystem DieParticle;
-    public ImageGenerator imageGenerator;
 
     public override EntityData GetEntityData() {return this.enemyData;}
     public override void Die()
