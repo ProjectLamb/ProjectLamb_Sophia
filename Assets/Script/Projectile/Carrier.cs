@@ -46,7 +46,7 @@ public class Carrier : MonoBehaviour {
         if(ownerEntity.GetEntityData().EntityTag != targetEntity.GetEntityData().EntityTag){return;}
         foreach(EntityAffector affector in projectileEntityAffector){
             affector.Init(targetEntity,targetEntity);
-            affector.Modifiy((IAffectable)targetEntity);
+            affector.Modifiy();
         }
     }
 }

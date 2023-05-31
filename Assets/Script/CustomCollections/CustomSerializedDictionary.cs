@@ -12,10 +12,5 @@ namespace AYellowpaper.SerializedCollections
 
         [SerializedDictionary("Input Key", "GameObject")]
         public SerializedDictionary<string, GameObject> DictionaryObject;
-
-        [SerializedDictionary("Input Key", "Count")]
-        public SerializedDictionary<E_DebuffState, int> DictionaryDeBuffStates;
-        [SerializedDictionary("Input Key", "Count")]
-        public SerializedDictionary<E_DebuffState, int> DictionaryBuffStates;
     }
 }
