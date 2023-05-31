@@ -84,6 +84,7 @@ public class Enemy : Entity
 
     private void Start() {
         this.enemyData.HitStateRef = (ref int amount) => {imageGenerator.GenerateImage(amount);};
+        nav.speed = this.enemyData.MoveSpeed;
     }
 
     private void FixedUpdate()
@@ -103,7 +104,7 @@ public class Enemy : Entity
         /***************************/
         if (chase) { nav.enabled = true;}
         else {nav.enabled = false;}
-        nav.speed = enemyData.MoveSpeed;
+        nav.speed = this.enemyData.MoveSpeed;
     }
     public override void AffectHandler(AffectorStruct affectorStruct){
         if(this.affectorStacks.ContainsKey(affectorStruct.affectorType).Equals(false)){ 
@@ -117,6 +118,7 @@ public class Enemy : Entity
             this.affectorStacks.Add(affectorStruct.affectorType, affectorStruct);
         }
         affectorStruct.Affector.ForEach((E) => E.Invoke());
+        Debug.Log($"AsyncAffectorCoroutine 개수:  {affectorStruct.AsyncAffectorCoroutine.Count}");
         foreach(IEnumerator coroutine in affectorStruct.AsyncAffectorCoroutine){
             StartCoroutine(coroutine);
         }

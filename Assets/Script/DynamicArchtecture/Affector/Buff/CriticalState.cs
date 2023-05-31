@@ -18,7 +18,7 @@ public class CriticalState : EntityAffector{
 //  protected Entity ownerEntity;
 //  protected bool  isInitialized;
     public UnityAction activateTrigger;
-
+    public int originPower;
     public CriticalState(EntityAffector _eaData){
 
         this.affectorStruct = _eaData.affectorStruct;
@@ -34,6 +34,7 @@ public class CriticalState : EntityAffector{
         EntityAffector EAInstance = base.Init(_owner, _target);
         CriticalState Instance = new CriticalState(EAInstance);
         //this.AsyncAffectorCoroutine.Add();
+        Instance.isInitialized  = true;
         return Instance;
     }
     
@@ -42,7 +43,7 @@ public class CriticalState : EntityAffector{
     // 일단 Projectile에 넣어버리면, 맞았을떄 발생이 되는걸로 생각할 수 있다.
     // 딱봐도 UI랑 겹치는 엄청난 버그가 생기겠지만 HitTrigger을 넘겨받을 수 없다면 이렇게라도 해야겠다
     IEnumerator CriticalAttack(){
-        int originPower = this.ownerEntity.GetEntityData().Power;
+        originPower = this.ownerEntity.GetEntityData().Power;
         this.ownerEntity.GetEntityData().Power *= 5;
         //어떤 Entity가 맞기 전까지는 활성화가 안꺼진다.
         yield return new WaitUntil(() => Input.GetMouseButtonDown(0));

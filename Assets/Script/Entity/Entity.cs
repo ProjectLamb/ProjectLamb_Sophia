@@ -10,10 +10,10 @@ using Component = UnityEngine.Component;
 using Random = UnityEngine.Random;
 
 public class Entity : MonoBehaviour, IEntityAddressable{
-    public Collider     entityCollider;
-    public Rigidbody    entityRigidbody;
-    public GameObject   model;
-    public VisualModulator visualModulator;
+    public Collider         entityCollider;
+    public Rigidbody        entityRigidbody;
+    public GameObject       model;
+    public VisualModulator  visualModulator;
     
     public Dictionary<E_StateType, AffectorStruct> affectorStacks;
 
