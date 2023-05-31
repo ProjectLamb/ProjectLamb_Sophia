@@ -12,6 +12,8 @@ public class ChargeState : EntityAffector, IModifier {
 //  protected Entity ownerEntity;
 //  protected bool  isInitialized;
     private Player downcastPlayer;
+    private bool    holding;
+    private float   holdTime;
     public ChargeState(EntityAffector _eaData){
         this.affectorStruct = _eaData.affectorStruct;
         this.targetEntity   = _eaData.targetEntity;
@@ -26,15 +28,14 @@ public class ChargeState : EntityAffector, IModifier {
         // 플레이어의 공격 매커니즘을 바꾸는 효과는 플레이어에게 정의해야하거나, 무기의 FSM을 정의하는게 맞아보인다.
         // 종원이에게 FSM 방식 작성하게 요청하기
         downcastPlayer = _owner as Player;
+        Instance.isInitialized  = true;
         return Instance;
     }
     
     IEnumerator ChargeAttack(UnityAction _attackState){
-        bool holding = false;
+        holding = false;
         if(Input.GetMouseButton(0)){
-            holding = true;
-
-            float holdTime = 0;
+            holding = true; holdTime = 0;
             while(holdTime < 1f){
                 if(Input.GetMouseButtonUp(0)){
                     Debug.Log("공격 실패");

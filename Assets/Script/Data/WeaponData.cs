@@ -38,7 +38,7 @@ public class WeaponData {
         res.WeaponReLoadState = this.WeaponReLoadState;
         return res;
     }
-    public static WeaponData operator +(WeaponData x, MasterData y){
+    public static WeaponData operator +(WeaponData x, WeaponData y){
         WeaponData res = new WeaponData();
         res.DamageRatio = x.DamageRatio + y.DamageRatio;
         res.WeaponDelay = x.WeaponDelay + y.WeaponDelay;

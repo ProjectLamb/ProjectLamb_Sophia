@@ -17,7 +17,10 @@ public class EquipmentManager : MonoBehaviour{
     [SerializeField]
     private MasterData mAddingData;
     public  MasterData AddingData {get {return mAddingData;} set{mAddingData = value;}}
-    
+
+
+    public PlayerData pdTmp; 
+    public WeaponData wdTmp; 
     private void Awake() {
         // ?? 연산은 왼쪽이 null이냐에 따라 아니냐에 따라 값 대입
         // null체크 할빠에 이게 차라리 좀 빠를듯
@@ -36,14 +39,17 @@ public class EquipmentManager : MonoBehaviour{
     public void CalculateFinalData(){
         AddingData.Clear();
         foreach(AbstractEquipment E in equipments){
-            E.InitEquipment(player);
-            AddingData = E.equipmentData;
+            AddingData += E.equipmentData;
         }
-        player.playerData = player.BasePlayerData + AddingData;
-        player.playerData.EntityTag = "Player";
-        weapon.weaponData = weapon.BaseWeaponData + AddingData;
-    }
+        
+        AddingData.PipeToPlayer(ref pdTmp);
+        AddingData.PipeToWeapon(ref wdTmp);
 
+        player.playerData = player.BasePlayerData + pdTmp;
+        player.playerData.EntityTag = "Player";
+        weapon.weaponData = weapon.BaseWeaponData + wdTmp;
+    }
+    
     public void Equip(AbstractEquipment equipment){
         equipment.InitEquipment(player);
         equipments.Add(equipment);

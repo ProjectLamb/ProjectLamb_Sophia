@@ -33,10 +33,12 @@ public class FreezeState : EntityAffector {
         FreezeState Instance = new FreezeState(EAInstance);
         Instance.durationTime = this.durationTime;
         Instance.skin = this.skin;
-        return EAInstance;
+        Instance.isInitialized  = true;
+        return Instance;
     }
 
     IEnumerator SetSlow(){
+        Debug.Log("실행됨");
         float originMoveSpeed = this.targetEntity.GetEntityData().MoveSpeed;
         float tenacity =this.targetEntity.GetEntityData().Tenacity;
         float slowDurateTime = durationTime * (1 - tenacity);
@@ -52,6 +54,6 @@ public class FreezeState : EntityAffector {
 
         this.targetEntity.visualModulator.InteractByMaterial(skin);
         yield return YieldInstructionCache.WaitForSeconds(visualDurateTime);
-        this.targetEntity.visualModulator.Revert(this.affectorStruct.affectorType);
+        this.targetEntity.visualModulator.RevertByMaterial(this.affectorStruct.affectorType);
     }
 }

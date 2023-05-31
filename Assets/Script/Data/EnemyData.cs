@@ -24,7 +24,7 @@ public class EnemyData : EntityData {
         res.UIAffectState   = this.UIAffectState;
         return res;
     }
-    public static EnemyData operator +(EnemyData x, MasterData y){
+    public static EnemyData operator +(EnemyData x, EnemyData y){
         EnemyData res = new EnemyData();
         res.MaxHP = x.MaxHP +y.MaxHP;
         res.CurHP = x.CurHP +y.CurHP;
@@ -45,7 +45,7 @@ public class EnemyData : EntityData {
         res.UIAffectState   = x.UIAffectState + y.UIAffectState;
         return res;
     }
-    public static EnemyData operator -(EnemyData x, MasterData y){
+    public static EnemyData operator -(EnemyData x, EnemyData y){
         EnemyData res = new EnemyData();
         res.MaxHP = x.MaxHP -y.MaxHP;
         res.CurHP = x.CurHP -y.CurHP;
