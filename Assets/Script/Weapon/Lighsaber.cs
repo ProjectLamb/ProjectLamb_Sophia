@@ -28,13 +28,8 @@ public class Lighsaber : MonoBehaviour
     private MeshRenderer meshRenderer = null;
 
     [SerializeField]
-<<<<<<< HEAD
     [Tooltip("얼마나 긴 프레임동안 유지될것인가?")]
     private int trailFrameLength = 3;
-=======
-    [Tooltip("The number of frame that the trail should be rendered for")]
-    private int _trailFrameLength = 3;
->>>>>>> TA_Escatrgot_AffectorManager
 
     private Mesh _mesh;
     private Vector3[] vertices;
@@ -55,11 +50,7 @@ public class Lighsaber : MonoBehaviour
         meshParent.TryGetComponent<MeshRenderer>(out meshRenderer);
         meshFilter.mesh = _mesh;
 
-<<<<<<< HEAD
         vertices = new Vector3[trailFrameLength * NUMvertices];
-=======
-        vertices = new Vector3[_trailFrameLength * NUMvertices];
->>>>>>> TA_Escatrgot_AffectorManager
         triangles = new int[vertices.Length];
     }
     private void Start() {
