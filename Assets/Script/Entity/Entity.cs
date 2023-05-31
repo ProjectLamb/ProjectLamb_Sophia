@@ -14,14 +14,9 @@ public class Entity : MonoBehaviour, IEntityAddressable{
     public Rigidbody    entityRigidbody;
     public GameObject   model;
     public VisualModulator visualModulator;
-<<<<<<< HEAD
-    public GameObject model;
-    public ParticleSystem DieParticle;
-=======
     
     public Dictionary<E_StateType, AffectorStruct> affectorStacks;
 
->>>>>>> TA_Escatrgot_AffectorManager
     protected virtual void Awake(){
         TryGetComponent<Collider>(out entityCollider);
         TryGetComponent<Rigidbody>(out entityRigidbody);

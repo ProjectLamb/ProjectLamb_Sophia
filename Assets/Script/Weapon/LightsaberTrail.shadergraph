@@ -53,15 +53,12 @@
         },
         {
             "m_Id": "7cd8748c9b7b4da48c4eee365cadd950"
-<<<<<<< HEAD
         },
         {
             "m_Id": "3a9e44a38ea44ab5b7c88e8e6ef2c9b7"
         },
         {
             "m_Id": "9331000b822648c7b497cbdc0f1c5099"
-=======
->>>>>>> TA_Escatrgot_AffectorManager
         }
     ],
     "m_GroupDatas": [],
@@ -172,15 +169,12 @@
             },
             {
                 "m_Id": "7cd8748c9b7b4da48c4eee365cadd950"
-<<<<<<< HEAD
             },
             {
                 "m_Id": "3a9e44a38ea44ab5b7c88e8e6ef2c9b7"
             },
             {
                 "m_Id": "9331000b822648c7b497cbdc0f1c5099"
-=======
->>>>>>> TA_Escatrgot_AffectorManager
             }
         ]
     },
@@ -436,7 +430,6 @@
 
 {
     "m_SGVersion": 0,
-<<<<<<< HEAD
     "m_Type": "UnityEditor.ShaderGraph.BlockNode",
     "m_ObjectId": "2ef2018adbee48929f14e849e12595a1",
     "m_Group": {
@@ -470,8 +463,6 @@
 
 {
     "m_SGVersion": 0,
-=======
->>>>>>> TA_Escatrgot_AffectorManager
     "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
     "m_ObjectId": "313d16ff7ec9432ea1cb7dc8442adaf2",
     "m_Id": 0,
@@ -603,7 +594,6 @@
 
 {
     "m_SGVersion": 0,
-<<<<<<< HEAD
     "m_Type": "UnityEditor.ShaderGraph.NormalMaterialSlot",
     "m_ObjectId": "5172fe157a8f4647a7573a0e57480493",
     "m_Id": 0,
@@ -643,8 +633,6 @@
 
 {
     "m_SGVersion": 0,
-=======
->>>>>>> TA_Escatrgot_AffectorManager
     "m_Type": "UnityEditor.ShaderGraph.NormalMaterialSlot",
     "m_ObjectId": "67643fb5ac1742d3879116a9d7825768",
     "m_Id": 0,
@@ -971,11 +959,7 @@
     "m_ActiveSubTarget": {
         "m_Id": "c91e3d1ace5a41bbb82fb08cdf2c9828"
     },
-<<<<<<< HEAD
     "m_AllowMaterialOverride": true,
-=======
-    "m_AllowMaterialOverride": false,
->>>>>>> TA_Escatrgot_AffectorManager
     "m_SurfaceType": 1,
     "m_ZTestMode": 4,
     "m_ZWriteControl": 0,
@@ -1219,16 +1203,11 @@
 
 {
     "m_SGVersion": 0,
-<<<<<<< HEAD
     "m_Type": "UnityEditor.Rendering.Universal.ShaderGraph.UniversalLitSubTarget",
     "m_ObjectId": "e42f28a3e4a74813865bb7de89dff8a7",
     "m_WorkflowMode": 0,
     "m_NormalDropOffSpace": 0,
     "m_ClearCoat": false
-=======
-    "m_Type": "UnityEditor.Rendering.Universal.ShaderGraph.UniversalUnlitSubTarget",
-    "m_ObjectId": "c91e3d1ace5a41bbb82fb08cdf2c9828"
->>>>>>> TA_Escatrgot_AffectorManager
 }
 
 {
