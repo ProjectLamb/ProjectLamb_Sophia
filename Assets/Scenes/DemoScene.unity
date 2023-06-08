@@ -464,6 +464,12 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 6439218774062257464, guid: af98d17f147974a44b1a9677683b6d00,
         type: 3}
+    - target: {fileID: 2336325239599771861, guid: c6c8706211f194706b90866ad4106f8a,
+        type: 3}
+      propertyPath: ScriptableED
+      value: 
+      objectReference: {fileID: 11400000, guid: 48e6eb351bb8b4faba1c5017b87380cc,
+        type: 2}
     - target: {fileID: 2336325239599771863, guid: c6c8706211f194706b90866ad4106f8a,
         type: 3}
       propertyPath: m_Name
@@ -1264,6 +1270,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9b21c0ad5cd274b0db422445d613a3ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2906788766718216230 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6292190958529231784, guid: a3a048346748045c495e2b68987129b9,
+    type: 3}
+  m_PrefabInstance: {fileID: 7953994919807064440}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 243639901359974393}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86105bd9aac6a4c8ab3a6a4ef2181e85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &3080430060365416050
@@ -49269,6 +49287,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5058871447507259739, guid: a3a048346748045c495e2b68987129b9,
         type: 3}
+      propertyPath: ScriptablePD
+      value: 
+      objectReference: {fileID: 11400000, guid: 4918cac37bb4b4be59a2dfe1b625cab5,
+        type: 2}
+    - target: {fileID: 5058871447507259739, guid: a3a048346748045c495e2b68987129b9,
+        type: 3}
       propertyPath: mBasePlayerData.mPower
       value: 10
       objectReference: {fileID: 0}
@@ -49517,6 +49541,41 @@ PrefabInstance:
       propertyPath: equipments.Array.size
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7953994920609787151, guid: a3a048346748045c495e2b68987129b9,
+        type: 3}
+      propertyPath: OnChangeEvent.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7953994920609787151, guid: a3a048346748045c495e2b68987129b9,
+        type: 3}
+      propertyPath: OnChangeEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7953994920609787151, guid: a3a048346748045c495e2b68987129b9,
+        type: 3}
+      propertyPath: OnChangeEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2906788766718216230}
+    - target: {fileID: 7953994920609787151, guid: a3a048346748045c495e2b68987129b9,
+        type: 3}
+      propertyPath: OnChangeEvent.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7953994920609787151, guid: a3a048346748045c495e2b68987129b9,
+        type: 3}
+      propertyPath: OnChangeEvent.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: CalculateData
+      objectReference: {fileID: 0}
+    - target: {fileID: 7953994920609787151, guid: a3a048346748045c495e2b68987129b9,
+        type: 3}
+      propertyPath: OnChangeEvent.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: PlayerDataManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 7953994920609787151, guid: a3a048346748045c495e2b68987129b9,
+        type: 3}
+      propertyPath: OnChangeEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 7978220091949174340, guid: a3a048346748045c495e2b68987129b9,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -49547,6 +49606,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -24.549854
       objectReference: {fileID: 0}
+    - target: {fileID: 8204527447882299761, guid: a3a048346748045c495e2b68987129b9,
+        type: 3}
+      propertyPath: ScriptableWD
+      value: 
+      objectReference: {fileID: 11400000, guid: b571b94df30d940cb9bea6a13dc425f4,
+        type: 2}
     - target: {fileID: 8204527447882299761, guid: a3a048346748045c495e2b68987129b9,
         type: 3}
       propertyPath: projectileBucket

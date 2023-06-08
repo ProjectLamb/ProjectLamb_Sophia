@@ -18,14 +18,9 @@ public class Equipment_016 : AbstractEquipment {
     public EntityAffector fasterAffector;
     private UnityAction EnemyDie;
 
-    public override void InitEquipment(Player _player, int _selectIndex)
+    public override void InitEquipment( int _selectIndex)
     {
         equipmentName = "조잡한 황금뱃지";
-
-        this.EquipState = () => {};
-        this.UnequipState = () => {};
-        this.UpdateState = () => {};
-        this.player = _player;
         this.EnemyDie += () => {Faster();};
         if(_selectIndex == 0) {
             GameManager.Instance.globalEvent.OnEnemyDieEvent.AddListener(this.EnemyDie);
@@ -34,6 +29,6 @@ public class Equipment_016 : AbstractEquipment {
     }
 
     public void Faster() {
-        fasterAffector.Init(this.player, this.player).Modifiy();
+        //fasterAffector.Init(this.player, this.player).Modifiy();
     }
 }

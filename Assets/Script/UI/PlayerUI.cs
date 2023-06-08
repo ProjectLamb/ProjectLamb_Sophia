@@ -6,11 +6,10 @@ using UnityEngine.UI;
 public class PlayerUI : MonoBehaviour {
     public Player player;
     public Slider hpBar;
-    private void Awake() {
-        
+    private void Start() {
+        player.ScriptablePD.HitState += ChangeHPUI;
     }
-
-    private void Update() {
-        hpBar.value = player.playerData.CurHP;
+    public void ChangeHPUI(){
+        hpBar.value = player.CurrentHealth;
     }
 }

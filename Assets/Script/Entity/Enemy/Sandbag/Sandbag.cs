@@ -14,8 +14,9 @@ public class Sandbag : Entity
     //public GameObject model;
     
     [SerializeField]
-    public EnemyData enemyData;
-    public override EntityData GetEntityData() {return this.enemyData;}
+    public ScriptableObjEnemyData ScriptableED;
+    public EntityData enemyData;
+    public override ref EntityData GetEntityData() {return ref this.enemyData;}
     
     public Transform objectiveTarget;
 
@@ -40,6 +41,8 @@ public class Sandbag : Entity
         //TryGetComponent<VisualModulator>(out visualModulator);
         //model ??= transform.GetChild(0).Find("modle").gameObject;
         base.Awake();
+        enemyData = new EntityData(ScriptableED);
+        CurrentHealth = enemyData.MaxHP;
         model.TryGetComponent<Animator>(out this.animator);
         model.TryGetComponent<AnimEventInvoker>(out this.animEventInvoker);
         
@@ -58,18 +61,18 @@ public class Sandbag : Entity
     public override void GetDamaged(int _amount){
         if(IsDie == true) {return;}
         enemyData.HitStateRef.Invoke(ref _amount);
-        enemyData.CurHP -= _amount;
+        CurrentHealth -= _amount;
         animator.SetTrigger("DoHit");
-        if (enemyData.CurHP <= 0) {Die();}
+        if (CurrentHealth <= 0) {Die();}
     }
 
-    public override void GetDamaged(int _amount, GameObject _obj){
+    public override void GetDamaged(int _amount, VFXObject _vfx){
         if(IsDie == true) {return;}
         enemyData.HitStateRef.Invoke(ref _amount);
-        enemyData.CurHP -= _amount;
-        visualModulator.InteractByGameObject(_obj);
+        CurrentHealth -= _amount;
+        visualModulator.InteractByVFX(_vfx);
         animator.SetTrigger("DoHit");
-        if (enemyData.CurHP <= 0) {Die();}
+        if (CurrentHealth <= 0) {Die();}
     }
 
     public override void Die(){ 
@@ -101,22 +104,5 @@ public class Sandbag : Entity
     void InstantiateProjectiles2(){
         //Find Instantiate On This Animator Events;
         animator.SetTrigger("DoJump");
-    }
-    
-    public override void AffectHandler(AffectorStruct affectorStruct){
-        if(this.affectorStacks.ContainsKey(affectorStruct.affectorType).Equals(false)){ 
-            this.affectorStacks.Add(affectorStruct.affectorType, affectorStruct);
-        }
-        else {
-            foreach(IEnumerator coroutine in this.affectorStacks[affectorStruct.affectorType].AsyncAffectorCoroutine){
-                StopCoroutine(coroutine);
-            }
-            this.affectorStacks.Remove(affectorStruct.affectorType);
-            this.affectorStacks.Add(affectorStruct.affectorType, affectorStruct);
-        }
-        this.affectorStacks[affectorStruct.affectorType].Affector.ForEach((E) => E.Invoke());
-        foreach(IEnumerator coroutine in this.affectorStacks[affectorStruct.affectorType].AsyncAffectorCoroutine){
-            StartCoroutine(coroutine);
-        }
     }
 }

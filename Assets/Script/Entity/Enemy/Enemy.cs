@@ -18,7 +18,10 @@ public class Enemy : Entity
     //public GameObject model;
     
     [field : SerializeField]
-    public EnemyData enemyData;
+    public ScriptableObjEnemyData ScriptableED;
+    private EntityData enemyData;
+
+    public override ref EntityData GetEntityData(){ return ref this.enemyData; }
 
     public UnityEngine.AI.NavMeshAgent nav;
     public Transform objectiveTarget;
@@ -33,7 +36,6 @@ public class Enemy : Entity
     public AnimEventInvoker animEventInvoker;
     public ParticleSystem DieParticle;
 
-    public override EntityData GetEntityData() {return this.enemyData;}
     public override void Die()
     {
         enemyData.DieState.Invoke();
@@ -46,15 +48,17 @@ public class Enemy : Entity
     public override void GetDamaged(int _amount){
         if(isDie == true) {return;}
         enemyData.HitStateRef.Invoke(ref _amount);
-        enemyData.CurHP -= _amount;
-        if (enemyData.CurHP <= 0) {this.Die();}
+        imageGenerator.GenerateImage(_amount);
+        CurrentHealth -= _amount;
+        if (CurrentHealth <= 0) {this.Die();}
     }
-    public override void GetDamaged(int _amount, GameObject _obj){
+    public override void GetDamaged(int _amount, VFXObject _vfx){
         if(isDie == true) {return;}
         enemyData.HitStateRef.Invoke(ref _amount);
-        enemyData.CurHP -= _amount;
-        visualModulator.InteractByGameObject(_obj);
-        if (enemyData.CurHP <= 0) {this.Die();}
+        imageGenerator.GenerateImage(_amount);
+        CurrentHealth -= _amount;
+        visualModulator.InteractByVFX(_vfx);
+        if (CurrentHealth <= 0) {this.Die();}
     }
 
     public void DestroySelf(){
@@ -68,6 +72,8 @@ public class Enemy : Entity
         //TryGetComponent<Rigidbody>(out entityRigidbody);
         //TryGetComponent<Collider>(out entityCollider);
         base.Awake();
+        enemyData = new EntityData(ScriptableED);
+        CurrentHealth = enemyData.MaxHP;
 
         TryGetComponent<UnityEngine.AI.NavMeshAgent>(out nav);
         
@@ -83,7 +89,6 @@ public class Enemy : Entity
     }
 
     private void Start() {
-        this.enemyData.HitStateRef = (ref int amount) => {imageGenerator.GenerateImage(amount);};
         nav.speed = this.enemyData.MoveSpeed;
     }
 
@@ -105,22 +110,5 @@ public class Enemy : Entity
         if (chase) { nav.enabled = true;}
         else {nav.enabled = false;}
         nav.speed = this.enemyData.MoveSpeed;
-    }
-    public override void AffectHandler(AffectorStruct affectorStruct){
-        if(this.affectorStacks.ContainsKey(affectorStruct.affectorType).Equals(false)){ 
-            this.affectorStacks.Add(affectorStruct.affectorType, affectorStruct);
-        }
-        else {
-            foreach(IEnumerator coroutine in this.affectorStacks[affectorStruct.affectorType].AsyncAffectorCoroutine){
-                StopCoroutine(coroutine);
-            }
-            this.affectorStacks.Remove(affectorStruct.affectorType);
-            this.affectorStacks.Add(affectorStruct.affectorType, affectorStruct);
-        }
-        affectorStruct.Affector.ForEach((E) => E.Invoke());
-        Debug.Log($"AsyncAffectorCoroutine 개수:  {affectorStruct.AsyncAffectorCoroutine.Count}");
-        foreach(IEnumerator coroutine in affectorStruct.AsyncAffectorCoroutine){
-            StartCoroutine(coroutine);
-        }
     }
 }

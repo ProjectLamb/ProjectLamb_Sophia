@@ -19,23 +19,19 @@ public class Equipment_010 : AbstractEquipment { //, IPlayerDataApplicant{
     //public bool mIsInitialized = false;
     public EntityAffector chargeAttackAffector;
     private UnityAction AttackState;
-    public override void InitEquipment(Player _player, int _selectIndex)
+    public override void InitEquipment( int _selectIndex)
     {
         equipmentName = "슉슈슉..";
-        this.EquipState = () => {};
-        this.UnequipState = () => {};
-        this.UpdateState = () => {};
         this.AttackState += () => {ChargeAttack();};
-        this.player = _player;
         if(_selectIndex == 0){
-            this.equipmentData.AttackSpeed += _player.playerData.AttackSpeed * 0.2f;
-            this.equipmentData.AttackState += AttackState;
+            this.equipmentData.playerData.EntityDatas.AttackSpeed += PlayerDataManager.BasePlayerData.EntityDatas.AttackSpeed * 0.2f;
+            this.equipmentData.playerData.EntityDatas.AttackState += AttackState;
         }
         this.mIsInitialized = true;
     }
 
     //디버프를 얘가 만든다면?
     public void ChargeAttack() {
-        chargeAttackAffector.Init(this.player, this.player).Modifiy();
+        //chargeAttackAffector.Init(this.player, this.player).Modifiy();
     }
 }

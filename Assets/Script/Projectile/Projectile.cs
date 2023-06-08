@@ -70,7 +70,7 @@ public class Projectile : Carrier {
         if(damageAmount == 0) {Debug.Log("데미지가 0임 의도한 거 맞지?");}
         if(!other.TryGetComponent<Entity>(out targetEntity)){return;}
         if(ownerEntity.GetEntityData().EntityTag == targetEntity.GetEntityData().EntityTag){return;}
-        targetEntity.GetDamaged(damageAmount, hitEffect.gameObject);
+        targetEntity.GetDamaged(damageAmount, hitEffect);
             //어? 분명 프로젝타일 자기자신이 가진 어펙터를 사용할 수 있어야 하는데 Entity가 필수 불가결하게 되는 상황이 생겼다..
                 //어떻게 해야하는거지 수정해야겠다.
         // ✅ 아! 알았다 owner도 자신이고 target또한 자기자신이면. 가능하다.

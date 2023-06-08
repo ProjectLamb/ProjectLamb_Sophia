@@ -20,7 +20,7 @@ public interface IInteractable {
 public interface IDamagable
 {
    public void GetDamaged(int _amount);
-   public void GetDamaged(int _amount, GameObject _obj);
+   public void GetDamaged(int _amount, VFXObject _obj);
 }
 
 /// <summary>
@@ -42,10 +42,12 @@ public interface IAffectable {
     public void AffectHandler(AffectorStruct affectorStruct);
 }
 
-public interface IEntityAddressable : IDamagable, IDieAble, IAffectable {
-    public EntityData GetEntityData();
+public interface IEntityAddressable : IDamagable, IDieAble, IAffectable, IEntityDataAddressable {
 }
 
+public interface IEntityDataAddressable {
+    public ref EntityData GetEntityData();
+}
 
 public interface IVisuallyInteractable {
     public void InteractByMaterial(Material material, float dutateTime);

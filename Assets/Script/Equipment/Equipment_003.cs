@@ -18,16 +18,12 @@ public class Equipment_003 : AbstractEquipment { //, IPlayerDataApplicant{
     //public UnityAction UpdateState;
     //public bool mIsInitialized = false;
 
-    public override void InitEquipment(Player _player, int _selectIndex)
+    public override void InitEquipment( int _selectIndex)
     {
         equipmentName = "뒤집어진 양말";
-        this.EquipState = () => {};
-        this.UnequipState = () => {};
-        this.UpdateState = () => {};
-
         if(_selectIndex == 0) {
-            this.equipmentData.Power -= (int)(_player.playerData.Power * 0.1f);
-            this.equipmentData.MaxHP += 15;
+            this.equipmentData.playerData.EntityDatas.Power -= (int)(PlayerDataManager.BasePlayerData.EntityDatas.Power * 0.1f);
+            this.equipmentData.playerData.EntityDatas.MaxHP += 15;
         }
         this.mIsInitialized = true;
     }

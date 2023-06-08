@@ -19,17 +19,14 @@ public class Equipment_012 : AbstractEquipment { //, IPlayerDataApplicant{
     //public bool mIsInitialized = false;
 
 
-    public override void InitEquipment(Player _player, int _selectIndex)
+    public override void InitEquipment( int _selectIndex)
     {
         Vector3 ScaleSize = new Vector3(7f * 1.25f,7f * 1.25f,7f * 1.25f);
         equipmentName = "핑크 덤벨";
-        this.EquipState = () => {};
-        this.UnequipState = () => {};
-        this.UpdateState = () => {};
         if(_selectIndex == 0){
-            this.equipmentData.MaxHP += 10;
-            this.equipmentData.Power += 10;
-            _player.transform.localScale = ScaleSize;
+            this.equipmentData.playerData.EntityDatas.MaxHP += 10;
+            this.equipmentData.playerData.EntityDatas.Power += 10;
+            GameManager.Instance.playerGameObject.transform.localScale = ScaleSize;
         }
     }
 }
