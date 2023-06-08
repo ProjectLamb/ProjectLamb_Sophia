@@ -7,7 +7,7 @@ public class SkillData {
     [field : SerializeField]public E_SkillType SkillType;
     [field : SerializeField]public E_SkillKey CurrentSkillKey;
     [field : SerializeField]public string SkillName;
-    [field : SerializeField]public SkillRankInfo[] SkillRankInfos;
+    [field : SerializeField]public SkillRankInfo[] SkillRankInfos; // Normal, Rare, Epic
     [field : SerializeField]public string SkillDescription;
     [field : SerializeField]public List<Projectile> SkillProjectile;
     
@@ -66,6 +66,7 @@ public class SkillData {
         res.SkillUseState = this.SkillUseState;
         res.SkillLevelUpState = this.SkillLevelUpState;
         res.SkillChangeState = this.SkillChangeState;
+        res.SkillProjectile = this.SkillProjectile;
 
         return res;
     }

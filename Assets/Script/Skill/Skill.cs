@@ -2,6 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//이놈은 Q,E,R에 위치를 바꿀 수 있다.
+// 입력은 QER이 들어온다.
+
+// Skill[E_SkillKey.Q].Use()
+// Skill[E_SkillKey.E].Use()
+// Skill[E_SkillKey.R].Use()
+
+// 그렇다면 
+
 public class Skill : MonoBehaviour
 {   
     [SerializeField]
@@ -10,7 +19,6 @@ public class Skill : MonoBehaviour
     
     [SerializeField]
     public SkillData SkillData;
-
     bool mIsReady = true;
     IEnumerator mCoWaitUse;
 
