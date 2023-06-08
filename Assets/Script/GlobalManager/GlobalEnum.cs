@@ -6,3 +6,8 @@ public enum E_StateType{
     //200 ~ 299
     MoveSpeedUp = 200   , TenacityUp, PowerUp, AttackSpeedUp, Barrier, Invisible, Invinvible, CriticalAttack
 }
+
+
+public enum E_AnimState {
+    Idle, Attack, Jump, Die
+}

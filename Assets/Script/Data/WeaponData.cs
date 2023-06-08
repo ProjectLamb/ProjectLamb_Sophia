@@ -15,11 +15,13 @@ public class WeaponData {
     [field : SerializeField] public float DamageRatio {get; set;}
     [field : SerializeField] public float WeaponDelay {get; set;}
     [field : SerializeField] public float Range {get; set;}
+    [field : SerializeField] public List<Projectile> AttackProjectiles;
     
     public UnityAction WeaponUseState = () => {};
     public UnityAction WeaponChangeState = () => {};
     public UnityAction WeaponReLoadState = () => {}; 
     public WeaponData() {
+        AttackProjectiles = new List<Projectile>();
         DamageRatio = 0f;
         WeaponDelay = 0f;
         Range       = 0f;
@@ -36,6 +38,7 @@ public class WeaponData {
         res.WeaponUseState = this.WeaponUseState;
         res.WeaponChangeState = this.WeaponChangeState;
         res.WeaponReLoadState = this.WeaponReLoadState;
+        res.AttackProjectiles = this.AttackProjectiles;
         return res;
     }
     public static WeaponData operator +(WeaponData x, WeaponData y){
