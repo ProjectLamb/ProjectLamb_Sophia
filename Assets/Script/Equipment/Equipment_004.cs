@@ -19,17 +19,14 @@ public class Equipment_004 : AbstractEquipment { //, IPlayerDataApplicant{
 
     
     private UnityActionRef<int> HitStateRef;
-    public override void InitEquipment(Player _player, int _selectIndex)
+    public override void InitEquipment( int _selectIndex)
     {
         equipmentName = "디지털 파편 조각";
-        this.EquipState = () => {};
-        this.UnequipState = () => {};
-        this.UpdateState = () => {};
         HitStateRef += (ref int i) => {Defence(ref i);};
 
         if(_selectIndex == 0) {
-            this.equipmentData.Power += (int)(_player.playerData.Power * 0.1f);
-            this.equipmentData.HitStateRef += HitStateRef;
+            this.equipmentData.playerData.EntityDatas.Power += (int)(PlayerDataManager.BasePlayerData.EntityDatas.Power * 0.1f);
+            this.equipmentData.playerData.EntityDatas.HitStateRef += HitStateRef;
         }
         this.mIsInitialized = true;
     }

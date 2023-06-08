@@ -16,16 +16,12 @@ public class Equipment_001 : AbstractEquipment {
     // public UnityAction UpdateState;
     // public bool mIsInitialized = false;
 
-    public override void InitEquipment(Player _player, int _selectIndex)
+    public override void InitEquipment( int _selectIndex)
     {
         equipmentName = "식어버린 피자 한조각";
-
-        this.EquipState = () => {};
-        this.UnequipState = () => {};
-        this.UpdateState = () => {};
         if(_selectIndex == 0) {
-            this.equipmentData.MaxHP += 10;
-            this.equipmentData.MoveSpeed -= _player.playerData.MoveSpeed * 0.05f;
+            this.equipmentData.playerData.EntityDatas.MaxHP += 10;
+            this.equipmentData.playerData.EntityDatas.MoveSpeed -= PlayerDataManager.BasePlayerData.EntityDatas.MoveSpeed * 0.05f;
         }
         this.mIsInitialized = true;
     }

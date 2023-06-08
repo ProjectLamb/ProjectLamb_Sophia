@@ -16,15 +16,12 @@ public class Equipment_017 : AbstractEquipment {
     //public UnityAction UpdateState;
     //public bool mIsInitialized = false;
 
-    public override void InitEquipment(Player _player, int _selectIndex)
+    public override void InitEquipment( int _selectIndex)
     {
         equipmentName = "백호인형";
 
-        this.EquipState = () => {};
-        this.UnequipState = () => {};
-        this.UpdateState = () => {};
         if(_selectIndex == 0) {
-            this.equipmentData.StaminaRestoreRatio += 10;
+            this.equipmentData.playerData.StaminaRestoreRatio += 10;
         }
         this.mIsInitialized = true;
     }
