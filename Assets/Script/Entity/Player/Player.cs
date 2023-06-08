@@ -18,13 +18,19 @@ public class Player : Entity {
     //GameObject model;
 
     [SerializeField]
-    private PlayerData mBasePlayerData;
-    public PlayerData BasePlayerData {get {return mBasePlayerData;}}
-    
-    [SerializeField]
-    public PlayerData playerData; //플레이어의 함수로 인해 변할 수 있다.
-
-    //고유성을 가지고 있다는것이 특징이라서 Static하면 안되지 않을까?
+    public ScriptableObjPlayerData ScriptablePD;
+    //고유성을 가지고 있다는것이 특징이라서 Static하면 안되지 않을까?    
+    [SerializeField] private int mCurrentStamina;
+    public  int CurrentStamina {
+        get {return mCurrentStamina;}
+        set {
+            mCurrentStamina = value;
+            if(mCurrentStamina < 0) {mCurrentStamina = 0;}
+        }
+    }
+    public override ref EntityData GetEntityData(){
+        return ref PlayerDataManager.GetEntityData();
+    }
     
     [SerializeField]
     public Weapon weapon;
@@ -57,31 +63,30 @@ public class Player : Entity {
         //if (!TryGetComponent<Rigidbody>(out entityRigidbody)) { Debug.Log("컴포넌트 로드 실패 : Rigidbody"); }
         //if (!TryGetComponent<VisualModulator>(out visualModulator)) { Debug.Log("컴포넌트 로드 실패 : VisualModulator"); }
         base.Awake();
+        //CurrentHealth = 마스터 데이터
+    }
+    private void Start() {
+        CurrentHealth = PlayerDataManager.GetEntityData().MaxHP;//FinalPlayerData.PlayerEntityData.MaxHP;
+        CurrentStamina = PlayerDataManager.GetPlayerData().MaxStamina;//FinalPlayerData.PlayerEntityData.MaxHP;
         isPortal = true;
         anim = model.GetComponent<Animator>();
-        playerData = BasePlayerData.Clone();
     }
-
-    private void Start() {
-        this.playerData.HitStateRef = (ref int amount) => {imageGenerator.GenerateImage(amount);};
-    }
-    
-    public override EntityData GetEntityData() {return playerData;}
     
     public override void GetDamaged(int _amount){
-        playerData.CurHP -= (int)(_amount * 100/(100 + playerData.Defence));
-        if(playerData.CurHP <= 0) {Die();}
+        CurrentHealth -= (int)(_amount * 100/(100 + PlayerDataManager.GetEntityData().Defence));
+        if(CurrentHealth <= 0) {Die();}
     }
 
-    public override void GetDamaged(int _amount, GameObject obj){
+    public override void GetDamaged(int _amount, VFXObject obj){
         //_amount의 값이 갑자기 바뀌어야 한다.
-        playerData.HitStateRef.Invoke(ref _amount);
-        Debug.Log(_amount);
+        //맞았을때 
+        PlayerDataManager.GetEntityData().HitStateRef.Invoke(ref _amount);
+        imageGenerator.GenerateImage(_amount);
         if(_amount == 0) return;
         
-        playerData.CurHP -= (int)(_amount * 100/(100+playerData.Defence));
-        visualModulator.InteractByGameObject(obj);
-        if(playerData.CurHP <= 0) {Die();}
+        CurrentHealth -= (int)(_amount * 100/(100+PlayerDataManager.GetEntityData().Defence));
+        visualModulator.InteractByVFX(obj);
+        if(CurrentHealth <= 0) {Die();}
     }
 
     public override void Die(){Debug.Log("죽었다는 로직 작성하기");}
@@ -93,7 +98,7 @@ public class Player : Entity {
             return new Vector3(Mathf.Sin(_angle), 0, Mathf.Cos(_angle));
         }
         
-        if (this.entityRigidbody.velocity.magnitude > playerData.MoveSpeed) return; 
+        if (this.entityRigidbody.velocity.magnitude > PlayerDataManager.GetEntityData().MoveSpeed) return; 
 
         mMoveVec = AngleToVector(Camera.main.transform.eulerAngles.y + 90f) * _hAxis + AngleToVector(Camera.main.transform.eulerAngles.y) * _vAxis;
         mMoveVec = mMoveVec.normalized;
@@ -102,14 +107,14 @@ public class Player : Entity {
         
         if (!IsBorder())
         {
-            Vector3 rbVel = mMoveVec * playerData.MoveSpeed;
+            Vector3 rbVel = mMoveVec * PlayerDataManager.GetEntityData().MoveSpeed;
             this.entityRigidbody.velocity = rbVel;
             if(mMoveVec != Vector3.zero){
                 mRotate = Quaternion.LookRotation(mMoveVec);
                 transform.rotation = Quaternion.Slerp(transform.rotation,mRotate, 0.6f);
                 
             }
-            playerData.MoveState.Invoke();
+            PlayerDataManager.GetEntityData().MoveState.Invoke();
         }
     }
 
@@ -117,23 +122,23 @@ public class Player : Entity {
     {
         IEnumerator CoWaitDash()
         {
-            float recoveryTime = 3f - (3f * (playerData.StaminaRestoreRatio / 100));
+            float recoveryTime = 3f - (3f * (PlayerDataManager.GetAddingData().playerData.StaminaRestoreRatio / 100));
             mIsDashed = true;
-            while (playerData.CurStamina < playerData.MaxStamina)
+            while (CurrentStamina < PlayerDataManager.GetAddingData().playerData.MaxStamina)
             {
                 yield return YieldInstructionCache.WaitForSeconds(recoveryTime);
-                playerData.CurStamina++;
+                CurrentStamina++;
             }
             mIsDashed = false;
         }
 
         // 스테미나 false면 그냥 스킵
-        if (playerData.CurStamina <= 0) return;
+        if (CurrentStamina <= 0) return;
 
         Vector3 dashPower = mMoveVec * -Mathf.Log(1 / this.entityRigidbody.drag);
-        this.entityRigidbody.AddForce(dashPower.normalized * playerData.MoveSpeed * 10, ForceMode.VelocityChange);
+        this.entityRigidbody.AddForce(dashPower.normalized * PlayerDataManager.GetEntityData().MoveSpeed * 10, ForceMode.VelocityChange);
 
-        if (playerData.CurStamina > 0) { playerData.CurStamina--; }
+        if (CurrentStamina > 0) { CurrentStamina--; }
 
         if (!mIsDashed)
         {
@@ -144,8 +149,8 @@ public class Player : Entity {
     public void Attack()
     {
         anim.SetTrigger("DoAttack");
-        Turning(() => weapon?.Use(playerData.Power));
-        playerData.AttackState.Invoke();
+        Turning(() => weapon?.Use(PlayerDataManager.GetEntityData().Power));
+        PlayerDataManager.GetEntityData().AttackState.Invoke();
     }
     
     /// <summary>
@@ -155,14 +160,14 @@ public class Player : Entity {
     /// 이렇게 공격 방식이 바뀌는 매커니즘을 다루는 커플링을 줄일까? <br/>
     /// </summary>
     public void JustAttack(){
-        Turning(() => { weapon?.Use(playerData.Power); });
+        Turning(() => { weapon?.Use(PlayerDataManager.GetEntityData().Power); });
     }
     
     public void Skill(string key)
     {
         if(skills[(int)E_SkillKey.Q]) {
-            playerData.SkillState.Invoke();
-            Turning(() => skills[(int)E_SkillKey.Q].Use(playerData.Power));
+            //this.FinalPlayerData.SkillState.Invoke();
+            //Turning(() => skills[(int)E_SkillKey.Q].Use(this.FinalPlayerData.Power));
         }
     }
 
@@ -197,4 +202,5 @@ public class Player : Entity {
         Debug.Log($"장비 장착! : {triggerdEquipment.equipmentName}");
         Destroy(triggerdEquipment.gameObject);
     }
+
 }

@@ -19,26 +19,22 @@ using UnityEngine;
 // 로직을 정의해주는곳
 public class Weapon : MonoBehaviour
 {
-    [SerializeField] private WeaponData mBaseWeaponData;
-    public WeaponData BaseWeaponData {get {return mBaseWeaponData;}}
-       
-    [SerializeField]
-    public WeaponData weaponData;
+    public ScriptableObjWeaponData ScriptableWD;
+    public List<Projectile> AttackProjectiles;
     public ProjectileBucket projectileBucket;
     private Entity ownerEntity;
     protected bool mIsReady = true;
     protected IEnumerator mCoWaitUse;
 
     private void Awake() {
-        weaponData = BaseWeaponData.Clone();
         ownerEntity = GetComponentInParent<Entity>();
     }
 
     public virtual void Use(int _amount){
         if(!mIsReady) return;
-        Projectile  useProjectile   = weaponData.AttackProjectiles[0];
-        useProjectile.transform.localScale *= weaponData.Range;
-        _amount = (int)(_amount * weaponData.DamageRatio);
+        Projectile  useProjectile   = AttackProjectiles[0];
+        useProjectile.transform.localScale *= PlayerDataManager.GetWeaonData().Range;
+        _amount = (int)(_amount * PlayerDataManager.GetWeaonData().DamageRatio);
         //GameObject ProjectileObj = Instantiate(gameObject, parent);
         //GameObject ProjectileObj = Instantiate(gameObject, parent.position, _rotate);
         projectileBucket.ProjectileInstantiatorByDamage(ownerEntity, useProjectile, _amount);
@@ -51,7 +47,7 @@ public class Weapon : MonoBehaviour
     }
 
     public void WaitWeaponDelay(){
-        float waitSecondTime = ownerEntity.GetEntityData().AttackSpeed * weaponData.WeaponDelay;
+        float waitSecondTime = PlayerDataManager.GetPlayerData().EntityDatas.AttackSpeed * PlayerDataManager.GetWeaonData().WeaponDelay;
         StartCoroutine(CoWaitUse(waitSecondTime));
     }
 

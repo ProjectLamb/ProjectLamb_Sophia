@@ -17,15 +17,12 @@ public class Equipment_006 : AbstractEquipment { //, IPlayerDataApplicant{
     //public UnityAction UpdateState;
     //public bool mIsInitialized = false;
 
-    public override void InitEquipment(Player _player, int _selectIndex)
+    public override void InitEquipment(int _selectIndex)
     {
         equipmentName = "반쯤남은위장크림";
-        this.EquipState = () => {};
-        this.UnequipState = () => {};
-        this.UpdateState = () => {};
         if(_selectIndex == 0){
-            this.equipmentData.MoveSpeed   += _player.playerData.MoveSpeed * 0.1f;
-            this.equipmentData.AttackSpeed += _player.playerData.AttackSpeed * 0.05f;
+            this.equipmentData.playerData.EntityDatas.MoveSpeed   += PlayerDataManager.BasePlayerData.EntityDatas.MoveSpeed * 0.1f;
+            this.equipmentData.playerData.EntityDatas.AttackSpeed += PlayerDataManager.BasePlayerData.EntityDatas.AttackSpeed * 0.05f;
         }
         this.mIsInitialized = true;
     }

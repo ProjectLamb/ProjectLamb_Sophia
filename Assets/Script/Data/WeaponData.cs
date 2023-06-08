@@ -2,61 +2,55 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public enum E_WeaponType {
+public enum E_WeaponType
+{
     melee, ranger, mage
 }
 
-[System.Serializable]
-public class WeaponData {
-    [field : SerializeField] public E_WeaponType WeaponType;
-    [field : SerializeField] public string WeaponName;
-    [field : SerializeField] public string WeaponDescription;
-    
-    [field : SerializeField] public float DamageRatio {get; set;}
-    [field : SerializeField] public float WeaponDelay {get; set;}
-    [field : SerializeField] public float Range {get; set;}
-    [field : SerializeField] public List<Projectile> AttackProjectiles;
-    
-    public UnityAction WeaponUseState = () => {};
-    public UnityAction WeaponChangeState = () => {};
-    public UnityAction WeaponReLoadState = () => {}; 
-    public WeaponData() {
-        AttackProjectiles = new List<Projectile>();
-        DamageRatio = 0f;
-        WeaponDelay = 0f;
-        Range       = 0f;
+
+public struct WeaponData
+{
+    public E_WeaponType WeaponType;
+    public string WeaponName;
+    public string WeaponDescription;
+    public float DamageRatio;
+    public float WeaponDelay;
+    public float Range;
+    public float Ammo;
+    public UnityAction WeaponUseState;
+    public UnityAction WeaponChangeState;
+    public UnityAction WeaponReLoadState;
+    public WeaponData(ScriptableObjWeaponData _scriptable)
+    {
+        WeaponType = _scriptable.WeaponType;
+        WeaponName = _scriptable.WeaponName;
+        WeaponDescription = _scriptable.WeaponDescription;
+        DamageRatio = _scriptable.DamageRatio;
+        WeaponDelay = _scriptable.WeaponDelay;
+        Range = _scriptable.Range;
+        Ammo = _scriptable.Ammo;
+        WeaponUseState = _scriptable.WeaponUseState;
+        WeaponChangeState = _scriptable.WeaponChangeState;
+        WeaponReLoadState = _scriptable.WeaponReLoadState;
     }
-    public WeaponData Clone() {
-        WeaponData res = new WeaponData();
-        res.WeaponType  = this.WeaponType;
-        res.WeaponName  = this.WeaponName;
-        res.WeaponDescription   = this.WeaponDescription;
-        res.DamageRatio = this.DamageRatio;
-        res.WeaponDelay = this.WeaponDelay;
-        res.Range = this.Range;
-        
-        res.WeaponUseState = this.WeaponUseState;
-        res.WeaponChangeState = this.WeaponChangeState;
-        res.WeaponReLoadState = this.WeaponReLoadState;
-        res.AttackProjectiles = this.AttackProjectiles;
-        return res;
-    }
-    public static WeaponData operator +(WeaponData x, WeaponData y){
+    public static WeaponData operator +(WeaponData x, WeaponData y)
+    {
         WeaponData res = new WeaponData();
         res.DamageRatio = x.DamageRatio + y.DamageRatio;
         res.WeaponDelay = x.WeaponDelay + y.WeaponDelay;
-        res.Range   = x.Range + y.Range;
+        res.Range = x.Range + y.Range;
 
         res.WeaponUseState = x.WeaponUseState + y.WeaponUseState;
         res.WeaponChangeState = x.WeaponChangeState + y.WeaponChangeState;
         res.WeaponReLoadState = x.WeaponReLoadState + y.WeaponReLoadState;
         return res;
     }
-    public static WeaponData operator -(WeaponData x, MasterData y){
+    public static WeaponData operator -(WeaponData x, WeaponData y)
+    {
         WeaponData res = new WeaponData();
         res.DamageRatio = x.DamageRatio - y.DamageRatio;
         res.WeaponDelay = x.WeaponDelay - y.WeaponDelay;
-        res.Range   = x.Range - y.Range;
+        res.Range = x.Range - y.Range;
 
         res.WeaponUseState = x.WeaponUseState - y.WeaponUseState;
         res.WeaponChangeState = x.WeaponChangeState - y.WeaponChangeState;

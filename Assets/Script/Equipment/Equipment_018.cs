@@ -16,15 +16,12 @@ public class Equipment_018 : AbstractEquipment {
     //public UnityAction UpdateState;
     //public bool mIsInitialized = false;
 
-    public override void InitEquipment(Player _player, int _selectIndex)
+    public override void InitEquipment( int _selectIndex)
     {
         equipmentName = "만화책";
 
-        this.EquipState = () => {};
-        this.UnequipState = () => {};
-        this.UpdateState = () => {};
         if(_selectIndex == 0) {
-            this.equipmentData.MaxStamina += 1;
+            this.equipmentData.playerData.MaxStamina += 1;
         }
         this.mIsInitialized = true;
     }

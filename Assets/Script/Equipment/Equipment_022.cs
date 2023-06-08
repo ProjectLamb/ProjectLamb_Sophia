@@ -21,17 +21,13 @@ public class Equipment_022 : AbstractEquipment { //, IPlayerDataApplicant{
     public EntityAffector freezeAffector;
     private UnityAction<Entity, Entity> Projectile;
 
-    public override void InitEquipment(Player _player, int _selectIndex)
+    public override void InitEquipment( int _selectIndex)
     {
         Debug.Log("InitEquipment");
         equipmentName = "얼어붙은 투구";
-        this.EquipState = () => {};
-        this.UnequipState = () => {};
-        this.UpdateState = () => {};
         this.Projectile += (_owner, _target) => {Freeze(_owner, _target);};
-        this.player = _player;
         if(_selectIndex == 0){
-            this.equipmentData.ProjectileShootState += Projectile;
+            this.equipmentData.playerData.EntityDatas.ProjectileShootState += Projectile;
         }
     }
 

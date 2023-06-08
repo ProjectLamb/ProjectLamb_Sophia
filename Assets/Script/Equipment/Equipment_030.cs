@@ -19,16 +19,13 @@ public class Equipment_030 : AbstractEquipment { //, IPlayerDataApplicant{
     //public bool mIsInitialized = false;
     public  EntityAffector excuteAffector;
     private UnityAction<Entity, Entity> Projectile;
-    public override void InitEquipment(Player _player, int _selectIndex)
+    public override void InitEquipment( int _selectIndex)
     {
         equipmentName = "러다이트 운동 지령서";
-        this.EquipState = () => {};
-        this.UnequipState = () => {};
-        this.UpdateState = () => {};
-        this.player = _player;
+
         this.Projectile += (Entity _owner, Entity _target) => {Execution(_owner, _target);};
         if(_selectIndex == 0){
-            this.equipmentData.ProjectileShootState += Projectile;
+            this.equipmentData.playerData.EntityDatas.ProjectileShootState += Projectile;
         }
         this.mIsInitialized = true;
     }
