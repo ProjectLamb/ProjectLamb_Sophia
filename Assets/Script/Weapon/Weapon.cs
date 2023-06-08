@@ -16,19 +16,16 @@ using UnityEngine;
 // 프리펩으로 다양화를 시키겠지.
 // 스크립터블을 없에는 방향으로 생각해보자.
 
-
+// 로직을 정의해주는곳
 public class Weapon : MonoBehaviour
 {
-    [SerializeField]
-    private WeaponData mBaseWeaponData;
+    [SerializeField] private WeaponData mBaseWeaponData;
     public WeaponData BaseWeaponData {get {return mBaseWeaponData;}}
        
     [SerializeField]
     public WeaponData weaponData;
-    public List<Projectile> AttackProjectiles;
-
+    public ProjectileBucket projectileBucket;
     private Entity ownerEntity;
-
     protected bool mIsReady = true;
     protected IEnumerator mCoWaitUse;
 
@@ -39,25 +36,20 @@ public class Weapon : MonoBehaviour
 
     public virtual void Use(int _amount){
         if(!mIsReady) return;
-        Vector3     usePosition     = transform.position;
-        Quaternion  useForwardAngle = GetForwardingAngle();
-        Projectile  useProjectile   = AttackProjectiles[0];
+        Projectile  useProjectile   = weaponData.AttackProjectiles[0];
         useProjectile.transform.localScale *= weaponData.Range;
         _amount = (int)(_amount * weaponData.DamageRatio);
         //GameObject ProjectileObj = Instantiate(gameObject, parent);
         //GameObject ProjectileObj = Instantiate(gameObject, parent.position, _rotate);
-        Instantiate(useProjectile, usePosition, useForwardAngle).InitializeByDamage(_amount, ownerEntity);
+        projectileBucket.ProjectileInstantiatorByDamage(ownerEntity, useProjectile, _amount);
         WaitWeaponDelay();
-    }
-
-    public Quaternion GetForwardingAngle(){
-        return Quaternion.Euler(transform.eulerAngles + AttackProjectiles[0].transform.eulerAngles);
     }
     public IEnumerator CoWaitUse(float waitSecondTime){
         mIsReady = false;
         yield return YieldInstructionCache.WaitForSeconds(waitSecondTime);
         mIsReady = true;
     }
+
     public void WaitWeaponDelay(){
         float waitSecondTime = ownerEntity.GetEntityData().AttackSpeed * weaponData.WeaponDelay;
         StartCoroutine(CoWaitUse(waitSecondTime));

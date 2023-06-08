@@ -13,7 +13,7 @@ public class VFXBucket : MonoBehaviour {
         VFXObject vfxObject = Instantiate(vfx, transform);
         vfxObject.transform.localScale *= transform.localScale.z;
         HandleNoneStacking(vfxObject);
-        vfxObject.Initialize(vfxObject.durateTime);
+        vfxObject.Initialize();
     }
 
     public void GameObjectInstantiator (GameObject obj){
