@@ -8,45 +8,40 @@ using Newtonsoft.Json.Linq;
 
 //Carrier Modifier은 언제나 자기자신에게 버프를 준다.
 public class Carrier : MonoBehaviour {
-    public bool isMove;
-    //파괴는 무조건 플레이어와 닿았을때, 닿기 전까지는 안됨
-    public List<EntityAffector> projectileEntityAffector;
-    public GameObject destroyEffect = null;
+    public List<EntityAffector> carrierEntityAffector;
+    public VFXObject destroyEffect = null;
 
-    Entity  ownerEntity;
-    Collider projectileCollider = null;
-    Rigidbody projectileRigidBody = null;
-    bool    isInitialized = false;
-    Entity  targetEntity;
+    protected Entity  ownerEntity;
+    protected Entity  targetEntity;
+    protected Collider carrierCollider = null;
+    protected Rigidbody carrierRigidBody = null;
+    protected bool    isInitialized = false;
 
-    private void Awake() {
-        projectileEntityAffector ??= new List<EntityAffector>();
-        TryGetComponent<Collider>(out projectileCollider);
-        TryGetComponent<Rigidbody>(out projectileRigidBody);
+    protected virtual void Awake() {
+        if(carrierEntityAffector == null) {throw new System.Exception("인스펙터에에 아무것도 지정이 안됨");}
+        TryGetComponent<Collider>(out carrierCollider);
+        TryGetComponent<Rigidbody>(out carrierRigidBody);
     }
-    private void OnDestroy() {
-        if(destroyEffect != null) Instantiate(destroyEffect);
+    public virtual void Initialize(Entity _genOwner){
+        if(_genOwner == null) {throw new System.Exception("투사체 생성 엔티티가 NULL임");}
+        this.ownerEntity = _genOwner;
+        transform.localScale *= _genOwner.transform.localScale.x;
+        this.isInitialized = true;
     }
 
+    protected virtual void OnTriggerEnter(Collider other){
+        if(isInitialized == false) {throw new System.Exception("투사체가 초기화 되지 않음");}
+        if(!other.TryGetComponent<Entity>(out targetEntity)){return;}
+        if(ownerEntity.GetEntityData().EntityTag != targetEntity.GetEntityData().EntityTag){return;}
+        foreach(EntityAffector affector in carrierEntityAffector){
+            affector.Init(ownerEntity,targetEntity).Modifiy();
+        }
+    }
     public void DestroySelf(){
         if(destroyEffect != null) Instantiate(destroyEffect);
         Destroy(gameObject);
     }
-
-    public void Initialize(Entity _genOwner){
-        if(_genOwner == null) {throw new System.Exception("투사체 생성 엔티티가 NULL임");}
-        this.ownerEntity = _genOwner;
-        this.isInitialized = true;
-        transform.localScale *= _genOwner.transform.localScale.x;
-    }
-
-    private void OnTriggerEnter(Collider other){
-        if(isInitialized == false) {throw new System.Exception("투사체가 초기화 되지 않음");}
-        if(!other.TryGetComponent<Entity>(out targetEntity)){return;}
-        if(ownerEntity.GetEntityData().EntityTag != targetEntity.GetEntityData().EntityTag){return;}
-        foreach(EntityAffector affector in projectileEntityAffector){
-            affector.Init(targetEntity,targetEntity);
-            affector.Modifiy();
-        }
+    protected virtual void OnDestroy() {
+        if(destroyEffect != null) Instantiate(destroyEffect).Initialize();
     }
 }
