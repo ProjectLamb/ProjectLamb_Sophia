@@ -21,16 +21,12 @@ public class Equipment_024 : AbstractEquipment { //, IPlayerDataApplicant{
     public EntityAffector poisonAffector;
     private UnityAction<Entity, Entity> Projectile;
 
-    public override void InitEquipment(Player _player, int _selectIndex)
+    public override void InitEquipment( int _selectIndex)
     {
         equipmentName = "독개구리";
-        this.EquipState = () => {};
-        this.UnequipState = () => {};
-        this.UpdateState = () => {};
         this.Projectile += (_owner, _target) => {Poison(_owner, _target);};
-        this.player = _player;
         if(_selectIndex == 0){
-            this.equipmentData.ProjectileShootState += Projectile;
+            this.equipmentData.playerData.EntityDatas.ProjectileShootState += Projectile;
         }
     }
 
