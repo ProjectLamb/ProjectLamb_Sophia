@@ -32,29 +32,31 @@ public struct PlayerData
 
     public static PlayerData operator +(PlayerData x, PlayerData y) {
         PlayerData res = new PlayerData();
-        res.EntityDatas = x.EntityDatas + y.EntityDatas;
-        res.MaxStamina = x.MaxStamina + y.MaxStamina;
-        res.StaminaRestoreRatio = x.StaminaRestoreRatio + y.StaminaRestoreRatio;
-        res.Luck = x.Luck + y.Luck;
-        res.Gear = x.Gear + y.Gear;
-        res.Frag = x.Frag + y.Frag;
-        res.SkillState = x.SkillState + y.SkillState;
-        res.InteractState = x.InteractState + y.InteractState;
-        res.UpdateState = x.UpdateState + y.UpdateState;
+        res = x;
+        res.EntityDatas += y.EntityDatas;
+        res.MaxStamina += y.MaxStamina;
+        res.StaminaRestoreRatio += y.StaminaRestoreRatio;
+        res.Luck += y.Luck;
+        res.Gear += y.Gear;
+        res.Frag += y.Frag;
+        res.SkillState += y.SkillState;
+        res.InteractState += y.InteractState;
+        res.UpdateState += y.UpdateState;
         return res;
     }
     public static PlayerData operator -(PlayerData x, PlayerData y)
     {
         PlayerData res = new PlayerData();
-        res.EntityDatas = x.EntityDatas - y.EntityDatas;
-        res.MaxStamina = x.MaxStamina - y.MaxStamina;
-        res.StaminaRestoreRatio = x.StaminaRestoreRatio - y.StaminaRestoreRatio;
-        res.Luck = x.Luck - y.Luck;
-        res.Gear = x.Gear - y.Gear;
-        res.Frag = x.Frag - y.Frag;
-        res.SkillState = x.SkillState - y.SkillState;
-        res.InteractState = x.InteractState - y.InteractState;
-        res.UpdateState = x.UpdateState - y.UpdateState;
+        res = x;
+        res.EntityDatas -= y.EntityDatas;
+        res.MaxStamina -= y.MaxStamina;
+        res.StaminaRestoreRatio -= y.StaminaRestoreRatio;
+        res.Luck -= y.Luck;
+        res.Gear -= y.Gear;
+        res.Frag -= y.Frag;
+        res.SkillState -= y.SkillState;
+        res.InteractState -= y.InteractState;
+        res.UpdateState -= y.UpdateState;
         return res;
     }
     public readonly override string ToString() => $"PlayerEntity {EntityDatas.ToString()} MaxStamina : {MaxStamina}, StaminaRestoreRatio : {StaminaRestoreRatio}, Luck : {Luck}, Gear : {Gear}, Frag : {Frag}";

@@ -11,7 +11,7 @@ public class Equipment_013 : AbstractEquipment { //, IPlayerDataApplicant{
     //public string description;
     //public Sprite sprite;
     //[SerializeField]
-    //public MasterData equipmentData;
+    //public MasterData EquipmentAddingData;
     //protected Player player;
     //public UnityAction EquipState;
     //public UnityAction UnequipState;
@@ -24,7 +24,7 @@ public class Equipment_013 : AbstractEquipment { //, IPlayerDataApplicant{
         equipmentName = "노동자의 망치";
         this.Projectile += (_owner, _target) => {Knockback(_owner, _target);};   
         if(_selectIndex == 0){
-            this.equipmentData.playerData.EntityDatas.ProjectileShootState += Projectile;
+            this.EquipmentData.playerData.EntityDatas.ProjectileShootState += Projectile;
         }
     }
 

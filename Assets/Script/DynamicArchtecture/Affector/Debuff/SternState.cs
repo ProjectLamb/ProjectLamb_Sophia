@@ -40,16 +40,17 @@ public class SternState : EntityAffector{
     }
 
     IEnumerator SetStern(){
-        float originMoveSpeed = this.targetEntity.GetEntityData().MoveSpeed;
-        float tenacity =this.targetEntity.GetEntityData().Tenacity;
+        float originMoveSpeed = this.targetEntity.GetOriginData().MoveSpeed;
+        float tenacity =this.targetEntity.GetFinalData().Tenacity;
+        
         float sternDurateTime = durationTime * (1 - tenacity);
-        this.targetEntity.GetEntityData().MoveSpeed = 0;
+        this.targetEntity.GetFinalData().MoveSpeed = 0;
         yield return YieldInstructionCache.WaitForSeconds(sternDurateTime);
-        this.targetEntity.GetEntityData().MoveSpeed = originMoveSpeed;
+        this.targetEntity.GetFinalData().MoveSpeed = originMoveSpeed;
     }
     
     IEnumerator VisualActivate(){
-        float tenacity = this.targetEntity.GetEntityData().Tenacity;
+        float tenacity = this.targetEntity.GetFinalData().Tenacity;
         float visualDurateTime = durationTime * (1 - tenacity);
         this.targetEntity.visualModulator.InteractByMaterial(skin);
         this.targetEntity.visualModulator.InteractByVFX(vfx);

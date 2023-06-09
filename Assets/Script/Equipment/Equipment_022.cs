@@ -12,7 +12,7 @@ public class Equipment_022 : AbstractEquipment { //, IPlayerDataApplicant{
     //public string description;
     //public Sprite sprite;
     //[SerializeField]
-    //public MasterData equipmentData;
+    //public MasterData EquipmentAddingData;
     //protected Player player;
     //public UnityAction EquipState;
     //public UnityAction UnequipState;
@@ -27,7 +27,7 @@ public class Equipment_022 : AbstractEquipment { //, IPlayerDataApplicant{
         equipmentName = "얼어붙은 투구";
         this.Projectile += (_owner, _target) => {Freeze(_owner, _target);};
         if(_selectIndex == 0){
-            this.equipmentData.playerData.EntityDatas.ProjectileShootState += Projectile;
+            this.EquipmentData.playerData.EntityDatas.ProjectileShootState += Projectile;
         }
     }
 
