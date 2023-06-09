@@ -15,18 +15,13 @@ public class HealthBar : MonoBehaviour
         ownerEntity = GetComponentInParent<Entity>();
         fill.color = gradient.Evaluate(1f);
     }
-
-    private void Start(){
-        ownerEntity.GetEntityData().UIAffectState += SetSlider;
-        //addingData = entityAddressable.GetAddingData();
-    }
-
+    
     private void Update() {
         SetSlider();
     }
 
     public void SetSlider(){
-        slider.value = (((float)ownerEntity.CurrentHealth / (float)ownerEntity.GetEntityData().MaxHP) * slider.maxValue);
+        slider.value = (((float)ownerEntity.CurrentHealth / (float)ownerEntity.GetFinalData().MaxHP) * slider.maxValue);
         fill.color = gradient.Evaluate(slider.normalizedValue);
         //slider.value = ((float)sandbag.sandbagData.CurHP / sandbag.sandbagData.MaxHP) * slider.maxValue;
     }

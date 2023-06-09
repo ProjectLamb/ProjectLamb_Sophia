@@ -14,8 +14,8 @@ public class Enemy_Template : Enemy
 {    
     // public EnemyData enemyData;
     // public EntityData GetEntityData() {return this.enemyData;}
-    // public AddingData addingData;
-    // public AddingData GetAddingData(){return this.addingData;}
+    // public EquipmentAddingData EquipmentAddingData;
+    // public EquipmentAddingData GetEquipmentAddingData(){return this.EquipmentAddingData;}
     // public GameObject model;
     // public Rigidbody entityRigidbody;
     // public Collider entityCollider;
@@ -46,7 +46,7 @@ public class Enemy_Template : Enemy
         model.TryGetComponent<Animator>(out animator);
         model.TryGetComponent<AnimEventInvoker>(out animEventInvoker);
 
-        addingData = new AddingData();
+        EquipmentAddingData = new EquipmentAddingData();
         enemyData.DieParticle.GetComponent<ParticleCallback>().onDestroyEvent.AddListener(DestroySelf);
 
         chase = false;
@@ -70,7 +70,7 @@ public class Enemy_Template : Enemy
         if(GameManager.Instance?.globalEvent.IsGamePaused == true){return;}
         if (chase) { nav.enabled = true;}
         else {nav.enabled = false;}
-        nav.speed = (enemyData.MoveSpeed + addingData.MoveSpeed);
+        nav.speed = (enemyData.MoveSpeed + EquipmentAddingData.MoveSpeed);
     }
 
     protected override void OnDestroy() {

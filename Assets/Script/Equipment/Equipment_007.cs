@@ -10,7 +10,7 @@ public class Equipment_007 : AbstractEquipment { //, IPlayerDataApplicant{
     //public string description;
     //public Sprite sprite;
     //[SerializeField]
-    //public MasterData equipmentData;
+    //public MasterData EquipmentAddingData;
     //protected Player player;
     //public UnityAction EquipState;
     //public UnityAction UnequipState;
@@ -21,8 +21,8 @@ public class Equipment_007 : AbstractEquipment { //, IPlayerDataApplicant{
     {
         equipmentName = "유통기한 지난 전투 식량";
         if(_selectIndex == 0) {
-            this.equipmentData.playerData.EntityDatas.MaxHP -= 10;
-            this.equipmentData.playerData.EntityDatas.Tenacity += 0.5f;
+            this.EquipmentData.playerData.EntityDatas.MaxHP -= 10;
+            this.EquipmentData.playerData.EntityDatas.Tenacity += 0.5f;
         }
         this.mIsInitialized = true;
     }

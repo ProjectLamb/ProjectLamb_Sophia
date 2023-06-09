@@ -15,9 +15,15 @@ public class Sandbag : Entity
     
     [SerializeField]
     public ScriptableObjEnemyData ScriptableED;
-    public EntityData enemyData;
-    public override ref EntityData GetEntityData() {return ref this.enemyData;}
+    private EntityData BaseEnemyData;
+    private EntityData FinalData;
+    public override ref EntityData GetFinalData() {    return ref this.FinalData;}
+    public override     EntityData GetOriginData() {return this.BaseEnemyData;}
     
+    public override void ResetData(){
+        FinalData = BaseEnemyData;
+    }
+
     public Transform objectiveTarget;
 
     public bool IsDie;
@@ -41,11 +47,13 @@ public class Sandbag : Entity
         //TryGetComponent<VisualModulator>(out visualModulator);
         //model ??= transform.GetChild(0).Find("modle").gameObject;
         base.Awake();
-        enemyData = new EntityData(ScriptableED);
-        CurrentHealth = enemyData.MaxHP;
         model.TryGetComponent<Animator>(out this.animator);
         model.TryGetComponent<AnimEventInvoker>(out this.animEventInvoker);
-        
+
+        BaseEnemyData = new EntityData(ScriptableED);
+        FinalData = BaseEnemyData;
+        CurrentHealth = FinalData.MaxHP;
+
         this.objectiveTarget = GameManager.Instance.playerGameObject.transform;
     }
     private void Start() {
@@ -55,12 +63,12 @@ public class Sandbag : Entity
         animEventInvoker.animCallback[(int)E_AnimState.Jump].AddListener(() => {
             projectileBucket.ProjectileInstantiator(this, projectiles[1]);
         });
-        this.enemyData.HitStateRef = (ref int amount) => {imageGenerator.GenerateImage(amount);};
+        this.FinalData.HitStateRef = (ref int amount) => {imageGenerator.GenerateImage(amount);};
     }
 
     public override void GetDamaged(int _amount){
         if(IsDie == true) {return;}
-        enemyData.HitStateRef.Invoke(ref _amount);
+        FinalData.HitStateRef.Invoke(ref _amount);
         CurrentHealth -= _amount;
         animator.SetTrigger("DoHit");
         if (CurrentHealth <= 0) {Die();}
@@ -68,7 +76,7 @@ public class Sandbag : Entity
 
     public override void GetDamaged(int _amount, VFXObject _vfx){
         if(IsDie == true) {return;}
-        enemyData.HitStateRef.Invoke(ref _amount);
+        FinalData.HitStateRef.Invoke(ref _amount);
         CurrentHealth -= _amount;
         visualModulator.InteractByVFX(_vfx);
         animator.SetTrigger("DoHit");
@@ -76,7 +84,7 @@ public class Sandbag : Entity
     }
 
     public override void Die(){ 
-        enemyData.DieState.Invoke();
+        FinalData.DieState.Invoke();
         IsDie = true;
         this.entityCollider.enabled = false;
         animator.SetTrigger("DoDie");

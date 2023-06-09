@@ -11,7 +11,7 @@ public class Equipment_010 : AbstractEquipment { //, IPlayerDataApplicant{
     //public string description;
     //public Sprite sprite;
     //[SerializeField]
-    //public MasterData equipmentData;
+    //public MasterData EquipmentAddingData;
     //protected Player player;
     //public UnityAction EquipState;
     //public UnityAction UnequipState;
@@ -24,8 +24,9 @@ public class Equipment_010 : AbstractEquipment { //, IPlayerDataApplicant{
         equipmentName = "슉슈슉..";
         this.AttackState += () => {ChargeAttack();};
         if(_selectIndex == 0){
-            this.equipmentData.playerData.EntityDatas.AttackSpeed += PlayerDataManager.BasePlayerData.EntityDatas.AttackSpeed * 0.2f;
-            this.equipmentData.playerData.EntityDatas.AttackState += AttackState;
+            EntityData readedEntityData = PlayerDataManager.BasePlayerData.EntityDatas;
+            this.EquipmentData.playerData.EntityDatas.AttackSpeed += readedEntityData.AttackSpeed * 0.2f;
+            this.EquipmentData.playerData.EntityDatas.AttackState += AttackState;
         }
         this.mIsInitialized = true;
     }

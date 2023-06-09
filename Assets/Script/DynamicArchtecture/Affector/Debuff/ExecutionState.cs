@@ -46,7 +46,7 @@ public class ExecutionState : EntityAffector{
     }
     
     IEnumerator VisualActivate(){
-        float tenacity = this.targetEntity.GetEntityData().Tenacity;
+        float tenacity = this.targetEntity.GetFinalData().Tenacity;
         float visualDurateTime = durationTime * (1 - tenacity);
 
         this.targetEntity.visualModulator.InteractByMaterial(skin);

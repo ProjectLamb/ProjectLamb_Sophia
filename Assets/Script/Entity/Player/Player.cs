@@ -28,15 +28,22 @@ public class Player : Entity {
             if(mCurrentStamina < 0) {mCurrentStamina = 0;}
         }
     }
-    public override ref EntityData GetEntityData(){
+    public override ref EntityData GetFinalData(){
         return ref PlayerDataManager.GetEntityData();
+    }
+    public override     EntityData GetOriginData(){
+        return PlayerDataManager.GetOriginData().playerData.EntityDatas;
+    }
+
+    public override void ResetData(){
+        PlayerDataManager.ResetFinal();
     }
     
     [SerializeField]
     public Weapon weapon;
 
     [SerializeField]
-    public Skill[] skills;
+    //public Skill[] skills;
     public EquipmentManager equipmentManager;
     public LayerMask groundMask;                  // 바닥을 인식하는 마스크
     public ImageGenerator imageGenerator;
@@ -65,6 +72,7 @@ public class Player : Entity {
         base.Awake();
         //CurrentHealth = 마스터 데이터
     }
+
     private void Start() {
         CurrentHealth = PlayerDataManager.GetEntityData().MaxHP;//FinalPlayerData.PlayerEntityData.MaxHP;
         CurrentStamina = PlayerDataManager.GetPlayerData().MaxStamina;//FinalPlayerData.PlayerEntityData.MaxHP;
@@ -122,9 +130,9 @@ public class Player : Entity {
     {
         IEnumerator CoWaitDash()
         {
-            float recoveryTime = 3f - (3f * (PlayerDataManager.GetAddingData().playerData.StaminaRestoreRatio / 100));
+            float recoveryTime = 3f - (3f * (PlayerDataManager.GetPlayerData().StaminaRestoreRatio / 100));
             mIsDashed = true;
-            while (CurrentStamina < PlayerDataManager.GetAddingData().playerData.MaxStamina)
+            while (CurrentStamina < PlayerDataManager.GetPlayerData().MaxStamina)
             {
                 yield return YieldInstructionCache.WaitForSeconds(recoveryTime);
                 CurrentStamina++;
@@ -163,13 +171,13 @@ public class Player : Entity {
         Turning(() => { weapon?.Use(PlayerDataManager.GetEntityData().Power); });
     }
     
-    public void Skill(string key)
-    {
-        if(skills[(int)E_SkillKey.Q]) {
-            //this.FinalPlayerData.SkillState.Invoke();
-            //Turning(() => skills[(int)E_SkillKey.Q].Use(this.FinalPlayerData.Power));
-        }
-    }
+    // public void Skill(string key)
+    // {
+    //     if(skills[(int)E_SkillKey.Q]) {
+    //         //this.FinalPlayerData.SkillState.Invoke();
+    //         //Turning(() => skills[(int)E_SkillKey.Q].Use(this.FinalPlayerData.Power));
+    //     }
+    // }
 
     void Turning(UnityAction action)
     {

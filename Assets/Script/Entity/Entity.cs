@@ -9,7 +9,7 @@ using UnityEngine.Events;
 using Component = UnityEngine.Component;
 using Random = UnityEngine.Random;
 
-public abstract class Entity : MonoBehaviour, IEntityAddressable{
+public abstract class Entity : MonoBehaviour, IEntityAddressable {
     public Collider         entityCollider;
     public Rigidbody        entityRigidbody;
     public GameObject       model;
@@ -31,7 +31,9 @@ public abstract class Entity : MonoBehaviour, IEntityAddressable{
         model ??= transform.GetChild(0).Find("modle").gameObject;
         affectorStacks = new Dictionary<E_StateType, AffectorStruct>();
     }
-    public abstract ref EntityData GetEntityData();
+    public abstract ref EntityData GetFinalData();
+    public abstract     EntityData GetOriginData();
+    public abstract void ResetData();
     public abstract void GetDamaged(int _amount);
     public abstract void GetDamaged(int _amount, VFXObject _vfx);
     public abstract void Die();
