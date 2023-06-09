@@ -34,7 +34,7 @@
 > ## 2. 💿 특징
 1. 데이터의 총 결과물이 담겨 있다. 데이터 수정은 오직 이녀석이 주도한다. 이녀석을 거치지 않고 데이터를 직접 수정하는 일은 없어야 한다.
 2. 이녀석을 구성하는 컴포지트들은 모두 Readonly로 해야된다.
-3. 정적 : (PlayerData + EquipmentData)  * 동적 : (Base를 기준으로 합산buffQueue)
+3. 정적 : (PlayerData + EquipmentAddingData)  * 동적 : (Base를 기준으로 합산buffQueue)
 4. 이놈이 모두다 뿌려줄 능력이 된다. Static으로 하게 된다면 어떨까?
 
 ---

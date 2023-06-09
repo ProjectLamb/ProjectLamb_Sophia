@@ -11,7 +11,7 @@ public class Equipment_030 : AbstractEquipment { //, IPlayerDataApplicant{
     //public string description;
     //public Sprite sprite;
     //[SerializeField]
-    //public MasterData equipmentData;
+    //public MasterData EquipmentAddingData;
     //protected Player player;
     //public UnityAction EquipState;
     //public UnityAction UnequipState;
@@ -25,7 +25,7 @@ public class Equipment_030 : AbstractEquipment { //, IPlayerDataApplicant{
 
         this.Projectile += (Entity _owner, Entity _target) => {Execution(_owner, _target);};
         if(_selectIndex == 0){
-            this.equipmentData.playerData.EntityDatas.ProjectileShootState += Projectile;
+            this.EquipmentData.playerData.EntityDatas.ProjectileShootState += Projectile;
         }
         this.mIsInitialized = true;
     }

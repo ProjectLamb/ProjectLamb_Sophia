@@ -11,7 +11,7 @@ public class Equipment_009 : AbstractEquipment { //, IPlayerDataApplicant{
     //public string description;
     //public Sprite sprite;
     //[SerializeField]
-    //public MasterData equipmentData;
+    //public MasterData EquipmentAddingData;
     //protected Player player;
     //public UnityAction EquipState;
     //public UnityAction UnequipState;
@@ -25,7 +25,7 @@ public class Equipment_009 : AbstractEquipment { //, IPlayerDataApplicant{
         equipmentName = "조명탄";
         HitState += (ref int _amount) => {Dodged(ref _amount);};
         if(_selectIndex == 0) {
-            this.equipmentData.playerData.EntityDatas.HitStateRef += HitState;
+            this.EquipmentData.playerData.EntityDatas.HitStateRef += HitState;
         }
         this.mIsInitialized = true;
     }

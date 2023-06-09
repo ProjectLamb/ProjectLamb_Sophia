@@ -9,7 +9,7 @@ public class Equipment_017 : AbstractEquipment {
     //public string description;
     //public Sprite sprite;
     //[SerializeField]
-    //public MasterData equipmentData;
+    //public MasterData EquipmentAddingData;
     //protected Player player;
     //public UnityAction EquipState;
     //public UnityAction UnequipState;
@@ -21,7 +21,7 @@ public class Equipment_017 : AbstractEquipment {
         equipmentName = "백호인형";
 
         if(_selectIndex == 0) {
-            this.equipmentData.playerData.StaminaRestoreRatio += 10;
+            this.EquipmentData.playerData.StaminaRestoreRatio += 10;
         }
         this.mIsInitialized = true;
     }

@@ -9,7 +9,7 @@ public class Equipment_018 : AbstractEquipment {
     //public string description;
     //public Sprite sprite;
     //[SerializeField]
-    //public MasterData equipmentData;
+    //public MasterData EquipmentAddingData;
     //protected Player player;
     //public UnityAction EquipState;
     //public UnityAction UnequipState;
@@ -21,7 +21,7 @@ public class Equipment_018 : AbstractEquipment {
         equipmentName = "만화책";
 
         if(_selectIndex == 0) {
-            this.equipmentData.playerData.MaxStamina += 1;
+            this.EquipmentData.playerData.MaxStamina += 1;
         }
         this.mIsInitialized = true;
     }

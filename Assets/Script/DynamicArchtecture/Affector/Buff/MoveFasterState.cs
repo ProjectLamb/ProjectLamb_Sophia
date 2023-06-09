@@ -39,14 +39,14 @@ public class MoveFasterState : EntityAffector {
     }
 
     IEnumerator Boost(){
-        originMoveSpeed = this.ownerEntity.GetEntityData().MoveSpeed;
-        this.ownerEntity.GetEntityData().MoveSpeed *= 1.2f; 
+        originMoveSpeed = this.ownerEntity.GetOriginData().MoveSpeed;
+        this.ownerEntity.GetFinalData().MoveSpeed *= 1.2f; 
         yield return YieldInstructionCache.WaitForSeconds(durationTime);
-        this.ownerEntity.GetEntityData().MoveSpeed = originMoveSpeed;
+        this.ownerEntity.GetFinalData().MoveSpeed = originMoveSpeed;
     }
 
     IEnumerator VisualActivate(){
-        float tenacity = this.targetEntity.GetEntityData().Tenacity;
+        float tenacity = this.targetEntity.GetFinalData().Tenacity;
         float visualDurateTime = durationTime * (1 - tenacity);
 
         this.targetEntity.visualModulator.InteractByMaterial(skin);

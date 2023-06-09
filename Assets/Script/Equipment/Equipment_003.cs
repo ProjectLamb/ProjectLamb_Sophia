@@ -11,7 +11,7 @@ public class Equipment_003 : AbstractEquipment { //, IPlayerDataApplicant{
     //public string description;
     //public Sprite sprite;
     //[SerializeField]
-    //public MasterData equipmentData;
+    //public MasterData EquipmentAddingData;
     //protected Player player;
     //public UnityAction EquipState;
     //public UnityAction UnequipState;
@@ -22,8 +22,9 @@ public class Equipment_003 : AbstractEquipment { //, IPlayerDataApplicant{
     {
         equipmentName = "뒤집어진 양말";
         if(_selectIndex == 0) {
-            this.equipmentData.playerData.EntityDatas.Power -= (int)(PlayerDataManager.BasePlayerData.EntityDatas.Power * 0.1f);
-            this.equipmentData.playerData.EntityDatas.MaxHP += 15;
+            EntityData readedEntityData = PlayerDataManager.BasePlayerData.EntityDatas;
+            this.EquipmentData.playerData.EntityDatas.Power -= (int)(readedEntityData.Power * 0.1f);
+            this.EquipmentData.playerData.EntityDatas.MaxHP += 15;
         }
         this.mIsInitialized = true;
     }

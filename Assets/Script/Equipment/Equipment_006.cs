@@ -10,7 +10,7 @@ public class Equipment_006 : AbstractEquipment { //, IPlayerDataApplicant{
     //public string description;
     //public Sprite sprite;
     //[SerializeField]
-    //public MasterData equipmentData;
+    //public MasterData EquipmentAddingData;
     //protected Player player;
     //public UnityAction EquipState;
     //public UnityAction UnequipState;
@@ -21,8 +21,9 @@ public class Equipment_006 : AbstractEquipment { //, IPlayerDataApplicant{
     {
         equipmentName = "반쯤남은위장크림";
         if(_selectIndex == 0){
-            this.equipmentData.playerData.EntityDatas.MoveSpeed   += PlayerDataManager.BasePlayerData.EntityDatas.MoveSpeed * 0.1f;
-            this.equipmentData.playerData.EntityDatas.AttackSpeed += PlayerDataManager.BasePlayerData.EntityDatas.AttackSpeed * 0.05f;
+            EntityData readedEntityData = PlayerDataManager.BasePlayerData.EntityDatas;
+            this.EquipmentData.playerData.EntityDatas.MoveSpeed   += readedEntityData.MoveSpeed * 0.1f;
+            this.EquipmentData.playerData.EntityDatas.AttackSpeed += readedEntityData.AttackSpeed * 0.05f;
         }
         this.mIsInitialized = true;
     }

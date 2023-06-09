@@ -46,7 +46,9 @@ public interface IEntityAddressable : IDamagable, IDieAble, IAffectable, IEntity
 }
 
 public interface IEntityDataAddressable {
-    public ref EntityData GetEntityData();
+    public ref  EntityData GetFinalData();
+    public EntityData GetOriginData();
+    public void ResetData();
 }
 
 public interface IVisuallyInteractable {

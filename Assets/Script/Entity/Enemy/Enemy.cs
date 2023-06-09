@@ -19,9 +19,15 @@ public class Enemy : Entity
     
     [field : SerializeField]
     public ScriptableObjEnemyData ScriptableED;
-    private EntityData enemyData;
+    private EntityData BaseEnemyData;
+    private EntityData FinalData;
 
-    public override ref EntityData GetEntityData(){ return ref this.enemyData; }
+    public override void ResetData(){
+        FinalData = BaseEnemyData;
+    }
+
+    public override ref EntityData GetFinalData (){ return ref this.FinalData; }
+    public override     EntityData GetOriginData(){ return this.BaseEnemyData; }
 
     public UnityEngine.AI.NavMeshAgent nav;
     public Transform objectiveTarget;
@@ -38,7 +44,7 @@ public class Enemy : Entity
 
     public override void Die()
     {
-        enemyData.DieState.Invoke();
+        FinalData.DieState.Invoke();
         isDie = true;
         chase = false;
         entityRigidbody.velocity = Vector3.zero;
@@ -47,14 +53,14 @@ public class Enemy : Entity
 
     public override void GetDamaged(int _amount){
         if(isDie == true) {return;}
-        enemyData.HitStateRef.Invoke(ref _amount);
+        FinalData.HitStateRef.Invoke(ref _amount);
         imageGenerator.GenerateImage(_amount);
         CurrentHealth -= _amount;
         if (CurrentHealth <= 0) {this.Die();}
     }
     public override void GetDamaged(int _amount, VFXObject _vfx){
         if(isDie == true) {return;}
-        enemyData.HitStateRef.Invoke(ref _amount);
+        FinalData.HitStateRef.Invoke(ref _amount);
         imageGenerator.GenerateImage(_amount);
         CurrentHealth -= _amount;
         visualModulator.InteractByVFX(_vfx);
@@ -72,8 +78,6 @@ public class Enemy : Entity
         //TryGetComponent<Rigidbody>(out entityRigidbody);
         //TryGetComponent<Collider>(out entityCollider);
         base.Awake();
-        enemyData = new EntityData(ScriptableED);
-        CurrentHealth = enemyData.MaxHP;
 
         TryGetComponent<UnityEngine.AI.NavMeshAgent>(out nav);
         
@@ -81,7 +85,12 @@ public class Enemy : Entity
         this.model.TryGetComponent<AnimEventInvoker>(out animEventInvoker);
 
         DieParticle.GetComponent<VFXObject>().onDestroyEvent.AddListener(DestroySelf);
-        enemyData.DieState += GameManager.Instance.globalEvent.EnemyDie;
+        
+        BaseEnemyData = new EntityData(ScriptableED);
+        FinalData = BaseEnemyData;
+        CurrentHealth = FinalData.MaxHP;
+        
+        FinalData.DieState += GameManager.Instance.globalEvent.EnemyDie;
 
         chase = false;
         objectiveTarget = GameManager.Instance?.playerGameObject?.transform;
@@ -89,7 +98,7 @@ public class Enemy : Entity
     }
 
     private void Start() {
-        nav.speed = this.enemyData.MoveSpeed;
+        nav.speed = FinalData.MoveSpeed;
     }
 
     private void FixedUpdate()
@@ -109,6 +118,6 @@ public class Enemy : Entity
         /***************************/
         if (chase) { nav.enabled = true;}
         else {nav.enabled = false;}
-        nav.speed = this.enemyData.MoveSpeed;
+        nav.speed = FinalData.MoveSpeed;
     }
 }
