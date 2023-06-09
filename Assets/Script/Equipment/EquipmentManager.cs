@@ -21,15 +21,15 @@ public class EquipmentManager : MonoBehaviour{
     /// </summary>
     /// 
     /*
-    [ContextMenu("CalculateAddingData")]
-    public void CalculateAddingData(){
-        AddingData.Clear();
+    [ContextMenu("CalculateEquipmentAddingData")]
+    public void CalculateEquipmentAddingData(){
+        EquipmentAddingData.Clear();
         foreach(AbstractEquipment E in equipments){
-            AddingData += E.equipmentData;
+            EquipmentAddingData += E.EquipmentAddingData;
         }
         
-        AddingData.PipeToPlayer(ref pdTmp);
-        AddingData.PipeToWeapon(ref wdTmp);
+        EquipmentAddingData.PipeToPlayer(ref pdTmp);
+        EquipmentAddingData.PipeToWeapon(ref wdTmp);
 
         player.playerData = player.BasePlayerData + pdTmp;
         player.playerData.EntityTag = "Player";
@@ -41,12 +41,12 @@ public class EquipmentManager : MonoBehaviour{
         equipment.InitEquipment(0);
         equipments.Add(equipment);
         OnChangeEvent.Invoke();
-        //CalculateAddingData();
+        //CalculateEquipmentAddingData();
     }
 
     public void Unequip(AbstractEquipment equipment){
         equipments.Remove(equipment);
         OnChangeEvent.Invoke();
-        //CalculateAddingData();
+        //CalculateEquipmentAddingData();
     }
 }

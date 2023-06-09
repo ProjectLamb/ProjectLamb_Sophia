@@ -36,25 +36,28 @@ public struct WeaponData
     public static WeaponData operator +(WeaponData x, WeaponData y)
     {
         WeaponData res = new WeaponData();
-        res.DamageRatio = x.DamageRatio + y.DamageRatio;
-        res.WeaponDelay = x.WeaponDelay + y.WeaponDelay;
-        res.Range = x.Range + y.Range;
-
-        res.WeaponUseState = x.WeaponUseState + y.WeaponUseState;
-        res.WeaponChangeState = x.WeaponChangeState + y.WeaponChangeState;
-        res.WeaponReLoadState = x.WeaponReLoadState + y.WeaponReLoadState;
+        res = x;
+        res.DamageRatio += y.DamageRatio;
+        res.WeaponDelay += y.WeaponDelay;
+        res.Range += y.Range;
+        res.WeaponUseState += y.WeaponUseState;
+        res.WeaponChangeState += y.WeaponChangeState;
+        res.WeaponReLoadState += y.WeaponReLoadState;
         return res;
     }
     public static WeaponData operator -(WeaponData x, WeaponData y)
     {
         WeaponData res = new WeaponData();
-        res.DamageRatio = x.DamageRatio - y.DamageRatio;
-        res.WeaponDelay = x.WeaponDelay - y.WeaponDelay;
-        res.Range = x.Range - y.Range;
-
-        res.WeaponUseState = x.WeaponUseState - y.WeaponUseState;
-        res.WeaponChangeState = x.WeaponChangeState - y.WeaponChangeState;
-        res.WeaponReLoadState = x.WeaponReLoadState - y.WeaponReLoadState;
+        res = x;
+        res.DamageRatio -= y.DamageRatio;
+        res.WeaponDelay -= y.WeaponDelay;
+        res.Range -= y.Range;
+        res.WeaponUseState -= y.WeaponUseState;
+        res.WeaponChangeState -= y.WeaponChangeState;
+        res.WeaponReLoadState -= y.WeaponReLoadState;
         return res;
+    }
+    public readonly override string ToString() {
+        return $"DamageRatio : {DamageRatio}, WeaponDelay : {WeaponDelay}, Range : {Range}, Ammo : {Ammo}\n";
     }
 }

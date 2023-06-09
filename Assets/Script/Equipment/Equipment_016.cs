@@ -9,7 +9,7 @@ public class Equipment_016 : AbstractEquipment {
     //public string description;
     //public Sprite sprite;
     //[SerializeField]
-    //public MasterData equipmentData;
+    //public MasterData EquipmentAddingData;
     //protected Player player;
     //public UnityAction EquipState;
     //public UnityAction UnequipState;

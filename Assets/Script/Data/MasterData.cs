@@ -22,29 +22,30 @@ public class MasterData
 
     public static MasterData operator +(MasterData x, MasterData y){
         MasterData res = new MasterData();
-        res.playerData = x.playerData + y.playerData;
-        res.weaponData = x.weaponData + y.weaponData;
+        res = x;
+        res.playerData += y.playerData;
+        res.weaponData += y.weaponData;
         return res;
     }
 
     public static MasterData operator +(MasterData x, PlayerData y){
         MasterData res = new MasterData();
         res = x;
-        res.playerData = x.playerData + y;
+        res.playerData += y;
         return res;
     }
 
     public static MasterData operator +(MasterData x, WeaponData y){
         MasterData res = new MasterData();
         res = x;
-        res.weaponData = x.weaponData + y;
+        res.weaponData += y;
         return res;
     }
 
     public override string ToString()
     {
         string PlayerString = $"PlayerEntityData {playerData.EntityDatas.ToString()}, Luck : {playerData.Luck}, Gear : {playerData.Gear}, Frag : {playerData.Frag} \n";
-        string WeaponString = $"DamageRatio : {weaponData.DamageRatio}, WeaponDelay : {weaponData.WeaponDelay}, Range : {weaponData.Range}, Range : {weaponData.Ammo}\n";
+        string WeaponString = $"DamageRatio : {weaponData.DamageRatio}, WeaponDelay : {weaponData.WeaponDelay}, Range : {weaponData.Range}, Ammo : {weaponData.Ammo}\n";
 
         string SkillString = "";
         /*

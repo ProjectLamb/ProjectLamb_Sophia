@@ -37,17 +37,17 @@ public class PoisonState : EntityAffector {
 
     IEnumerator DotDamage(){
         float passedTime = 0;
-        float tenacity =this.targetEntity.GetEntityData().Tenacity;
+        float tenacity =this.targetEntity.GetFinalData().Tenacity;
         float dotDamageDurateTime = durationTime * (1 - tenacity);
         while(dotDamageDurateTime > passedTime){
             passedTime += 0.5f;
-            this.targetEntity.GetDamaged((int)(this.ownerEntity.GetEntityData().Power * 0.25f) + 1);
+            this.targetEntity.GetDamaged((int)(this.ownerEntity.GetFinalData().Power * 0.25f) + 1);
             yield return YieldInstructionCache.WaitForSeconds(0.5f);
         }
     }
 
     IEnumerator VisualActivate(){
-        float tenacity =this.targetEntity.GetEntityData().Tenacity;
+        float tenacity =this.targetEntity.GetFinalData().Tenacity;
         float visualDurateTime = durationTime * (1 - tenacity);
         this.targetEntity.visualModulator.InteractByMaterial(skin);
         this.targetEntity.visualModulator.InteractByVFX(vfx);

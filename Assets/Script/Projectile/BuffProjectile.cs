@@ -22,7 +22,7 @@ public class BuffProjectile : Carrier {
     protected override void OnTriggerEnter(Collider _other){
         if(isInitialized == false) {throw new System.Exception("투사체가 초기화 되지 않음");}
         if(!_other.TryGetComponent<Entity>(out targetEntity)){return;}
-        if(ownerEntity.GetEntityData().EntityTag != targetEntity.GetEntityData().EntityTag){return;}
+        if(ownerEntity.GetFinalData().EntityTag != targetEntity.GetFinalData().EntityTag){return;}
         foreach(EntityAffector affector in carrierEntityAffector){
             affector.Init(ownerEntity, targetEntity).Modifiy();
         }
