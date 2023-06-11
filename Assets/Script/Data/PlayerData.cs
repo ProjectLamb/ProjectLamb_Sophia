@@ -6,7 +6,7 @@ public struct PlayerData
 {
     //public int CurStamina; 이 EntityData를 포함하는 컴포넌트그 스코프 내에서 따로 정의한다. 오직 이 데이터
     //int CurHP; 이 EntityData를 포함하는 컴포넌트그 스코프 내에서 따로 정의한다. 오직 이 데이터
-    public EntityData EntityDatas;
+    [SerializeField] public EntityData EntityDatas;
     public int MaxStamina;
     public float StaminaRestoreRatio;
     public int Luck;

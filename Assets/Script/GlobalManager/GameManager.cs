@@ -22,9 +22,9 @@ public class GameManager : MonoBehaviour
         }
     }
     
-    [HideInInspector]
+
     public GlobalEvent globalEvent;
-    [HideInInspector]
+
     public GlobalAudio globalAudio;
     public GameObject playerGameObject;
     public GameObject ChapterGenerator;

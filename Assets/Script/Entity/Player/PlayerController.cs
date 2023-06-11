@@ -22,12 +22,11 @@ public class PlayerController : MonoBehaviour
         if(IsMoveAllow){ 
             player.Move(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
             if(Input.GetKeyDown(KeyCode.Space)){player.Dash();}
-            player.anim.SetFloat("Move", player.entityRigidbody.velocity.magnitude);
         }
         if(IsAttackAllow){
-            //if(Input.GetKeyDown(KeyCode.Q)){player.Skill("Q");}
-            //if(Input.GetKeyDown(KeyCode.E)){player.Skill("E");}
-            //if(Input.GetKeyDown(KeyCode.R)){player.Skill("R");}
+            if(Input.GetKeyDown(KeyCode.Q)){player.Skill("Q");}
+            if(Input.GetKeyDown(KeyCode.E)){player.Skill("E");}
+            if(Input.GetKeyDown(KeyCode.R)){player.Skill("R");}
             if(Input.GetMouseButtonDown(0)){player.Attack();}
         }
     }

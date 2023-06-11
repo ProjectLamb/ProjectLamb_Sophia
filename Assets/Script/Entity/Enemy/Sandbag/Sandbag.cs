@@ -58,10 +58,10 @@ public class Sandbag : Entity
     }
     private void Start() {
         animEventInvoker.animCallback[(int)E_AnimState.Attack].AddListener( () => {
-            projectileBucket.ProjectileInstantiator(this, projectiles[0]);
+            projectileBucket.ProjectileInstantiatorByDamage(this, projectiles[0], FinalData.Power * 1);
         });
         animEventInvoker.animCallback[(int)E_AnimState.Jump].AddListener(() => {
-            projectileBucket.ProjectileInstantiator(this, projectiles[1]);
+            projectileBucket.ProjectileInstantiatorByDamage(this, projectiles[1], FinalData.Power * 2);
         });
         this.FinalData.HitStateRef = (ref int amount) => {imageGenerator.GenerateImage(amount);};
     }

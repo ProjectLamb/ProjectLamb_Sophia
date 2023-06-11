@@ -15,20 +15,23 @@ public class Equipment_016 : AbstractEquipment {
     //public UnityAction UnequipState;
     //public UnityAction UpdateState;
     //public bool mIsInitialized = false;
-    public EntityAffector fasterAffector;
+    public MoveFasterState fasterAffector;
     private UnityAction EnemyDie;
+    public Player player;
+    private void Awake() {
+        player = GameManager.Instance.playerGameObject.GetComponent<Player>();
+    }
 
     public override void InitEquipment( int _selectIndex)
     {
         equipmentName = "조잡한 황금뱃지";
-        this.EnemyDie += () => {Faster();};
-        if(_selectIndex == 0) {
-            GameManager.Instance.globalEvent.OnEnemyDieEvent.AddListener(this.EnemyDie);
-        }
+        EnemyDie += () => {Faster();};
+        GameManager.Instance.globalEvent.OnEnemyDieEvent.Add(EnemyDie);
+
         this.mIsInitialized = true;
     }
 
     public void Faster() {
-        //fasterAffector.Init(this.player, this.player).Modifiy();
+        fasterAffector.Init(this.player, this.player).Modifiy();
     }
 }

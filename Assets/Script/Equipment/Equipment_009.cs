@@ -19,7 +19,11 @@ public class Equipment_009 : AbstractEquipment { //, IPlayerDataApplicant{
     //public bool mIsInitialized = false;
 
     private UnityActionRef<int> HitState;
-
+    public DodgeState dodgeState;
+    public Player player;
+    private void Awake() {
+        player = GameManager.Instance.playerGameObject.GetComponent<Player>();
+    }
     public override void InitEquipment( int _selectIndex)
     {
         equipmentName = "조명탄";
@@ -35,7 +39,8 @@ public class Equipment_009 : AbstractEquipment { //, IPlayerDataApplicant{
     public void Dodged(ref int amount) {
         int Luck = 5 + PlayerDataManager.GetPlayerData().Luck + PlayerDataManager.GetPlayerData().Luck;
         if(Luck >= (int)Random.Range(0, 100)){ 
-            amount = 0;
+            dodgeState.Dodge(ref amount);
+            dodgeState.Init(this.player, this.player).Modifiy();
         }
     }
 }

@@ -6,23 +6,15 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [System.Serializable]
-public class MasterData
+public struct MasterData
 {
-    public PlayerData playerData;
-    public WeaponData weaponData;
-    public MasterData(){
-        playerData = new PlayerData();
-        weaponData = new WeaponData();
-    }
-    public void Clear()
-    {
-        playerData = new PlayerData();
-        weaponData = new WeaponData();
-    }
+    [SerializeField] public PlayerData playerData;
+    [SerializeField] public WeaponData weaponData;
 
     public static MasterData operator +(MasterData x, MasterData y){
         MasterData res = new MasterData();
-        res = x;
+        res.playerData += x.playerData;
+        res.weaponData += x.weaponData;
         res.playerData += y.playerData;
         res.weaponData += y.weaponData;
         return res;
@@ -30,14 +22,16 @@ public class MasterData
 
     public static MasterData operator +(MasterData x, PlayerData y){
         MasterData res = new MasterData();
-        res = x;
+        res.playerData += x.playerData;
+        res.weaponData += x.weaponData;
         res.playerData += y;
         return res;
     }
 
     public static MasterData operator +(MasterData x, WeaponData y){
         MasterData res = new MasterData();
-        res = x;
+        res.playerData += x.playerData;
+        res.weaponData += x.weaponData;
         res.weaponData += y;
         return res;
     }

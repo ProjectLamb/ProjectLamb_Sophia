@@ -1,5 +1,5 @@
 using UnityEngine;
 
-public class BarrierState : MonoBehaviour {
-    
+public class BarrierState : EntityAffector {
+    public VFXObject vfx;
 }
