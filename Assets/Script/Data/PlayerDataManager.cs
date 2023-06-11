@@ -7,7 +7,7 @@ using UnityEngine.Events;
 public class PlayerDataManager : MonoBehaviour
 {
     [SerializeField]private Player player; 
-    [SerializeField]private Weapon weapon; 
+    [SerializeField]private WeaponManager weaponManager;
     public static PlayerData BasePlayerData;
     public static WeaponData BaseWeaponData;
     private static MasterData EquipmentAddingData;
@@ -22,22 +22,31 @@ public class PlayerDataManager : MonoBehaviour
         if (player == null) { throw new System.Exception("Player가 null임 인스펙터 확인 ㄱㄱ"); }
         BasePlayerData = new PlayerData(player.ScriptablePD);
 
-        if (weapon == null) { throw new System.Exception("weapon가 null임 인스펙터 확인 ㄱㄱ"); }
-        BaseWeaponData = new WeaponData(weapon.ScriptableWD);
+        if (weaponManager == null) { throw new System.Exception("weapon가 null임 인스펙터 확인 ㄱㄱ"); }
+        BaseWeaponData = new WeaponData(weaponManager.weapon.ScriptableWD);
 
         if (equipmentManager == null) { throw new System.Exception("equipmentManager가 null임 인스펙터 확인 ㄱㄱ"); }
         BaseData = new MasterData();
         BaseData += BasePlayerData;
         BaseData += BaseWeaponData;
+
         EquipmentAddingData = new MasterData();
 
         FinalData = new MasterData();
         FinalData += BaseData + EquipmentAddingData;
+        
         debugText = GameObject.FindGameObjectWithTag("DebugUI").transform.GetComponentInChildren<TextMeshProUGUI>(true);
+    }
+    public void CalculateBaseData(){
+        BaseData = new MasterData();
+        BasePlayerData = new PlayerData(player.ScriptablePD);
+        BaseWeaponData = new WeaponData(weaponManager.weapon.ScriptableWD);
+        BaseData += BasePlayerData;
+        BaseData += BaseWeaponData;
     }
     public void CalculateEquipmentAddingData(){
         FinalData = BaseData;
-        EquipmentAddingData.Clear();
+        EquipmentAddingData = new MasterData();
         //Adding계산하기
         foreach(AbstractEquipment E in equipmentManager.equipments){
             EquipmentAddingData += E.EquipmentData;
@@ -50,11 +59,16 @@ public class PlayerDataManager : MonoBehaviour
     }
 
     public static void ResetFinal(){
-        FinalData = BaseData + EquipmentAddingData;
+        FinalData = new MasterData();
+        FinalData += BaseData;
+        FinalData += EquipmentAddingData;
     }
 
     public static MasterData GetOriginData() {
-        return BaseData + EquipmentAddingData;
+        MasterData res = new MasterData();
+        res += BaseData;
+        res += EquipmentAddingData;
+        return res;
     }
     public static ref EntityData GetEntityData(){
         return ref FinalData.playerData.EntityDatas;

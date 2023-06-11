@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -44,7 +45,7 @@ public class Enemy : Entity
 
     public override void Die()
     {
-        FinalData.DieState.Invoke();
+        GameManager.Instance.globalEvent.OnEnemyDieEvent.ForEach(E => E.Invoke());
         isDie = true;
         chase = false;
         entityRigidbody.velocity = Vector3.zero;
@@ -89,8 +90,6 @@ public class Enemy : Entity
         BaseEnemyData = new EntityData(ScriptableED);
         FinalData = BaseEnemyData;
         CurrentHealth = FinalData.MaxHP;
-        
-        FinalData.DieState += GameManager.Instance.globalEvent.EnemyDie;
 
         chase = false;
         objectiveTarget = GameManager.Instance?.playerGameObject?.transform;

@@ -37,7 +37,6 @@ public class CriticalState : EntityAffector{
         Instance.isInitialized  = true;
         return Instance;
     }
-    
     //아;; 이거 이벤트 엄청 꼬이겠네. 
     // 엔티티 Hit에 관련된 버그가 있으면 이거 중심으로 디버그 하자.
     // 일단 Projectile에 넣어버리면, 맞았을떄 발생이 되는걸로 생각할 수 있다.
@@ -46,8 +45,7 @@ public class CriticalState : EntityAffector{
         originPower = this.ownerEntity.GetOriginData().Power;
         this.ownerEntity.GetFinalData().Power += 5 * originPower;
         //어떤 Entity가 맞기 전까지는 활성화가 안꺼진다.
-        yield return new WaitUntil(() => Input.GetMouseButtonDown(0));
-        yield return YieldInstructionCache.WaitForSeconds(0.1f);
+        yield return YieldInstructionCache.WaitForSeconds(1f);
         this.ownerEntity.GetFinalData().Power = originPower;
     }
 }
