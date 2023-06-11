@@ -23,32 +23,33 @@ public class Weapon : MonoBehaviour
     public List<Projectile> AttackProjectiles;
     public ProjectileBucket projectileBucket;
     private Entity ownerEntity;
-    protected bool mIsReady = true;
-    protected IEnumerator mCoWaitUse;
+    protected bool isReady = true;
+    protected bool isInitialized = false;
 
-    private void Awake() {
-        ownerEntity = GetComponentInParent<Entity>();
+    public virtual void Initialisze(Player _owner, ProjectileBucket _projectileBucket) {
+        ownerEntity = _owner;
+        projectileBucket = _projectileBucket;
+        isInitialized = true;
     }
 
     public virtual void Use(int _amount){
-        if(!mIsReady) return;
+        if(isInitialized == false) {throw new System.Exception("무기가 초기화 되지 않음 WeaponManager에서 weapon.Initialize(Entity _owner); 했는지 확인");}
+        if(!isReady) return;
         Projectile  useProjectile   = AttackProjectiles[0];
         useProjectile.transform.localScale *= PlayerDataManager.GetWeaonData().Range;
         _amount = (int)(_amount * PlayerDataManager.GetWeaonData().DamageRatio);
-        //GameObject ProjectileObj = Instantiate(gameObject, parent);
-        //GameObject ProjectileObj = Instantiate(gameObject, parent.position, _rotate);
         projectileBucket.ProjectileInstantiatorByDamage(ownerEntity, useProjectile, _amount);
+        PlayerDataManager.GetEntityData().AttackState.Invoke();
         WaitWeaponDelay();
     }
     public IEnumerator CoWaitUse(float waitSecondTime){
-        mIsReady = false;
+        isReady = false;
         yield return YieldInstructionCache.WaitForSeconds(waitSecondTime);
-        mIsReady = true;
+        isReady = true;
     }
 
     public void WaitWeaponDelay(){
         float waitSecondTime = PlayerDataManager.GetPlayerData().EntityDatas.AttackSpeed * PlayerDataManager.GetWeaonData().WeaponDelay;
         StartCoroutine(CoWaitUse(waitSecondTime));
     }
-
 }

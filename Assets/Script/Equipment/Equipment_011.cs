@@ -18,38 +18,28 @@ public class Equipment_011 : AbstractEquipment { //, IPlayerDataApplicant{
     //public UnityAction UpdateState;
     //public bool mIsInitialized = false;
 
-    
-    private UnityAction AttackState;
-    int originBasePower;
-    int originAddPower;
-    bool isCritical = false;
+    public  CriticalState critialAffector;
+    private UnityAction Attack;
+    public Player player;
+    private void Awake() {
+        player = GameManager.Instance.playerGameObject.GetComponent<Player>();
+    }
+
     public override void InitEquipment( int _selectIndex)
     {
         equipmentName = "노란색 레고블럭";
-        AttackState += () => {Critical();};
+        Attack += () => {Critical();};
         if(_selectIndex == 0){
             EntityData readedEntityData = PlayerDataManager.BasePlayerData.EntityDatas;
-            this.EquipmentData.playerData.EntityDatas.MaxHP -= 10;
-            this.EquipmentData.playerData.EntityDatas.MoveSpeed -=    readedEntityData.MoveSpeed * 0.1f;
-            this.EquipmentData.playerData.EntityDatas.AttackSpeed +=  readedEntityData.AttackSpeed * 0.1f;
-            this.EquipmentData.playerData.EntityDatas.AttackState += AttackState;
+            this.EquipmentData.playerData.EntityDatas.AttackState += Attack;
         }
     }
 
     //디버프를 얘가 만든다면?
     public void Critical() {
-        //int Luck = PlayerDataManager.GetPlayerData().Luck + 5;
-        //if(Luck < (int)Random.Range(0, 100)){ 
-        //    if(isCritical == false) {
-        //        PlayerDataManager.GetPlayerData().player. Power = originBasePower * 5; 
-        //        isCritical = true;
-        //    }
-        //}
-        //else {
-        //    if(isCritical == true){ 
-        //        PlayerDataManager.GetPlayerData().Power = originBasePower; 
-        //        isCritical = false;
-        //    }
-        //}
+        int Luck = 5 + PlayerDataManager.GetPlayerData().Luck + PlayerDataManager.GetPlayerData().Luck;
+        if(Luck >= (int)Random.Range(0, 100)){ 
+            critialAffector.Init(this.player, this.player).Modifiy();
+        }
     }
 }

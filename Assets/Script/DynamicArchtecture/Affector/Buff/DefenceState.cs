@@ -2,19 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Dodge", menuName = "ScriptableObject/EntityAffector/Buff/Dodge", order = int.MaxValue)]
-public class DodgeState : EntityAffector{
+[CreateAssetMenu(fileName = "Defence", menuName = "ScriptableObject/EntityAffector/Buff/Defence", order = int.MaxValue)]
+public class DefenceState : EntityAffector{
     
     public float durationTime;
-    public Material skin;
     public VFXObject vfx;
+    public float Ratio;
     
-    public DodgeState(EntityAffector _eaData){
+    public DefenceState(EntityAffector _eaData){
         this.affectorStruct = _eaData.affectorStruct;
         this.targetEntity   = _eaData.targetEntity;
         this.ownerEntity    = _eaData.ownerEntity;
         this.isInitialized  = _eaData.isInitialized;
-        this.affectorStruct.affectorType = E_StateType.Invincible;
+        this.affectorStruct.affectorType = E_StateType.Defence;
 
         this.affectorStruct.AsyncAffectorCoroutine.Add(VisualActivate());
     }
@@ -22,23 +22,21 @@ public class DodgeState : EntityAffector{
     public override EntityAffector Init(Entity _owner, Entity _target)
     {
         EntityAffector EAInstance = base.Init(_owner, _target);
-        DodgeState Instance = new DodgeState(EAInstance);
+        DefenceState Instance = new DefenceState(EAInstance);
         Instance.durationTime = this.durationTime;
-        Instance.skin = this.skin;
         Instance.vfx = this.vfx;
+        Instance.Ratio = this.Ratio;
         Instance.isInitialized  = true;
         return Instance;
     }
 
-    public void Dodge(ref int _amount){
-        _amount = 0;
+    public void Defence(ref int _amount){
+        _amount += (int)(_amount * Ratio); // 디펜스의 반대는 더 많이 맞는다는것으로
     }
-    
+
     IEnumerator VisualActivate(){
-        //this.targetEntity.visualModulator.InteractByMaterial(skin);
         this.targetEntity.visualModulator.InteractByVFX(vfx);
         yield return YieldInstructionCache.WaitForSeconds(durationTime);
-        //this.targetEntity.visualModulator.RevertByMaterial(this.affectorStruct.affectorType);
         this.targetEntity.visualModulator.RevertByVFX(this.affectorStruct.affectorType);
     }
 }
