@@ -29,7 +29,7 @@ public class Player : Entity {
         }
     }
     public override ref EntityData GetFinalData(){
-        return ref PlayerDataManager.GetEntityData();
+        return ref PlayerDataManager.GetFinalData().playerData.EntityDatas;
     }
     public override     EntityData GetOriginData(){
         return PlayerDataManager.GetOriginData().playerData.EntityDatas;
@@ -39,11 +39,10 @@ public class Player : Entity {
         PlayerDataManager.ResetFinal();
     }
     
-    [SerializeField]
-    public Weapon weapon;
+    [SerializeField] private WeaponManager weaponManager;
 
     [SerializeField]
-    //public Skill[] skills;
+    public SkillManager skillManagers;
     public EquipmentManager equipmentManager;
     public LayerMask groundMask;                  // 바닥을 인식하는 마스크
     public ImageGenerator imageGenerator;
@@ -59,7 +58,7 @@ public class Player : Entity {
     bool mIsBorder;                 // 벽에 부딛혔는지 감지
     bool mIsDashed;                 // 대쉬를 했는지 
     bool mIsDie;                 // 대쉬를 했는지 
-    public Animator anim;
+    [HideInInspector] Animator anim;
 
     IEnumerator mCoWaitDash;        // StopCorutine을 사용하기 위해서는 코루틴 변수가 필요하다. 
     public ParticleSystem DieParticle;
@@ -69,15 +68,15 @@ public class Player : Entity {
         //if (!TryGetComponent<Collider>(out entityCollider)) { Debug.Log("컴포넌트 로드 실패 : Collider"); }
         //if (!TryGetComponent<Rigidbody>(out entityRigidbody)) { Debug.Log("컴포넌트 로드 실패 : Rigidbody"); }
         //if (!TryGetComponent<VisualModulator>(out visualModulator)) { Debug.Log("컴포넌트 로드 실패 : VisualModulator"); }
-        base.Awake();
         //CurrentHealth = 마스터 데이터
+        base.Awake();
+        model.TryGetComponent<Animator>(out anim);
     }
 
     private void Start() {
         CurrentHealth = PlayerDataManager.GetEntityData().MaxHP;//FinalPlayerData.PlayerEntityData.MaxHP;
         CurrentStamina = PlayerDataManager.GetPlayerData().MaxStamina;//FinalPlayerData.PlayerEntityData.MaxHP;
         isPortal = true;
-        anim = model.GetComponent<Animator>();
     }
     
     public override void GetDamaged(int _amount){
@@ -107,6 +106,7 @@ public class Player : Entity {
         }
         
         if (this.entityRigidbody.velocity.magnitude > PlayerDataManager.GetEntityData().MoveSpeed) return; 
+        anim.SetFloat("Move", entityRigidbody.velocity.magnitude);
 
         mMoveVec = AngleToVector(Camera.main.transform.eulerAngles.y + 90f) * _hAxis + AngleToVector(Camera.main.transform.eulerAngles.y) * _vAxis;
         mMoveVec = mMoveVec.normalized;
@@ -157,8 +157,8 @@ public class Player : Entity {
     public void Attack()
     {
         anim.SetTrigger("DoAttack");
-        Turning(() => weapon?.Use(PlayerDataManager.GetEntityData().Power));
-        PlayerDataManager.GetEntityData().AttackState.Invoke();
+        Turning(() => weaponManager.weapon?.Use(PlayerDataManager.GetEntityData().Power));
+        
     }
     
     /// <summary>
@@ -168,16 +168,15 @@ public class Player : Entity {
     /// 이렇게 공격 방식이 바뀌는 매커니즘을 다루는 커플링을 줄일까? <br/>
     /// </summary>
     public void JustAttack(){
-        Turning(() => { weapon?.Use(PlayerDataManager.GetEntityData().Power); });
+        Turning(() => { weaponManager.weapon?.Use(PlayerDataManager.GetEntityData().Power); });
     }
     
-    // public void Skill(string key)
-    // {
-    //     if(skills[(int)E_SkillKey.Q]) {
-    //         //this.FinalPlayerData.SkillState.Invoke();
-    //         //Turning(() => skills[(int)E_SkillKey.Q].Use(this.FinalPlayerData.Power));
-    //     }
-    // }
+    public void Skill(string key)
+    {
+        if(skillManagers.skills[(int)E_SkillKey.Q] != null) {
+            Turning(() => skillManagers.skills[(int)E_SkillKey.Q].Use(PlayerDataManager.GetEntityData().Power));
+        }
+    }
 
     void Turning(UnityAction action)
     {
@@ -202,13 +201,4 @@ public class Player : Entity {
             action.Invoke();
         }
     }
-
-    private void OnTriggerEnter(Collider other) {
-        if(other.tag != "Equipment"){return;}
-        AbstractEquipment triggerdEquipment = other.GetComponent<AbstractEquipment>();
-        equipmentManager.Equip(triggerdEquipment);
-        Debug.Log($"장비 장착! : {triggerdEquipment.equipmentName}");
-        Destroy(triggerdEquipment.gameObject);
-    }
-
 }

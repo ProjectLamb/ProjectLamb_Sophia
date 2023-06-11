@@ -12,7 +12,7 @@ public class VFXBucket : MonoBehaviour {
     public void VFXInstantiator(VFXObject vfx){
         VFXObject vfxObject = Instantiate(vfx, transform);
         vfxObject.transform.localScale *= transform.localScale.z;
-        HandleNoneStacking(vfxObject);
+        //HandleNoneStacking(vfxObject);
         vfxObject.Initialize();
     }
 
@@ -28,9 +28,6 @@ public class VFXBucket : MonoBehaviour {
     public void HandleNoneStacking(VFXObject vfxObject){
         if(visualStacks.ContainsKey(vfxObject.affectorType).Equals(false)) {
             visualStacks.Add(vfxObject.affectorType, vfxObject);
-        }
-        if(!visualStacks[vfxObject.affectorType].Equals(null)){
-            Destroy(visualStacks[vfxObject.affectorType].gameObject); 
         }
         visualStacks[vfxObject.affectorType] = vfxObject;
     }

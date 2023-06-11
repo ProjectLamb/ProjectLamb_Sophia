@@ -10,11 +10,11 @@ using Component = UnityEngine.Component;
 using Random = UnityEngine.Random;
 
 public abstract class Entity : MonoBehaviour, IEntityAddressable {
-    public Collider         entityCollider;
-    public Rigidbody        entityRigidbody;
-    public GameObject       model;
-    public VisualModulator  visualModulator;
-    private int mCurrentHealth; 
+    [HideInInspector] public Collider         entityCollider;
+    [HideInInspector] public Rigidbody        entityRigidbody;
+    [HideInInspector] public GameObject       model;
+    [SerializeField]  public VisualModulator  visualModulator;
+    [SerializeField]  public int mCurrentHealth; 
     public int CurrentHealth {
         get {return mCurrentHealth;}
         set {

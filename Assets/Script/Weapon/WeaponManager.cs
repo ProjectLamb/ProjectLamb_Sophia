@@ -5,17 +5,24 @@ using UnityEngine;
 using UnityEngine.Events;
 
 public class WeaponManager : MonoBehaviour {
+    public Player player;
     public Weapon weapon;
-    public PlayerDataManager PDM;
+    public ProjectileBucket projectileBucket;
     public UnityEvent OnChangeEvent; // -> 이놈을 서브스크라이브 해야된다.
     private void Awake() {
-        if(PDM == null) { throw new System.Exception("Player가 null임 인스펙터 확인 ㄱㄱ"); }   
+        if(OnChangeEvent == null) { throw new System.Exception("OnChangeEvent가 Null임 이렇게 되면 PlayerDataManger에 값변경 구독이 안되어 있는것. 인스펙터 확인 ㄱㄱ"); }   
     }
     private void Start() {
-        //OnChangeEvent.
+        Weapon instantWaepon = Instantiate(weapon, transform);
+        this.weapon = instantWaepon;
+        this.weapon.Initialisze(player, projectileBucket);
+        OnChangeEvent.Invoke();
     }
     public void AssignWeapon(Weapon _weapon){
-        this.weapon = _weapon;
-        //OnChangeEvent.Invoke();
+        foreach(Transform child in transform){ Destroy(child); }
+        Weapon instantWaepon = Instantiate(_weapon, transform);
+        this.weapon = instantWaepon;
+        this.weapon.Initialisze(player, projectileBucket);
+        OnChangeEvent.Invoke();
     }
 }
