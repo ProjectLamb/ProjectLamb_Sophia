@@ -2,10 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Defence", menuName = "ScriptableObject/EntityAffector/Buff/Defence", order = int.MaxValue)]
-public class DefenceState : EntityAffector{
-    
-    public float durationTime;
+[System.Serializable]
+public class DefenceState :  EntityAffector{
+    public float VisualDurationTime;
     public VFXObject vfx;
     public float Ratio;
     
@@ -23,7 +22,7 @@ public class DefenceState : EntityAffector{
     {
         EntityAffector EAInstance = base.Init(_owner, _target);
         DefenceState Instance = new DefenceState(EAInstance);
-        Instance.durationTime = this.durationTime;
+        Instance.VisualDurationTime = this.VisualDurationTime;
         Instance.vfx = this.vfx;
         Instance.Ratio = this.Ratio;
         Instance.isInitialized  = true;
@@ -36,7 +35,7 @@ public class DefenceState : EntityAffector{
 
     IEnumerator VisualActivate(){
         this.targetEntity.visualModulator.InteractByVFX(vfx);
-        yield return YieldInstructionCache.WaitForSeconds(durationTime);
+        yield return YieldInstructionCache.WaitForSeconds(VisualDurationTime);
         this.targetEntity.visualModulator.RevertByVFX(this.affectorStruct.affectorType);
     }
 }

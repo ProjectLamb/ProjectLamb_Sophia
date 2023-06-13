@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-[CreateAssetMenu(fileName = "Poison", menuName = "ScriptableObject/EntityAffector/Debuff/Poison", order = int.MaxValue)]
+[System.Serializable]
 public class PoisonState : EntityAffector {
     /*아래 3줄은 EntityAffector 상속받아서 이미 있음*/
 //  protected AffectorStruct affectorStruct;
@@ -13,7 +13,7 @@ public class PoisonState : EntityAffector {
 //  protected Entity targetEntity;
 //  protected Entity ownerEntity;
 //  protected bool  isInitialized;
-    public float durationTime;
+    public float DurationTime;
     public  Material    skin;
     public  VFXObject   vfx;
     public PoisonState(EntityAffector _eaData){
@@ -28,7 +28,7 @@ public class PoisonState : EntityAffector {
     public override EntityAffector Init(Entity _owner, Entity _target){
         EntityAffector EAInstance = base.Init(_owner, _target);
         PoisonState Instance = new PoisonState(EAInstance);
-        Instance.durationTime = this.durationTime;
+        Instance.DurationTime = this.DurationTime;
         Instance.skin = this.skin;
         Instance.vfx = this.vfx;
         Instance.isInitialized  = true;
@@ -38,7 +38,7 @@ public class PoisonState : EntityAffector {
     IEnumerator DotDamage(){
         float passedTime = 0;
         float tenacity =this.targetEntity.GetFinalData().Tenacity;
-        float dotDamageDurateTime = durationTime * (1 - tenacity);
+        float dotDamageDurateTime = DurationTime * (1 - tenacity);
         while(dotDamageDurateTime > passedTime){
             passedTime += 0.5f;
             this.targetEntity.GetDamaged((int)(this.ownerEntity.GetFinalData().Power * 0.25f) + 1);
@@ -48,7 +48,7 @@ public class PoisonState : EntityAffector {
 
     IEnumerator VisualActivate(){
         float tenacity =this.targetEntity.GetFinalData().Tenacity;
-        float visualDurateTime = durationTime * (1 - tenacity);
+        float visualDurateTime = DurationTime * (1 - tenacity);
         this.targetEntity.visualModulator.InteractByMaterial(skin);
         this.targetEntity.visualModulator.InteractByVFX(vfx);
         yield return YieldInstructionCache.WaitForSeconds(visualDurateTime);

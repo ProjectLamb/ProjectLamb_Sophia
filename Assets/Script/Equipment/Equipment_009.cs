@@ -26,10 +26,10 @@ public class Equipment_009 : AbstractEquipment { //, IPlayerDataApplicant{
     }
     public override void InitEquipment( int _selectIndex)
     {
-        equipmentName = "조명탄";
         HitState += (ref int _amount) => {Dodged(ref _amount);};
+        equipmentName = "조명탄";
         if(_selectIndex == 0) {
-            this.EquipmentData.playerData.EntityDatas.HitStateRef += HitState;
+            this.AddingData.playerData.EntityDatas.HitStateRef += HitState;
         }
         this.mIsInitialized = true;
     }

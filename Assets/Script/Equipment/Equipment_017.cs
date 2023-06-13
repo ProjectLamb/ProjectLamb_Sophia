@@ -21,7 +21,7 @@ public class Equipment_017 : AbstractEquipment {
         equipmentName = "백호인형";
 
         if(_selectIndex == 0) {
-            this.EquipmentData.playerData.StaminaRestoreRatio += 10;
+            this.AddingData.playerData.StaminaRestoreRatio += 10;
         }
         this.mIsInitialized = true;
     }

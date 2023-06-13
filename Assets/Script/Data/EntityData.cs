@@ -10,6 +10,7 @@ using UnityEngine.Events;
 // 변동하는 데이터가 되는 녀석들이다.
 
 // 모든것은 올라가면 효과가 좋아지는 방식이다.
+[System.Serializable]
 public struct EntityData
 {
     //int CurHP; 이 EntityData를 포함하는 컴포넌트그 스코프 내에서 따로 정의한다. 오직 이 데이터

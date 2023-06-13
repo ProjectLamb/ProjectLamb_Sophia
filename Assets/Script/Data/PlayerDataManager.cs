@@ -48,8 +48,8 @@ public class PlayerDataManager : MonoBehaviour
         FinalData = BaseData;
         EquipmentAddingData = new MasterData();
         //Adding계산하기
-        foreach(AbstractEquipment E in equipmentManager.equipments){
-            EquipmentAddingData += E.EquipmentData;
+        foreach(AbstractEquipment equipment in equipmentManager.equipments){
+            EquipmentAddingData += equipment.AddingData;
         }
         FinalData += EquipmentAddingData;
     }

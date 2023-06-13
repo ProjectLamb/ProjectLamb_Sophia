@@ -21,7 +21,7 @@ public class Equipment_018 : AbstractEquipment {
         equipmentName = "만화책";
 
         if(_selectIndex == 0) {
-            this.EquipmentData.playerData.MaxStamina += 1;
+            this.AddingData.playerData.MaxStamina += 1;
         }
         this.mIsInitialized = true;
     }

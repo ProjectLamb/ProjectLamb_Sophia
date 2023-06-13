@@ -16,10 +16,10 @@ public class Equipment_004 : AbstractEquipment { //, IPlayerDataApplicant{
     //public UnityAction UnequipState;
     //public UnityAction UpdateState;
     //public bool mIsInitialized = false;
+    public  DefenceState defenceState;
 
     private UnityActionRef<int> HitStateRef;
     private UnityAction<Entity, Entity> Projectile;
-    public  DefenceState defenceState;
     public override void InitEquipment( int _selectIndex)
     {
         equipmentName = "디지털 파편 조각";
@@ -28,8 +28,8 @@ public class Equipment_004 : AbstractEquipment { //, IPlayerDataApplicant{
 
         if(_selectIndex == 0) {
             EntityData readedEntityData = PlayerDataManager.BasePlayerData.EntityDatas;
-            this.EquipmentData.playerData.EntityDatas.Power += (int)(readedEntityData.Power * 0.1f);
-            this.EquipmentData.playerData.EntityDatas.HitStateRef += HitStateRef;
+            this.AddingData.playerData.EntityDatas.Power += (int)(readedEntityData.Power * 0.1f);
+            this.AddingData.playerData.EntityDatas.HitStateRef += HitStateRef;
         }
         this.mIsInitialized = true;
     }

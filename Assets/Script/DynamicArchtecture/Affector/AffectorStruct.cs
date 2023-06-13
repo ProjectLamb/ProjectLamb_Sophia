@@ -18,7 +18,7 @@ using UnityEngine.Events;
 [System.Serializable]
 public class AffectorStruct {
     [field : SerializeField] 
-    public  E_StateType      affectorType;
+    public  E_StateType affectorType;
     [HideInInspector] public List<IEnumerator>   AsyncAffectorCoroutine = null;
     [HideInInspector] public List<UnityAction>   Affector = null;
 

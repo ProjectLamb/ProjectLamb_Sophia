@@ -7,7 +7,7 @@ public enum E_WeaponType
     melee, ranger, mage
 }
 
-
+[System.Serializable]
 public struct WeaponData
 {
     public E_WeaponType WeaponType;

@@ -16,27 +16,6 @@ public class EquipmentManager : MonoBehaviour{
         equipments ??= new List<AbstractEquipment>(12);
     }
 
-    /// <summary>
-    /// 장비를 장착하거나, 해제하거나, 어떤 버프 이벤트가 들어오면 실행한다.
-    /// </summary>
-    /// 
-    /*
-    [ContextMenu("CalculateEquipmentAddingData")]
-    public void CalculateEquipmentAddingData(){
-        EquipmentAddingData.Clear();
-        foreach(AbstractEquipment E in equipments){
-            EquipmentAddingData += E.EquipmentAddingData;
-        }
-        
-        EquipmentAddingData.PipeToPlayer(ref pdTmp);
-        EquipmentAddingData.PipeToWeapon(ref wdTmp);
-
-        player.playerData = player.BasePlayerData + pdTmp;
-        player.playerData.EntityTag = "Player";
-        weapon.weaponData = weapon.BaseWeaponData + wdTmp;
-    }
-    */
-    
     public void Equip(AbstractEquipment equipment){
         equipment.InitEquipment(0);
         equipments.Add(equipment);
@@ -47,6 +26,5 @@ public class EquipmentManager : MonoBehaviour{
     public void Unequip(AbstractEquipment equipment){
         equipments.Remove(equipment);
         OnChangeEvent.Invoke();
-        //CalculateEquipmentAddingData();
     }
 }

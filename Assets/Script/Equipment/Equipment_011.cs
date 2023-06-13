@@ -31,7 +31,7 @@ public class Equipment_011 : AbstractEquipment { //, IPlayerDataApplicant{
         Attack += () => {Critical();};
         if(_selectIndex == 0){
             EntityData readedEntityData = PlayerDataManager.BasePlayerData.EntityDatas;
-            this.EquipmentData.playerData.EntityDatas.AttackState += Attack;
+            this.AddingData.playerData.EntityDatas.AttackState += Attack;
         }
     }
 
