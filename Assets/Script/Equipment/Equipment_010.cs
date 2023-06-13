@@ -25,8 +25,8 @@ public class Equipment_010 : AbstractEquipment { //, IPlayerDataApplicant{
         this.AttackState += () => {ChargeAttack();};
         if(_selectIndex == 0){
             EntityData readedEntityData = PlayerDataManager.BasePlayerData.EntityDatas;
-            this.EquipmentData.playerData.EntityDatas.AttackSpeed += readedEntityData.AttackSpeed * 0.2f;
-            this.EquipmentData.playerData.EntityDatas.AttackState += AttackState;
+            this.AddingData.playerData.EntityDatas.AttackSpeed += readedEntityData.AttackSpeed * 0.2f;
+            this.AddingData.playerData.EntityDatas.AttackState += AttackState;
         }
         this.mIsInitialized = true;
     }

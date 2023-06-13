@@ -21,8 +21,8 @@ public class Equipment_001 : AbstractEquipment {
         equipmentName = "식어버린 피자 한조각";
         if(_selectIndex == 0) {
             EntityData readedEntityData = PlayerDataManager.BasePlayerData.EntityDatas;
-            this.EquipmentData.playerData.EntityDatas.MaxHP += 10;
-            this.EquipmentData.playerData.EntityDatas.MoveSpeed -= readedEntityData.MoveSpeed * 0.05f;
+            this.AddingData.playerData.EntityDatas.MaxHP += 10;
+            this.AddingData.playerData.EntityDatas.MoveSpeed -= readedEntityData.MoveSpeed * 0.05f;
         }
         this.mIsInitialized = true;
     }

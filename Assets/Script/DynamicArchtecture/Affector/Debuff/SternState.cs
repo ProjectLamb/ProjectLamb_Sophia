@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-[CreateAssetMenu(fileName = "Stern", menuName = "ScriptableObject/EntityAffector/Debuff/Stern", order = int.MaxValue)]
+[System.Serializable]
 public class SternState : EntityAffector{
     /*아래 3줄은 EntityAffector 상속받아서 이미 있음*/
 //  protected AffectorStruct affectorStruct;
@@ -14,8 +14,7 @@ public class SternState : EntityAffector{
 //  protected Entity targetEntity;
 //  protected Entity ownerEntity;
 //  protected bool  isInitialized;
-
-    public float durationTime;
+    public float DurationTime = 1f;
     public Material skin;
     public VFXObject vfx;
 
@@ -32,7 +31,7 @@ public class SternState : EntityAffector{
     public override EntityAffector Init(Entity _owner, Entity _target){
         EntityAffector EAInstance = base.Init(_owner, _target);
         SternState Instance = new SternState(EAInstance);
-        Instance.durationTime = this.durationTime;
+        Instance.DurationTime = this.DurationTime;
         Instance.skin = this.skin;
         Instance.vfx = this.vfx;
         Instance.isInitialized  = true;
@@ -43,7 +42,7 @@ public class SternState : EntityAffector{
         float originMoveSpeed = this.targetEntity.GetOriginData().MoveSpeed;
         float tenacity =this.targetEntity.GetFinalData().Tenacity;
         
-        float sternDurateTime = durationTime * (1 - tenacity);
+        float sternDurateTime = DurationTime * (1 - tenacity);
         this.targetEntity.GetFinalData().MoveSpeed = 0;
         yield return YieldInstructionCache.WaitForSeconds(sternDurateTime);
         this.targetEntity.GetFinalData().MoveSpeed = originMoveSpeed;
@@ -51,7 +50,7 @@ public class SternState : EntityAffector{
     
     IEnumerator VisualActivate(){
         float tenacity = this.targetEntity.GetFinalData().Tenacity;
-        float visualDurateTime = durationTime * (1 - tenacity);
+        float visualDurateTime = DurationTime * (1 - tenacity);
         this.targetEntity.visualModulator.InteractByMaterial(skin);
         this.targetEntity.visualModulator.InteractByVFX(vfx);
         yield return YieldInstructionCache.WaitForSeconds(visualDurateTime);

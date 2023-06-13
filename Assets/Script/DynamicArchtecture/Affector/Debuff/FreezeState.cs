@@ -4,8 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-
-[CreateAssetMenu(fileName = "Freeze", menuName = "ScriptableObject/EntityAffector/Debuff/Freeze", order = int.MaxValue)]
+[System.Serializable]
 public class FreezeState : EntityAffector {
     /*아래 3줄은 EntityAffector 상속받아서 이미 있음*/
 //  protected AffectorStruct affectorStruct;
@@ -16,7 +15,7 @@ public class FreezeState : EntityAffector {
 //  protected Entity ownerEntity;
 //  protected bool  isInitialized;
 
-    public float durationTime;
+    public float DurationTime;
     public Material skin;
     public FreezeState(EntityAffector _eaData){
         this.affectorStruct = _eaData.affectorStruct;
@@ -31,7 +30,7 @@ public class FreezeState : EntityAffector {
     public override EntityAffector Init(Entity _owner, Entity _target){
         EntityAffector EAInstance = base.Init(_owner, _target);
         FreezeState Instance = new FreezeState(EAInstance);
-        Instance.durationTime = this.durationTime;
+        Instance.DurationTime = this.DurationTime;
         Instance.skin = this.skin;
         Instance.isInitialized  = true;
         return Instance;
@@ -41,7 +40,7 @@ public class FreezeState : EntityAffector {
         Debug.Log("실행됨");
         float originMoveSpeed = this.targetEntity.GetOriginData().MoveSpeed;
         float tenacity =this.targetEntity.GetFinalData().Tenacity;
-        float slowDurateTime = durationTime * (1 - tenacity);
+        float slowDurateTime = DurationTime * (1 - tenacity);
 
         this.targetEntity.GetFinalData().MoveSpeed = 0;
         yield return YieldInstructionCache.WaitForSeconds(slowDurateTime);
@@ -50,7 +49,7 @@ public class FreezeState : EntityAffector {
     
     IEnumerator VisualActivate(){
         float tenacity = this.targetEntity.GetFinalData().Tenacity;
-        float visualDurateTime = durationTime * (1 - tenacity);
+        float visualDurateTime = DurationTime * (1 - tenacity);
 
         this.targetEntity.visualModulator.InteractByMaterial(skin);
         yield return YieldInstructionCache.WaitForSeconds(visualDurateTime);

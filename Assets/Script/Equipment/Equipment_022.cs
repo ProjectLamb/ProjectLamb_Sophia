@@ -18,7 +18,7 @@ public class Equipment_022 : AbstractEquipment { //, IPlayerDataApplicant{
     //public UnityAction UnequipState;
     //public UnityAction UpdateState;
     //public bool mIsInitialized = false;
-    public EntityAffector freezeAffector;
+    public FreezeState freezeAffector;
     private UnityAction<Entity, Entity> Projectile;
 
     public override void InitEquipment( int _selectIndex)
@@ -27,7 +27,7 @@ public class Equipment_022 : AbstractEquipment { //, IPlayerDataApplicant{
         equipmentName = "얼어붙은 투구";
         this.Projectile += (_owner, _target) => {Freeze(_owner, _target);};
         if(_selectIndex == 0){
-            this.EquipmentData.playerData.EntityDatas.ProjectileShootState += Projectile;
+            this.AddingData.playerData.EntityDatas.ProjectileShootState += Projectile;
         }
     }
 

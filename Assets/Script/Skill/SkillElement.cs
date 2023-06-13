@@ -2,23 +2,30 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using AYellowpaper.SerializedCollections;
+
+[System.Serializable]
+public class SkillNumeric{
+    [SerializeField] public float affectorDurationTime;
+    [SerializeField] public float amountRatio;
+    public SkillNumeric skillNumeric;
+    public List<float> ToList(){
+        List<float> res = new List<float> {
+            this.skillNumeric.affectorDurationTime, 
+            this.skillNumeric.amountRatio
+        };
+        return res;
+    }
+}
 
 public class SkillElement : MonoBehaviour {
-    public float[]      nemericArray    = new float[Enum.GetValues(typeof(E_SkillRank)).Length];
-    public float[]      skillDelay      = new float[Enum.GetValues(typeof(E_SkillRank)).Length];
-    public float[]      durateTime      = new float[Enum.GetValues(typeof(E_SkillRank)).Length];
-    public Carrier[]    skillCarrier    = new Carrier[Enum.GetValues(typeof(E_SkillRank)).Length];
+    public E_SkillKey skillKey;
+    [SerializedDictionary("Skill Rank", "Numeric")]
 
-    public Carrier GetCarrierRank(E_SkillRank _rank){
-        return skillCarrier[(int)_rank];
-    }
-    public float GetNumericByRank(E_SkillRank _rank){
-        return nemericArray[(int)_rank];
-    }
-    public float GetSkillDelayByRank(E_SkillRank _rank){
-        return skillDelay[(int)_rank];
-    }
-    public float GetDurateTimeByRank(E_SkillRank _rank){
-        return durateTime[(int)_rank];
-    }
+    public SerializedDictionary<E_SkillRank, SkillNumeric> numericsArray = new SerializedDictionary<E_SkillRank, SkillNumeric>();
+    
+    [SerializedDictionary("Skill Rank", "Float")]
+    public SerializedDictionary<E_SkillRank, float> coolTime  = new SerializedDictionary<E_SkillRank, float>();
+    public SerializedDictionary<E_SkillRank, List<Projectile>> skillCarrier    = new SerializedDictionary<E_SkillRank, List<Projectile>>();
+
 }

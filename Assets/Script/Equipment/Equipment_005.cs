@@ -22,7 +22,7 @@ public class Equipment_005 : AbstractEquipment { //, IPlayerDataApplicant{
         equipmentName = "동력전달장치";
 
         if(_selectIndex == 0) {
-            this.EquipmentData.playerData.EntityDatas.Power += (PlayerDataManager.GetPlayerData().Gear / 10);
+            this.AddingData.playerData.EntityDatas.Power += (PlayerDataManager.GetPlayerData().Gear / 10);
         }
         this.mIsInitialized = true;
     }

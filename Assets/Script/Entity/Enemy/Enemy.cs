@@ -37,7 +37,6 @@ public class Enemy : Entity
 
     public Projectile[] projectiles;
 
-    public ProjectileBucket projectileBucket;
     public ImageGenerator   imageGenerator;
     public Animator animator;
     public AnimEventInvoker animEventInvoker;

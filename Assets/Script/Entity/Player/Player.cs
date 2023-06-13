@@ -173,9 +173,11 @@ public class Player : Entity {
     
     public void Skill(string key)
     {
+        /*
         if(skillManagers.skills[(int)E_SkillKey.Q] != null) {
-            Turning(() => skillManagers.skills[(int)E_SkillKey.Q].Use(PlayerDataManager.GetEntityData().Power));
+            //Turning(() => skillManagers.skills[(int)E_SkillKey.Q].Use(PlayerDataManager.GetEntityData().Power));
         }
+        */
     }
 
     void Turning(UnityAction action)

@@ -7,8 +7,8 @@ using UnityEngine.Events;
 
 using Random = UnityEngine.Random;
 
-[CreateAssetMenu(fileName = "Critical", menuName = "ScriptableObject/EntityAffector/Buff/Critical", order = int.MaxValue)]
-public class CriticalState : EntityAffector{
+[System.Serializable]
+public class CriticalState :  EntityAffector{
     /*아래 3줄은 EntityAffector 상속받아서 이미 있음*/
 //  protected AffectorStruct affectorStruct;
     // affectorStruct.affectorType;
