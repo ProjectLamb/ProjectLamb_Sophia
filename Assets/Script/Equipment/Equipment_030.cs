@@ -17,7 +17,7 @@ public class Equipment_030 : AbstractEquipment { //, IPlayerDataApplicant{
     //public UnityAction UnequipState;
     //public UnityAction UpdateState;
     //public bool mIsInitialized = false;
-    public  EntityAffector excuteAffector;
+    public  ExecutionState excuteAffector;
     private UnityAction<Entity, Entity> Projectile;
     public override void InitEquipment( int _selectIndex)
     {
@@ -25,7 +25,7 @@ public class Equipment_030 : AbstractEquipment { //, IPlayerDataApplicant{
 
         this.Projectile += (Entity _owner, Entity _target) => {Execution(_owner, _target);};
         if(_selectIndex == 0){
-            this.EquipmentData.playerData.EntityDatas.ProjectileShootState += Projectile;
+            this.AddingData.playerData.EntityDatas.ProjectileShootState += Projectile;
         }
         this.mIsInitialized = true;
     }

@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Dodge", menuName = "ScriptableObject/EntityAffector/Buff/Dodge", order = int.MaxValue)]
+
+[System.Serializable]
 public class DodgeState : EntityAffector{
     
     public float durationTime;
@@ -36,9 +37,9 @@ public class DodgeState : EntityAffector{
     
     IEnumerator VisualActivate(){
         //this.targetEntity.visualModulator.InteractByMaterial(skin);
-        this.targetEntity.visualModulator.InteractByVFX(vfx);
+        //this.targetEntity.visualModulator.InteractByVFX(vfx);
         yield return YieldInstructionCache.WaitForSeconds(durationTime);
         //this.targetEntity.visualModulator.RevertByMaterial(this.affectorStruct.affectorType);
-        this.targetEntity.visualModulator.RevertByVFX(this.affectorStruct.affectorType);
+        //this.targetEntity.visualModulator.RevertByVFX(this.affectorStruct.affectorType);
     }
 }

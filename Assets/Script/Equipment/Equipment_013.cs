@@ -17,14 +17,14 @@ public class Equipment_013 : AbstractEquipment { //, IPlayerDataApplicant{
     //public UnityAction UnequipState;
     //public UnityAction UpdateState;
     //public bool mIsInitialized = false;
-    public EntityAffector KnockBackAffector;
+    public KnockbackState KnockBackAffector;
     private UnityAction<Entity, Entity> Projectile;
     public override void InitEquipment( int _selectIndex)
     {
         equipmentName = "노동자의 망치";
         this.Projectile += (_owner, _target) => {Knockback(_owner, _target);};   
         if(_selectIndex == 0){
-            this.EquipmentData.playerData.EntityDatas.ProjectileShootState += Projectile;
+            this.AddingData.playerData.EntityDatas.ProjectileShootState += Projectile;
         }
     }
 

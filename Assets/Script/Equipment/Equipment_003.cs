@@ -23,8 +23,8 @@ public class Equipment_003 : AbstractEquipment { //, IPlayerDataApplicant{
         equipmentName = "뒤집어진 양말";
         if(_selectIndex == 0) {
             EntityData readedEntityData = PlayerDataManager.BasePlayerData.EntityDatas;
-            this.EquipmentData.playerData.EntityDatas.Power -= (int)(readedEntityData.Power * 0.1f);
-            this.EquipmentData.playerData.EntityDatas.MaxHP += 15;
+            this.AddingData.playerData.EntityDatas.Power -= (int)(readedEntityData.Power * 0.1f);
+            this.AddingData.playerData.EntityDatas.MaxHP += 15;
         }
         this.mIsInitialized = true;
     }

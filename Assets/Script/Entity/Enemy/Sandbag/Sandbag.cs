@@ -29,7 +29,6 @@ public class Sandbag : Entity
     public bool IsDie;
 
     public Projectile[] projectiles;
-    public ProjectileBucket projectileBucket;
            Animator animator;
            AnimEventInvoker animEventInvoker;
     public ImageGenerator imageGenerator;
@@ -58,10 +57,10 @@ public class Sandbag : Entity
     }
     private void Start() {
         animEventInvoker.animCallback[(int)E_AnimState.Attack].AddListener( () => {
-            projectileBucket.ProjectileInstantiatorByDamage(this, projectiles[0], FinalData.Power * 1);
+            this.projectileBucket.ProjectileInstantiatorByDamage(this, projectiles[0], E_BucketPosition.Outer, FinalData.Power * 1);
         });
         animEventInvoker.animCallback[(int)E_AnimState.Jump].AddListener(() => {
-            projectileBucket.ProjectileInstantiatorByDamage(this, projectiles[1], FinalData.Power * 2);
+            this.projectileBucket.ProjectileInstantiatorByDamage(this, projectiles[1], E_BucketPosition.Outer, FinalData.Power * 2);
         });
         this.FinalData.HitStateRef = (ref int amount) => {imageGenerator.GenerateImage(amount);};
     }

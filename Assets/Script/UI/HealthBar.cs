@@ -23,6 +23,5 @@ public class HealthBar : MonoBehaviour
     public void SetSlider(){
         slider.value = (((float)ownerEntity.CurrentHealth / (float)ownerEntity.GetFinalData().MaxHP) * slider.maxValue);
         fill.color = gradient.Evaluate(slider.normalizedValue);
-        //slider.value = ((float)sandbag.sandbagData.CurHP / sandbag.sandbagData.MaxHP) * slider.maxValue;
     }
 }

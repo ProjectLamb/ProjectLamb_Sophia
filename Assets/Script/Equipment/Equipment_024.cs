@@ -18,7 +18,7 @@ public class Equipment_024 : AbstractEquipment { //, IPlayerDataApplicant{
     //public UnityAction UnequipState;
     //public UnityAction UpdateState;
     //public bool mIsInitialized = false;
-    public EntityAffector poisonAffector;
+    public PoisonState poisonAffector;
     private UnityAction<Entity, Entity> Projectile;
 
     public override void InitEquipment( int _selectIndex)
@@ -26,7 +26,7 @@ public class Equipment_024 : AbstractEquipment { //, IPlayerDataApplicant{
         equipmentName = "독개구리";
         this.Projectile += (_owner, _target) => {Poison(_owner, _target);};
         if(_selectIndex == 0){
-            this.EquipmentData.playerData.EntityDatas.ProjectileShootState += Projectile;
+            this.AddingData.playerData.EntityDatas.ProjectileShootState += Projectile;
         }
     }
 

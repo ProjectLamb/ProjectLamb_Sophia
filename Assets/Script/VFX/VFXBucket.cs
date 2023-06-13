@@ -32,6 +32,6 @@ public class VFXBucket : MonoBehaviour {
         visualStacks[vfxObject.affectorType] = vfxObject;
     }
     public void VFXDestroyForce(E_StateType type){ 
-        if(!visualStacks[type].Equals(null)) Destroy(visualStacks[type].gameObject);
+        //if(!visualStacks[type].Equals(null)) Destroy(visualStacks[type].gameObject);
     }
 }

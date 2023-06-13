@@ -22,8 +22,8 @@ public class Equipment_006 : AbstractEquipment { //, IPlayerDataApplicant{
         equipmentName = "반쯤남은위장크림";
         if(_selectIndex == 0){
             EntityData readedEntityData = PlayerDataManager.BasePlayerData.EntityDatas;
-            this.EquipmentData.playerData.EntityDatas.MoveSpeed   += readedEntityData.MoveSpeed * 0.1f;
-            this.EquipmentData.playerData.EntityDatas.AttackSpeed += readedEntityData.AttackSpeed * 0.05f;
+            this.AddingData.playerData.EntityDatas.MoveSpeed   += readedEntityData.MoveSpeed * 0.1f;
+            this.AddingData.playerData.EntityDatas.AttackSpeed += readedEntityData.AttackSpeed * 0.05f;
         }
         this.mIsInitialized = true;
     }

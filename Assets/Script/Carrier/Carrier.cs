@@ -8,14 +8,14 @@ using Newtonsoft.Json.Linq;
 
 //Carrier Modifier은 언제나 자기자신에게 버프를 준다.
 public enum E_CarrierType {
-    Portal = 0, Roulette, Projectile, Dynamics, Item
+    Portal = 0, Roulette, Attack, Nutral, Item
 }
 public class Carrier : MonoBehaviour {
-    public E_CarrierType carrierType;
+    public  E_CarrierType carrierType;
     public    VFXObject destroyEffect = null;
-    protected Collider  carrierCollider = null;
-    protected Rigidbody carrierRigidBody = null;
-    protected bool      isInitialized = false;
+    [SerializeField] protected Collider  carrierCollider = null;
+    [SerializeField] protected Rigidbody carrierRigidBody = null;
+    public bool      isInitialized = false;
 
     protected virtual void Awake() {
         TryGetComponent<Collider>(out carrierCollider);

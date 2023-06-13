@@ -13,16 +13,13 @@ public class WeaponManager : MonoBehaviour {
         if(OnChangeEvent == null) { throw new System.Exception("OnChangeEvent가 Null임 이렇게 되면 PlayerDataManger에 값변경 구독이 안되어 있는것. 인스펙터 확인 ㄱㄱ"); }   
     }
     private void Start() {
-        Weapon instantWaepon = Instantiate(weapon, transform);
-        this.weapon = instantWaepon;
-        this.weapon.Initialisze(player, projectileBucket);
+        this.weapon.Initialisze(player);
         OnChangeEvent.Invoke();
     }
     public void AssignWeapon(Weapon _weapon){
         foreach(Transform child in transform){ Destroy(child); }
-        Weapon instantWaepon = Instantiate(_weapon, transform);
-        this.weapon = instantWaepon;
-        this.weapon.Initialisze(player, projectileBucket);
+        this.weapon = _weapon;
+        this.weapon.Initialisze(player);
         OnChangeEvent.Invoke();
     }
 }
