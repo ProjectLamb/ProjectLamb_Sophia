@@ -4,8 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-
-[CreateAssetMenu(fileName = "KnockBack", menuName = "ScriptableObject/EntityAffector/Debuff/KnockBack", order = int.MaxValue)]
+[System.Serializable]
 public class KnockbackState : EntityAffector{
     /*아래 3줄은 EntityAffector 상속받아서 이미 있음*/
 //  protected AffectorStruct affectorStruct;

@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-[CreateAssetMenu(fileName = "ChargeAttack", menuName = "ScriptableObject/EntityAffector/Owner/ChargeAttack", order = int.MaxValue)]
-public class ChargeState : EntityAffector, IModifier {
+[System.Serializable]
+public class ChargeState : EntityAffector {
     /*아래 3줄은 EntityAffector 상속받아서 이미 있음*/
 //  protected AffectorStruct affectorStruct;
 //  protected Entity targetEntity;

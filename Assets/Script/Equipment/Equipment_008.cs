@@ -16,7 +16,7 @@ public class Equipment_008 : AbstractEquipment { //, IPlayerDataApplicant{
     //public UnityAction UnequipState;
     //public UnityAction UpdateState;
     //public bool mIsInitialized = false;
-    public EntityAffector sternAffector;
+    [SerializeField] public  SternState sternAffector;
 
     private UnityAction<Entity, Entity> Projectile;
     public override void InitEquipment( int _selectIndex)
@@ -24,7 +24,7 @@ public class Equipment_008 : AbstractEquipment { //, IPlayerDataApplicant{
         equipmentName = "황소용 올가미";
         this.Projectile += (Entity _owner, Entity _target) => {Sturn(_owner, _target);};
         if(_selectIndex == 0){
-            this.EquipmentData.playerData.EntityDatas.ProjectileShootState += Projectile;
+            this.AddingData.playerData.EntityDatas.ProjectileShootState += Projectile;
         }
         this.mIsInitialized = true;
     } 

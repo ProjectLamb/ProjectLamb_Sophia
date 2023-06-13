@@ -21,8 +21,8 @@ public class Equipment_007 : AbstractEquipment { //, IPlayerDataApplicant{
     {
         equipmentName = "유통기한 지난 전투 식량";
         if(_selectIndex == 0) {
-            this.EquipmentData.playerData.EntityDatas.MaxHP -= 10;
-            this.EquipmentData.playerData.EntityDatas.Tenacity += 0.5f;
+            this.AddingData.playerData.EntityDatas.MaxHP -= 10;
+            this.AddingData.playerData.EntityDatas.Tenacity += 0.5f;
         }
         this.mIsInitialized = true;
     }

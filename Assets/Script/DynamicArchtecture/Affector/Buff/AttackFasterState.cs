@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "AttackFaster", menuName = "ScriptableObject/EntityAffector/Buff/AttackFaster", order = int.MaxValue)]
+[System.Serializable]
 public class AttackFasterState : EntityAffector {
     /*아래 3줄은 EntityAffector 상속받아서 이미 있음*/
 //  protected AffectorStruct affectorStruct;
@@ -12,11 +12,12 @@ public class AttackFasterState : EntityAffector {
 //  protected Entity targetEntity;
 //  protected Entity ownerEntity;
 //  protected bool  isInitialized;
-    public float durationTime;
+    public float DurationTime;
+    public float Ratio;
 //  public Material skin;
 //  public VFXObject vfx;
-    public float Ratio;
     private float originAttackSpeed;
+
 
     public AttackFasterState(EntityAffector _eaData){
         this.affectorStruct = _eaData.affectorStruct;
@@ -32,25 +33,30 @@ public class AttackFasterState : EntityAffector {
     {
         EntityAffector EAInstance = base.Init(_owner, _target);
         AttackFasterState Instance = new AttackFasterState(EAInstance);
-        Instance.durationTime = this.durationTime;
+        Instance.DurationTime = this.DurationTime;
 //      Instance.skin = this.skin;
 //      Instance.vfx = this.vfx;
         Instance.Ratio = this.Ratio;
         Instance.isInitialized  = true;
         return Instance;
     }
+    public override void SetValue(List<float> objects)
+    {
+        DurationTime    = objects[0];
+        Ratio           = objects[1];
+    }
 
     IEnumerator Boost(){
         originAttackSpeed = this.ownerEntity.GetOriginData().AttackSpeed;
         this.ownerEntity.GetFinalData().AttackSpeed = originAttackSpeed * Ratio;
-        yield return YieldInstructionCache.WaitForSeconds(durationTime);
+        yield return YieldInstructionCache.WaitForSeconds(DurationTime);
         this.ownerEntity.GetFinalData().AttackSpeed = originAttackSpeed;
     }
 
 //  IEnumerator VisualActivate(){
 //      this.targetEntity.visualModulator.InteractByMaterial(skin);
 //      this.targetEntity.visualModulator.InteractByVFX(vfx);
-//      yield return YieldInstructionCache.WaitForSeconds(durationTime);
+//      yield return YieldInstructionCache.WaitForSeconds(DurationTime);
 //      this.targetEntity.visualModulator.RevertByMaterial(this.affectorStruct.affectorType);
 //      this.targetEntity.visualModulator.RevertByVFX(this.affectorStruct.affectorType);
 //  }

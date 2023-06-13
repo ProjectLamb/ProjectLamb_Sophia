@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Invincible", menuName = "ScriptableObject/EntityAffector/Buff/Invincible", order = int.MaxValue)]
+[System.Serializable]
 public class InvincibleState : EntityAffector {
     /*아래 3줄은 EntityAffector 상속받아서 이미 있음*/
 //  protected AffectorStruct affectorStruct;
@@ -12,10 +12,9 @@ public class InvincibleState : EntityAffector {
 //  protected Entity targetEntity;
 //  protected Entity ownerEntity;
 //  protected bool  isInitialized;
-    public float durationTime;
+    public float DurationTime;
     public Material skin;
     public VFXObject vfx;
-    public float Ratio;
 
     private int originLayer;
 
@@ -30,10 +29,9 @@ public class InvincibleState : EntityAffector {
     public override EntityAffector Init(Entity _owner, Entity _target) {
         EntityAffector EAInstance = base.Init(_owner, _target);
         InvincibleState Instance = new InvincibleState(EAInstance);
-        Instance.durationTime = this.durationTime;
+        Instance.DurationTime = this.DurationTime;
         Instance.skin = this.skin;
         Instance.vfx = this.vfx;
-        Instance.Ratio = this.Ratio;
         Instance.isInitialized  = true;
         return Instance;
     }
@@ -41,13 +39,13 @@ public class InvincibleState : EntityAffector {
     IEnumerator Boost(){
         originLayer = this.ownerEntity.gameObject.layer;
         this.ownerEntity.gameObject.layer = LayerMask.NameToLayer("Invincible");
-        yield return YieldInstructionCache.WaitForSeconds(durationTime);
+        yield return YieldInstructionCache.WaitForSeconds(DurationTime);
         this.ownerEntity.gameObject.layer = originLayer;
     }
     IEnumerator VisualActivate(){
         this.targetEntity.visualModulator.InteractByMaterial(skin);
         this.targetEntity.visualModulator.InteractByVFX(vfx);
-        yield return YieldInstructionCache.WaitForSeconds(durationTime);
+        yield return YieldInstructionCache.WaitForSeconds(DurationTime);
         this.targetEntity.visualModulator.RevertByMaterial(this.affectorStruct.affectorType);
         this.targetEntity.visualModulator.RevertByVFX(this.affectorStruct.affectorType);
     }

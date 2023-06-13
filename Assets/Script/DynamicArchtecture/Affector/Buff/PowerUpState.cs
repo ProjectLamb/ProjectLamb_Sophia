@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "PowerUp", menuName = "ScriptableObject/EntityAffector/Buff/PowerUp", order = int.MaxValue)]
+[System.Serializable]
 public class PowerUpState : EntityAffector {
     /*아래 3줄은 EntityAffector 상속받아서 이미 있음*/
 //  protected AffectorStruct affectorStruct;
@@ -12,10 +12,10 @@ public class PowerUpState : EntityAffector {
 //  protected Entity targetEntity;
 //  protected Entity ownerEntity;
 //  protected bool  isInitialized;
-    public float durationTime;
+    public float DurationTime;
+    public float Ratio;
     public Material skin;
     public VFXObject vfx;
-    public float Ratio;
 
     private int originPower;
     public PowerUpState(EntityAffector _eaData){
@@ -30,7 +30,7 @@ public class PowerUpState : EntityAffector {
     public override EntityAffector Init(Entity _owner, Entity _target) {
         EntityAffector EAInstance = base.Init(_owner, _target);
         PowerUpState Instance = new PowerUpState(EAInstance);
-        Instance.durationTime = this.durationTime;
+        Instance.DurationTime = this.DurationTime;
         Instance.skin = this.skin;
         Instance.vfx = this.vfx;
         Instance.Ratio = this.Ratio;
@@ -43,16 +43,22 @@ public class PowerUpState : EntityAffector {
     //    targetEntity.AffectHandler(affectorStruct);
     //}
 
+    public override void SetValue(List<float> objects)
+    {
+        DurationTime    = objects[0];
+        Ratio           = objects[1];
+    }
+
     IEnumerator Boost(){
         originPower = this.ownerEntity.GetOriginData().Power;
         this.ownerEntity.GetFinalData().Power = (int)(originPower * Ratio + 0.5f);
-        yield return YieldInstructionCache.WaitForSeconds(durationTime);
+        yield return YieldInstructionCache.WaitForSeconds(DurationTime);
         this.ownerEntity.GetFinalData().Power = originPower;
     }
     IEnumerator VisualActivate(){
         this.targetEntity.visualModulator.InteractByMaterial(skin);
         this.targetEntity.visualModulator.InteractByVFX(vfx);
-        yield return YieldInstructionCache.WaitForSeconds(durationTime);
+        yield return YieldInstructionCache.WaitForSeconds(DurationTime);
         this.targetEntity.visualModulator.RevertByMaterial(this.affectorStruct.affectorType);
         this.targetEntity.visualModulator.RevertByVFX(this.affectorStruct.affectorType);
     }

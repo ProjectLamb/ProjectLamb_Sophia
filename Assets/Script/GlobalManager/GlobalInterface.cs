@@ -57,10 +57,13 @@ public interface IVisuallyInteractable {
     public void Revert();
 }
 
-public interface ColliderHandeler{
+public interface IColliderHandleable{
     public void HandleCollider(){}
 }
 
+public interface ISetByObjectable{
+    public void SetByObject(float[] objects);
+}
 
 public interface IDestroyHandler {
     public void DestroySelf(UnityAction _callback);

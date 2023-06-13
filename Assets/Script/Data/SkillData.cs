@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+/*
 [System.Serializable]
 public class SkillData
 {
@@ -167,3 +168,4 @@ public class SkillData
         return res;
     }
 }
+*/

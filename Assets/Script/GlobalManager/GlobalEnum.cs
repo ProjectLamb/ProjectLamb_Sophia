@@ -1,3 +1,6 @@
+using System;
+using UnityEngine;
+
 public enum E_StateType{
     //0 ~ 99 // 디버프
     Move        = 0, Dash, Attack, Skill, GetDamaged, Die, Trigger,
@@ -10,4 +13,21 @@ public enum E_StateType{
 
 public enum E_AnimState {
     Idle, Attack, Jump, Die
+}
+
+public enum E_BucketPosition {
+    Inner, Outer
+}
+
+public enum E_SkillType {
+    Neutral, Weapon
+}
+[SerializeField]
+public enum E_SkillKey {
+    Q, E, R
+}
+
+[SerializeField]
+public enum E_SkillRank {
+    Normal, Rare, Epic
 }
