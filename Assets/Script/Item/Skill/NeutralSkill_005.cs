@@ -5,8 +5,8 @@ using UnityEngine;
 using UnityEngine.Events;
 using AYellowpaper.SerializedCollections;
 
-public class NutralSkill_004 : NutralSkill {
-//  public string                                   skillName;
+public class NeutralSkill_005 : NeutralSkill {
+    //  public string                                   skillName;
 //  public string                                   description;
 //  public  SKILL_RANK                              skillRank;
 //  public  Player                                  player;
@@ -15,6 +15,17 @@ public class NutralSkill_004 : NutralSkill {
 //  public  bool                                    IsReady = true;
 //  public  float                                   PassedTime = 0f;
 //  public SerializedDictionary<SKILL_RANK, float>  coolTime = new SerializedDictionary<SKILL_RANK, float>();
+
+    public PowerUpState powerUpState;
+
+    public List<float>  NumericQ = new List<float> {0.3f, 0.5f, 0.7f};
+    public float        DurationQ = 5f;
+    public List<float>  NumericE = new List<float> {0.3f, 0.5f, 0.7f};
+    public float        DurationE = 5f;
+    public List<float>  NumericR = new List<float> {0.5f, 0.7f, 1f};
+    public float        DurationR = 10f;
+    
+
 
 //  public void Use(SKILL_KEY key){
 //      switch(key) {
@@ -26,16 +37,26 @@ public class NutralSkill_004 : NutralSkill {
 //              break;
 //      }
 //  }
-
     private void Awake() {
-        this.skillName = "시간은 누구에게나 평등하지";
+        skillName = "공격력 증폭";    
         coolTime?.Add(SKILL_RANK.NORMAL  , 15f);
         coolTime?.Add(SKILL_RANK.RARE    , 15f);
         coolTime?.Add(SKILL_RANK.EPIC    , 15f);
     }
 
-    protected override void UseQ(){return;}
-    protected override void UseE(){return;}
-    protected override void UseR(){return;}
-
+    protected override void UseQ(){
+        powerUpState.Ratio = NumericQ[(int)skillRank];
+        powerUpState.DurationTime = DurationQ;
+        powerUpState.Init(player, player).Modifiy();
+    }
+    protected override void UseE(){
+        powerUpState.Ratio = NumericE[(int)skillRank];
+        powerUpState.DurationTime = DurationE;
+        powerUpState.Init(player, player).Modifiy();
+    }
+    protected override void UseR(){
+        powerUpState.Ratio = NumericR[(int)skillRank];
+        powerUpState.DurationTime = DurationR;
+        powerUpState.Init(player, player).Modifiy();
+    }
 }

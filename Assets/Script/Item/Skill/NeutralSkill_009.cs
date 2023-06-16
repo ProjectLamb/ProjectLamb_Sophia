@@ -1,12 +1,13 @@
-using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using AYellowpaper.SerializedCollections;
 
+using Sophia_Carriers;
 
-public class NutralSkill_006 : NutralSkill {
 
+public class NeutralSkill_009 : NeutralSkill {
 //  public string                                   skillName;
 //  public string                                   description;
 //  public  SKILL_RANK                              skillRank;
@@ -16,13 +17,19 @@ public class NutralSkill_006 : NutralSkill {
 //  public  bool                                    IsReady = true;
 //  public  float                                   PassedTime = 0f;
 //  public SerializedDictionary<SKILL_RANK, float>  coolTime = new SerializedDictionary<SKILL_RANK, float>();
-    public BarrierState     barrierState;
-    public List<float>  NumericQ = new List<float> {0.2f, 0.3f, 0.4f};
-    public float        DurationQ = 5f;
-    public List<float>  NumericE = new List<float> {0.2f, 0.3f, 0.4f};
-    public float        DurationE = 5f;
-    public List<float>  NumericR = new List<float> {0.4f, 0.5f, 0.7f};
-    public float        DurationR = 10f;
+
+    public ProjectileGenState   PGState;
+    //public PushState          pushState;
+    //public PullState          pullState;
+    //public BoundedState       bloundedState;
+    public Projectile           ProjectileQ;
+    public Projectile           ProjectileE;
+    public Projectile           ProjectileR;
+    protected bool              isReady = true;
+    public List<float>          NumericQ = new List<float> {0.1f, 0.15f, 0.2f};
+    public List<float>          NumericE = new List<float> {0.1f, 0.15f, 0.2f};
+    public List<float>          NumericR = new List<float> {0.2f, 0.3f, 0.4f};
+
 
 //  public void Use(SKILL_KEY key){
 //      switch(key) {
@@ -35,25 +42,14 @@ public class NutralSkill_006 : NutralSkill {
 //      }
 //  }
     private void Awake() {
-        skillName = "보호막 증폭";
+        skillName = "모두 발사!";    
         coolTime?.Add(SKILL_RANK.NORMAL  , 15f);
         coolTime?.Add(SKILL_RANK.RARE    , 15f);
         coolTime?.Add(SKILL_RANK.EPIC    , 15f);
     }
+    private void Start(){ }
 
-    protected override void UseQ(){
-        barrierState.DurationTime = DurationQ;
-        barrierState.Ratio = NumericQ[(int)skillRank];
-        barrierState.Init(player,player).Modifiy();
-    }
-    protected override void UseE(){
-        barrierState.DurationTime = DurationE;
-        barrierState.Ratio = NumericE[(int)skillRank];
-        barrierState.Init(player,player).Modifiy();
-    }
-    protected override void UseR(){
-        barrierState.DurationTime = DurationR;
-        barrierState.Ratio = NumericR[(int)skillRank];
-        barrierState.Init(player,player).Modifiy();
-    }
+    protected override void UseQ(){ }
+    protected override void UseE(){ }
+    protected override void UseR(){ }
 }

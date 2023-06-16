@@ -15,9 +15,11 @@ public abstract class AbstractSkill : MonoBehaviour
     public bool                                     IsReady = true;
     public float                                    PassedTime = 0f;
     public SerializedDictionary<SKILL_RANK, float>  coolTime = new SerializedDictionary<SKILL_RANK, float>();
+    protected SkillManager                          skillManager;
 
     public virtual void Init(Player _player) {
         this.player = _player;
+        skillManager = _player.skillManager;
         IsReady = true;
         PassedTime = 0;
     }

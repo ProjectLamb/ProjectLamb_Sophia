@@ -14,6 +14,7 @@ namespace Sophia_Carriers
     public class Melee_MaceProjectile : Projectile {
 //      public      VFXObject       DestroyEffect       = null;
 //      public      CARRIER_TYPE    CarrierType;
+//      public      BUCKET_POSITION BucketPosition;
 //      public      bool            IsInitialized       = false;
 //      public      bool            IsActivated         = false;
 //      public      bool            IsCloned         = false;

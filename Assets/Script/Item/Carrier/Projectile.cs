@@ -12,17 +12,18 @@ using Sophia_Carriers;
 namespace Sophia_Carriers {
     public class Projectile : Carrier
     {
-//       public      VFXObject       DestroyEffect       = null;
-//       public      CARRIER_TYPE    CarrierType;
-//       public      bool            IsInitialized       = false;
-//       public      bool            IsActivated         = false;
-//       public      bool            IsCloned         = false;
-//       protected   Collider        carrierCollider     = null;
-//       protected   Rigidbody       carrierRigidBody    = null;
+//      public      VFXObject           DestroyEffect       = null;
+//      public      CARRIER_TYPE        CarrierType;
+//      public      BUCKET_POSITION     BucketPosition;
+//      public      bool                IsInitialized       = false;
+//      public      bool                IsActivated         = false;
+//      public      bool                IsCloned         = false;
+//      protected   Collider            carrierCollider     = null;
+//      protected   Rigidbody           carrierRigidBody    = null;
 
         [SerializeField] public VFXObject       HitEffect = null;
         [SerializeField] public ParticleSystem  ProjectileParticle = null;
-
+        
         [SerializeField] public float           ProjecttileDamage;
         [SerializeField] public float           DestroyTime = 0.5f;
         [SerializeField] public float           ColliderTime = 0.5f;
@@ -86,14 +87,14 @@ namespace Sophia_Carriers {
             Invoke("ColliderDisenabled", ColliderTime);
         }
 
-        public override void EnableSelf() {gameObject.SetActive(true); this.IsActivated = true; }
-        public override void DisableSelf() {gameObject.SetActive(false); this.IsActivated = false;}
-        public override void DestroySelf()  {
-            if(DestroyEffect != null){
-                Instantiate(DestroyEffect, transform.position, Quaternion.identity).Initialize();
-            }
-            Destroy(gameObject);
-        }
+        // public override void EnableSelf() {gameObject.SetActive(true); this.IsActivated = true; }
+        // public override void DisableSelf() {gameObject.SetActive(false); this.IsActivated = false;}
+        // public override void DestroySelf()  {
+        //     if(DestroyEffect != null){
+        //         Instantiate(DestroyEffect, transform.position, Quaternion.identity);
+        //     }
+        //     Destroy(gameObject);
+        // }
         // public virtual void SetScale(float _sizeRatio){transform.localScale *= _sizeRatio;}
         protected virtual void OnTriggerEnter(Collider _other) {
             CheckException();

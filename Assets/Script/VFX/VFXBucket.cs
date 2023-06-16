@@ -1,37 +1,60 @@
+using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+/// <summary>
+/// VFXObject가 생성되는 버켓이다. 주로 Entity내 자식오브젝트로 포함됨 <br/>
+/// > Method : 파괴되는 타이밍
+/// </summary>
 public class VFXBucket : MonoBehaviour {
-    public Dictionary<STATE_TYPE, VFXObject> visualStacks;
+    public Dictionary<STATE_TYPE, VFXObject> VisualStacks = new Dictionary<STATE_TYPE, VFXObject>();
     private void Awake() {
-        visualStacks = new Dictionary<STATE_TYPE, VFXObject>();   
-    }
-    public void VFXInstantiator(VFXObject vfx){
-        VFXObject vfxObject = Instantiate(vfx, transform);
-        vfxObject.transform.localScale *= transform.localScale.z;
-        //HandleNoneStacking(vfxObject);
-        vfxObject.Initialize();
-    }
-
-    public void GameObjectInstantiator (GameObject obj){
-        GameObject effectObject = Instantiate(obj, transform);
-        effectObject.transform.localScale *= transform.localScale.z;
-    }
-
-    public void HandleStackingVFX(VFXObject vfxObject){
-        
-    }
-
-    public void HandleNoneStacking(VFXObject vfxObject){
-        if(visualStacks.ContainsKey(vfxObject.affectorType).Equals(false)) {
-            visualStacks.Add(vfxObject.affectorType, vfxObject);
+        foreach(STATE_TYPE E in Enum.GetValues(typeof(STATE_TYPE))){
+            VisualStacks.Add(E, null);
         }
-        visualStacks[vfxObject.affectorType] = vfxObject;
     }
-    public void VFXDestroyForce(STATE_TYPE type){ 
-        //if(!visualStacks[type].Equals(null)) Destroy(visualStacks[type].gameObject);
+    public void RemoveStateByType(STATE_TYPE _type){ VisualStacks[_type] = null; }
+    public void VFXInstantiator(VFXObject _vfx){
+        switch(_vfx.BucketStaking){
+            case BUCKET_STACKING_TYPE.NONE_STACK : 
+            {
+                STATE_TYPE stateType = _vfx.AffectorType;
+                if(VisualStacks.TryGetValue(stateType, out VFXObject value)){
+                    //null이 아니라면 더 쌓을 수 없으므로 리턴
+                    if(value != null){return;}
+                }
+                VFXObject vfxObject = Instantiate(_vfx, transform);
+                vfxObject.OnDestroyAction += (STATE_TYPE type) => {RemoveStateByType(type);};
+                vfxObject.SetScale(transform.localScale.z);
+                VisualStacks[stateType] = vfxObject;
+                VisualStacks[stateType].DestroyVFX();
+                break;
+            }
+            case BUCKET_STACKING_TYPE.STACK : 
+            {
+                VFXObject vfxObject = Instantiate(_vfx, transform);
+                vfxObject.SetScale(transform.localScale.z);
+                vfxObject.DestroyVFX();
+                break;
+            }
+        }
+    }
+    public GameObject VFXGameObjectInstantiator(Entity _owner, GameObject _go){
+        //재작성하기
+        return null;
+    }
+
+    public void RevertVFX(STATE_TYPE _stateType){
+        if(VisualStacks.TryGetValue(_stateType, out VFXObject value)){
+            if(value == null) {return;}
+            VisualStacks[_stateType].DestroyVFXForce();
+            VisualStacks[_stateType] = null;
+        }
+    }
+    public Quaternion GetForwardingAngle(Transform _useCarrier){
+        return Quaternion.Euler(transform.eulerAngles + _useCarrier.transform.eulerAngles);
     }
 }
