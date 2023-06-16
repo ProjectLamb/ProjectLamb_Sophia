@@ -4,13 +4,14 @@ using Sophia_Carriers;
 
 namespace Sophia_Carriers {
     public class ItemGear : Carrier {
-//       public      VFXObject       DestroyEffect       = null;
-//       public      CARRIER_TYPE    CarrierType;
-//       public      bool            IsInitialized       = false;
-//       public      bool            IsActivated         = false;
-//       public      bool            IsCloned         = false;
-//       protected   Collider        carrierCollider     = null;
-//       protected   Rigidbody       carrierRigidBody    = null;
+//      public      VFXObject       DestroyEffect       = null;
+//      public      CARRIER_TYPE    CarrierType;
+//      public      BUCKET_POSITION BucketPosition;
+//      public      bool            IsInitialized       = false;
+//      public      bool            IsActivated         = false;
+//      public      bool            IsCloned         = false;
+//      protected   Collider        carrierCollider     = null;
+//      protected   Rigidbody       carrierRigidBody    = null;
         
         [SerializeField] bool IsTracking = false;
         [SerializeField] private float flowSpeed = 5;
@@ -44,14 +45,14 @@ namespace Sophia_Carriers {
     
         private void OnEnable() { Invoke("ActivateTracking", 1f); }
         
-        public override void EnableSelf() { this.IsActivated = true; gameObject.SetActive(true);}
-        public override void DisableSelf() { this.IsActivated = false; gameObject.SetActive(false);}
-        public override void DestroySelf()  {
-            if(DestroyEffect != null){
-                Instantiate(DestroyEffect, transform.position, Quaternion.identity).Initialize();
-            }
-            Destroy(this);
-        }
+        // public override void EnableSelf() {gameObject.SetActive(true); this.IsActivated = true; }
+        // public override void DisableSelf() {gameObject.SetActive(false); this.IsActivated = false;}
+        // public override void DestroySelf()  {
+        //     if(DestroyEffect != null){
+        //         Instantiate(DestroyEffect, transform.position, Quaternion.identity);
+        //     }
+        //     Destroy(gameObject);
+        // }
     
         private void OnTriggerEnter(Collider other) {
             if(!other.TryGetComponent<Player>(out Player player)){return;}

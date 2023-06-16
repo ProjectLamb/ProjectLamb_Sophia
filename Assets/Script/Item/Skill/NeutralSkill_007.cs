@@ -1,13 +1,12 @@
-using System.Linq;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using AYellowpaper.SerializedCollections;
 
-using Sophia_Carriers;
 
+public class NeutralSkill_007 : NeutralSkill {
 
-public class NutralSkill_009 : NutralSkill {
 //  public string                                   skillName;
 //  public string                                   description;
 //  public  SKILL_RANK                              skillRank;
@@ -18,18 +17,14 @@ public class NutralSkill_009 : NutralSkill {
 //  public  float                                   PassedTime = 0f;
 //  public SerializedDictionary<SKILL_RANK, float>  coolTime = new SerializedDictionary<SKILL_RANK, float>();
 
-    public ProjectileGenState   PGState;
-    //public PushState          pushState;
-    //public PullState          pullState;
-    //public BoundedState       bloundedState;
-    public Projectile           ProjectileQ;
-    public Projectile           ProjectileE;
-    public Projectile           ProjectileR;
+    public MoveFasterState      moveFasterState; 
     protected bool              isReady = true;
-    public List<float>          NumericQ = new List<float> {0.1f, 0.15f, 0.2f};
-    public List<float>          NumericE = new List<float> {0.1f, 0.15f, 0.2f};
-    public List<float>          NumericR = new List<float> {0.2f, 0.3f, 0.4f};
-
+    public List<float>          NumericQ = new List<float> {1.2f, 1.3f, 1.4f};
+    public float                DurationQ = 5f;
+    public List<float>          NumericE = new List<float> {1.2f, 1.3f, 1.4f};
+    public float                DurationE = 5f;
+    public List<float>          NumericR = new List<float> {1.4f, 1.5f, 1.7f};
+    public float                DurationR = 10f;
 
 //  public void Use(SKILL_KEY key){
 //      switch(key) {
@@ -42,14 +37,25 @@ public class NutralSkill_009 : NutralSkill {
 //      }
 //  }
     private void Awake() {
-        skillName = "모두 발사!";    
+        skillName = "이동속도 증폭";    
         coolTime?.Add(SKILL_RANK.NORMAL  , 15f);
         coolTime?.Add(SKILL_RANK.RARE    , 15f);
         coolTime?.Add(SKILL_RANK.EPIC    , 15f);
     }
-    private void Start(){ }
 
-    protected override void UseQ(){ }
-    protected override void UseE(){ }
-    protected override void UseR(){ }
+    protected override void UseQ(){
+        moveFasterState.DurationTime = DurationQ;
+        moveFasterState.Ratio = NumericQ[(int)skillRank];
+        moveFasterState.Init(player,player).Modifiy();
+    }
+    protected override void UseE(){
+        moveFasterState.DurationTime = DurationE;
+        moveFasterState.Ratio = NumericE[(int)skillRank];
+        moveFasterState.Init(player,player).Modifiy();
+    }
+    protected override void UseR(){
+        moveFasterState.DurationTime = DurationR;
+        moveFasterState.Ratio = NumericR[(int)skillRank];
+        moveFasterState.Init(player,player).Modifiy();
+    }
 }

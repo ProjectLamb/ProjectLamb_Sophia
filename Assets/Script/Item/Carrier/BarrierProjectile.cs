@@ -90,9 +90,9 @@ namespace Sophia_Carriers
 //      public override void DisableSelf() {gameObject.SetActive(false); this.IsActivated = false;}
 //      public override void DestroySelf()  {
 //          if(DestroyEffect != null){
-//              Instantiate(DestroyEffect, transform.position, Quaternion.identity).Initialize();
+//              Instantiate(DestroyEffect, transform.position, Quaternion.identity);
 //          }
-//          Destroy(this);
+//          Destroy(gameObject);
 //      }
 
 //      public void GetDamaged(int _amount){
