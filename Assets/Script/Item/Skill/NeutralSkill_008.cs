@@ -5,7 +5,7 @@ using UnityEngine;
 using AYellowpaper.SerializedCollections;
 
 /*
-public class NutralSkill_008 : NutralSkill {
+public class NeutralSkill_008 : NeutralSkill {
 //  public string                                   skillName;
 //  public string                                   description;
 //  public  SKILL_RANK                              skillRank;

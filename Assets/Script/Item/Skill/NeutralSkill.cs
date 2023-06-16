@@ -5,7 +5,7 @@ using UnityEngine;
 using AYellowpaper.SerializedCollections;
 
 [System.Serializable]
-public abstract class NutralSkill : AbstractSkill {
+public abstract class NeutralSkill : AbstractSkill {
     public override void Init(Player _player) {
         base.Init(_player);
     }

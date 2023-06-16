@@ -1481,7 +1481,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &576962644
 Transform:
   m_ObjectHideFlags: 0
@@ -2178,6 +2178,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2336325239599771861, guid: c6c8706211f194706b90866ad4106f8a,
+        type: 3}
+      propertyPath: model
+      value: 
+      objectReference: {fileID: 1003139496}
     - target: {fileID: 2336325239599771863, guid: c6c8706211f194706b90866ad4106f8a,
         type: 3}
       propertyPath: m_Name
@@ -2731,6 +2736,12 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 999032463}
   m_CullTransparentMesh: 1
+--- !u!1 &1003139496 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2336325239971760077, guid: c6c8706211f194706b90866ad4106f8a,
+    type: 3}
+  m_PrefabInstance: {fileID: 808724500}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1004621408 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5207131255814129613, guid: 6d97f0a72f6614e7f96e0ff4c4175c14,
@@ -4497,6 +4508,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a70fe6d156f1747e0869574e9a93d88e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ownerEntity: {fileID: 0}
   slider: {fileID: 2000463811}
   fill: {fileID: 1197471798}
   gradient:
@@ -5037,6 +5049,12 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 576962644}
     m_Modifications:
+    - target: {fileID: 122609732928937657, guid: 0c6508569bcdc4c6ea683cc18e40ee07,
+        type: 3}
+      propertyPath: DestroyEffect
+      value: 
+      objectReference: {fileID: -1363925515658583853, guid: 210cb92ba86f04db8aba9aad91edd86a,
+        type: 3}
     - target: {fileID: 122609732928937659, guid: 0c6508569bcdc4c6ea683cc18e40ee07,
         type: 3}
       propertyPath: m_Name
@@ -5700,6 +5718,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 716392346991342448, guid: 4972076bb91cd405a90444c000742bf0,
+        type: 3}
+      propertyPath: DestroyEffect
+      value: 
+      objectReference: {fileID: -1363925515658583853, guid: 210cb92ba86f04db8aba9aad91edd86a,
+        type: 3}
     - target: {fileID: 716392346991342450, guid: 4972076bb91cd405a90444c000742bf0,
         type: 3}
       propertyPath: m_Name
@@ -5769,6 +5793,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1077189649874707016, guid: c722d341241e1427a94c16bd377b0e01,
+        type: 3}
+      propertyPath: DestroyEffect
+      value: 
+      objectReference: {fileID: -1363925515658583853, guid: 210cb92ba86f04db8aba9aad91edd86a,
+        type: 3}
     - target: {fileID: 1077189651015970630, guid: c722d341241e1427a94c16bd377b0e01,
         type: 3}
       propertyPath: m_Name
@@ -5789,6 +5819,12 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 576962644}
     m_Modifications:
+    - target: {fileID: 1264052914131430101, guid: e350eae3c80ac491389f888a0c9ae5dc,
+        type: 3}
+      propertyPath: DestroyEffect
+      value: 
+      objectReference: {fileID: -1363925515658583853, guid: 210cb92ba86f04db8aba9aad91edd86a,
+        type: 3}
     - target: {fileID: 1264052914131430103, guid: e350eae3c80ac491389f888a0c9ae5dc,
         type: 3}
       propertyPath: m_RootOrder
@@ -5918,6 +5954,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: Equipment_006
       objectReference: {fileID: 0}
+    - target: {fileID: 1289929861626565010, guid: 9e5e7dbf9b7f84bf1bf2240fe0aa3323,
+        type: 3}
+      propertyPath: DestroyEffect
+      value: 
+      objectReference: {fileID: -1363925515658583853, guid: 210cb92ba86f04db8aba9aad91edd86a,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9e5e7dbf9b7f84bf1bf2240fe0aa3323, type: 3}
 --- !u!4 &1477716412346485709
@@ -6002,6 +6044,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1604309656032765903, guid: 332259fe367124991b1c954128af3660,
+        type: 3}
+      propertyPath: DestroyEffect
+      value: 
+      objectReference: {fileID: -1363925515658583853, guid: 210cb92ba86f04db8aba9aad91edd86a,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 332259fe367124991b1c954128af3660, type: 3}
 --- !u!1 &1955583778269061912
@@ -6090,6 +6138,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3503394259080858190, guid: 1d07d582bcbea4424b13abf9ea4cdd7d,
+        type: 3}
+      propertyPath: DestroyEffect
+      value: 
+      objectReference: {fileID: -1363925515658583853, guid: 210cb92ba86f04db8aba9aad91edd86a,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1d07d582bcbea4424b13abf9ea4cdd7d, type: 3}
 --- !u!1001 &2733053254225435865
@@ -6159,6 +6213,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2733053253118221003, guid: c980c266507d54dddad4698143ac569e,
+        type: 3}
+      propertyPath: DestroyEffect
+      value: 
+      objectReference: {fileID: -1363925515658583853, guid: 210cb92ba86f04db8aba9aad91edd86a,
+        type: 3}
     - target: {fileID: 2733053254091429400, guid: c980c266507d54dddad4698143ac569e,
         type: 3}
       propertyPath: m_Name
@@ -6335,6 +6395,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: Equipment_013
       objectReference: {fileID: 0}
+    - target: {fileID: 4342142607820937130, guid: b9af685436d0d43e2a2899391d4fc44e,
+        type: 3}
+      propertyPath: DestroyEffect
+      value: 
+      objectReference: {fileID: -1363925515658583853, guid: 210cb92ba86f04db8aba9aad91edd86a,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b9af685436d0d43e2a2899391d4fc44e, type: 3}
 --- !u!23 &5169758569028702974
@@ -6403,6 +6469,12 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 576962644}
     m_Modifications:
+    - target: {fileID: 5207131254710368785, guid: 6d97f0a72f6614e7f96e0ff4c4175c14,
+        type: 3}
+      propertyPath: DestroyEffect
+      value: 
+      objectReference: {fileID: -1363925515658583853, guid: 210cb92ba86f04db8aba9aad91edd86a,
+        type: 3}
     - target: {fileID: 5207131254710368791, guid: 6d97f0a72f6614e7f96e0ff4c4175c14,
         type: 3}
       propertyPath: m_Name
@@ -6477,6 +6549,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: Equipment_012
       objectReference: {fileID: 0}
+    - target: {fileID: 5526583552179001793, guid: e6d90225bcc6e4e8e9042cfde1a3270c,
+        type: 3}
+      propertyPath: DestroyEffect
+      value: 
+      objectReference: {fileID: -1363925515658583853, guid: 210cb92ba86f04db8aba9aad91edd86a,
+        type: 3}
     - target: {fileID: 5526583552179001795, guid: e6d90225bcc6e4e8e9042cfde1a3270c,
         type: 3}
       propertyPath: m_RootOrder
@@ -6601,6 +6679,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: Equipment_024
       objectReference: {fileID: 0}
+    - target: {fileID: 6130150636962737735, guid: f681dff45d3234e52aea0795582cffe3,
+        type: 3}
+      propertyPath: DestroyEffect
+      value: 
+      objectReference: {fileID: -1363925515658583853, guid: 210cb92ba86f04db8aba9aad91edd86a,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f681dff45d3234e52aea0795582cffe3, type: 3}
 --- !u!1001 &6446373677306703202
@@ -6615,6 +6699,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: Equipment_030
       objectReference: {fileID: 0}
+    - target: {fileID: 6446373677799701425, guid: e2af39ac6f4d34f3c9ec84197eb8c300,
+        type: 3}
+      propertyPath: DestroyEffect
+      value: 
+      objectReference: {fileID: -1363925515658583853, guid: 210cb92ba86f04db8aba9aad91edd86a,
+        type: 3}
     - target: {fileID: 6446373677799701427, guid: e2af39ac6f4d34f3c9ec84197eb8c300,
         type: 3}
       propertyPath: m_RootOrder
@@ -6684,6 +6774,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: Equipment_010
       objectReference: {fileID: 0}
+    - target: {fileID: 6576882659887265609, guid: 8d2b270c664694db6bda6c488f160bfc,
+        type: 3}
+      propertyPath: DestroyEffect
+      value: 
+      objectReference: {fileID: -1363925515658583853, guid: 210cb92ba86f04db8aba9aad91edd86a,
+        type: 3}
     - target: {fileID: 6576882659887265615, guid: 8d2b270c664694db6bda6c488f160bfc,
         type: 3}
       propertyPath: m_RootOrder
@@ -53246,6 +53342,12 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 576962644}
     m_Modifications:
+    - target: {fileID: 6776203288192260896, guid: 40e25890ce8f94975b9ae35e8b40902e,
+        type: 3}
+      propertyPath: DestroyEffect
+      value: 
+      objectReference: {fileID: -1363925515658583853, guid: 210cb92ba86f04db8aba9aad91edd86a,
+        type: 3}
     - target: {fileID: 6776203288192260898, guid: 40e25890ce8f94975b9ae35e8b40902e,
         type: 3}
       propertyPath: m_Name
@@ -53320,6 +53422,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: Equipment_003
       objectReference: {fileID: 0}
+    - target: {fileID: 6907099529191916857, guid: aa39ed1af8f404dcab3d39a5d6688726,
+        type: 3}
+      propertyPath: DestroyEffect
+      value: 
+      objectReference: {fileID: -1363925515658583853, guid: 210cb92ba86f04db8aba9aad91edd86a,
+        type: 3}
     - target: {fileID: 6907099529191916859, guid: aa39ed1af8f404dcab3d39a5d6688726,
         type: 3}
       propertyPath: m_RootOrder
@@ -53444,6 +53552,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6956788069042158308, guid: 3a402eb8694fd453d9f1a20a41ab344f,
+        type: 3}
+      propertyPath: DestroyEffect
+      value: 
+      objectReference: {fileID: -1363925515658583853, guid: 210cb92ba86f04db8aba9aad91edd86a,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3a402eb8694fd453d9f1a20a41ab344f, type: 3}
 --- !u!4 &7181508440584443414
@@ -53473,6 +53587,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: Equipment_001
       objectReference: {fileID: 0}
+    - target: {fileID: 7368616912636225567, guid: 82353812de39246df865b2794f1d532b,
+        type: 3}
+      propertyPath: DestroyEffect
+      value: 
+      objectReference: {fileID: -1363925515658583853, guid: 210cb92ba86f04db8aba9aad91edd86a,
+        type: 3}
     - target: {fileID: 7368616913530598522, guid: 82353812de39246df865b2794f1d532b,
         type: 3}
       propertyPath: m_RootOrder
@@ -53537,6 +53657,12 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 576962644}
     m_Modifications:
+    - target: {fileID: 8477232326873877473, guid: f838e79f209794869ab43f9d2814b9f6,
+        type: 3}
+      propertyPath: DestroyEffect
+      value: 
+      objectReference: {fileID: -1363925515658583853, guid: 210cb92ba86f04db8aba9aad91edd86a,
+        type: 3}
     - target: {fileID: 8477232326873877503, guid: f838e79f209794869ab43f9d2814b9f6,
         type: 3}
       propertyPath: m_RootOrder

@@ -88,7 +88,7 @@ public class Enemy : Entity
         this.model.TryGetComponent<Animator>(out animator);
         this.model.TryGetComponent<AnimEventInvoker>(out animEventInvoker);
 
-        DieParticle.GetComponent<VFXObject>().onDestroyEvent.AddListener(DestroySelf);
+        DieParticle.GetComponent<VFXObject>().OnDestroyEvent.AddListener(DestroySelf);
         
         BaseEnemyData = new EntityData(ScriptableED);
         FinalData = BaseEnemyData;

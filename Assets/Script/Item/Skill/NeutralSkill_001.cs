@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using AYellowpaper.SerializedCollections;
 
-public class NutralSkill_001 : NutralSkill {
+public class NeutralSkill_001 : NeutralSkill {
 //  public string                                   skillName;
 //  public string                                   description;
 //  public  SKILL_RANK                              skillRank;

@@ -6,7 +6,7 @@ using UnityEngine.Events;
 using AYellowpaper.SerializedCollections;
 using Sophia_Carriers;
 
-public class NutralSkill_002 : NutralSkill {
+public class NeutralSkill_002 : NeutralSkill {
 //  public string                                   skillName;
 //  public string                                   description;
 //  public  SKILL_RANK                              skillRank;
@@ -51,7 +51,9 @@ public class NutralSkill_002 : NutralSkill {
     protected override void UseQ(){
         onHitState.Ratio = NumericQ[(int)skillRank];
         onHitState.Init(player, player);
-        Projectile onHitProjectile = onHitState.ActivateOnHit(weapon.AttackProjectiles[0]);
+        Projectile onHitProjectile = onHitState.ActivateOnHit(
+            weapon.AttackProjectiles[0]
+        );
         ParticleSystem.MainModule particleModule = onHitProjectile.GetComponent<ParticleSystem>().main;
         particleModule.startColor = Color.red;
         weapon.OnHitProjectiles.Enqueue(onHitProjectile);
@@ -79,6 +81,8 @@ public class NutralSkill_002 : NutralSkill {
             weapon.AttackProjectiles[0], 
             new List<EntityAffector>{sternState}
         );
+        ParticleSystem.MainModule particleModule = onHitProjectile.GetComponent<ParticleSystem>().main;
+        particleModule.startColor = Color.magenta;
         weapon.OnHitProjectiles.Enqueue(onHitProjectile);
         weapon.ChangeState(WEAPON_STATE.ON_HIT);
     }

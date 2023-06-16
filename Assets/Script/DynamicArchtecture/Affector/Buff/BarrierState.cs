@@ -47,7 +47,7 @@ public class BarrierState : EntityAffector {
     IEnumerator BarrierGenerate(){
         float passedTime = 0;
         int barrierHealth = (int)(( (float)(this.ownerEntity.GetFinalData().MaxHP) * Ratio) + 0.5f);
-        instantBarrier = ownerEntity.carrierBucket.CarrierInstantiatorByObjects(ownerEntity, barrier, BUCKET_POSITION.INNER, new object[]{DurationTime, barrierHealth});
+        instantBarrier = ownerEntity.carrierBucket.CarrierInstantiatorByObjects(ownerEntity, barrier, new object[]{DurationTime, barrierHealth});
         while(DurationTime > passedTime ){
             passedTime += Time.fixedDeltaTime;
             if(!instantBarrier.IsActivated) {instantBarrier.DestroySelf(); yield break;}
