@@ -21,7 +21,7 @@ public class KnockbackState : EntityAffector{
         this.targetEntity   = _eaData.targetEntity;
         this.ownerEntity    = _eaData.ownerEntity;
         this.isInitialized  = _eaData.isInitialized;
-        this.affectorStruct.affectorType = E_StateType.KnockBack;
+        this.affectorStruct.affectorType = STATE_TYPE.KNOCKBACK;
         this.affectorStruct.Affector.Add(Knockback);
     }
 

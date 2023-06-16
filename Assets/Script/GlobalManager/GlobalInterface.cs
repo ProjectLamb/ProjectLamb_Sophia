@@ -42,12 +42,11 @@ public interface IAffectable {
     public void AffectHandler(AffectorStruct affectorStruct);
 }
 
-public interface IEntityAddressable : IDamagable, IDieAble, IAffectable, IEntityDataAddressable {
-}
+public interface IEntityAddressable : IDamagable, IDieAble, IAffectable, IEntityDataAddressable { }
 
 public interface IEntityDataAddressable {
     public ref  EntityData GetFinalData();
-    public EntityData GetOriginData();
+    public      EntityData GetOriginData();
     public void ResetData();
 }
 
@@ -55,7 +54,7 @@ public interface IVisuallyInteractable {
     public void InteractByMaterial(Material material, float dutateTime);
     public void InteractByParticle(ParticleSystem particleSystem, float dutateTime);
     public void Revert();
-}
+} 
 
 public interface IColliderHandleable{
     public void HandleCollider(){}

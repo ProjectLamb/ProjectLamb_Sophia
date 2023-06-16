@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Sophia_Carriers;
 
 [System.Serializable]
 public class BarrierState : EntityAffector {
@@ -8,17 +9,17 @@ public class BarrierState : EntityAffector {
 //  public bool  isInitialized;    
 //  [HideInInspector]   public Entity targetEntity;
 //  [HideInInspector]   public Entity ownerEntity;
-    public float DurationTime;
-    public float Ratio;
-    public Barrier      barrierEnttiy;
-    public Barrier      InstantBarrierEntity;
+    public float                DurationTime;
+    public float                Ratio;
+    public BarrierProjectile    barrier;
+    public Carrier              instantBarrier;
 
     public BarrierState(EntityAffector _eaData){
         this.affectorStruct = _eaData.affectorStruct;
         this.targetEntity   = _eaData.targetEntity;
         this.ownerEntity    = _eaData.ownerEntity;
         this.isInitialized  = _eaData.isInitialized;
-        this.affectorStruct.affectorType = E_StateType.Barrier;
+        this.affectorStruct.affectorType = STATE_TYPE.BARRIER;
         this.affectorStruct.AsyncAffectorCoroutine.Add(BarrierGenerate());
     }
 
@@ -26,7 +27,7 @@ public class BarrierState : EntityAffector {
     {
         EntityAffector EAInstance = base.Init(_owner, _target);
         BarrierState Instance = new BarrierState(EAInstance);
-        Instance.barrierEnttiy = this.barrierEnttiy;
+        Instance.barrier = this.barrier;
         Instance.isInitialized  = true;
         Instance.DurationTime = this.DurationTime;
         Instance.Ratio = this.Ratio;
@@ -44,10 +45,14 @@ public class BarrierState : EntityAffector {
         Ratio           = objects[1];
     }
     IEnumerator BarrierGenerate(){
-        barrierEnttiy.CurrentHealth = (int)(( (float)(this.ownerEntity.GetFinalData().MaxHP) * Ratio) + 0.5f);
-        barrierEnttiy.DurationTime  = DurationTime;
-        InstantBarrierEntity = GameObject.Instantiate(barrierEnttiy, ownerEntity.projectileBucket.transform);
-        yield return YieldInstructionCache.WaitForSeconds(DurationTime);
-        InstantBarrierEntity?.Die();
+        float passedTime = 0;
+        int barrierHealth = (int)(( (float)(this.ownerEntity.GetFinalData().MaxHP) * Ratio) + 0.5f);
+        instantBarrier = ownerEntity.carrierBucket.CarrierInstantiatorByObjects(ownerEntity, barrier, BUCKET_POSITION.INNER, new object[]{DurationTime, barrierHealth});
+        while(DurationTime > passedTime ){
+            passedTime += Time.fixedDeltaTime;
+            if(!instantBarrier.IsActivated) {instantBarrier.DestroySelf(); yield break;}
+            yield return YieldInstructionCache.WaitForSeconds(Time.fixedDeltaTime);
+        }
+        instantBarrier.DestroySelf();
     }
 }

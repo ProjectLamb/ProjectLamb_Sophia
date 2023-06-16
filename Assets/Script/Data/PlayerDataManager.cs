@@ -6,8 +6,8 @@ using TMPro;
 using UnityEngine.Events;
 public class PlayerDataManager : MonoBehaviour
 {
-    [SerializeField]private Player player; 
-    [SerializeField]private WeaponManager weaponManager;
+    [SerializeField] private Player player; 
+    [SerializeField] private WeaponManager weaponManager;
     public static PlayerData BasePlayerData;
     public static WeaponData BaseWeaponData;
     private static MasterData EquipmentAddingData;
@@ -33,7 +33,7 @@ public class PlayerDataManager : MonoBehaviour
         EquipmentAddingData = new MasterData();
 
         FinalData = new MasterData();
-        FinalData += BaseData + EquipmentAddingData;
+        FinalData += (BaseData + EquipmentAddingData);
         
         debugText = GameObject.FindGameObjectWithTag("DebugUI").transform.GetComponentInChildren<TextMeshProUGUI>(true);
     }
