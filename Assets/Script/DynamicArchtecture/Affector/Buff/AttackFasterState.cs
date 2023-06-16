@@ -24,7 +24,7 @@ public class AttackFasterState : EntityAffector {
         this.targetEntity   = _eaData.targetEntity;
         this.ownerEntity    = _eaData.ownerEntity;
         this.isInitialized  = _eaData.isInitialized;
-        this.affectorStruct.affectorType = E_StateType.AttackSpeedUp;
+        this.affectorStruct.affectorType = STATE_TYPE.ATTACK_SPEED_UP;
 //      this.affectorStruct.AsyncAffectorCoroutine.Add(VisualActivate());
         this.affectorStruct.AsyncAffectorCoroutine.Add(Boost());
     }

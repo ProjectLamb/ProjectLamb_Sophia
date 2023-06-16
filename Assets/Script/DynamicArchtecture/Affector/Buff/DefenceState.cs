@@ -13,7 +13,7 @@ public class DefenceState :  EntityAffector{
         this.targetEntity   = _eaData.targetEntity;
         this.ownerEntity    = _eaData.ownerEntity;
         this.isInitialized  = _eaData.isInitialized;
-        this.affectorStruct.affectorType = E_StateType.Defence;
+        this.affectorStruct.affectorType = STATE_TYPE.DEFENCE;
 
         this.affectorStruct.AsyncAffectorCoroutine.Add(VisualActivate());
     }

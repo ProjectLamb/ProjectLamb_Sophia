@@ -21,7 +21,7 @@ public class PoisonState : EntityAffector {
         this.targetEntity   = _eaData.targetEntity;
         this.ownerEntity    = _eaData.ownerEntity;
         this.isInitialized  = _eaData.isInitialized;
-        this.affectorStruct.affectorType = E_StateType.Poisend;
+        this.affectorStruct.affectorType = STATE_TYPE.POISONED;
         this.affectorStruct.AsyncAffectorCoroutine.Add(VisualActivate());
         this.affectorStruct.AsyncAffectorCoroutine.Add(DotDamage());
     }

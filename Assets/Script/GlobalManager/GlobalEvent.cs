@@ -19,9 +19,13 @@ public class GlobalEvent : MonoBehaviour
 
     public UnityEvent OnHitEvents;
     public UnityEvent PausedEvent;
+    
     public List<UnityAction> OnEnemyDieEvent;
+    public List<UnityAction> OnEnemyHitEvent;
+
     private void Awake() {
         OnEnemyDieEvent = new List<UnityAction>();
+        OnEnemyHitEvent = new List<UnityAction>();
     }
 
     ///////////////////////////////////////////////////////////////////

@@ -7,13 +7,13 @@ using UnityEngine.Events;
 public class SkillData
 {
     [field: SerializeField] public E_SkillType SkillType;
-    [field: SerializeField] public E_SkillKey CurrentSkillKey;
+    [field: SerializeField] public SKILL_KEY CurrentSkillKey;
     [field: SerializeField] public string SkillName;
     [field: SerializeField] public SkillRankInfo[] SkillRankInfos; // Normal, Rare, Epic
     [field: SerializeField] public string SkillDescription;
     [field: SerializeField] public List<Projectile> SkillProjectile;
 
-    //Index는 E_SkillKey
+    //Index는 SKILL_KEY
     [field: SerializeField] public UnityAction SkillUseState = () => { };
     [field: SerializeField] public UnityAction SkillLevelUpState = () => { };
     [field: SerializeField] public UnityAction SkillChangeState = () => { };
@@ -24,9 +24,9 @@ public class SkillData
 
         SkillRankInfos = new SkillRankInfo[3];
 
-        SkillRankInfos[(int)E_SkillKey.Q] = new SkillRankInfo();
-        SkillRankInfos[(int)E_SkillKey.E] = new SkillRankInfo();
-        SkillRankInfos[(int)E_SkillKey.R] = new SkillRankInfo();
+        SkillRankInfos[(int)SKILL_KEY.Q] = new SkillRankInfo();
+        SkillRankInfos[(int)SKILL_KEY.E] = new SkillRankInfo();
+        SkillRankInfos[(int)SKILL_KEY.R] = new SkillRankInfo();
 
     }
 
@@ -40,32 +40,32 @@ public class SkillData
         res.SkillDescription = this.SkillDescription;
         res.SkillProjectile = this.SkillProjectile;
 
-        res.SkillRankInfos[(int)E_SkillKey.Q].numericArray[(int)E_SkillRank.Normal] =
-            this.SkillRankInfos[(int)E_SkillKey.Q].numericArray[(int)E_SkillRank.Normal];
+        res.SkillRankInfos[(int)SKILL_KEY.Q].numericArray[(int)SKILL_RANK.NORMAL] =
+            this.SkillRankInfos[(int)SKILL_KEY.Q].numericArray[(int)SKILL_RANK.NORMAL];
 
-        res.SkillRankInfos[(int)E_SkillKey.Q].skillDelay[(int)E_SkillRank.Rare] =
-            this.SkillRankInfos[(int)E_SkillKey.Q].skillDelay[(int)E_SkillRank.Rare];
+        res.SkillRankInfos[(int)SKILL_KEY.Q].skillDelay[(int)SKILL_RANK.RARE] =
+            this.SkillRankInfos[(int)SKILL_KEY.Q].skillDelay[(int)SKILL_RANK.RARE];
 
-        res.SkillRankInfos[(int)E_SkillKey.Q].durateTime[(int)E_SkillRank.Epic] =
-            this.SkillRankInfos[(int)E_SkillKey.Q].durateTime[(int)E_SkillRank.Epic];
+        res.SkillRankInfos[(int)SKILL_KEY.Q].durateTime[(int)SKILL_RANK.EPIC] =
+            this.SkillRankInfos[(int)SKILL_KEY.Q].durateTime[(int)SKILL_RANK.EPIC];
 
-        res.SkillRankInfos[(int)E_SkillKey.E].numericArray[(int)E_SkillRank.Normal] =
-            this.SkillRankInfos[(int)E_SkillKey.E].numericArray[(int)E_SkillRank.Normal];
+        res.SkillRankInfos[(int)SKILL_KEY.E].numericArray[(int)SKILL_RANK.NORMAL] =
+            this.SkillRankInfos[(int)SKILL_KEY.E].numericArray[(int)SKILL_RANK.NORMAL];
 
-        res.SkillRankInfos[(int)E_SkillKey.E].skillDelay[(int)E_SkillRank.Rare] =
-            this.SkillRankInfos[(int)E_SkillKey.E].skillDelay[(int)E_SkillRank.Rare];
+        res.SkillRankInfos[(int)SKILL_KEY.E].skillDelay[(int)SKILL_RANK.RARE] =
+            this.SkillRankInfos[(int)SKILL_KEY.E].skillDelay[(int)SKILL_RANK.RARE];
 
-        res.SkillRankInfos[(int)E_SkillKey.E].durateTime[(int)E_SkillRank.Epic] =
-            this.SkillRankInfos[(int)E_SkillKey.E].durateTime[(int)E_SkillRank.Epic];
+        res.SkillRankInfos[(int)SKILL_KEY.E].durateTime[(int)SKILL_RANK.EPIC] =
+            this.SkillRankInfos[(int)SKILL_KEY.E].durateTime[(int)SKILL_RANK.EPIC];
 
-        res.SkillRankInfos[(int)E_SkillKey.R].numericArray[(int)E_SkillRank.Normal] =
-            this.SkillRankInfos[(int)E_SkillKey.R].numericArray[(int)E_SkillRank.Normal];
+        res.SkillRankInfos[(int)SKILL_KEY.R].numericArray[(int)SKILL_RANK.NORMAL] =
+            this.SkillRankInfos[(int)SKILL_KEY.R].numericArray[(int)SKILL_RANK.NORMAL];
 
-        res.SkillRankInfos[(int)E_SkillKey.R].skillDelay[(int)E_SkillRank.Rare] =
-            this.SkillRankInfos[(int)E_SkillKey.R].skillDelay[(int)E_SkillRank.Rare];
+        res.SkillRankInfos[(int)SKILL_KEY.R].skillDelay[(int)SKILL_RANK.RARE] =
+            this.SkillRankInfos[(int)SKILL_KEY.R].skillDelay[(int)SKILL_RANK.RARE];
 
-        res.SkillRankInfos[(int)E_SkillKey.R].durateTime[(int)E_SkillRank.Epic] =
-            this.SkillRankInfos[(int)E_SkillKey.R].durateTime[(int)E_SkillRank.Epic];
+        res.SkillRankInfos[(int)SKILL_KEY.R].durateTime[(int)SKILL_RANK.EPIC] =
+            this.SkillRankInfos[(int)SKILL_KEY.R].durateTime[(int)SKILL_RANK.EPIC];
 
         res.SkillUseState = this.SkillUseState;
         res.SkillLevelUpState = this.SkillLevelUpState;
@@ -79,41 +79,41 @@ public class SkillData
     {
         SkillData res = new SkillData();
 
-        res.SkillRankInfos[(int)E_SkillKey.Q].numericArray[(int)E_SkillRank.Normal] =
-            x.SkillRankInfos[(int)E_SkillKey.Q].numericArray[(int)E_SkillRank.Normal] +
-            y.SkillRankInfos[(int)E_SkillKey.Q].numericArray[(int)E_SkillRank.Normal];
+        res.SkillRankInfos[(int)SKILL_KEY.Q].numericArray[(int)SKILL_RANK.NORMAL] =
+            x.SkillRankInfos[(int)SKILL_KEY.Q].numericArray[(int)SKILL_RANK.NORMAL] +
+            y.SkillRankInfos[(int)SKILL_KEY.Q].numericArray[(int)SKILL_RANK.NORMAL];
 
-        res.SkillRankInfos[(int)E_SkillKey.Q].skillDelay[(int)E_SkillRank.Rare] =
-            x.SkillRankInfos[(int)E_SkillKey.Q].skillDelay[(int)E_SkillRank.Rare] +
-            y.SkillRankInfos[(int)E_SkillKey.Q].skillDelay[(int)E_SkillRank.Rare];
+        res.SkillRankInfos[(int)SKILL_KEY.Q].skillDelay[(int)SKILL_RANK.RARE] =
+            x.SkillRankInfos[(int)SKILL_KEY.Q].skillDelay[(int)SKILL_RANK.RARE] +
+            y.SkillRankInfos[(int)SKILL_KEY.Q].skillDelay[(int)SKILL_RANK.RARE];
 
-        res.SkillRankInfos[(int)E_SkillKey.Q].durateTime[(int)E_SkillRank.Epic] =
-            x.SkillRankInfos[(int)E_SkillKey.Q].durateTime[(int)E_SkillRank.Epic] +
-            y.SkillRankInfos[(int)E_SkillKey.Q].durateTime[(int)E_SkillRank.Epic];
+        res.SkillRankInfos[(int)SKILL_KEY.Q].durateTime[(int)SKILL_RANK.EPIC] =
+            x.SkillRankInfos[(int)SKILL_KEY.Q].durateTime[(int)SKILL_RANK.EPIC] +
+            y.SkillRankInfos[(int)SKILL_KEY.Q].durateTime[(int)SKILL_RANK.EPIC];
 
-        res.SkillRankInfos[(int)E_SkillKey.E].numericArray[(int)E_SkillRank.Normal] =
-            x.SkillRankInfos[(int)E_SkillKey.E].numericArray[(int)E_SkillRank.Normal] +
-            y.SkillRankInfos[(int)E_SkillKey.E].numericArray[(int)E_SkillRank.Normal];
+        res.SkillRankInfos[(int)SKILL_KEY.E].numericArray[(int)SKILL_RANK.NORMAL] =
+            x.SkillRankInfos[(int)SKILL_KEY.E].numericArray[(int)SKILL_RANK.NORMAL] +
+            y.SkillRankInfos[(int)SKILL_KEY.E].numericArray[(int)SKILL_RANK.NORMAL];
 
-        res.SkillRankInfos[(int)E_SkillKey.E].skillDelay[(int)E_SkillRank.Rare] =
-            x.SkillRankInfos[(int)E_SkillKey.E].skillDelay[(int)E_SkillRank.Rare] +
-            y.SkillRankInfos[(int)E_SkillKey.E].skillDelay[(int)E_SkillRank.Rare];
+        res.SkillRankInfos[(int)SKILL_KEY.E].skillDelay[(int)SKILL_RANK.RARE] =
+            x.SkillRankInfos[(int)SKILL_KEY.E].skillDelay[(int)SKILL_RANK.RARE] +
+            y.SkillRankInfos[(int)SKILL_KEY.E].skillDelay[(int)SKILL_RANK.RARE];
 
-        res.SkillRankInfos[(int)E_SkillKey.E].durateTime[(int)E_SkillRank.Epic] =
-            x.SkillRankInfos[(int)E_SkillKey.E].durateTime[(int)E_SkillRank.Epic] +
-            y.SkillRankInfos[(int)E_SkillKey.E].durateTime[(int)E_SkillRank.Epic];
+        res.SkillRankInfos[(int)SKILL_KEY.E].durateTime[(int)SKILL_RANK.EPIC] =
+            x.SkillRankInfos[(int)SKILL_KEY.E].durateTime[(int)SKILL_RANK.EPIC] +
+            y.SkillRankInfos[(int)SKILL_KEY.E].durateTime[(int)SKILL_RANK.EPIC];
 
-        res.SkillRankInfos[(int)E_SkillKey.R].numericArray[(int)E_SkillRank.Normal] =
-            x.SkillRankInfos[(int)E_SkillKey.R].numericArray[(int)E_SkillRank.Normal] +
-            y.SkillRankInfos[(int)E_SkillKey.R].numericArray[(int)E_SkillRank.Normal];
+        res.SkillRankInfos[(int)SKILL_KEY.R].numericArray[(int)SKILL_RANK.NORMAL] =
+            x.SkillRankInfos[(int)SKILL_KEY.R].numericArray[(int)SKILL_RANK.NORMAL] +
+            y.SkillRankInfos[(int)SKILL_KEY.R].numericArray[(int)SKILL_RANK.NORMAL];
 
-        res.SkillRankInfos[(int)E_SkillKey.R].skillDelay[(int)E_SkillRank.Rare] =
-            x.SkillRankInfos[(int)E_SkillKey.R].skillDelay[(int)E_SkillRank.Rare] +
-            y.SkillRankInfos[(int)E_SkillKey.R].skillDelay[(int)E_SkillRank.Rare];
+        res.SkillRankInfos[(int)SKILL_KEY.R].skillDelay[(int)SKILL_RANK.RARE] =
+            x.SkillRankInfos[(int)SKILL_KEY.R].skillDelay[(int)SKILL_RANK.RARE] +
+            y.SkillRankInfos[(int)SKILL_KEY.R].skillDelay[(int)SKILL_RANK.RARE];
 
-        res.SkillRankInfos[(int)E_SkillKey.R].durateTime[(int)E_SkillRank.Epic] =
-            x.SkillRankInfos[(int)E_SkillKey.R].durateTime[(int)E_SkillRank.Epic] +
-            y.SkillRankInfos[(int)E_SkillKey.R].durateTime[(int)E_SkillRank.Epic];
+        res.SkillRankInfos[(int)SKILL_KEY.R].durateTime[(int)SKILL_RANK.EPIC] =
+            x.SkillRankInfos[(int)SKILL_KEY.R].durateTime[(int)SKILL_RANK.EPIC] +
+            y.SkillRankInfos[(int)SKILL_KEY.R].durateTime[(int)SKILL_RANK.EPIC];
 
         res.SkillUseState = x.SkillUseState + y.SkillUseState;
         res.SkillLevelUpState = x.SkillLevelUpState + y.SkillLevelUpState;
@@ -126,41 +126,41 @@ public class SkillData
     {
         SkillData res = new SkillData();
 
-        res.SkillRankInfos[(int)E_SkillKey.Q].numericArray[(int)E_SkillRank.Normal] =
-            x.SkillRankInfos[(int)E_SkillKey.Q].numericArray[(int)E_SkillRank.Normal] -
-            y.SkillRankInfos[(int)E_SkillKey.Q].numericArray[(int)E_SkillRank.Normal];
+        res.SkillRankInfos[(int)SKILL_KEY.Q].numericArray[(int)SKILL_RANK.NORMAL] =
+            x.SkillRankInfos[(int)SKILL_KEY.Q].numericArray[(int)SKILL_RANK.NORMAL] -
+            y.SkillRankInfos[(int)SKILL_KEY.Q].numericArray[(int)SKILL_RANK.NORMAL];
 
-        res.SkillRankInfos[(int)E_SkillKey.Q].skillDelay[(int)E_SkillRank.Rare] =
-            x.SkillRankInfos[(int)E_SkillKey.Q].skillDelay[(int)E_SkillRank.Rare] -
-            y.SkillRankInfos[(int)E_SkillKey.Q].skillDelay[(int)E_SkillRank.Rare];
+        res.SkillRankInfos[(int)SKILL_KEY.Q].skillDelay[(int)SKILL_RANK.RARE] =
+            x.SkillRankInfos[(int)SKILL_KEY.Q].skillDelay[(int)SKILL_RANK.RARE] -
+            y.SkillRankInfos[(int)SKILL_KEY.Q].skillDelay[(int)SKILL_RANK.RARE];
 
-        res.SkillRankInfos[(int)E_SkillKey.Q].durateTime[(int)E_SkillRank.Epic] =
-            x.SkillRankInfos[(int)E_SkillKey.Q].durateTime[(int)E_SkillRank.Epic] -
-            y.SkillRankInfos[(int)E_SkillKey.Q].durateTime[(int)E_SkillRank.Epic];
+        res.SkillRankInfos[(int)SKILL_KEY.Q].durateTime[(int)SKILL_RANK.EPIC] =
+            x.SkillRankInfos[(int)SKILL_KEY.Q].durateTime[(int)SKILL_RANK.EPIC] -
+            y.SkillRankInfos[(int)SKILL_KEY.Q].durateTime[(int)SKILL_RANK.EPIC];
 
-        res.SkillRankInfos[(int)E_SkillKey.E].numericArray[(int)E_SkillRank.Normal] =
-            x.SkillRankInfos[(int)E_SkillKey.E].numericArray[(int)E_SkillRank.Normal] -
-            y.SkillRankInfos[(int)E_SkillKey.E].numericArray[(int)E_SkillRank.Normal];
+        res.SkillRankInfos[(int)SKILL_KEY.E].numericArray[(int)SKILL_RANK.NORMAL] =
+            x.SkillRankInfos[(int)SKILL_KEY.E].numericArray[(int)SKILL_RANK.NORMAL] -
+            y.SkillRankInfos[(int)SKILL_KEY.E].numericArray[(int)SKILL_RANK.NORMAL];
 
-        res.SkillRankInfos[(int)E_SkillKey.E].skillDelay[(int)E_SkillRank.Rare] =
-            x.SkillRankInfos[(int)E_SkillKey.E].skillDelay[(int)E_SkillRank.Rare] -
-            y.SkillRankInfos[(int)E_SkillKey.E].skillDelay[(int)E_SkillRank.Rare];
+        res.SkillRankInfos[(int)SKILL_KEY.E].skillDelay[(int)SKILL_RANK.RARE] =
+            x.SkillRankInfos[(int)SKILL_KEY.E].skillDelay[(int)SKILL_RANK.RARE] -
+            y.SkillRankInfos[(int)SKILL_KEY.E].skillDelay[(int)SKILL_RANK.RARE];
 
-        res.SkillRankInfos[(int)E_SkillKey.E].durateTime[(int)E_SkillRank.Epic] =
-            x.SkillRankInfos[(int)E_SkillKey.E].durateTime[(int)E_SkillRank.Epic] -
-            y.SkillRankInfos[(int)E_SkillKey.E].durateTime[(int)E_SkillRank.Epic];
+        res.SkillRankInfos[(int)SKILL_KEY.E].durateTime[(int)SKILL_RANK.EPIC] =
+            x.SkillRankInfos[(int)SKILL_KEY.E].durateTime[(int)SKILL_RANK.EPIC] -
+            y.SkillRankInfos[(int)SKILL_KEY.E].durateTime[(int)SKILL_RANK.EPIC];
 
-        res.SkillRankInfos[(int)E_SkillKey.R].numericArray[(int)E_SkillRank.Normal] =
-            x.SkillRankInfos[(int)E_SkillKey.R].numericArray[(int)E_SkillRank.Normal] -
-            y.SkillRankInfos[(int)E_SkillKey.R].numericArray[(int)E_SkillRank.Normal];
+        res.SkillRankInfos[(int)SKILL_KEY.R].numericArray[(int)SKILL_RANK.NORMAL] =
+            x.SkillRankInfos[(int)SKILL_KEY.R].numericArray[(int)SKILL_RANK.NORMAL] -
+            y.SkillRankInfos[(int)SKILL_KEY.R].numericArray[(int)SKILL_RANK.NORMAL];
 
-        res.SkillRankInfos[(int)E_SkillKey.R].skillDelay[(int)E_SkillRank.Rare] =
-            x.SkillRankInfos[(int)E_SkillKey.R].skillDelay[(int)E_SkillRank.Rare] -
-            y.SkillRankInfos[(int)E_SkillKey.R].skillDelay[(int)E_SkillRank.Rare];
+        res.SkillRankInfos[(int)SKILL_KEY.R].skillDelay[(int)SKILL_RANK.RARE] =
+            x.SkillRankInfos[(int)SKILL_KEY.R].skillDelay[(int)SKILL_RANK.RARE] -
+            y.SkillRankInfos[(int)SKILL_KEY.R].skillDelay[(int)SKILL_RANK.RARE];
 
-        res.SkillRankInfos[(int)E_SkillKey.R].durateTime[(int)E_SkillRank.Epic] =
-            x.SkillRankInfos[(int)E_SkillKey.R].durateTime[(int)E_SkillRank.Epic] -
-            y.SkillRankInfos[(int)E_SkillKey.R].durateTime[(int)E_SkillRank.Epic];
+        res.SkillRankInfos[(int)SKILL_KEY.R].durateTime[(int)SKILL_RANK.EPIC] =
+            x.SkillRankInfos[(int)SKILL_KEY.R].durateTime[(int)SKILL_RANK.EPIC] -
+            y.SkillRankInfos[(int)SKILL_KEY.R].durateTime[(int)SKILL_RANK.EPIC];
 
         res.SkillUseState = x.SkillUseState - y.SkillUseState;
         res.SkillChangeState = x.SkillChangeState - y.SkillChangeState;
