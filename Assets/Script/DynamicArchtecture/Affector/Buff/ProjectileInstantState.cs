@@ -7,7 +7,6 @@ using Sophia_Carriers;
 public class ProjectileGenState : EntityAffector {
     public float DurationTime;
     public float RepeatTimeInterval;
-    public BUCKET_POSITION bucketPoisiotn;
     public Projectile projectile;
 
     public ProjectileGenState(EntityAffector _eaData){
@@ -26,7 +25,6 @@ public class ProjectileGenState : EntityAffector {
         Instance.DurationTime = this.DurationTime;
         Instance.RepeatTimeInterval = this.RepeatTimeInterval;
         Instance.projectile = this.projectile;
-        Instance.bucketPoisiotn = this.bucketPoisiotn;
 
         Instance.isInitialized  = true;
         return Instance;
@@ -41,7 +39,7 @@ public class ProjectileGenState : EntityAffector {
         float passedTime = 0;
         while(DurationTime > passedTime){
             passedTime += RepeatTimeInterval;
-            ownerEntity.carrierBucket.CarrierInstantiator(ownerEntity, projectile, bucketPoisiotn);
+            ownerEntity.carrierBucket.CarrierInstantiator(ownerEntity, projectile);
             yield return YieldInstructionCache.WaitForSeconds(RepeatTimeInterval);
         }
     }

@@ -1,11 +1,9 @@
 fileFormatVersion: 2
-guid: 341575ba53c6540cc8090f4928b8d368
+guid: dfbb1412abc1e43d29bbe4f893feb646
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences:
-  - vFXBucket: {instanceID: 0}
-  - sandbagData: {fileID: 11400000, guid: 58dc5487020424f70abddf2cf50e9368, type: 2}
+  defaultReferences: []
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

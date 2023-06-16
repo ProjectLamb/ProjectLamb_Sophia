@@ -15,25 +15,21 @@ public class Sandbag : Entity
     //public GameObject model;
     
     [SerializeField]
-    public ScriptableObjEnemyData ScriptableED;
-    private EntityData BaseEnemyData;
-    private EntityData FinalData;
-    public override ref EntityData GetFinalData() {    return ref this.FinalData;}
+    public ScriptableObjEnemyData    ScriptableED;
+    private EntityData               BaseEnemyData;
+    private EntityData               FinalData;
+
+    public override ref EntityData GetFinalData() {return ref this.FinalData;}
     public override     EntityData GetOriginData() {return this.BaseEnemyData;}
-    
-    public override void ResetData(){
-        FinalData = BaseEnemyData;
-    }
+    public override void ResetData(){ FinalData = BaseEnemyData; }
 
-    public Transform objectiveTarget;
-
-    public bool IsDie;
-
-    public Projectile[] projectiles;
-           Animator animator;
-           AnimEventInvoker animEventInvoker;
-    public ImageGenerator imageGenerator;
-    public VFXObject DieParticle;
+    public Transform                ObjectiveTarget;
+    public bool                     IsDie;
+    public Projectile[]             AttackProjectiles;
+    public VFXObject                DieParticle;
+    public ImageGenerator           DamageBarGenerator;
+    private Animator                mAnimator;
+    private AnimEventInvoker        mAnimEventInvoker;
     /*********************************************************************************
     *
     * 
@@ -47,30 +43,30 @@ public class Sandbag : Entity
         //TryGetComponent<VisualModulator>(out visualModulator);
         //model ??= transform.GetChild(0).Find("modle").gameObject;
         base.Awake();
-        model.TryGetComponent<Animator>(out this.animator);
-        model.TryGetComponent<AnimEventInvoker>(out this.animEventInvoker);
+        model.TryGetComponent<Animator>(out this.mAnimator);
+        model.TryGetComponent<AnimEventInvoker>(out this.mAnimEventInvoker);
 
         BaseEnemyData = new EntityData(ScriptableED);
         FinalData = BaseEnemyData;
         CurrentHealth = FinalData.MaxHP;
 
-        this.objectiveTarget = GameManager.Instance.playerGameObject.transform;
+        this.ObjectiveTarget = GameManager.Instance.playerGameObject.transform;
     }
     private void Start() {
-        animEventInvoker.animCallback[(int)ANIME_STATE.ATTACK].AddListener( () => {
-            this.carrierBucket.CarrierInstantiatorByObjects(this, projectiles[0], BUCKET_POSITION.OUTER, new object[] {FinalData.Power * 1});
+        mAnimEventInvoker.animCallback[(int)ANIME_STATE.ATTACK].AddListener( () => {
+            this.carrierBucket.CarrierInstantiatorByObjects(this, AttackProjectiles[0], new object[] {FinalData.Power * 1});
         });
-        animEventInvoker.animCallback[(int)ANIME_STATE.JUMP].AddListener(() => {
-            this.carrierBucket.CarrierInstantiatorByObjects(this, projectiles[1], BUCKET_POSITION.OUTER, new object[] {FinalData.Power * 2});
+        mAnimEventInvoker.animCallback[(int)ANIME_STATE.JUMP].AddListener(() => {
+            this.carrierBucket.CarrierInstantiatorByObjects(this, AttackProjectiles[1], new object[] {FinalData.Power * 2});
         });
-        this.FinalData.HitStateRef = (ref int amount) => {imageGenerator.GenerateImage(amount);};
+        this.FinalData.HitStateRef = (ref int amount) => {DamageBarGenerator.GenerateImage(amount);};
     }
 
     public override void GetDamaged(int _amount){
         if(IsDie == true) {return;}
         FinalData.HitStateRef.Invoke(ref _amount);
         CurrentHealth -= _amount;
-        animator.SetTrigger("DoHit");
+        mAnimator.SetTrigger("DoHit");
         GameManager.Instance.globalEvent.OnEnemyHitEvent.ForEach(E => E.Invoke());
         if (CurrentHealth <= 0) {Die();}
     }
@@ -80,7 +76,7 @@ public class Sandbag : Entity
         FinalData.HitStateRef.Invoke(ref _amount);
         CurrentHealth -= _amount;
         visualModulator.InteractByVFX(_vfx);
-        animator.SetTrigger("DoHit");
+        mAnimator.SetTrigger("DoHit");
         GameManager.Instance.globalEvent.OnEnemyHitEvent.ForEach(E => E.Invoke());
         if (CurrentHealth <= 0) {Die();}
     }
@@ -89,7 +85,7 @@ public class Sandbag : Entity
         FinalData.DieState.Invoke();
         IsDie = true;
         this.entityCollider.enabled = false;
-        animator.SetTrigger("DoDie");
+        mAnimator.SetTrigger("DoDie");
         visualModulator.InteractByVFX(DieParticle);
     }
 
@@ -101,18 +97,18 @@ public class Sandbag : Entity
         /***************************/
         if(GameManager.Instance?.globalEvent.IsGamePaused == true){return;}
         /***************************/
-        if(!IsDie)transform.LookAt(objectiveTarget);
+        if(!IsDie)transform.LookAt(ObjectiveTarget);
     }
     
     [ContextMenu("평타", false, int.MaxValue)]
     void InstantiateProjectiles1(){
         //Find Instantiate On This Animator Events;
-        animator.SetTrigger("DoAttack");
+        mAnimator.SetTrigger("DoAttack");
     }
 
     [ContextMenu("범위데미지",false, int.MaxValue)]
     void InstantiateProjectiles2(){
         //Find Instantiate On This Animator Events;
-        animator.SetTrigger("DoJump");
+        mAnimator.SetTrigger("DoJump");
     }
 }

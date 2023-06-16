@@ -14,6 +14,7 @@ namespace Sophia_Carriers{
     public abstract class Carrier : MonoBehaviour {
         public      VFXObject       DestroyEffect       = null;
         public      CARRIER_TYPE    CarrierType;
+        public      BUCKET_POSITION BucketPosition;
         public      bool            IsInitialized       = false;
         public      bool            IsActivated         = false;
         public      bool            IsCloned         = false;
@@ -33,10 +34,15 @@ namespace Sophia_Carriers{
         //    if(_genOwner == null) {throw new System.Exception("투사체 생성 엔티티가 NULL임");}
         //    this.isInitialized = true;
         //}
-        public virtual void SetScale(float _sizeRatio){transform.localScale *= _sizeRatio;}
-        public abstract void EnableSelf();
-        public abstract void DisableSelf();
-        public abstract void DestroySelf();
+        public virtual void  SetScale(float _sizeRatio){transform.localScale *= _sizeRatio;}
+        public virtual void EnableSelf() {gameObject.SetActive(true); this.IsActivated = true; }
+        public virtual void DisableSelf() {gameObject.SetActive(false); this.IsActivated = false;}
+        public virtual void DestroySelf()  {
+            if(DestroyEffect != null){
+                Instantiate(DestroyEffect, transform.position, Quaternion.identity);
+            }
+            Destroy(gameObject);
+        }
         public virtual Entity GetOwner(){return this.ownerEntity;}
     }
 }

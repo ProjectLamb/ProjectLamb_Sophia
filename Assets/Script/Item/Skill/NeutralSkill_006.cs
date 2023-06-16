@@ -2,10 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 using AYellowpaper.SerializedCollections;
 
-public class NutralSkill_003 : NutralSkill {
+
+public class NeutralSkill_006 : NeutralSkill {
+
 //  public string                                   skillName;
 //  public string                                   description;
 //  public  SKILL_RANK                              skillRank;
@@ -15,6 +16,13 @@ public class NutralSkill_003 : NutralSkill {
 //  public  bool                                    IsReady = true;
 //  public  float                                   PassedTime = 0f;
 //  public SerializedDictionary<SKILL_RANK, float>  coolTime = new SerializedDictionary<SKILL_RANK, float>();
+    public BarrierState     barrierState;
+    public List<float>  NumericQ = new List<float> {0.2f, 0.3f, 0.4f};
+    public float        DurationQ = 5f;
+    public List<float>  NumericE = new List<float> {0.2f, 0.3f, 0.4f};
+    public float        DurationE = 5f;
+    public List<float>  NumericR = new List<float> {0.4f, 0.5f, 0.7f};
+    public float        DurationR = 10f;
 
 //  public void Use(SKILL_KEY key){
 //      switch(key) {
@@ -26,14 +34,26 @@ public class NutralSkill_003 : NutralSkill {
 //              break;
 //      }
 //  }
-    private void Awake(){
-        skillName = "빠르게 탈출하기";
+    private void Awake() {
+        skillName = "보호막 증폭";
         coolTime?.Add(SKILL_RANK.NORMAL  , 15f);
         coolTime?.Add(SKILL_RANK.RARE    , 15f);
         coolTime?.Add(SKILL_RANK.EPIC    , 15f);
     }
 
-    protected override void UseQ(){return;}
-    protected override void UseE(){return;}
-    protected override void UseR(){return;}
+    protected override void UseQ(){
+        barrierState.DurationTime = DurationQ;
+        barrierState.Ratio = NumericQ[(int)skillRank];
+        barrierState.Init(player,player).Modifiy();
+    }
+    protected override void UseE(){
+        barrierState.DurationTime = DurationE;
+        barrierState.Ratio = NumericE[(int)skillRank];
+        barrierState.Init(player,player).Modifiy();
+    }
+    protected override void UseR(){
+        barrierState.DurationTime = DurationR;
+        barrierState.Ratio = NumericR[(int)skillRank];
+        barrierState.Init(player,player).Modifiy();
+    }
 }

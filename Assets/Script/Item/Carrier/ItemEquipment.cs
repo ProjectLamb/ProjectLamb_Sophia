@@ -10,13 +10,14 @@ using Sophia_Carriers;
 
 namespace Sophia_Carriers {
     public class ItemEquipment : Carrier {
-//       public      VFXObject       DestroyEffect       = null;
-//       public      CARRIER_TYPE    CarrierType;
-//       public      bool            IsInitialized       = false;
-//       public      bool            IsActivated         = false;
-//       public      bool            IsCloned         = false;
-//       protected   Collider        carrierCollider     = null;
-//       protected   Rigidbody       carrierRigidBody    = null;
+//      public      VFXObject       DestroyEffect       = null;
+//      public      CARRIER_TYPE    CarrierType;
+//      public      BUCKET_POSITION BucketPosition;
+//      public      bool            IsInitialized       = false;
+//      public      bool            IsActivated         = false;
+//      public      bool            IsCloned         = false;
+//      protected   Collider        carrierCollider     = null;
+//      protected   Rigidbody       carrierRigidBody    = null;
         public AbstractEquipment equipment;
         public override Carrier Clone(){
             if(this.IsCloned == true) throw new SystemException("복제본이 복제본을 만들 수 는 없다.");
@@ -42,18 +43,17 @@ namespace Sophia_Carriers {
         {
             Init(_ownerEntity);
         }
-        public override void EnableSelf() { this.IsActivated = true; gameObject.SetActive(true);}
-        public override void DisableSelf() { this.IsActivated = false; gameObject.SetActive(false);}
-        public override void DestroySelf()  {
-            if(DestroyEffect != null){
-                Instantiate(DestroyEffect, transform.position, Quaternion.identity).Initialize();
-            }
-            Destroy(this);
-        }
+        // public override void EnableSelf() {gameObject.SetActive(true); this.IsActivated = true; }
+        // public override void DisableSelf() {gameObject.SetActive(false); this.IsActivated = false;}
+        // public override void DestroySelf()  {
+        //     if(DestroyEffect != null){
+        //         Instantiate(DestroyEffect, transform.position, Quaternion.identity);
+        //     }
+        //     Destroy(gameObject);
+        // }
 
         private void OnTriggerEnter(Collider other) {
             if(!other.TryGetComponent<Player>(out Player player)){return;}
-            AbstractEquipment triggerdEquipment = other.GetComponent<AbstractEquipment>();
             player.equipmentManager.Equip(this.equipment);
             Debug.Log($"장비 장착! : {equipment.equipmentName}");
             DestroySelf();

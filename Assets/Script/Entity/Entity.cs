@@ -13,10 +13,10 @@ public abstract class Entity : MonoBehaviour, IEntityAddressable
 {
     [HideInInspector] public Collider entityCollider;
     [HideInInspector] public Rigidbody entityRigidbody;
-    [HideInInspector] public GameObject model;
-    [SerializeField] public VisualModulator visualModulator;
-    [SerializeField] public CarrierBucket carrierBucket;
-    [SerializeField] public int mCurrentHealth;
+    [SerializeField]  public GameObject model;
+    [SerializeField]  public VisualModulator visualModulator;
+    [SerializeField]  public CarrierBucket carrierBucket;
+    [SerializeField]  public int mCurrentHealth;
     public int CurrentHealth
     {
         get { return mCurrentHealth; }
@@ -27,14 +27,16 @@ public abstract class Entity : MonoBehaviour, IEntityAddressable
         }
     }
 
-    public Dictionary<STATE_TYPE, AffectorStruct> affectorStacks;
+    public Dictionary<STATE_TYPE, AffectorStruct> AffectorStacks = new Dictionary<STATE_TYPE, AffectorStruct>();
 
     protected virtual void Awake()
     {
         TryGetComponent<Collider>(out entityCollider);
         TryGetComponent<Rigidbody>(out entityRigidbody);
-        model ??= transform.GetChild(0).Find("modle").gameObject;
-        affectorStacks = new Dictionary<STATE_TYPE, AffectorStruct>();
+        model ??= transform.GetChild(0).Find("model").gameObject;
+        foreach(STATE_TYPE E in Enum.GetValues(typeof(STATE_TYPE))){
+            AffectorStacks.Add(E, null);
+        }
     }
     public abstract ref EntityData GetFinalData();
     public abstract EntityData GetOriginData();
@@ -44,19 +46,13 @@ public abstract class Entity : MonoBehaviour, IEntityAddressable
     public abstract void Die();
     public virtual void AffectHandler(AffectorStruct _affectorStruct)
     {
-
-        if (affectorStacks.ContainsKey(_affectorStruct.affectorType).Equals(false))
-        {
-            affectorStacks.Add(_affectorStruct.affectorType, _affectorStruct);
+        STATE_TYPE stateType = _affectorStruct.affectorType;
+        AffectorStruct returnAS;
+        if(AffectorStacks.TryGetValue(stateType, out returnAS)){
+            returnAS?.AsyncAffectorCoroutine.ForEach(coroutine => { StopCoroutine(coroutine); });
+            AffectorStacks[_affectorStruct.affectorType] = null;
         }
-        else
-        {
-            affectorStacks[_affectorStruct.affectorType].AsyncAffectorCoroutine.ForEach(coroutine => { StopCoroutine(coroutine); });
-            this.affectorStacks.Remove(_affectorStruct.affectorType);
-            this.affectorStacks.Add(_affectorStruct.affectorType, _affectorStruct);
-        }
-
-        Debug.Log($"AsyncAffectorCoroutine 개수:  {_affectorStruct.AsyncAffectorCoroutine.Count}");
+        this.AffectorStacks[_affectorStruct.affectorType] = _affectorStruct;
         _affectorStruct.Affector.ForEach((E) => E.Invoke());
         _affectorStruct.AsyncAffectorCoroutine.ForEach(coroutine => { StartCoroutine(coroutine); });
     }

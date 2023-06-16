@@ -6,14 +6,14 @@ using UnityEngine.UI;
 
 public class HealthBar : MonoBehaviour
 {
-    Entity ownerEntity;
-    public Slider slider;
-    public Image fill;
-    public Gradient gradient;
+    public Entity       ownerEntity;
+    public Slider       slider;
+    public Image        fill;
+    public Gradient     gradient;
 
     private void Awake() {
-        ownerEntity = GetComponentInParent<Entity>();
-        fill.color = gradient.Evaluate(1f);
+        ownerEntity ??= GetComponentInParent<Entity>();
+        fill.color  = gradient.Evaluate(1f);
     }
     
     private void Update() {
