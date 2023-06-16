@@ -14,7 +14,7 @@ public class SternState : EntityAffector{
 //  protected Entity targetEntity;
 //  protected Entity ownerEntity;
 //  protected bool  isInitialized;
-    public float DurationTime = 1f;
+    [HideInInspector] public float DurationTime = 1f;
     public Material skin;
     public VFXObject vfx;
 
@@ -23,7 +23,7 @@ public class SternState : EntityAffector{
         this.targetEntity   = _eaData.targetEntity;
         this.ownerEntity    = _eaData.ownerEntity;
         this.isInitialized  = _eaData.isInitialized;
-        this.affectorStruct.affectorType = E_StateType.Stern;
+        this.affectorStruct.affectorType = STATE_TYPE.STERN;
         this.affectorStruct.AsyncAffectorCoroutine.Add(VisualActivate());
         this.affectorStruct.AsyncAffectorCoroutine.Add(SetStern());
     }

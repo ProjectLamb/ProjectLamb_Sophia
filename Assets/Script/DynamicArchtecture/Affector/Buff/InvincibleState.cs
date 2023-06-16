@@ -22,7 +22,7 @@ public class InvincibleState : EntityAffector {
         this.affectorStruct = _eaData.affectorStruct;
         this.ownerEntity = _eaData.ownerEntity;
         this.targetEntity = _eaData.targetEntity;
-        this.affectorStruct.affectorType = E_StateType.Invincible;
+        this.affectorStruct.affectorType = STATE_TYPE.INVINCIBLE;
         this.affectorStruct.AsyncAffectorCoroutine.Add(VisualActivate());
         this.affectorStruct.AsyncAffectorCoroutine.Add(Boost());
     }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.AI;
+using Sophia_Carriers;
 
 public class Sandbag : Entity
 {    
@@ -56,11 +57,11 @@ public class Sandbag : Entity
         this.objectiveTarget = GameManager.Instance.playerGameObject.transform;
     }
     private void Start() {
-        animEventInvoker.animCallback[(int)E_AnimState.Attack].AddListener( () => {
-            this.projectileBucket.ProjectileInstantiatorByDamage(this, projectiles[0], E_BucketPosition.Outer, FinalData.Power * 1);
+        animEventInvoker.animCallback[(int)ANIME_STATE.ATTACK].AddListener( () => {
+            this.carrierBucket.CarrierInstantiatorByObjects(this, projectiles[0], BUCKET_POSITION.OUTER, new object[] {FinalData.Power * 1});
         });
-        animEventInvoker.animCallback[(int)E_AnimState.Jump].AddListener(() => {
-            this.projectileBucket.ProjectileInstantiatorByDamage(this, projectiles[1], E_BucketPosition.Outer, FinalData.Power * 2);
+        animEventInvoker.animCallback[(int)ANIME_STATE.JUMP].AddListener(() => {
+            this.carrierBucket.CarrierInstantiatorByObjects(this, projectiles[1], BUCKET_POSITION.OUTER, new object[] {FinalData.Power * 2});
         });
         this.FinalData.HitStateRef = (ref int amount) => {imageGenerator.GenerateImage(amount);};
     }
@@ -70,6 +71,7 @@ public class Sandbag : Entity
         FinalData.HitStateRef.Invoke(ref _amount);
         CurrentHealth -= _amount;
         animator.SetTrigger("DoHit");
+        GameManager.Instance.globalEvent.OnEnemyHitEvent.ForEach(E => E.Invoke());
         if (CurrentHealth <= 0) {Die();}
     }
 
@@ -79,6 +81,7 @@ public class Sandbag : Entity
         CurrentHealth -= _amount;
         visualModulator.InteractByVFX(_vfx);
         animator.SetTrigger("DoHit");
+        GameManager.Instance.globalEvent.OnEnemyHitEvent.ForEach(E => E.Invoke());
         if (CurrentHealth <= 0) {Die();}
     }
 

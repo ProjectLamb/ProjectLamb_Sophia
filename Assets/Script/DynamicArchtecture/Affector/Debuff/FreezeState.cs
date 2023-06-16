@@ -22,7 +22,7 @@ public class FreezeState : EntityAffector {
         this.targetEntity   = _eaData.targetEntity;
         this.ownerEntity    = _eaData.ownerEntity;
         this.isInitialized  = _eaData.isInitialized;
-        this.affectorStruct.affectorType = E_StateType.Freeze;
+        this.affectorStruct.affectorType = STATE_TYPE.FREEZE;
         this.affectorStruct.AsyncAffectorCoroutine.Add(VisualActivate());
         this.affectorStruct.AsyncAffectorCoroutine.Add(SetSlow());
         

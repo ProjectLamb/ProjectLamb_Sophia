@@ -28,6 +28,16 @@ public class Player : Entity {
             if(mCurrentStamina < 0) {mCurrentStamina = 0;}
         }
     }
+    
+    [SerializeField] private int mBarrierAmount;
+    public  int BarrierAmount {
+        get {return mBarrierAmount;}
+        set { 
+            mBarrierAmount = value; 
+            if(mBarrierAmount < 0) mBarrierAmount = 0;
+        }
+    }
+    
     public override ref EntityData GetFinalData(){
         return ref PlayerDataManager.GetFinalData().playerData.EntityDatas;
     }
@@ -39,25 +49,30 @@ public class Player : Entity {
         PlayerDataManager.ResetFinal();
     }
     
-    [SerializeField] private WeaponManager weaponManager;
-
-    [SerializeField]
-    public SkillManager skillManagers;
-    public EquipmentManager equipmentManager;
-    public LayerMask groundMask;                  // 바닥을 인식하는 마스크
-    public ImageGenerator imageGenerator;
+    public WeaponManager            weaponManager;
+    public SkillManager             skillManager;
+    public EquipmentManager         equipmentManager;
+    public ImageGenerator           imageGenerator;
+    public LayerMask                groundMask; // 바닥을 인식하는 마스크
+    
     /// <summary>
     /// RoomGenerator.cs에서 참조하는 변수 (리펙토링 필요해 보인다.) <br/>
     /// * 포탈을 사용할수 있는지 없는지는 Map이 책임을 가져아 한다. <br/>
     /// * 플레이어는 그저 바닥에 포탈이 있는지 없는지 확인하고 사용하기, 안하기를 하면 될듯하다.
     /// </summary>
 
-    public bool isPortal;
-    Vector3 mMoveVec;               // 음직이는 방향을 얻어오는데 사용한다.
-    Quaternion mRotate;             // 회전하는데 사용한다.
-    bool mIsBorder;                 // 벽에 부딛혔는지 감지
-    bool mIsDashed;                 // 대쉬를 했는지 
-    bool mIsDie;                 // 대쉬를 했는지 
+// 음직이는 방향을 얻어오는데 사용한다.
+// 회전하는데 사용한다.
+// 벽에 부딛혔는지 감지
+// 대쉬를 했는지 
+// 대쉬를 했는지 
+
+    public  bool                    IsPortal;
+    private Vector3                 mMoveVec;
+    private Quaternion              mRotate;
+    private bool                    mIsBorder;
+    private bool                    mIsDashed;
+    private bool                    mIsDie;
     [HideInInspector] Animator anim;
 
     IEnumerator mCoWaitDash;        // StopCorutine을 사용하기 위해서는 코루틴 변수가 필요하다. 
@@ -76,25 +91,37 @@ public class Player : Entity {
     private void Start() {
         CurrentHealth = PlayerDataManager.GetEntityData().MaxHP;//FinalPlayerData.PlayerEntityData.MaxHP;
         CurrentStamina = PlayerDataManager.GetPlayerData().MaxStamina;//FinalPlayerData.PlayerEntityData.MaxHP;
-        isPortal = true;
+        IsPortal = true;
     }
     
     public override void GetDamaged(int _amount){
-        CurrentHealth -= (int)(_amount * 100/(100 + PlayerDataManager.GetEntityData().Defence));
+        DamageCalculatePipeline(ref _amount);
+        CurrentHealth -= _amount;
+        PlayerDataManager.GetEntityData().HitState.Invoke();
         if(CurrentHealth <= 0) {Die();}
     }
 
     public override void GetDamaged(int _amount, VFXObject obj){
         //_amount의 값이 갑자기 바뀌어야 한다.
         //맞았을때 
-        PlayerDataManager.GetEntityData().HitStateRef.Invoke(ref _amount);
+        DamageCalculatePipeline(ref _amount);
+        CurrentHealth -= _amount;
+        PlayerDataManager.GetEntityData().HitState.Invoke();
         imageGenerator.GenerateImage(_amount);
-        if(_amount == 0) return;
-        
-        CurrentHealth -= (int)(_amount * 100/(100+PlayerDataManager.GetEntityData().Defence));
         visualModulator.InteractByVFX(obj);
-        if(CurrentHealth <= 0) {Die();}
     }
+
+    //베리어 가 있다면 베리어를 깎고 값을 리턴 
+    // 없다면 그냥 지나가고
+    private void DamageCalculatePipeline(ref int _amount){
+        PlayerDataManager.GetEntityData().HitStateRef.Invoke(ref _amount);
+        _amount = (int)(_amount * 100/(100+PlayerDataManager.GetEntityData().Defence));
+        if(BarrierAmount > 0){
+            if(BarrierAmount - _amount >= 0){_amount = 0; BarrierAmount -= _amount;}
+            else {_amount = _amount - BarrierAmount; BarrierAmount = 0; }
+        }
+    }
+
 
     public override void Die(){Debug.Log("죽었다는 로직 작성하기");}
 
@@ -154,10 +181,11 @@ public class Player : Entity {
             StartCoroutine(mCoWaitDash);
         }
     }
+
     public void Attack()
     {
         anim.SetTrigger("DoAttack");
-        Turning(() => weaponManager.weapon?.Use(PlayerDataManager.GetEntityData().Power));
+        Turning(() => weaponManager.weapon.Use(PlayerDataManager.GetEntityData().Power));
         
     }
     
@@ -168,16 +196,25 @@ public class Player : Entity {
     /// 이렇게 공격 방식이 바뀌는 매커니즘을 다루는 커플링을 줄일까? <br/>
     /// </summary>
     public void JustAttack(){
-        Turning(() => { weaponManager.weapon?.Use(PlayerDataManager.GetEntityData().Power); });
+        Turning(() => { weaponManager.weapon.Use(PlayerDataManager.GetEntityData().Power); });
     }
     
-    public void Skill(string key)
+    public void Skill(SKILL_KEY _key)
     {
-        /*
-        if(skillManagers.skills[(int)E_SkillKey.Q] != null) {
-            //Turning(() => skillManagers.skills[(int)E_SkillKey.Q].Use(PlayerDataManager.GetEntityData().Power));
+        UnityAction TurnningCallback = () => {};
+        switch (_key)
+        {
+            case SKILL_KEY.Q : 
+                TurnningCallback = () => {skillManager.skills[0].Use(SKILL_KEY.Q, 0);};
+                break;
+            case SKILL_KEY.E : 
+                TurnningCallback = () => {skillManager.skills[1].Use(SKILL_KEY.E, 0);};
+                break;
+            case SKILL_KEY.R : 
+                TurnningCallback = () => {skillManager.skills[2].Use(SKILL_KEY.R, 0);};
+                break;
         }
-        */
+        Turning(TurnningCallback);
     }
 
     void Turning(UnityAction action)
@@ -203,4 +240,5 @@ public class Player : Entity {
             action.Invoke();
         }
     }
+
 }
