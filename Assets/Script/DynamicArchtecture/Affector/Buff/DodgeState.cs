@@ -15,7 +15,7 @@ public class DodgeState : EntityAffector{
         this.targetEntity   = _eaData.targetEntity;
         this.ownerEntity    = _eaData.ownerEntity;
         this.isInitialized  = _eaData.isInitialized;
-        this.affectorStruct.affectorType = E_StateType.Invincible;
+        this.affectorStruct.affectorType = STATE_TYPE.INVINCIBLE;
 
         this.affectorStruct.AsyncAffectorCoroutine.Add(VisualActivate());
     }

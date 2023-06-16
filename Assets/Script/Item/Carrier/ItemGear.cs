@@ -1,0 +1,75 @@
+using System;
+using UnityEngine;
+using Sophia_Carriers;
+
+namespace Sophia_Carriers {
+    public class ItemGear : Carrier {
+//       public      VFXObject       DestroyEffect       = null;
+//       public      CARRIER_TYPE    CarrierType;
+//       public      bool            IsInitialized       = false;
+//       public      bool            IsActivated         = false;
+//       public      bool            IsCloned         = false;
+//       protected   Collider        carrierCollider     = null;
+//       protected   Rigidbody       carrierRigidBody    = null;
+        
+        [SerializeField] bool IsTracking = false;
+        [SerializeField] private float flowSpeed = 5;
+        public int num = 1;
+        
+        public override Carrier Clone()
+        {
+            if(this.IsCloned == true) throw new SystemException("복제본이 복제본을 만들 수 는 없다.");
+            Carrier res = Instantiate(this);
+            res.DisableSelf();
+            res.IsCloned = true;
+            return res;
+        }
+    
+        protected override void Awake() {
+            base.Awake();
+            this.CarrierType = CARRIER_TYPE.ITEM;
+        }
+    
+        public override void Init(Entity _ownerEntity)
+        {
+            if(IsCloned == false) throw new System.Exception("원본데이터를 조작하고 있음");
+            IsInitialized = true;
+        }
+        
+        public override void InitByObject(Entity _ownerEntity, object[] _objects)
+        {
+            if(IsCloned == false) throw new System.Exception("원본데이터를 조작하고 있음");
+            num = (int)_objects[0];
+        }
+    
+        private void OnEnable() { Invoke("ActivateTracking", 1f); }
+        
+        public override void EnableSelf() { this.IsActivated = true; gameObject.SetActive(true);}
+        public override void DisableSelf() { this.IsActivated = false; gameObject.SetActive(false);}
+        public override void DestroySelf()  {
+            if(DestroyEffect != null){
+                Instantiate(DestroyEffect, transform.position, Quaternion.identity).Initialize();
+            }
+            Destroy(this);
+        }
+    
+        private void OnTriggerEnter(Collider other) {
+            if(!other.TryGetComponent<Player>(out Player player)){return;}
+            PlayerDataManager.GetPlayerData().Gear += num;
+            DestroySelf();
+        }
+    
+        private void FixedUpdate() {
+            if(IsTracking) { FlowLerp(); }
+        }
+        private void ActivateTracking(){IsTracking = true;}
+    
+        private void FlowLerp(){
+            transform.position = new Vector3(
+                Mathf.Lerp(transform.position.x,GameManager.Instance.playerGameObject.transform.position.x, Time.deltaTime * flowSpeed),
+                Mathf.Lerp(transform.position.y,GameManager.Instance.playerGameObject.transform.position.y, Time.deltaTime * flowSpeed),
+                Mathf.Lerp(transform.position.z,GameManager.Instance.playerGameObject.transform.position.z, Time.deltaTime * flowSpeed)
+            );
+        }
+    }
+}

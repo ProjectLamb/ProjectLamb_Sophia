@@ -46,15 +46,8 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         Time.timeScale = globalEvent.CurrentTimeScale;
-
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-            //AudioManager.Instance.CleanEventInstance();
-        }
-        InitializeComponents();
     }
-    void InitializeComponents(){
+    public void InitializeComponents(){
         if(globalEvent == null) globalEvent = GetComponentInChildren<GlobalEvent>();
         if(globalAudio == null) globalAudio = GetComponentInChildren<GlobalAudio>();
     }

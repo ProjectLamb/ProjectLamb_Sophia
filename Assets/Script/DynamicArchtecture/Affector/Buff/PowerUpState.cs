@@ -23,7 +23,7 @@ public class PowerUpState : EntityAffector {
         this.targetEntity   = _eaData.targetEntity;
         this.ownerEntity    = _eaData.ownerEntity;
         this.isInitialized  = _eaData.isInitialized;
-        this.affectorStruct.affectorType = E_StateType.PowerUp;
+        this.affectorStruct.affectorType = STATE_TYPE.POWER_UP;
         this.affectorStruct.AsyncAffectorCoroutine.Add(VisualActivate());
         this.affectorStruct.AsyncAffectorCoroutine.Add(Boost());
     }

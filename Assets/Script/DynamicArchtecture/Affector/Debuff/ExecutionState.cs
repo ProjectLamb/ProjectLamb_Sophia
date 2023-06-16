@@ -21,7 +21,7 @@ public class ExecutionState : EntityAffector{
         this.targetEntity   = _eaData.targetEntity;
         this.ownerEntity    = _eaData.ownerEntity;
         this.isInitialized  = _eaData.isInitialized;
-        this.affectorStruct.affectorType = E_StateType.Execution;
+        this.affectorStruct.affectorType = STATE_TYPE.EXECUTION;
         this.affectorStruct.Affector.Add(Execution);
         this.affectorStruct.Affector.Add(GameManager.Instance.globalEvent.HandleTimeSlow);
         this.affectorStruct.Affector.Add(Camera.main.GetComponent<CameraEffect>().HandleZoomIn);

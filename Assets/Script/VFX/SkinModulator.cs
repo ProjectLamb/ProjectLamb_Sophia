@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public enum RendererMode { skin, mesh } 
+public enum RENDERER_MODE { SKIN, MESH } 
 public class SkinModulator : MonoBehaviour
 {
     [Tooltip("이 모드를 통해서 Skinned를 사용할것인지, Mesh를 사용할것인지 선택 한다.")]
-    public RendererMode mode;
+    public RENDERER_MODE mode;
 
     [SerializeField]
     [Tooltip("SkinMaterial 스킨을 입힐 대상들이다.")]
@@ -26,12 +26,12 @@ public class SkinModulator : MonoBehaviour
 
     public void ChangeSkin(Material _skin){
         mSkinMaterials[1] = _skin;
-        if(mode == RendererMode.skin){
+        if(mode == RENDERER_MODE.SKIN){
             for(int j = 0; j < skinnedMeshRenderers.Length; j++){
                 skinnedMeshRenderers[j].sharedMaterials = mSkinMaterials.ToArray();
             }
         }
-        if(mode == RendererMode.mesh) {
+        if(mode == RENDERER_MODE.MESH) {
             for(int j = 0; j < meshRenderers.Length; j++){
                 meshRenderers[j].sharedMaterials = mSkinMaterials.ToArray();
             }
@@ -40,12 +40,12 @@ public class SkinModulator : MonoBehaviour
 
     public void RevertSkin() {
         mSkinMaterials[1] = TransMaterial;
-        if(mode == RendererMode.skin){
+        if(mode == RENDERER_MODE.SKIN){
             for(int j = 0; j < skinnedMeshRenderers.Length; j++){
                 skinnedMeshRenderers[j].sharedMaterials = mSkinMaterials.ToArray();
             }
         }
-        if(mode == RendererMode.mesh) {
+        if(mode == RENDERER_MODE.MESH) {
             for(int j = 0; j < meshRenderers.Length; j++){
                 meshRenderers[j].sharedMaterials = mSkinMaterials.ToArray();
             }

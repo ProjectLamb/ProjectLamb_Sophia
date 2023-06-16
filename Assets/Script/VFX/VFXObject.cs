@@ -9,7 +9,7 @@ public class VFXObject : MonoBehaviour {
     private ParticleSystem PS;
     public bool IsNoneStacking = false;
     public float durateTime;
-    public E_StateType affectorType;
+    public STATE_TYPE affectorType;
     //단, 이 오브젝트는 무조건 파티클의 부모, 자식으로 구성된 놈만.
     public UnityEvent onDestroyEvent;
     private void Awake() {

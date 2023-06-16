@@ -5,9 +5,9 @@ using UnityEngine;
 using UnityEngine.AI;
 
 public class VFXBucket : MonoBehaviour {
-    public Dictionary<E_StateType, VFXObject> visualStacks;
+    public Dictionary<STATE_TYPE, VFXObject> visualStacks;
     private void Awake() {
-        visualStacks = new Dictionary<E_StateType, VFXObject>();   
+        visualStacks = new Dictionary<STATE_TYPE, VFXObject>();   
     }
     public void VFXInstantiator(VFXObject vfx){
         VFXObject vfxObject = Instantiate(vfx, transform);
@@ -31,7 +31,7 @@ public class VFXBucket : MonoBehaviour {
         }
         visualStacks[vfxObject.affectorType] = vfxObject;
     }
-    public void VFXDestroyForce(E_StateType type){ 
+    public void VFXDestroyForce(STATE_TYPE type){ 
         //if(!visualStacks[type].Equals(null)) Destroy(visualStacks[type].gameObject);
     }
 }

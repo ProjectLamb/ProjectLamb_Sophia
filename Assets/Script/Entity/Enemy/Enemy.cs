@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
+using Sophia_Carriers;
 
 /// <summary>
 /// 적 클래스 <br/>
@@ -53,13 +54,16 @@ public class Enemy : Entity
 
     public override void GetDamaged(int _amount){
         if(isDie == true) {return;}
+        GameManager.Instance.globalEvent.OnEnemyHitEvent.ForEach(E => E.Invoke());
         FinalData.HitStateRef.Invoke(ref _amount);
         imageGenerator.GenerateImage(_amount);
         CurrentHealth -= _amount;
         if (CurrentHealth <= 0) {this.Die();}
     }
+
     public override void GetDamaged(int _amount, VFXObject _vfx){
         if(isDie == true) {return;}
+        GameManager.Instance.globalEvent.OnEnemyHitEvent.ForEach(E => E.Invoke());
         FinalData.HitStateRef.Invoke(ref _amount);
         imageGenerator.GenerateImage(_amount);
         CurrentHealth -= _amount;

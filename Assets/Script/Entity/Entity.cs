@@ -15,7 +15,7 @@ public abstract class Entity : MonoBehaviour, IEntityAddressable
     [HideInInspector] public Rigidbody entityRigidbody;
     [HideInInspector] public GameObject model;
     [SerializeField] public VisualModulator visualModulator;
-    [SerializeField] public ProjectileBucket projectileBucket;
+    [SerializeField] public CarrierBucket carrierBucket;
     [SerializeField] public int mCurrentHealth;
     public int CurrentHealth
     {
@@ -27,14 +27,14 @@ public abstract class Entity : MonoBehaviour, IEntityAddressable
         }
     }
 
-    public Dictionary<E_StateType, AffectorStruct> affectorStacks;
+    public Dictionary<STATE_TYPE, AffectorStruct> affectorStacks;
 
     protected virtual void Awake()
     {
         TryGetComponent<Collider>(out entityCollider);
         TryGetComponent<Rigidbody>(out entityRigidbody);
         model ??= transform.GetChild(0).Find("modle").gameObject;
-        affectorStacks = new Dictionary<E_StateType, AffectorStruct>();
+        affectorStacks = new Dictionary<STATE_TYPE, AffectorStruct>();
     }
     public abstract ref EntityData GetFinalData();
     public abstract EntityData GetOriginData();

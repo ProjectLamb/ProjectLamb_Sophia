@@ -1,33 +1,53 @@
-using System;
 using UnityEngine;
 
-public enum E_StateType{
+public enum STATE_TYPE{
     //0 ~ 99 // 디버프
-    Move        = 0, Dash, Attack, Skill, GetDamaged, Die, Trigger,
+    MOVE        = 0, DASH, ATTACK, SKILL, GET_DAMAGE, DIE, TRIGGER,
     //100 ~ 199 //디버프
-    Burn        = 100     ,Poisend ,Bleed ,Contracted ,Freeze ,Confused ,Fearing ,Stern ,Bounded, Execution, KnockBack,
+    BURN        = 100     ,POISONED ,BLEED ,CONTRACTED ,FREEZE ,CONFUSED ,FEAR ,STERN  ,BOUNDED, EXECUTION, KNOCKBACK,
     //200 ~ 299
-    MoveSpeedUp = 200   , TenacityUp, PowerUp, AttackSpeedUp, Barrier, Invisible, Invincible, CriticalAttack, Defence
+    MOVE_SPEED_UP = 200   , TENACITY_UP, POWER_UP, ATTACK_SPEED_UP , BARRIER, INVISIBLE, INVINCIBLE, ON_HIT, DEFENCE, PROJECTILE_GENERATOR
 }
 
 
-public enum E_AnimState {
-    Idle, Attack, Jump, Die
+public enum ANIME_STATE {
+    IDLE, ATTACK, JUMP, DIE
 }
 
-public enum E_BucketPosition {
-    Inner, Outer
+public enum CARRIER_TYPE {
+    PORTAL = 0, ROULETTE, ATTACK, NEUTRAL, ITEM
 }
 
-public enum E_SkillType {
-    Neutral, Weapon
+public enum BUCKET_POSITION {
+    INNER, OUTER
+}
+
+public enum WEAPON_TYPE
+{
+    MELEE, RANGER, MAGE
+}
+
+
+public enum SKILL_TYPE {
+    NEUTRAL, ATTACK
 }
 [SerializeField]
-public enum E_SkillKey {
+public enum SKILL_KEY {
     Q, E, R
 }
 
 [SerializeField]
-public enum E_SkillRank {
-    Normal, Rare, Epic
+public enum SKILL_RANK {
+    NORMAL, RARE, EPIC
+}
+
+public enum UNITY_TAGS {
+    Mesh,
+    Wall,
+    Enemy,
+    Portal,
+    PlayerProjectile,
+    EnemyProjectile,
+    Equipment,
+    DebugUI,
 }

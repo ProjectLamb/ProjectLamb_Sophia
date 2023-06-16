@@ -18,10 +18,12 @@ public class EntityAffector : IModifier {
     public bool  isInitialized;    
     [HideInInspector]   public Entity targetEntity;
     [HideInInspector]   public Entity ownerEntity;
+    
     public virtual void Modifiy(){
         if(this.isInitialized == false) {throw new System.Exception("Affector 초기화 안됨 초기화 하고 사용해야함");}
         targetEntity.AffectHandler(affectorStruct);
     }
+
     public virtual EntityAffector Init(Entity _owner, Entity _target){
         EntityAffector EAInstance = new EntityAffector();
         EAInstance.affectorStruct = new AffectorStruct();
