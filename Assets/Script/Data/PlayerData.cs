@@ -1,40 +1,63 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-
-// 엔티티를 구성하는 가장 Atomic한 데이터
-// 변동하는 데이터가 되는 녀석들이다.
 [System.Serializable]
-public class PlayerData : EntityData {
-//  public int MaxHP {get {return mMaxHP;} set{mMaxHP = value;}}
-//  public int CurHP {get {return mCurHP;} set{mCurHP = value;}}
-//  public float MoveSpeed {get {return mMoveSpeed;} set{mMoveSpeed = value;}}
-//  public float Defence {get {return mDefence;} set{mDefence = value;}}
-//  public float Tenacity {get {return mTenacity;} set{mTenacity = value;}}
-    public int MaxStamina {get; set;}
-    public int CurStamina {get; set;}
-    public float Power {get; set;}
-    public float Luck {get; set;}
-    public int Gear {get; set;}
-    public int Frag {get; set;}
-//  public UnityAction mMoveState;
-//  public UnityAction mAttackState;
-//  public UnityAction mHitState;
-//  public UnityAction mPhyiscTriggerState;// 콜라이더 닿으면
-//  public UnityAction mDieState;
+public struct PlayerData
+{
+    //public int CurStamina; 이 EntityData를 포함하는 컴포넌트그 스코프 내에서 따로 정의한다. 오직 이 데이터
+    //int CurHP; 이 EntityData를 포함하는 컴포넌트그 스코프 내에서 따로 정의한다. 오직 이 데이터
+    [SerializeField] public EntityData EntityDatas;
+    public int MaxStamina;
+    public float StaminaRestoreRatio;
+    public int Luck;
+    public int Gear;
+    public int Frag;
+
     public UnityAction SkillState;
     public UnityAction InteractState;
     public UnityAction UpdateState;
 
-    public PlayerData(ScriptableObjPlayerData _playerScriptable) : base(_playerScriptable) {
-        this.MaxStamina = _playerScriptable.maxStamina;
-        this.CurStamina = this.MaxStamina;
-        this.Power = _playerScriptable.power;
-        this.Luck = _playerScriptable.luck;
-        this.Gear = _playerScriptable.gear;
-        this.Frag = _playerScriptable.frag;
-        SkillState = () => {};
-        InteractState = () => {};
-        UpdateState = () => {};
+    public PlayerData(ScriptableObjPlayerData _scriptable){
+        EntityDatas = new EntityData(_scriptable);
+        MaxStamina = _scriptable.MaxStamina;
+        StaminaRestoreRatio = _scriptable.StaminaRestoreRatio;
+        Luck = _scriptable.Luck;
+        Gear = _scriptable.Gear;
+        Frag = _scriptable.Frag;
+
+        SkillState  = _scriptable.SkillState;
+        InteractState   = _scriptable.InteractState;
+        UpdateState = _scriptable.UpdateState;
     }
+
+    public static PlayerData operator +(PlayerData x, PlayerData y) {
+        PlayerData res = new PlayerData();
+        res = x;
+        res.EntityDatas += y.EntityDatas;
+        res.MaxStamina += y.MaxStamina;
+        res.StaminaRestoreRatio += y.StaminaRestoreRatio;
+        res.Luck += y.Luck;
+        res.Gear += y.Gear;
+        res.Frag += y.Frag;
+        res.SkillState += y.SkillState;
+        res.InteractState += y.InteractState;
+        res.UpdateState += y.UpdateState;
+        return res;
+    }
+    public static PlayerData operator -(PlayerData x, PlayerData y)
+    {
+        PlayerData res = new PlayerData();
+        res = x;
+        res.EntityDatas -= y.EntityDatas;
+        res.MaxStamina -= y.MaxStamina;
+        res.StaminaRestoreRatio -= y.StaminaRestoreRatio;
+        res.Luck -= y.Luck;
+        res.Gear -= y.Gear;
+        res.Frag -= y.Frag;
+        res.SkillState -= y.SkillState;
+        res.InteractState -= y.InteractState;
+        res.UpdateState -= y.UpdateState;
+        return res;
+    }
+    public readonly override string ToString() => $"PlayerEntity {EntityDatas.ToString()} MaxStamina : {MaxStamina}, StaminaRestoreRatio : {StaminaRestoreRatio}, Luck : {Luck}, Gear : {Gear}, Frag : {Frag}";
 }
