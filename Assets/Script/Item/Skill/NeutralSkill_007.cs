@@ -5,7 +5,7 @@ using UnityEngine;
 using AYellowpaper.SerializedCollections;
 
 
-public class NeutralSkill_007 : NeutralSkill {
+public class NeutralSkill_007 : AbstractSkill {
 
 //  public string                                   skillName;
 //  public string                                   description;
@@ -18,7 +18,6 @@ public class NeutralSkill_007 : NeutralSkill {
 //  public SerializedDictionary<SKILL_RANK, float>  coolTime = new SerializedDictionary<SKILL_RANK, float>();
 
     public MoveFasterState      moveFasterState; 
-    protected bool              isReady = true;
     public List<float>          NumericQ = new List<float> {1.2f, 1.3f, 1.4f};
     public float                DurationQ = 5f;
     public List<float>          NumericE = new List<float> {1.2f, 1.3f, 1.4f};
@@ -41,6 +40,12 @@ public class NeutralSkill_007 : NeutralSkill {
         coolTime?.Add(SKILL_RANK.NORMAL  , 15f);
         coolTime?.Add(SKILL_RANK.RARE    , 15f);
         coolTime?.Add(SKILL_RANK.EPIC    , 15f);
+    }
+
+    public override void Init(Player _player)
+    {
+        base.Init(_player);
+        skillType = SKILL_TYPE.NEUTRAL;
     }
 
     protected override void UseQ(){

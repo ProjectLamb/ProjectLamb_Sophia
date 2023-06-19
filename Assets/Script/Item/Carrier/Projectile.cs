@@ -27,7 +27,7 @@ namespace Sophia_Carriers {
         [SerializeField] public float           ProjecttileDamage;
         [SerializeField] public float           DestroyTime = 0.5f;
         [SerializeField] public float           ColliderTime = 0.5f;
-        [SerializeField] private bool           isDestroyBySelf;
+        [SerializeField] protected bool         isDestroyBySelf;
         public List<EntityAffector>             projectileAffector;
 
         public override Carrier Clone()
@@ -118,6 +118,7 @@ namespace Sophia_Carriers {
             if (ProjecttileDamage == 0) { Debug.Log("데미지가 0임 의도한 거 맞지?"); }
         }    
         protected void HitTarget(Collider _other) {
+            if(ProjecttileDamage == 0) {return;}
             IDamagable damagableTarget;
             if(transform.CompareTag(_other.transform.tag)) {return;}
             if(_other.TryGetComponent<IDamagable>(out damagableTarget)){

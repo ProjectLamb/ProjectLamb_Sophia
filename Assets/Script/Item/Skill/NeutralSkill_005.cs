@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using AYellowpaper.SerializedCollections;
 
-public class NeutralSkill_005 : NeutralSkill {
+public class NeutralSkill_005 : AbstractSkill {
     //  public string                                   skillName;
 //  public string                                   description;
 //  public  SKILL_RANK                              skillRank;
@@ -42,6 +42,12 @@ public class NeutralSkill_005 : NeutralSkill {
         coolTime?.Add(SKILL_RANK.NORMAL  , 15f);
         coolTime?.Add(SKILL_RANK.RARE    , 15f);
         coolTime?.Add(SKILL_RANK.EPIC    , 15f);
+    }
+
+    public override void Init(Player _player)
+    {
+        base.Init(_player);
+        skillType = SKILL_TYPE.NEUTRAL;
     }
 
     protected override void UseQ(){

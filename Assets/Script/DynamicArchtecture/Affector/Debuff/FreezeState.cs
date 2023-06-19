@@ -16,6 +16,7 @@ public class FreezeState : EntityAffector {
 //  protected bool  isInitialized;
 
     public float DurationTime;
+    public float Ratio;
     public Material skin;
     public FreezeState(EntityAffector _eaData){
         this.affectorStruct = _eaData.affectorStruct;
@@ -31,6 +32,7 @@ public class FreezeState : EntityAffector {
         EntityAffector EAInstance = base.Init(_owner, _target);
         FreezeState Instance = new FreezeState(EAInstance);
         Instance.DurationTime = this.DurationTime;
+        Instance.Ratio = this.Ratio;
         Instance.skin = this.skin;
         Instance.isInitialized  = true;
         return Instance;
@@ -42,7 +44,7 @@ public class FreezeState : EntityAffector {
         float tenacity =this.targetEntity.GetFinalData().Tenacity;
         float slowDurateTime = DurationTime * (1 - tenacity);
 
-        this.targetEntity.GetFinalData().MoveSpeed = 0;
+        this.targetEntity.GetFinalData().MoveSpeed = originMoveSpeed * Ratio;
         yield return YieldInstructionCache.WaitForSeconds(slowDurateTime);
         this.targetEntity.GetFinalData().MoveSpeed = originMoveSpeed;
     }
