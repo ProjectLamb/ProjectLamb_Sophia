@@ -66,11 +66,7 @@ namespace Sophia_Carriers {
         private void ActivateTracking(){IsTracking = true;}
     
         private void FlowLerp(){
-            transform.position = new Vector3(
-                Mathf.Lerp(transform.position.x,GameManager.Instance.playerGameObject.transform.position.x, Time.deltaTime * flowSpeed),
-                Mathf.Lerp(transform.position.y,GameManager.Instance.playerGameObject.transform.position.y, Time.deltaTime * flowSpeed),
-                Mathf.Lerp(transform.position.z,GameManager.Instance.playerGameObject.transform.position.z, Time.deltaTime * flowSpeed)
-            );
+            transform.position = Vector3.Lerp(transform.position, GameManager.Instance.playerGameObject.transform.position, Time.deltaTime * flowSpeed);
         }
     }
 }
