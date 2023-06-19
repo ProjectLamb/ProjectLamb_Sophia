@@ -6,7 +6,7 @@ using UnityEngine.Events;
 using AYellowpaper.SerializedCollections;
 using Sophia_Carriers;
 
-public class NeutralSkill_002 : NeutralSkill {
+public class NeutralSkill_002 : AbstractSkill {
 //  public string                                   skillName;
 //  public string                                   description;
 //  public  SKILL_RANK                              skillRank;
@@ -45,6 +45,7 @@ public class NeutralSkill_002 : NeutralSkill {
     public override void Init(Player _player)
     {
         base.Init(_player);
+        skillType = SKILL_TYPE.NEUTRAL;
         weapon = _player.weaponManager.weapon;
     }
 

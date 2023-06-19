@@ -36,6 +36,12 @@ public class BurnState : EntityAffector {
         return Instance;
     }
 
+    public override void SetValue(List<float> objects)
+    {
+        DurationTime     = objects[0];
+        Damage           = objects[1];
+    }
+
     IEnumerator DotDamage(){
         float passedTime = 0;
         float tenacity =this.targetEntity.GetFinalData().Tenacity;

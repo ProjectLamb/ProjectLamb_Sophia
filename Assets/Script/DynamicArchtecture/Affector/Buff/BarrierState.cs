@@ -9,10 +9,11 @@ public class BarrierState : EntityAffector {
 //  public bool  isInitialized;    
 //  [HideInInspector]   public Entity targetEntity;
 //  [HideInInspector]   public Entity ownerEntity;
-    public float                DurationTime;
-    public float                Ratio;
-    public BarrierProjectile    barrier;
-    public Carrier              instantBarrier;
+    public float                        DurationTime;
+    public float                        Ratio;
+    public BarrierProjectile            Barrier;
+    [HideInInspector] 
+    private Carrier                     instantBarrier;
 
     public BarrierState(EntityAffector _eaData){
         this.affectorStruct = _eaData.affectorStruct;
@@ -27,7 +28,7 @@ public class BarrierState : EntityAffector {
     {
         EntityAffector EAInstance = base.Init(_owner, _target);
         BarrierState Instance = new BarrierState(EAInstance);
-        Instance.barrier = this.barrier;
+        Instance.Barrier = this.Barrier;
         Instance.isInitialized  = true;
         Instance.DurationTime = this.DurationTime;
         Instance.Ratio = this.Ratio;
@@ -46,8 +47,8 @@ public class BarrierState : EntityAffector {
     }
     IEnumerator BarrierGenerate(){
         float passedTime = 0;
-        int barrierHealth = (int)(( (float)(this.ownerEntity.GetFinalData().MaxHP) * Ratio) + 0.5f);
-        instantBarrier = ownerEntity.carrierBucket.CarrierInstantiatorByObjects(ownerEntity, barrier, new object[]{DurationTime, barrierHealth});
+        int BarrierHealth = (int)(( (float)(this.ownerEntity.GetFinalData().MaxHP) * Ratio) + 0.5f);
+        instantBarrier = ownerEntity.carrierBucket.CarrierInstantiatorByObjects(ownerEntity, Barrier, new object[]{DurationTime, BarrierHealth});
         while(DurationTime > passedTime ){
             passedTime += Time.fixedDeltaTime;
             if(!instantBarrier.IsActivated) {instantBarrier.DestroySelf(); yield break;}

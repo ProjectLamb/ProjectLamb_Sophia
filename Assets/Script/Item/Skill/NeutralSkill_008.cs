@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using AYellowpaper.SerializedCollections;
+using Sophia_Carriers;
 
-/*
-public class NeutralSkill_008 : NeutralSkill {
+public class NeutralSkill_008 : AbstractSkill {
 //  public string                                   skillName;
 //  public string                                   description;
 //  public  SKILL_RANK                              skillRank;
@@ -16,11 +16,11 @@ public class NeutralSkill_008 : NeutralSkill {
 //  public  float                                   PassedTime = 0f;
 //  public SerializedDictionary<SKILL_RANK, float>  coolTime = new SerializedDictionary<SKILL_RANK, float>();
 
-    public ProjectileGenState   PGState;
+    //public ProjectileGenState   PGState;
     public BurnState            burnState;
-    public Projectile           ProjectileQ;
-    public Projectile           ProjectileE;
-    public Projectile           ProjectileR;
+    public ParticleProjectile   ParticleProjectileQ;
+    public ParticleProjectile   ParticleProjectileE;
+    public ParticleProjectile   ParticleProjectileR;
     protected bool              isReady = true;
     public List<float>          NumericQ = new List<float> {0.1f, 0.15f, 0.2f};
     public List<float>          NumericE = new List<float> {0.1f, 0.15f, 0.2f};
@@ -43,44 +43,29 @@ public class NeutralSkill_008 : NeutralSkill {
         coolTime?.Add(SKILL_RANK.EPIC    , 15f);
     }
 
-    private void Start(){
-        ProjectileQ.projectileAffector.Add(burnState);
-        ProjectileE.projectileAffector.Add(burnState);
-        ProjectileR.projectileAffector.Add(burnState);
+    public override void Init(Player _player)
+    {
+        base.Init(_player);
+        skillType = SKILL_TYPE.NEUTRAL;
     }
 
     protected override void UseQ(){
-        float damage = PlayerDataManager.GetEntityData().Power * NumericQ[(int)skillRank];
-        ProjectileQ.Initialize(player);
-        ProjectileQ.projectileAffector.Last().SetValue(new List<float> {3f, damage});
-        ProjectileQ.destroyTime = 20f;
-        PGState.DurationTime        = 5f;
-        PGState.RepeatTimeInterval  = 0.25f;
-        PGState.projectile = ProjectileQ;
-        PGState.bucketPoisiotn = BUCKET_POSITION.OUTER;
-        PGState.Init(player, player).Modifiy();
+        float damage = PlayerDataManager.GetEntityData().Power * NumericQ[(int)skillRank] + 1;
+        ParticleProjectile useProjectile = ParticleProjectileQ.CloneParticleProjectile();
+        useProjectile.Init(player);
+        useProjectile.ProjecttileDamage = 0;
+        useProjectile.ParticleMainModule.duration = 0.5f;
+        useProjectile.ParticleMainModule.startLifetime = 20f;
+        useProjectile.ParticleEmissionModule.rateOverTime = (1f / 0.25f);
+        burnState.DurationTime = 3f;
+        burnState.Damage = damage;
+        useProjectile.projectileAffector.Add(burnState);
+        player.carrierBucket.CarrierTransformPositionning(player, useProjectile);
     }
     protected override void UseE(){
-        float damage = PlayerDataManager.GetEntityData().Power * NumericE[(int)skillRank];
-        ProjectileE.Initialize(player);
-        ProjectileE.projectileAffector.Last().SetValue(new List<float> {3f, damage});
-        ProjectileE.destroyTime     = 5f;
-        PGState.DurationTime        = 20f;
-        PGState.RepeatTimeInterval  = 0.25f;
-        PGState.projectile = ProjectileE;
-        PGState.bucketPoisiotn = BUCKET_POSITION.OUTER;
-        PGState.Init(player, player).Modifiy();
+
     }
     protected override void UseR(){
-        float damage = PlayerDataManager.GetEntityData().Power * NumericR[(int)skillRank];
-        ProjectileR.Initialize(player);
-        ProjectileR.projectileAffector.Last().SetValue(new List<float> {20f, damage});
-        ProjectileR.destroyTime     = 20f;
-        PGState.DurationTime        = 1f;
-        PGState.RepeatTimeInterval  = 1f;
-        PGState.projectile = ProjectileR;
-        PGState.bucketPoisiotn = BUCKET_POSITION.OUTER;
-        PGState.Init(player, player).Modifiy();
+
     }
 }
-*/
