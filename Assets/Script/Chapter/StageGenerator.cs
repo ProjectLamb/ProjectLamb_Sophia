@@ -48,10 +48,10 @@ public class StageGenerator : MonoBehaviour
         get { return mIsClear; }
         set { mIsClear = value; }
     }
-    private bool portalE = false;
-    private bool portalW = false;
-    private bool portalS = false;
-    private bool portalN = false;
+    private bool mPortalE = false;
+    private bool mPortalW = false;
+    private bool mPortalS = false;
+    private bool mPortalN = false;
     int portalCount = 0;
     public GameObject portal;
     public GameObject tile;
@@ -65,13 +65,13 @@ public class StageGenerator : MonoBehaviour
     public void SetPortal(bool e, bool w, bool s, bool n)
     {
         if (e)
-            portalE = true;
+            mPortalE = true;
         if (w)
-            portalW = true;
+            mPortalW = true;
         if (s)
-            portalS = true;
+            mPortalS = true;
         if (n)
-            portalN = true;
+            mPortalN = true;
     }
     public int GetMaxSize()
     {
@@ -177,7 +177,7 @@ public class StageGenerator : MonoBehaviour
     void InstantiatePortal()
     {
         GameObject instance;
-        if (portalE)
+        if (mPortalE)
         {
             instance = Instantiate(portal, tileArray[1, height / 2 + 1].transform.position, Quaternion.identity);
             instance.transform.GetChild(0).GetComponent<Portal>().PortalType = "east";
@@ -189,7 +189,7 @@ public class StageGenerator : MonoBehaviour
             // tileArray[1, height / 2 + 1].tag = "Portal";
             // tileArray[1, height / 2 + 1].GetComponent<Tile>().SetPortalType("east");
         }
-        if (portalW)
+        if (mPortalW)
         {
             instance = Instantiate(portal, tileArray[width, height / 2 + 1].transform.position, Quaternion.identity);
             instance.transform.GetChild(0).GetComponent<Portal>().PortalType = "west";
@@ -201,7 +201,7 @@ public class StageGenerator : MonoBehaviour
             // tileArray[width, height / 2 + 1].tag = "Portal";
             // tileArray[width, height / 2 + 1].GetComponent<Tile>().SetPortalType("west");
         }
-        if (portalN)
+        if (mPortalN)
         {
             instance = Instantiate(portal, tileArray[width / 2 + 1, 1].transform.position, Quaternion.identity);
             instance.transform.GetChild(0).GetComponent<Portal>().PortalType = "north";
@@ -213,7 +213,7 @@ public class StageGenerator : MonoBehaviour
             // tileArray[width / 2 + 1, 1].tag = "Portal";
             // tileArray[width / 2 + 1, 1].GetComponent<Tile>().SetPortalType("north");
         }
-        if (portalS)
+        if (mPortalS)
         {
             instance = Instantiate(portal, tileArray[width / 2 + 1, height].transform.position, Quaternion.identity);
             instance.transform.GetChild(0).GetComponent<Portal>().PortalType = "south";
@@ -263,7 +263,7 @@ public class StageGenerator : MonoBehaviour
     public void SetOnStage()
     {
         if (!mIsClear)
-            GameManager.Instance.playerGameObject.GetComponent<Player>().isPortal = false;
+            GameManager.Instance.playerGameObject.GetComponent<Player>().IsPortal = false;
         GameManager.Instance.currentStage = this.gameObject;
         foreach (var m in mobArray)
         {
