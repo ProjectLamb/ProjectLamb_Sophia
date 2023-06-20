@@ -65,7 +65,7 @@ public class Shop : MonoBehaviour
         {
             temp = Instantiate(heartItem, heartItemLocation.transform.position, Quaternion.identity);
             temp.GetComponent<ShopItem>().ItemPrice = heartPrice + heartCount * 5;
-            temp.GetComponent<ShopItem>().heartRecoveryRate = 5;    //하트 회복 수치
+            temp.GetComponent<ShopItem>().heartRecoveryRate = 20;    //하트 회복 수치
         }
         temp.transform.parent = transform;
     }

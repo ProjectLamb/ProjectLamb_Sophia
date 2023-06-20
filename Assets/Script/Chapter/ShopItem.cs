@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShopItem : MonoBehaviour
+public class ShopItem : Purchase
 {
     public bool IsEquipmentItem;
     public bool IsSkillItem;
@@ -65,11 +65,11 @@ public class ShopItem : MonoBehaviour
             }
             else if (IsHeartItem)    //체력
             {
-                if (GameManager.Instance.playerGameObject.GetComponent<PlayerData>().numericData.CurHP < GameManager.Instance.playerGameObject.GetComponent<PlayerData>().numericData.MaxHP) //만약 플레이어 HP가 FULL HP가 아니고
+                if (GameManager.Instance.playerGameObject.GetComponent<Player>().playerData.CurHP < GameManager.Instance.playerGameObject.GetComponent<Player>().playerData.MaxHP) //만약 플레이어 HP가 FULL HP가 아니고
                 {
                     if (purchase(mItemPrice))
                     {
-                        GameManager.Instance.playerGameObject.GetComponent<PlayerData>().numericData.CurHP += heartRecoveryRate;
+                        GameManager.Instance.playerGameObject.GetComponent<Player>().playerData.CurHP += heartRecoveryRate;
                         shop.GetComponent<Shop>().HeartCount++;
                         Destroy(gameObject);
                         return;
@@ -88,21 +88,9 @@ public class ShopItem : MonoBehaviour
         }
     }
 
-    void Awake()
+    void Start()
     {
         mItemPrice = 0;
         shop = transform.parent.gameObject;
-    }
-    public bool purchase(int price)
-    {
-        int current_gear = GameManager.Instance.playerGameObject.GetComponent<PlayerData>().wealthData.Gear;
-
-        if (current_gear >= price)  //구매 가능
-        {
-            GameManager.Instance.playerGameObject.GetComponent<PlayerData>().wealthData.Gear -= price;
-            return true;
-        }
-        else
-            return false;
     }
 }
