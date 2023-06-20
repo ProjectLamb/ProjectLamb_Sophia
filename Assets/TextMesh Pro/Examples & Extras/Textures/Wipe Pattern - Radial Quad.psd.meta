@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: cdab75ce9ff5b46538c4c551bcf1a26f
+=======
+guid: 2b5e9ae96c5644d8bae932f8b4ca68a2
+>>>>>>> 9f0655ef764e7f0bd4945f9bfe577eb9b2680a82
 timeCreated: 1464390481
 licenseType: Pro
 TextureImporter:

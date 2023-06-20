@@ -10,24 +10,24 @@ using UnityEngine.Events;
 /// </summary>
 public class PlayerController : MonoBehaviour
 {
-    Player Player;
+    Player player;
     static public bool IsMoveAllow = true; //인풋을 받을수 있는지 없는지
     static public bool IsAttackAllow = true; //인풋을 받을수 있는지 없는지
     static public bool IsReversedInput = false; //인풋을 받을수 있는지 없는지
     private void Awake() {
-        if (!TryGetComponent<Player>(out Player)) { Debug.Log("컴포넌트 로드 실패 : Player"); }
+        if (!TryGetComponent<Player>(out player)) { Debug.Log("컴포넌트 로드 실패 : Player"); }
     }
 
     private void Update() {
         if(IsMoveAllow){ 
-            Player.Move(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), IsReversedInput);
-            if(Input.GetKeyDown(KeyCode.Space)){Player.Dash();}
+            player.Move(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+            if(Input.GetKeyDown(KeyCode.Space)){player.Dash();}
         }
         if(IsAttackAllow){
-            if(Input.GetKeyDown(KeyCode.Q)){Player.Skill("Q");}
-            if(Input.GetKeyDown(KeyCode.E)){Player.Skill("E");}
-            if(Input.GetKeyDown(KeyCode.R)){Player.Skill("R");}
-            if(Input.GetMouseButtonDown(0)){Player.Attack();}
+            if(Input.GetKeyDown(KeyCode.Q)){player.Skill(SKILL_KEY.Q);}
+            if(Input.GetKeyDown(KeyCode.E)){player.Skill(SKILL_KEY.E);}
+            if(Input.GetKeyDown(KeyCode.R)){player.Skill(SKILL_KEY.R);}
+            if(Input.GetMouseButtonDown(0)){player.Attack();}
         }
     }
 }
