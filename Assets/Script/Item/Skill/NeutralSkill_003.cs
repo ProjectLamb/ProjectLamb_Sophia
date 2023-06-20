@@ -28,9 +28,9 @@ public class NeutralSkill_003 : AbstractSkill {
 //  }
     private void Awake(){
         skillName = "빠르게 탈출하기";
-        coolTime?.Add(SKILL_RANK.NORMAL  , 15f);
-        coolTime?.Add(SKILL_RANK.RARE    , 15f);
-        coolTime?.Add(SKILL_RANK.EPIC    , 15f);
+        //coolTime?.Add(SKILL_RANK.NORMAL  , 15f);
+        //coolTime?.Add(SKILL_RANK.RARE    , 15f);
+        //coolTime?.Add(SKILL_RANK.EPIC    , 15f);
     }
     public override void Init(Player _player){
         base.Init(_player); 

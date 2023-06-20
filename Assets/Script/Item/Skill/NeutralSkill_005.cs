@@ -39,9 +39,9 @@ public class NeutralSkill_005 : AbstractSkill {
 //  }
     private void Awake() {
         skillName = "공격력 증폭";    
-        coolTime?.Add(SKILL_RANK.NORMAL  , 15f);
-        coolTime?.Add(SKILL_RANK.RARE    , 15f);
-        coolTime?.Add(SKILL_RANK.EPIC    , 15f);
+        //coolTime?.Add(SKILL_RANK.NORMAL  , 15f);
+        //coolTime?.Add(SKILL_RANK.RARE    , 15f);
+        //coolTime?.Add(SKILL_RANK.EPIC    , 15f);
     }
 
     public override void Init(Player _player)
