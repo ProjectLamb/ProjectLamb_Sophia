@@ -2,28 +2,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class VisualModulator : MonoBehaviour, IVisuallyInteractable
+/// <summary>
+/// 모델의 비주얼적인 요소를 다루는 컴포넌트 <br/>
+/// > Method : Interact ↔️ Revert <br/>
+/// > Parameter : Material, VFXObject 
+/// </summary>
+public class VisualModulator : MonoBehaviour
 {
     public SkinModulator    skinModulator;
     public VFXBucket    vfxModulator;
 
-    public void Interact(DebuffData debuffData){
-        if(debuffData.entitySkin == null) return;
-        skinModulator.SetSkinSets(1, debuffData.entitySkin);
-        if(debuffData.particles == null) return;
-        vfxModulator.VFXInstantiatorWithTime(debuffData.particles, debuffData.durationTime);
+    public void InteractByMaterial(Material skin){
+        skinModulator.ChangeSkin(skin);
     }
     
-    public void Interact(ParticleSystem particleSystem){
-        vfxModulator.VFXInstantiator(particleSystem);
+    public void InteractByVFX(VFXObject vfx){
+        vfxModulator.VFXInstantiator(vfx);
     }
 
-    public void Interact(GameObject obj) {
-        vfxModulator.VFXInstantiator(obj);
+    public void RevertByMaterial(STATE_TYPE _type){
+        skinModulator.RevertSkin();
     }
-
-    public void Revert(){
-        skinModulator.SetSkinSets(1);
-        //vfxModulator.VFXDestroyer();
+    public void RevertByVFX(STATE_TYPE _type){
+        vfxModulator.RevertVFX(_type);
     }
 }
