@@ -27,15 +27,16 @@ public class AttackSkill_002 : AbstractSkill {
     float  skillNumeric;
     private void Awake() {
         this.skillName = "갈아버리기";
-        coolTime?.Add(SKILL_RANK.NORMAL  , 15f);
-        coolTime?.Add(SKILL_RANK.RARE    , 15f);
-        coolTime?.Add(SKILL_RANK.EPIC    , 15f);
+        //coolTime?.Add(SKILL_RANK.NORMAL  , 15f);
+        //coolTime?.Add(SKILL_RANK.RARE    , 15f);
+        //coolTime?.Add(SKILL_RANK.EPIC    , 15f);
     }
 
     public override void Init(Player _player)
     {
         base.Init(_player);
         skillType = SKILL_TYPE.ATTACK;
+        weapon = _player.weaponManager.weapon;
     }
 
     protected override void UseQ() {
