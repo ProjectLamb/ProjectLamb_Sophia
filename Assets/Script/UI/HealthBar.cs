@@ -14,12 +14,12 @@ public class HealthBar : MonoBehaviour
     private void Awake() {
         fill.color = gradient.Evaluate(1f);
         entityData = GetComponentInParent<IEntityAddressable>().GetEntityData();
-        if(entityData != null) {Debug.Log($"{entityData}");}
+        //if(entityData != null) {Debug.Log($"{entityData}");}
     }
 
     private void Start(){
         entityData.HitState += SetSlider;
-        Debug.Log("Tagged");
+        //Debug.Log("Tagged");
     }
 
     public void SetSlider(){

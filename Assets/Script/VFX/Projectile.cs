@@ -29,7 +29,8 @@ public class Projectile : MonoBehaviour {
 
         //전달 하기
         entityAddressable.GetDamaged(_amount: 5, OnHitSubEmmiter);
-        new FreezeState(other.gameObject).Modifiy(entityAddressable);
+        new PoisonState(other.gameObject).Modifiy(entityAddressable);
+        //new FreezeState(other.gameObject).Modifiy(entityAddressable);
     }
 
     //여기를 통해서 이 스크립트를 실행한 놈을 호출 할 수 있다.

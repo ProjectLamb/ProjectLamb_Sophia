@@ -235,6 +235,7 @@ public class ChapterGenerator : MonoBehaviour
 
         List<int> endL = new List<int>();
         List<int> bossL = new List<int>();
+        List<int> hiddenL = new List<int>();
         string bossDirection = "";
 
         void DFS(Stage _currentStage, string _directionFromStart)
@@ -309,7 +310,7 @@ public class ChapterGenerator : MonoBehaviour
 
         if (hiddenStage)
         {
-            if (bossL.Count + endL.Count < 3)
+            if (bossL.Count < 2 || bossL.Count + endL.Count < 3)
                 SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
         else
@@ -326,14 +327,14 @@ public class ChapterGenerator : MonoBehaviour
         if (hiddenStage)
         {
             bool assign = false;
+
             foreach (int num in bossL)
             {
                 endL.Add(num);
                 if (stage[num].directionFromStart != bossDirection)
                 {
-                    stage[num].Type = "hidden";
+                    hiddenL.Add(num);
                     assign = true;
-                    endL.Remove(num);
                 }
             }
 
@@ -343,15 +344,24 @@ public class ChapterGenerator : MonoBehaviour
                 {
                     if (stage[num].directionFromStart != bossDirection)
                     {
-                        stage[num].Type = "hidden";
-                        endL.Remove(num);
+                        hiddenL.Add(num);
                         break;
                     }
                 }
             }
-        }
+            if(hiddenL.Count < 1)
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 
-        endL.AddRange(bossL);
+            int hiddenRandom = Random.Range(0, hiddenL.Count);
+            stage[hiddenL[hiddenRandom]].Type = "hidden";
+
+            for (int i = 0; i < endL.Count; i++)
+            {
+                if (endL[i] != hiddenL[hiddenRandom])
+                    continue;
+                endL.RemoveAt(i);                
+            }
+        }
         bossL.Clear();
         int endRandom = Random.Range(0, endL.Count);
         stage[endL[endRandom]].Type = "shop";
@@ -397,7 +407,7 @@ public class ChapterGenerator : MonoBehaviour
     }
     void Awake()
     {
-        stageAmount = 10;
+        stageAmount = Random.Range(10, 16);
         minimumDistanceOfEndStage = 2;
         hiddenStageSpawnRate = 10f; //10% possibility
         GenerateStage(stageAmount);
