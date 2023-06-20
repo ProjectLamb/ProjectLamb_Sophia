@@ -30,9 +30,9 @@ public class AttackSkill_001 : AbstractSkill {
     
     private void Awake() {
         this.skillName = "바람 처럼";
-        coolTime?.Add(SKILL_RANK.NORMAL  , 15f);
-        coolTime?.Add(SKILL_RANK.RARE    , 15f);
-        coolTime?.Add(SKILL_RANK.EPIC    , 15f);
+        //coolTime?.Add(SKILL_RANK.NORMAL  , 15f);
+        //coolTime?.Add(SKILL_RANK.RARE    , 15f);
+        //coolTime?.Add(SKILL_RANK.EPIC    , 15f);
     }
     
     public override void Init(Player _player)
