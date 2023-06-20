@@ -29,7 +29,7 @@ public class Player : MonoBehaviour, IEntityAddressable
     public ScriptableObjPlayerData scriptableObjPlayerData;
     [SerializeField]
     public PlayerData playerData;
-    public EntityData GetEntityData(){return this.playerData;}
+    public EntityData GetEntityData() { return this.playerData; }
 
     [SerializeField]
     public Weapon weapon;
@@ -85,8 +85,9 @@ public class Player : MonoBehaviour, IEntityAddressable
         isPortal = true;
         anim = model.GetComponent<Animator>();
         dynamicsDic = new Dictionary<Affector_PlayerState, UnityAction>();
-        foreach(Affector_PlayerState E in (Affector_PlayerState[])Enum.GetValues(typeof(Affector_PlayerState))){
-            dynamicsDic.Add(E, () => {});
+        foreach (Affector_PlayerState E in (Affector_PlayerState[])Enum.GetValues(typeof(Affector_PlayerState)))
+        {
+            dynamicsDic.Add(E, () => { });
         }
         /*
         foreach(KeyValuePair<Affector_PlayerState, UnityAction> kvp in dynamicsDic){
@@ -106,15 +107,15 @@ public class Player : MonoBehaviour, IEntityAddressable
     /// <param name="_vAxis">A, D 인픗 수치</param>
     public void Move(float _hAxis, float _vAxis, bool _reverse)
     {
-        playerData.MoveState.Invoke();
-        if(_reverse){ _hAxis *= -1; _vAxis *= -1;}
+        //playerData.MoveState.Invoke();
+        if (_reverse) { _hAxis *= -1; _vAxis *= -1; }
         Vector3 AngleToVector(float _angle)
         {
             _angle *= Mathf.Deg2Rad;
             return new Vector3(Mathf.Sin(_angle), 0, Mathf.Cos(_angle));
         }
 
-        if (mRigidbody.velocity.magnitude > playerData.MoveSpeed) return; 
+        if (mRigidbody.velocity.magnitude > playerData.MoveSpeed) return;
 
         mMoveVec = AngleToVector(Camera.main.transform.eulerAngles.y + 90f) * _hAxis + AngleToVector(Camera.main.transform.eulerAngles.y) * _vAxis;
         mMoveVec = mMoveVec.normalized;
@@ -128,9 +129,10 @@ public class Player : MonoBehaviour, IEntityAddressable
         {
             Vector3 rbVel = mMoveVec * playerData.MoveSpeed;
             mRigidbody.velocity = rbVel;
-            if(mMoveVec != Vector3.zero){
+            if (mMoveVec != Vector3.zero)
+            {
                 mRotate = Quaternion.LookRotation(mMoveVec);
-                transform.rotation = Quaternion.Slerp(transform.rotation,mRotate, 0.6f);
+                transform.rotation = Quaternion.Slerp(transform.rotation, mRotate, 0.6f);
             }
         }
     }
@@ -175,35 +177,38 @@ public class Player : MonoBehaviour, IEntityAddressable
         playerData.AttackState.Invoke();
         Turning(() => weapon?.Use());
     }
-    
+
     public void Skill(string key)
     {
-        if(skills[(int)E_SkillKey.Q]) {
+        if (skills[(int)E_SkillKey.Q])
+        {
             playerData.SkillState.Invoke();
             Turning(() => skills[(int)E_SkillKey.Q].Use());
         }
     }
 
-    public void GetDamaged(int _amount){
+    public void GetDamaged(int _amount)
+    {
         playerData.HitState.Invoke();
-        playerData.CurHP -= (int)(_amount * 100/(100 + playerData.Defence));
-        
-        if(playerData.CurHP <= 0) {Die();}
+        playerData.CurHP -= (int)(_amount * 100 / (100 + playerData.Defence));
+
+        if (playerData.CurHP <= 0) { Die(); }
     }
 
-    public void GetDamaged(int _amount, GameObject particle){
+    public void GetDamaged(int _amount, GameObject particle)
+    {
         playerData.HitState.Invoke();
-        playerData.CurHP -= (int)(_amount * 100/(100+playerData.Defence));
+        playerData.CurHP -= (int)(_amount * 100 / (100 + playerData.Defence));
         visualModulator.Interact(particle);
-        if(playerData.CurHP <= 0) {Die();}
+        if (playerData.CurHP <= 0) { Die(); }
     }
 
 
-    public void Die(){}
+    public void Die() { }
 
     void Turning(UnityAction action)
     {
-        float camRayLength = 100f;          // 씬으로 보내는 카메라의 Ray 길이
+        float camRayLength = 300f;          // 씬으로 보내는 카메라의 Ray 길이
         // 마우스 커서에서 씬을 향해 발사되는 Ray 생성
         Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -219,15 +224,17 @@ public class Player : MonoBehaviour, IEntityAddressable
             Quaternion newRotatation = Quaternion.LookRotation(playerToMouse) * Quaternion.Euler(0, -45, 0);
             // 플레이어가 바라보는 방향 설정
             mRigidbody.MoveRotation(newRotatation);
+            action.Invoke();
         }
-        action.Invoke();
     }
-    
-    public void AffectHandler(List<UnityAction> _action){
+
+    public void AffectHandler(List<UnityAction> _action)
+    {
         _action.ForEach(E => E.Invoke());
     }
 
-    public void AsyncAffectHandler(List<IEnumerator> _coroutine){
+    public void AsyncAffectHandler(List<IEnumerator> _coroutine)
+    {
         _coroutine.ForEach(E => StartCoroutine(E));
     }
 
@@ -237,8 +244,10 @@ public class Player : MonoBehaviour, IEntityAddressable
     *
     *********************************************************************************/
 
-    public bool ChanceToDodge(){
-        if(Random.Range(0f, 100f) <= 5f + playerData.Luck){
+    public bool ChanceToDodge()
+    {
+        if (Random.Range(0f, 100f) <= 5f + playerData.Luck)
+        {
             return true;
         }
         return false;
@@ -264,4 +273,4 @@ public class Player : MonoBehaviour, IEntityAddressable
         }
     }
     */
- }
+}

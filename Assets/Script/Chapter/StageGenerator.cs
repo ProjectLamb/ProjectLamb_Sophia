@@ -27,6 +27,7 @@ public class StageGenerator : MonoBehaviour
             mStageNumber = value;
         }
     }
+    [SerializeField]
     private string mType;
     public string Type
     {
