@@ -9,157 +9,171 @@ using UnityEngine.Events;
 using Component = UnityEngine.Component;
 using Random = UnityEngine.Random;
 
-/// <summary>
-/// 플레이어의 모든 동작을 담는 클래스다
-/// </summary>
+public class Player : Entity {
 
-
-
-public class Player : MonoBehaviour, IEntityAddressable
-{
-    /////////////////////////////////////////////////////////////////////////////////
-    /*********************************************************************************
-    *
-    * 클래스를 모아 놓는다.
-    *
-    *********************************************************************************/
-
-    //[HideInInspector]
-    //public PlayerData playerData;           // 플레이어가 가지는 모든 데이터
-    public ScriptableObjPlayerData scriptableObjPlayerData;
-    [SerializeField]
-    public PlayerData playerData;
-    public EntityData GetEntityData() { return this.playerData; }
+    /* 아래 4줄은 절때 활성화 하지마라. 상속받은 Entity에 이미 정의 되어 있다. */
+    //Collider entityCollider;
+    //Rigidbody entityRigidbody;
+    //VisualModulator visualModulator;
+    //GameObject model;
 
     [SerializeField]
-    public Weapon weapon;
+    public ScriptableObjPlayerData ScriptablePD;
+    //고유성을 가지고 있다는것이 특징이라서 Static하면 안되지 않을까?    
+    [SerializeField] private int mCurrentStamina;
+    public  int CurrentStamina {
+        get {return mCurrentStamina;}
+        set {
+            mCurrentStamina = value;
+            if(mCurrentStamina < 0) {mCurrentStamina = 0;}
+        }
+    }
+    
+    [SerializeField] private int mBarrierAmount;
+    public  int BarrierAmount {
+        get {return mBarrierAmount;}
+        set { 
+            mBarrierAmount = value; 
+            if(mBarrierAmount < 0) mBarrierAmount = 0;
+        }
+    }
+    
+    public override ref EntityData GetFinalData(){
+        return ref PlayerDataManager.GetFinalData().playerData.EntityDatas;
+    }
+    public override     EntityData GetOriginData(){
+        return PlayerDataManager.GetOriginData().playerData.EntityDatas;
+    }
 
-    [SerializeField]
-    public Skill[] skills;
-    Rigidbody mRigidbody;
-
-    /*********************************************************************************
-    *
-    * 플레이어 "액션"에 대해 필요한 변수들을 모아 놓는다.
-    *
-    *********************************************************************************/
-
+    public override void ResetData(){
+        PlayerDataManager.ResetFinal();
+    }
+    
+    public WeaponManager            weaponManager;
+    public SkillManager             skillManager;
+    public EquipmentManager         equipmentManager;
+    public ImageGenerator           imageGenerator;
+    public LayerMask                groundMask; // 바닥을 인식하는 마스크
+    
     /// <summary>
     /// RoomGenerator.cs에서 참조하는 변수 (리펙토링 필요해 보인다.) <br/>
     /// * 포탈을 사용할수 있는지 없는지는 Map이 책임을 가져아 한다. <br/>
     /// * 플레이어는 그저 바닥에 포탈이 있는지 없는지 확인하고 사용하기, 안하기를 하면 될듯하다.
     /// </summary>
 
-    public bool isPortal;
-    Vector3 mMoveVec;               // 음직이는 방향을 얻어오는데 사용한다.
-    Quaternion mRotate;             // 회전하는데 사용한다.
-    bool mIsBorder;                 // 벽에 부딛혔는지 감지
-    bool mIsDashed;                 // 대쉬를 했는지 
-    bool mIsDie;                 // 대쉬를 했는지 
-    Animator anim;
-    public GameObject model;
-    public LayerMask groundMask;                  // 바닥을 인식하는 마스크
+// 음직이는 방향을 얻어오는데 사용한다.
+// 회전하는데 사용한다.
+// 벽에 부딛혔는지 감지
+// 대쉬를 했는지 
+// 대쉬를 했는지 
 
-    public Dictionary<Affector_PlayerState, UnityAction> dynamicsDic;
-    VisualModulator visualModulator;
+    public  bool                    IsPortal;
+    private Vector3                 mMoveVec;
+    private Quaternion              mRotate;
+    private bool                    mIsBorder;
+    private bool                    mIsDashed;
+    private bool                    mIsDie;
+    [HideInInspector] Animator anim;
 
-
-    /*********************************************************************************
-    *
-    * 코루틴, 액션을 모아 놓는다
-    *
-    *********************************************************************************/
     IEnumerator mCoWaitDash;        // StopCorutine을 사용하기 위해서는 코루틴 변수가 필요하다. 
+    public ParticleSystem DieParticle;
 
-    /*********************************************************************************
-    *
-    *
-    *
-    *********************************************************************************/
-    void Awake()
-    {
-        playerData = new PlayerData(scriptableObjPlayerData);
-        //// playerData : if (!TryGetComponent<PlayerData>(out playerData)) { Debug.Log("컴포넌트 로드 실패 : PlayerData"); }
-        if (!TryGetComponent<Rigidbody>(out mRigidbody)) { Debug.Log("컴포넌트 로드 실패 : Rigidbody"); }
-        if (!TryGetComponent<VisualModulator>(out visualModulator)) { Debug.Log("컴포넌트 로드 실패 : VisualModulator"); }
-        isPortal = true;
-        anim = model.GetComponent<Animator>();
-        dynamicsDic = new Dictionary<Affector_PlayerState, UnityAction>();
-        foreach (Affector_PlayerState E in (Affector_PlayerState[])Enum.GetValues(typeof(Affector_PlayerState)))
-        {
-            dynamicsDic.Add(E, () => { });
-        }
-        /*
-        foreach(KeyValuePair<Affector_PlayerState, UnityAction> kvp in dynamicsDic){
-            Debug.Log($"{kvp.Key}, {kvp.Value}");
-        }
-        */
+    protected override void Awake(){
+        /*아래 3줄은 절때 활성화 하지마라. base.Awake() 에서 이미 이걸 하고 있다.*/
+        //if (!TryGetComponent<Collider>(out entityCollider)) { Debug.Log("컴포넌트 로드 실패 : Collider"); }
+        //if (!TryGetComponent<Rigidbody>(out entityRigidbody)) { Debug.Log("컴포넌트 로드 실패 : Rigidbody"); }
+        //if (!TryGetComponent<VisualModulator>(out visualModulator)) { Debug.Log("컴포넌트 로드 실패 : VisualModulator"); }
+        //CurrentHealth = 마스터 데이터
+        base.Awake();
+        model.TryGetComponent<Animator>(out anim);
     }
 
-    void Update()
-    {
+    private void Start() {
+        CurrentHealth = PlayerDataManager.GetEntityData().MaxHP;//FinalPlayerData.PlayerEntityData.MaxHP;
+        CurrentStamina = PlayerDataManager.GetPlayerData().MaxStamina;//FinalPlayerData.PlayerEntityData.MaxHP;
+        IsPortal = true;
+    }
+    
+    public override void GetDamaged(int _amount){
+        DamageCalculatePipeline(ref _amount);
+        CurrentHealth -= _amount;
+        PlayerDataManager.GetEntityData().HitState.Invoke();
+        if(CurrentHealth <= 0) {Die();}
     }
 
-    /// <summary>
-    /// 이 함수가 실행되면 프레임 마다 캐릭터가 음직인다.
-    /// </summary>
-    /// <param name="_hAxis">W, S 인풋 수치</param>
-    /// <param name="_vAxis">A, D 인픗 수치</param>
-    public void Move(float _hAxis, float _vAxis, bool _reverse)
+    public override void GetDamaged(int _amount, VFXObject obj){
+        //_amount의 값이 갑자기 바뀌어야 한다.
+        //맞았을때 
+        DamageCalculatePipeline(ref _amount);
+        CurrentHealth -= _amount;
+        PlayerDataManager.GetEntityData().HitState.Invoke();
+        imageGenerator.GenerateImage(_amount);
+        visualModulator.InteractByVFX(obj);
+    }
+
+    //베리어 가 있다면 베리어를 깎고 값을 리턴 
+    // 없다면 그냥 지나가고
+    private void DamageCalculatePipeline(ref int _amount){
+        PlayerDataManager.GetEntityData().HitStateRef.Invoke(ref _amount);
+        _amount = (int)(_amount * 100/(100+PlayerDataManager.GetEntityData().Defence));
+        if(BarrierAmount > 0){
+            if(BarrierAmount - _amount >= 0){_amount = 0; BarrierAmount -= _amount;}
+            else {_amount = _amount - BarrierAmount; BarrierAmount = 0; }
+        }
+    }
+
+
+    public override void Die(){Debug.Log("죽었다는 로직 작성하기");}
+
+    public void Move(float _hAxis, float _vAxis)
     {
-        //playerData.MoveState.Invoke();
-        if (_reverse) { _hAxis *= -1; _vAxis *= -1; }
-        Vector3 AngleToVector(float _angle)
-        {
+        Vector3 AngleToVector(float _angle) {
             _angle *= Mathf.Deg2Rad;
             return new Vector3(Mathf.Sin(_angle), 0, Mathf.Cos(_angle));
         }
-
-        if (mRigidbody.velocity.magnitude > playerData.MoveSpeed) return;
+        
+        if (this.entityRigidbody.velocity.magnitude > PlayerDataManager.GetEntityData().MoveSpeed) return; 
+        anim.SetFloat("Move", entityRigidbody.velocity.magnitude);
 
         mMoveVec = AngleToVector(Camera.main.transform.eulerAngles.y + 90f) * _hAxis + AngleToVector(Camera.main.transform.eulerAngles.y) * _vAxis;
         mMoveVec = mMoveVec.normalized;
 
-        bool IsBorder()
-        {
-            return Physics.Raycast(transform.position, mMoveVec.normalized, 2, LayerMask.GetMask("Wall"));
-        }
-
+        bool IsBorder(){return Physics.Raycast(transform.position, mMoveVec.normalized, 2, LayerMask.GetMask("Wall"));}
+        
         if (!IsBorder())
         {
-            Vector3 rbVel = mMoveVec * playerData.MoveSpeed;
-            mRigidbody.velocity = rbVel;
-            if (mMoveVec != Vector3.zero)
-            {
+            Vector3 rbVel = mMoveVec * PlayerDataManager.GetEntityData().MoveSpeed;
+            this.entityRigidbody.velocity = rbVel;
+            if(mMoveVec != Vector3.zero){
                 mRotate = Quaternion.LookRotation(mMoveVec);
-                transform.rotation = Quaternion.Slerp(transform.rotation, mRotate, 0.6f);
+                transform.rotation = Quaternion.Slerp(transform.rotation,mRotate, 0.6f);
+                
             }
+            PlayerDataManager.GetEntityData().MoveState.Invoke();
         }
     }
 
-    /// <summary>
-    /// 이 함수가 실행되면 대쉬가 된다.
-    /// </summary>
     public void Dash()
     {
         IEnumerator CoWaitDash()
         {
+            float recoveryTime = 3f - (3f * (PlayerDataManager.GetPlayerData().StaminaRestoreRatio / 100));
             mIsDashed = true;
-            while (playerData.CurStamina < playerData.MaxStamina)
+            while (CurrentStamina < PlayerDataManager.GetPlayerData().MaxStamina)
             {
-                yield return YieldInstructionCache.WaitForSeconds(3.0f);
-                playerData.CurStamina++;
+                yield return YieldInstructionCache.WaitForSeconds(recoveryTime);
+                CurrentStamina++;
             }
             mIsDashed = false;
         }
 
         // 스테미나 false면 그냥 스킵
-        if (playerData.CurStamina <= 0) return;
+        if (CurrentStamina <= 0) return;
 
-        Vector3 dashPower = mMoveVec * -Mathf.Log(1 / mRigidbody.drag);
-        mRigidbody.AddForce(dashPower.normalized * playerData.MoveSpeed * 10, ForceMode.VelocityChange);
+        Vector3 dashPower = mMoveVec * -Mathf.Log(1 / this.entityRigidbody.drag);
+        this.entityRigidbody.AddForce(dashPower.normalized * PlayerDataManager.GetEntityData().MoveSpeed * 10, ForceMode.VelocityChange);
 
-        if (playerData.CurStamina > 0) { playerData.CurStamina--; }
+        if (CurrentStamina > 0) { CurrentStamina--; }
 
         if (!mIsDashed)
         {
@@ -168,47 +182,46 @@ public class Player : MonoBehaviour, IEntityAddressable
         }
     }
 
-    /// <summary>
-    /// Weapon 클래스를 참조해서 공격 을 실행한다.
-    /// </summary>
     public void Attack()
     {
         anim.SetTrigger("DoAttack");
-        playerData.AttackState.Invoke();
-        Turning(() => weapon?.Use());
+        Turning(() => weaponManager.weapon.Use(PlayerDataManager.GetEntityData().Power));
+        
     }
-
-    public void Skill(string key)
+    
+    /// <summary>
+    /// Equipment_010과 의존 관계다 <br/>
+    /// 슈슈슉 충전공격후 여러번 때리는것 <br/>
+    /// 좋지 않은 구조니 하루빨리 개선사항을 고민하자. <br/>
+    /// 이렇게 공격 방식이 바뀌는 매커니즘을 다루는 커플링을 줄일까? <br/>
+    /// </summary>
+    public void JustAttack(){
+        Turning(() => { weaponManager.weapon.Use(PlayerDataManager.GetEntityData().Power); });
+    }
+    
+    public void Skill(SKILL_KEY _key)
     {
-        if (skills[(int)E_SkillKey.Q])
+        UnityAction TurnningCallback = () => {};
+        switch (_key)
         {
-            playerData.SkillState.Invoke();
-            Turning(() => skills[(int)E_SkillKey.Q].Use());
+            case SKILL_KEY.Q : 
+                TurnningCallback = () => {skillManager.skills[0].Use(SKILL_KEY.Q, 0);};
+                break;
+            case SKILL_KEY.E : 
+                TurnningCallback = () => {skillManager.skills[1].Use(SKILL_KEY.E, 0);};
+                break;
+            case SKILL_KEY.R : 
+                TurnningCallback = () => {skillManager.skills[2].Use(SKILL_KEY.R, 0);};
+                break;
         }
+        Turning(TurnningCallback);
     }
-
-    public void GetDamaged(int _amount)
-    {
-        playerData.HitState.Invoke();
-        playerData.CurHP -= (int)(_amount * 100 / (100 + playerData.Defence));
-
-        if (playerData.CurHP <= 0) { Die(); }
-    }
-
-    public void GetDamaged(int _amount, GameObject particle)
-    {
-        playerData.HitState.Invoke();
-        playerData.CurHP -= (int)(_amount * 100 / (100 + playerData.Defence));
-        visualModulator.Interact(particle);
-        if (playerData.CurHP <= 0) { Die(); }
-    }
-
-
-    public void Die() { }
 
     void Turning(UnityAction action)
     {
-        float camRayLength = 300f;          // 씬으로 보내는 카메라의 Ray 길이
+        //100으로 해서 바닥을 인식 못했었다. 더 길게 하는게 좋다.
+        float camRayLength = 500f;          // 씬으로 보내는 카메라의 Ray 길이
+
         // 마우스 커서에서 씬을 향해 발사되는 Ray 생성
         Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -221,56 +234,11 @@ public class Player : MonoBehaviour, IEntityAddressable
             // 마우스 눌린곳, 플레이어 위치 계산
             Vector3 playerToMouse = groundHit.point - transform.position;
             playerToMouse.y = 0f;
-            Quaternion newRotatation = Quaternion.LookRotation(playerToMouse) * Quaternion.Euler(0, -45, 0);
+            Quaternion newRotatation = Quaternion.LookRotation(playerToMouse);
             // 플레이어가 바라보는 방향 설정
-            mRigidbody.MoveRotation(newRotatation);
+            this.entityRigidbody.MoveRotation(newRotatation);
             action.Invoke();
         }
     }
 
-    public void AffectHandler(List<UnityAction> _action)
-    {
-        _action.ForEach(E => E.Invoke());
-    }
-
-    public void AsyncAffectHandler(List<IEnumerator> _coroutine)
-    {
-        _coroutine.ForEach(E => StartCoroutine(E));
-    }
-
-    /*********************************************************************************
-    *
-    * Modifier
-    *
-    *********************************************************************************/
-
-    public bool ChanceToDodge()
-    {
-        if (Random.Range(0f, 100f) <= 5f + playerData.Luck)
-        {
-            return true;
-        }
-        return false;
-    }
-    /*********************************************************************************
-    *
-    * 장비
-    *
-    *********************************************************************************/
-    /*
-    [ContextMenu("Equip All Equipments")]
-    void Equip() { //적용이 되는지 확인만 하자
-        foreach(Equipment E in playerData.equipments){
-            IPlayerDataApplicant playerDataApplicant = (IPlayerDataApplicant)E;
-            playerDataApplicant?.ApplyData(ref this.playerData);
-        }
-    }
-    [ContextMenu("Dump All Equipments")]
-    void Dump() { //적용이 되는지 확인만 하자
-        foreach(Equipment E in playerData.equipments){
-            IPlayerDataApplicant playerDataApplicant = (IPlayerDataApplicant)E;
-            playerDataApplicant?.ApplyRemove(ref this.playerData);
-        }
-    }
-    */
 }

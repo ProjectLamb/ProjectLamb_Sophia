@@ -2,12 +2,17 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &2100000
 Material:
+<<<<<<< HEAD
   serializedVersion: 8
+=======
+  serializedVersion: 6
+>>>>>>> 9f0655ef764e7f0bd4945f9bfe577eb9b2680a82
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Roboto-Bold SDF - Surface
+<<<<<<< HEAD
   m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
   m_ValidKeywords:
   - _EMISSION
@@ -19,14 +24,26 @@ Material:
   m_CustomRenderQueue: -1
   stringTagMap:
     RenderType: Opaque
+=======
+  m_Shader: {fileID: 4800000, guid: 85187c2149c549c5b33f0cdb02836b17, type: 3}
+  m_ShaderKeywords: UNDERLAY_ON
+  m_LightmapFlags: 5
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+>>>>>>> 9f0655ef764e7f0bd4945f9bfe577eb9b2680a82
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+<<<<<<< HEAD
     - _BaseMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+=======
+>>>>>>> 9f0655ef764e7f0bd4945f9bfe577eb9b2680a82
     - _BumpMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -35,6 +52,7 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+<<<<<<< HEAD
     - _DetailAlbedoMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -51,11 +69,14 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+=======
+>>>>>>> 9f0655ef764e7f0bd4945f9bfe577eb9b2680a82
     - _FaceTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
+<<<<<<< HEAD
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -65,12 +86,17 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
         m_Texture: {fileID: 0}
+=======
+        m_Texture: {fileID: 28204114720316640, guid: 5302535af1044152a457ed104f1f4b91,
+          type: 2}
+>>>>>>> 9f0655ef764e7f0bd4945f9bfe577eb9b2680a82
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OutlineTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+<<<<<<< HEAD
     - _ParallaxMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -94,12 +120,16 @@ Material:
     m_Ints: []
     m_Floats:
     - _AlphaClip: 0
+=======
+    m_Floats:
+>>>>>>> 9f0655ef764e7f0bd4945f9bfe577eb9b2680a82
     - _Ambient: 0.5
     - _Bevel: 0.5
     - _BevelClamp: 0
     - _BevelOffset: 0
     - _BevelRoundness: 0
     - _BevelWidth: 0
+<<<<<<< HEAD
     - _Blend: 0
     - _BlendOp: 0
     - _BumpFace: 0
@@ -115,13 +145,22 @@ Material:
     - _Diffuse: 0.5
     - _DstBlend: 0
     - _EnvironmentReflections: 1
+=======
+    - _BumpFace: 0
+    - _BumpOutline: 0
+    - _ColorMask: 15
+    - _Diffuse: 0.5
+>>>>>>> 9f0655ef764e7f0bd4945f9bfe577eb9b2680a82
     - _FaceDilate: 0.1
     - _FaceShininess: 0.8
     - _FaceUVSpeedX: 0
     - _FaceUVSpeedY: 0
+<<<<<<< HEAD
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+=======
+>>>>>>> 9f0655ef764e7f0bd4945f9bfe577eb9b2680a82
     - _GlowInner: 0.05
     - _GlowOffset: 0.19
     - _GlowOuter: 0.905
@@ -130,19 +169,27 @@ Material:
     - _LightAngle: 3.1416
     - _MaskSoftnessX: 0
     - _MaskSoftnessY: 0
+<<<<<<< HEAD
     - _Metallic: 1
     - _OcclusionStrength: 1
+=======
+>>>>>>> 9f0655ef764e7f0bd4945f9bfe577eb9b2680a82
     - _OutlineShininess: 0
     - _OutlineSoftness: 0.017
     - _OutlineUVSpeedX: 0
     - _OutlineUVSpeedY: 0
     - _OutlineWidth: 0.1
+<<<<<<< HEAD
     - _Parallax: 0.005
     - _PerspectiveFilter: 0.875
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _Reflectivity: 10
     - _SampleGI: 0
+=======
+    - _PerspectiveFilter: 0.875
+    - _Reflectivity: 10
+>>>>>>> 9f0655ef764e7f0bd4945f9bfe577eb9b2680a82
     - _ScaleRatioA: 0.9
     - _ScaleRatioB: 0.5856164
     - _ScaleRatioC: 0.83076924
@@ -150,17 +197,24 @@ Material:
     - _ScaleY: 1
     - _ShaderFlags: 0
     - _Sharpness: 0
+<<<<<<< HEAD
     - _Smoothness: 0.393
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SpecularPower: 2
     - _SrcBlend: 1
+=======
+    - _SpecularPower: 2
+>>>>>>> 9f0655ef764e7f0bd4945f9bfe577eb9b2680a82
     - _Stencil: 0
     - _StencilComp: 8
     - _StencilOp: 0
     - _StencilReadMask: 255
     - _StencilWriteMask: 255
+<<<<<<< HEAD
     - _Surface: 0
+=======
+>>>>>>> 9f0655ef764e7f0bd4945f9bfe577eb9b2680a82
     - _TextureHeight: 1024
     - _TextureWidth: 1024
     - _UnderlayDilate: 0
@@ -171,6 +225,7 @@ Material:
     - _VertexOffsetY: 0
     - _WeightBold: 0.75
     - _WeightNormal: 0
+<<<<<<< HEAD
     - _WorkflowMode: 0
     - _ZWrite: 1
     m_Colors:
@@ -178,6 +233,10 @@ Material:
     - _ClipRect: {r: -32767, g: -32767, b: 32767, a: 32767}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+=======
+    m_Colors:
+    - _ClipRect: {r: -32767, g: -32767, b: 32767, a: 32767}
+>>>>>>> 9f0655ef764e7f0bd4945f9bfe577eb9b2680a82
     - _EnvMatrixRotation: {r: 0, g: 0, b: 0, a: 0}
     - _FaceColor: {r: 1, g: 1, b: 1, a: 1}
     - _GlowColor: {r: 0, g: 0.3793165, b: 1, a: 0.5}
@@ -188,6 +247,7 @@ Material:
     - _SpecColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
     - _UnderlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+<<<<<<< HEAD
   m_BuildTextureStacks: []
 --- !u!114 &1187686253220934346
 MonoBehaviour:
@@ -202,3 +262,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 5
+=======
+>>>>>>> 9f0655ef764e7f0bd4945f9bfe577eb9b2680a82

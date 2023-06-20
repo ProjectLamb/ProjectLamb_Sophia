@@ -2,52 +2,57 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class WeaponData {
-    public E_WeaponType WeaponType;
+[System.Serializable]
+public struct WeaponData
+{
+    public WEAPON_TYPE WeaponType;
     public string WeaponName;
     public string WeaponDescription;
-    
-    public float DamageRatio {get; set;}
-    public float WeaponDelay {get; set;}
-    public float Range {get; set;}
-        
-            private int mAmmo;
-
-    public int Ammo {
-        get{
-            if(this.WeaponType != E_WeaponType.ranger){
-                throw new System.Exception("원거리 무기가 아니므로 접근 불가능");
-            }
-            return mAmmo;
-        }
-        set {
-            if(this.WeaponType != E_WeaponType.ranger){
-                throw new System.Exception("원거리 무기가 아니므로 접근 불가능");
-            }
-            mAmmo = value;
-        }
+    public float DamageRatio;
+    public float WeaponDelay;
+    public float Range;
+    public float Ammo;
+    public UnityAction WeaponUseState;
+    public UnityAction WeaponChangeState;
+    public UnityAction WeaponReLoadState;
+    public WeaponData(ScriptableObjWeaponData _scriptable)
+    {
+        WeaponType = _scriptable.WeaponType;
+        WeaponName = _scriptable.WeaponName;
+        WeaponDescription = _scriptable.WeaponDescription;
+        DamageRatio = _scriptable.DamageRatio;
+        WeaponDelay = _scriptable.WeaponDelay;
+        Range = _scriptable.Range;
+        Ammo = _scriptable.Ammo;
+        WeaponUseState = _scriptable.WeaponUseState;
+        WeaponChangeState = _scriptable.WeaponChangeState;
+        WeaponReLoadState = _scriptable.WeaponReLoadState;
     }
-
-    public List<Projectile> Projectile;
-
-    public UnityAction UseState;
-    public UnityAction ChangeState;
-    public UnityAction ReLoadState; 
-
-    public WeaponData(ScriptableObjWeaponData _weaponScriptable) {
-        this.WeaponType = _weaponScriptable.weaponType;
-        this.WeaponName = _weaponScriptable.weaponName;
-        this.WeaponDescription = _weaponScriptable.weaponDescription;
-        this.DamageRatio = _weaponScriptable.damageRatio;
-        this.WeaponDelay = _weaponScriptable.weaponDelay;
-        this.Range = _weaponScriptable.range;
-        this.Projectile = new List<Projectile>(_weaponScriptable.projectiles);
-        UseState = () => {};
-        ChangeState = () => {};
-
-        if(WeaponType == E_WeaponType.ranger){
-            this.Ammo = _weaponScriptable.ammo;
-            ReLoadState = () => {};
-        }
+    public static WeaponData operator +(WeaponData x, WeaponData y)
+    {
+        WeaponData res = new WeaponData();
+        res = x;
+        res.DamageRatio += y.DamageRatio;
+        res.WeaponDelay += y.WeaponDelay;
+        res.Range += y.Range;
+        res.WeaponUseState += y.WeaponUseState;
+        res.WeaponChangeState += y.WeaponChangeState;
+        res.WeaponReLoadState += y.WeaponReLoadState;
+        return res;
+    }
+    public static WeaponData operator -(WeaponData x, WeaponData y)
+    {
+        WeaponData res = new WeaponData();
+        res = x;
+        res.DamageRatio -= y.DamageRatio;
+        res.WeaponDelay -= y.WeaponDelay;
+        res.Range -= y.Range;
+        res.WeaponUseState -= y.WeaponUseState;
+        res.WeaponChangeState -= y.WeaponChangeState;
+        res.WeaponReLoadState -= y.WeaponReLoadState;
+        return res;
+    }
+    public readonly override string ToString() {
+        return $"DamageRatio : {DamageRatio}, WeaponDelay : {WeaponDelay}, Range : {Range}, Ammo : {Ammo}\n";
     }
 }
