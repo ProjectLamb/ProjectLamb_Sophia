@@ -11,6 +11,8 @@ TagManager:
   - Door
   - PlayerProjectile
   - EnemyProjectile
+  - Equipment
+  - DebugUI
   layers:
   - Default
   - TransparentFX
@@ -23,11 +25,11 @@ TagManager:
   - Lighting
   - Ground
   - Postprocessing
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Carrier
+  - PlayerEntity
+  - Entity
+  - Projectile
+  - Invincible
   - 
   - 
   - 

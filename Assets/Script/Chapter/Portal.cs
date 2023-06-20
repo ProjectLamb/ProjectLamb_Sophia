@@ -31,7 +31,7 @@ public class Portal : MonoBehaviour
     GameObject map;
     GameObject departStage;
     GameObject arriveStage;
-    private float warpInterval;
+    private float mWarpInterval;
     [SerializeField]
     private string mPortalType;
     public string PortalType
@@ -46,16 +46,16 @@ public class Portal : MonoBehaviour
             switch (mPortalType)
             {
                 case "east":
-                    mWarpPos = new Vector3(transform.position.x + warpInterval, 0, transform.position.z);
+                    mWarpPos = new Vector3(transform.position.x + mWarpInterval, 0, transform.position.z);
                     break;
                 case "west":
-                    mWarpPos = new Vector3(transform.position.x - warpInterval, 0, transform.position.z);
+                    mWarpPos = new Vector3(transform.position.x - mWarpInterval, 0, transform.position.z);
                     break;
                 case "south":
-                    mWarpPos = new Vector3(transform.position.x, 0, transform.position.z - warpInterval);
+                    mWarpPos = new Vector3(transform.position.x, 0, transform.position.z - mWarpInterval);
                     break;
                 case "north":
-                    mWarpPos = new Vector3(transform.position.x, 0, transform.position.z + warpInterval);
+                    mWarpPos = new Vector3(transform.position.x, 0, transform.position.z + mWarpInterval);
                     break;
             }
         }
@@ -110,7 +110,7 @@ public class Portal : MonoBehaviour
     {
         visited = false;
         mPortalType = "";
-        warpInterval = transform.localScale.x;
+        mWarpInterval = transform.localScale.x;
         map = GameManager.Instance.ChapterGenerator;
         mWarpPos = transform.position;
     }
