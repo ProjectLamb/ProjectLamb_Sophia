@@ -37,9 +37,9 @@ public class NeutralSkill_002 : AbstractSkill {
 //  }
     private void Awake() {
         this.skillName = "머리가 어질어질";
-        coolTime?.Add(SKILL_RANK.NORMAL  , 15f);
-        coolTime?.Add(SKILL_RANK.RARE    , 15f);
-        coolTime?.Add(SKILL_RANK.EPIC    , 15f);
+        //coolTime?.Add(SKILL_RANK.NORMAL  , 15f);
+        //coolTime?.Add(SKILL_RANK.RARE    , 15f);
+        //coolTime?.Add(SKILL_RANK.EPIC    , 15f);
     }
 
     public override void Init(Player _player)

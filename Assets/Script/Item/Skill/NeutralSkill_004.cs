@@ -32,9 +32,9 @@ public class NeutralSkill_004 : AbstractSkill {
 
     private void Awake() {
         this.skillName = "시간은 누구에게나 평등하지";
-        coolTime?.Add(SKILL_RANK.NORMAL  , 15f);
-        coolTime?.Add(SKILL_RANK.RARE    , 15f);
-        coolTime?.Add(SKILL_RANK.EPIC    , 15f);
+        //coolTime?.Add(SKILL_RANK.NORMAL  , 15f);
+        //coolTime?.Add(SKILL_RANK.RARE    , 15f);
+        //coolTime?.Add(SKILL_RANK.EPIC    , 15f);
     }
 
     public override void Init(Player _player)

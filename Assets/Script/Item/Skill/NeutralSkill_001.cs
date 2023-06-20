@@ -38,9 +38,9 @@ public class NeutralSkill_001 : AbstractSkill {
 
     private void Awake() {
         skillName = "봄 바람을 타고";    
-        coolTime?.Add(SKILL_RANK.NORMAL  , 15f);
-        coolTime?.Add(SKILL_RANK.RARE    , 15f);
-        coolTime?.Add(SKILL_RANK.EPIC    , 15f);
+        //coolTime?.Add(SKILL_RANK.NORMAL  , 15f);
+        //coolTime?.Add(SKILL_RANK.RARE    , 15f);
+        //coolTime?.Add(SKILL_RANK.EPIC    , 15f);
     }
     public override void Init(Player _player) {
         base.Init(_player);

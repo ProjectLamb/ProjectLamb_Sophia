@@ -45,9 +45,9 @@ public class NeutralSkill_009 : AbstractSkill {
 
     private void Awake() {
         skillName = "모두 발사!";    
-        coolTime?.Add(SKILL_RANK.NORMAL  , 15f);
-        coolTime?.Add(SKILL_RANK.RARE    , 15f);
-        coolTime?.Add(SKILL_RANK.EPIC    , 15f);
+        //coolTime?.Add(SKILL_RANK.NORMAL  , 15f);
+        //coolTime?.Add(SKILL_RANK.RARE    , 15f);
+        //coolTime?.Add(SKILL_RANK.EPIC    , 15f);
     }
 
     public override void Init(Player _player)
