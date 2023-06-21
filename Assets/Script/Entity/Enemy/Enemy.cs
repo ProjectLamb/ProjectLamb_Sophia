@@ -18,18 +18,19 @@ public class Enemy : Entity
     //public Rigidbody entityRigidbody;
     //public VisualModulator visualModulator;
     //public GameObject model;
-    
-    [field : SerializeField]
+
+    [field: SerializeField]
     public ScriptableObjEnemyData ScriptableED;
     private EntityData BaseEnemyData;
     private EntityData FinalData;
 
-    public override void ResetData(){
+    public override void ResetData()
+    {
         FinalData = BaseEnemyData;
     }
 
-    public override ref EntityData GetFinalData (){ return ref this.FinalData; }
-    public override     EntityData GetOriginData(){ return this.BaseEnemyData; }
+    public override ref EntityData GetFinalData() { return ref this.FinalData; }
+    public override EntityData GetOriginData() { return this.BaseEnemyData; }
 
     public UnityEngine.AI.NavMeshAgent nav;
     public Transform objectiveTarget;
@@ -38,7 +39,7 @@ public class Enemy : Entity
 
     public Projectile[] projectiles;
 
-    public ImageGenerator   imageGenerator;
+    public ImageGenerator imageGenerator;
     public Animator animator;
     public AnimEventInvoker animEventInvoker;
     public ParticleSystem DieParticle;
@@ -49,29 +50,33 @@ public class Enemy : Entity
         isDie = true;
         chase = false;
         entityRigidbody.velocity = Vector3.zero;
+        gameObject.transform.parent.parent.GetComponent<StageGenerator>().CurrentMobCount--;
         Invoke("DestroySelf", 0.5f);
     }
 
-    public override void GetDamaged(int _amount){
-        if(isDie == true) {return;}
+    public override void GetDamaged(int _amount)
+    {
+        if (isDie == true) { return; }
         GameManager.Instance.globalEvent.OnEnemyHitEvent.ForEach(E => E.Invoke());
         FinalData.HitStateRef.Invoke(ref _amount);
         imageGenerator.GenerateImage(_amount);
         CurrentHealth -= _amount;
-        if (CurrentHealth <= 0) {this.Die();}
+        if (CurrentHealth <= 0) { this.Die(); }
     }
 
-    public override void GetDamaged(int _amount, VFXObject _vfx){
-        if(isDie == true) {return;}
+    public override void GetDamaged(int _amount, VFXObject _vfx)
+    {
+        if (isDie == true) { return; }
         GameManager.Instance.globalEvent.OnEnemyHitEvent.ForEach(E => E.Invoke());
         FinalData.HitStateRef.Invoke(ref _amount);
         imageGenerator.GenerateImage(_amount);
         CurrentHealth -= _amount;
         visualModulator.InteractByVFX(_vfx);
-        if (CurrentHealth <= 0) {this.Die();}
+        if (CurrentHealth <= 0) { this.Die(); }
     }
 
-    public void DestroySelf(){
+    public void DestroySelf()
+    {
         Destroy(gameObject);
     }
 
@@ -84,12 +89,12 @@ public class Enemy : Entity
         base.Awake();
 
         TryGetComponent<UnityEngine.AI.NavMeshAgent>(out nav);
-        
+
         this.model.TryGetComponent<Animator>(out animator);
         this.model.TryGetComponent<AnimEventInvoker>(out animEventInvoker);
 
         DieParticle.GetComponent<VFXObject>().OnDestroyEvent.AddListener(DestroySelf);
-        
+
         BaseEnemyData = new EntityData(ScriptableED);
         FinalData = BaseEnemyData;
         CurrentHealth = FinalData.MaxHP;
@@ -99,16 +104,18 @@ public class Enemy : Entity
         isDie = false;
     }
 
-    private void Start() {
+    private void Start()
+    {
         nav.speed = FinalData.MoveSpeed;
     }
 
     private void FixedUpdate()
     {
         /***************************/
-        if(GameManager.Instance?.globalEvent.IsGamePaused == true){return;}
+        if (GameManager.Instance?.globalEvent.IsGamePaused == true) { return; }
         /***************************/
-        if (chase) {
+        if (chase)
+        {
             nav.SetDestination(objectiveTarget.position);
         }
     }
@@ -116,10 +123,10 @@ public class Enemy : Entity
     private void Update()
     {
         /***************************/
-        if(GameManager.Instance?.globalEvent.IsGamePaused == true){return;}
+        if (GameManager.Instance?.globalEvent.IsGamePaused == true) { return; }
         /***************************/
-        if (chase) { nav.enabled = true;}
-        else {nav.enabled = false;}
+        if (chase) { nav.enabled = true; }
+        else { nav.enabled = false; }
         nav.speed = FinalData.MoveSpeed;
     }
 }
