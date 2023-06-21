@@ -42,6 +42,17 @@ public class ChapterGenerator : MonoBehaviour
                 return mVacancy;
             }
         }
+        private bool mDiscovered;
+        public bool Discovered
+        {
+            set
+            {
+                mDiscovered = value;
+            }
+            get{
+                return mDiscovered;
+            }
+        }
         private int mDepth;
         public int Depth
         {
@@ -349,7 +360,7 @@ public class ChapterGenerator : MonoBehaviour
                     }
                 }
             }
-            if(hiddenL.Count < 1)
+            if (hiddenL.Count < 1)
                 SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 
             int hiddenRandom = Random.Range(0, hiddenL.Count);
@@ -359,9 +370,17 @@ public class ChapterGenerator : MonoBehaviour
             {
                 if (endL[i] != hiddenL[hiddenRandom])
                     continue;
-                endL.RemoveAt(i);                
+                endL.RemoveAt(i);
             }
         }
+        else
+        {
+            foreach (int num in bossL)
+            {
+                endL.Add(num);
+            }
+        }
+
         bossL.Clear();
         int endRandom = Random.Range(0, endL.Count);
         stage[endL[endRandom]].Type = "shop";

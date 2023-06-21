@@ -65,24 +65,24 @@ public class ShopItem : Purchase
             }
             else if (IsHeartItem)    //체력
             {
-                if (GameManager.Instance.playerGameObject.GetComponent<Player>().playerData.CurHP < GameManager.Instance.playerGameObject.GetComponent<Player>().playerData.MaxHP) //만약 플레이어 HP가 FULL HP가 아니고
-                {
-                    if (purchase(mItemPrice))
-                    {
-                        GameManager.Instance.playerGameObject.GetComponent<Player>().playerData.CurHP += heartRecoveryRate;
-                        shop.GetComponent<Shop>().HeartCount++;
-                        Destroy(gameObject);
-                        return;
-                    }
-                    else
-                    {
-                        errorCode = "(기어 부족)";
-                    }
-                }
-                else
-                {
-                    errorCode = "(체력 다 참)";
-                }
+                // if (GameManager.Instance.playerGameObject.GetComponent<Player>().playerData.CurHP < GameManager.Instance.playerGameObject.GetComponent<Player>().playerData.MaxHP) //만약 플레이어 HP가 FULL HP가 아니고
+                // {
+                //     if (purchase(mItemPrice))
+                //     {
+                //         GameManager.Instance.playerGameObject.GetComponent<Player>().playerData.CurHP += heartRecoveryRate;
+                //         shop.GetComponent<Shop>().HeartCount++;
+                //         Destroy(gameObject);
+                //         return;
+                //     }
+                //     else
+                //     {
+                //         errorCode = "(기어 부족)";
+                //     }
+                // }
+                // else
+                // {
+                //     errorCode = "(체력 다 참)";
+                // }
             }
             Debug.Log("아이템을 구매할 수 없습니다" + errorCode);   //UI로 출력할 것
         }

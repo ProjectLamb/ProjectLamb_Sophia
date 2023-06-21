@@ -250,7 +250,6 @@ public class StageGenerator : MonoBehaviour
     {
         if (!mIsClear)
             GameManager.Instance.playerGameObject.GetComponent<Player>().IsPortal = false;
-        GameManager.Instance.currentStage = this.gameObject;
         foreach (var m in mobArray)
         {
             if (m != null)
@@ -323,19 +322,19 @@ public class StageGenerator : MonoBehaviour
             float y = 0;
             float z = 0;
             GameObject instance;
-            if(portalE)
+            if(mPortalE)
             {
                 y = 180f;
             }
-            else if (portalW)
+            else if (mPortalW)
             {
 
             }
-            else if (portalN)
+            else if (mPortalN)
             {
                 y = 90f;
             }
-            else if (portalS)
+            else if (mPortalS)
             {
                 y = 270f;
             }
@@ -355,6 +354,7 @@ public class StageGenerator : MonoBehaviour
         {
             GameObject character = GameManager.Instance.playerGameObject;
             GameManager.Instance.currentStage = this.gameObject;
+            gameObject.transform.parent.GetComponent<ChapterGenerator>().stage[StageNumber].Discovered = true;
             mIsClear = true;
             //character.transform.position = new Vector3(transform.localPosition.x, GameObject.Find("Character").transform.position.y, transform.localPosition.z);
             character.transform.position = new Vector3(transform.position.x, character.transform.position.y, transform.position.z);
