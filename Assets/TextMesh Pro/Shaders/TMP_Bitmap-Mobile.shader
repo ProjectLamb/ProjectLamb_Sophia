@@ -2,11 +2,7 @@ Shader "TextMeshPro/Mobile/Bitmap" {
 
 Properties {
 	_MainTex		("Font Atlas", 2D) = "white" {}
-<<<<<<< HEAD
-	_Color			("Text Color", Color) = (1,1,1,1)
-=======
 	[HDR]_Color		("Text Color", Color) = (1,1,1,1)
->>>>>>> 9f0655ef764e7f0bd4945f9bfe577eb9b2680a82
 	_DiffusePower	("Diffuse Power", Range(1.0,4.0)) = 1.0
 
 	_VertexOffsetX("Vertex OffsetX", float) = 0
@@ -22,10 +18,7 @@ Properties {
 	_StencilWriteMask("Stencil Write Mask", Float) = 255
 	_StencilReadMask("Stencil Read Mask", Float) = 255
 
-<<<<<<< HEAD
-=======
 	_CullMode("Cull Mode", Float) = 0
->>>>>>> 9f0655ef764e7f0bd4945f9bfe577eb9b2680a82
 	_ColorMask("Color Mask", Float) = 15
 }
 
@@ -44,11 +37,7 @@ SubShader {
 
 
 	Lighting Off
-<<<<<<< HEAD
-	Cull Off
-=======
 	Cull [_CullMode]
->>>>>>> 9f0655ef764e7f0bd4945f9bfe577eb9b2680a82
 	ZTest [unity_GUIZTestMode]
 	ZWrite Off
 	Fog { Mode Off }
@@ -64,10 +53,7 @@ SubShader {
 		#pragma multi_compile __ UNITY_UI_CLIP_RECT
 		#pragma multi_compile __ UNITY_UI_ALPHACLIP
 
-<<<<<<< HEAD
-=======
 
->>>>>>> 9f0655ef764e7f0bd4945f9bfe577eb9b2680a82
 		#include "UnityCG.cginc"
 
 		struct appdata_t {
@@ -96,26 +82,13 @@ SubShader {
 
 		v2f vert (appdata_t v)
 		{
-<<<<<<< HEAD
-			v2f o;
-=======
 			v2f OUT;
->>>>>>> 9f0655ef764e7f0bd4945f9bfe577eb9b2680a82
 			float4 vert = v.vertex;
 			vert.x += _VertexOffsetX;
 			vert.y += _VertexOffsetY;
 
 			vert.xy += (vert.w * 0.5) / _ScreenParams.xy;
 
-<<<<<<< HEAD
-			o.vertex = UnityPixelSnap(UnityObjectToClipPos(vert));
-			o.color = v.color;
-			o.color *= _Color;
-			o.color.rgb *= _DiffusePower;
-			o.texcoord0 = v.texcoord0;
-
-			float2 pixelSize = o.vertex.w;
-=======
 			OUT.vertex = UnityPixelSnap(UnityObjectToClipPos(vert));
 			OUT.color = v.color;
 			OUT.color *= _Color;
@@ -123,33 +96,10 @@ SubShader {
 			OUT.texcoord0 = v.texcoord0;
 
 			float2 pixelSize = OUT.vertex.w;
->>>>>>> 9f0655ef764e7f0bd4945f9bfe577eb9b2680a82
 			//pixelSize /= abs(float2(_ScreenParams.x * UNITY_MATRIX_P[0][0], _ScreenParams.y * UNITY_MATRIX_P[1][1]));
 
 			// Clamp _ClipRect to 16bit.
 			float4 clampedRect = clamp(_ClipRect, -2e10, 2e10);
-<<<<<<< HEAD
-			o.mask = float4(vert.xy * 2 - clampedRect.xy - clampedRect.zw, 0.25 / (0.25 * half2(_MaskSoftnessX, _MaskSoftnessY) + pixelSize.xy));
-
-			return o;
-		}
-
-		fixed4 frag (v2f i) : COLOR
-		{
-			fixed4 c = fixed4(i.color.rgb, i.color.a * tex2D(_MainTex, i.texcoord0).a);
-
-			// Alternative implementation to UnityGet2DClipping with support for softness.
-			#if UNITY_UI_CLIP_RECT
-				half2 m = saturate((_ClipRect.zw - _ClipRect.xy - abs(i.mask.xy)) * i.mask.zw);
-				c *= m.x * m.y;
-			#endif
-			
-			#if UNITY_UI_ALPHACLIP
-				clip(c.a - 0.001);
-			#endif
-			
-			return c;
-=======
 			OUT.mask = float4(vert.xy * 2 - clampedRect.xy - clampedRect.zw, 0.25 / (0.25 * half2(_MaskSoftnessX, _MaskSoftnessY) + pixelSize.xy));
 
 			return OUT;
@@ -170,7 +120,6 @@ SubShader {
 			#endif
 
 			return color;
->>>>>>> 9f0655ef764e7f0bd4945f9bfe577eb9b2680a82
 		}
 		ENDCG
 	}

@@ -1,9 +1,5 @@
 fileFormatVersion: 2
-<<<<<<< HEAD
-guid: b1ca42ddd50944005bd649614a93714e
-=======
 guid: 70615243e2be4a81afaab9bf5d273d65
->>>>>>> 9f0655ef764e7f0bd4945f9bfe577eb9b2680a82
 labels:
 - Mesh
 - Text

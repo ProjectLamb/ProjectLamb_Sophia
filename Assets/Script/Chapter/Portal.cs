@@ -6,8 +6,9 @@ public class Portal : MonoBehaviour
 {
     void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.tag == "Player")
+        if (other.gameObject == GameManager.Instance.playerGameObject)
         {
+            WarpPortal();   //디버깅용
             if (transform.parent.parent.parent.GetComponent<StageGenerator>().IsClear)
                 WarpPortal();
         }
@@ -103,7 +104,7 @@ public class Portal : MonoBehaviour
             }
             visited = true;
         }
-        GameManager.Instance.globalEvent.PlayerWarp(departStage, arriveStage, newWarpPos);
+        GameManager.Instance.globalEvent.PlayerMoveStage(departStage, arriveStage, newWarpPos);
     }
 
     void Awake()
