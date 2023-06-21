@@ -46,11 +46,6 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         Time.timeScale = globalEvent.CurrentTimeScale;
-
-        if(Input.GetKeyDown(KeyCode.R)) //임시로 추가함, 나중에 삭제할 것
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        }
     }
     public void InitializeComponents(){
         if(globalEvent == null) globalEvent = GetComponentInChildren<GlobalEvent>();

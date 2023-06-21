@@ -8,7 +8,7 @@ public class Portal : MonoBehaviour
     {
         if (other.gameObject == GameManager.Instance.playerGameObject)
         {
-            WarpPortal();   //디버깅용
+            //WarpPortal();   //디버깅용
             if (transform.parent.parent.parent.GetComponent<StageGenerator>().IsClear)
                 WarpPortal();
         }
