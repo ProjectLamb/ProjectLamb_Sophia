@@ -19,11 +19,12 @@ public class GlobalEvent : MonoBehaviour
 
     public UnityEvent OnHitEvents;
     public UnityEvent PausedEvent;
-    
+
     public List<UnityAction> OnEnemyDieEvent;
     public List<UnityAction> OnEnemyHitEvent;
 
-    private void Awake() {
+    private void Awake()
+    {
         OnEnemyDieEvent = new List<UnityAction>();
         OnEnemyHitEvent = new List<UnityAction>();
     }
@@ -62,11 +63,18 @@ public class GlobalEvent : MonoBehaviour
         StartCoroutine(mCoSlowedTime);
     }
 
-    public void PlayerWarp(GameObject departStage, GameObject arrvieStage, Vector3 warpPos)
+    public void PlayerMoveStage(GameObject departStage, GameObject arrvieStage, Vector3 warpPos)
     {
         arrvieStage.GetComponent<StageGenerator>().SetOnStage();
+        GameManager.Instance.currentStage = arrvieStage;
+        GameManager.Instance.ChapterGenerator.GetComponent<ChapterGenerator>().stage[arrvieStage.GetComponent<StageGenerator>().StageNumber].Discovered = true;
         GameManager.Instance.playerGameObject.transform.position = warpPos;
         departStage.GetComponent<StageGenerator>().SetOffStage();
+
+        //UI 반영하는 코드
+        GameObject minimapUI = GameObject.Find("Minimap");
+        minimapUI.transform.GetChild(0).GetComponent<Minimap>().ChangeCurrentPosition(departStage.GetComponent<StageGenerator>().StageNumber, arrvieStage.GetComponent<StageGenerator>().StageNumber);
+        //
     }
 
     //DotTween 사용해서 증가 커브 설정하기
