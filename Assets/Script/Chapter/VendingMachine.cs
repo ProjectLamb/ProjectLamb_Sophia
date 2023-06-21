@@ -36,37 +36,37 @@ public class VendingMachine : Purchase
         return returnValue;
     }
 
-    private void OnCollisionEnter(Collision other)
-    {
-        if (other.gameObject.tag == "Player")
-        {
-            if (purchase(price))
-            {
-                switch (Gacha())
-                {
-                    case 0:
-                    Debug.Log("부품");
-                        break;
-                    case 1:
-                    Debug.Log("체력");
-                        break;
-                    case 2:
-                    Debug.Log("30원");
-                        break;
-                    case 3:
-                    Debug.Log("20원");
-                        break;
-                    case 4:
-                    Debug.Log("10원");
-                        break;
-                    case 5:
-                    Debug.Log("5원");
-                        break;
-                    case 6:
-                    Debug.Log("1원");
-                        break;
-                }
-            }
-        }
-    }
+    // private void OnCollisionEnter(Collision other)
+    // {
+    //     if (other.gameObject.tag == "Player")
+    //     {
+    //         if (purchase(price))
+    //         {
+    //             switch (Gacha())
+    //             {
+    //                 case 0:
+    //                 Debug.Log("부품");
+    //                     break;
+    //                 case 1:
+    //                 Debug.Log("체력");
+    //                     break;
+    //                 case 2:
+    //                 Debug.Log("30원");
+    //                     break;
+    //                 case 3:
+    //                 Debug.Log("20원");
+    //                     break;
+    //                 case 4:
+    //                 Debug.Log("10원");
+    //                     break;
+    //                 case 5:
+    //                 Debug.Log("5원");
+    //                     break;
+    //                 case 6:
+    //                 Debug.Log("1원");
+    //                     break;
+    //             }
+    //         }
+    //     }
+    // }
 }
