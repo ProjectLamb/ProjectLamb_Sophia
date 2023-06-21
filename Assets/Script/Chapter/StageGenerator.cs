@@ -41,7 +41,17 @@ public class StageGenerator : MonoBehaviour
         }
     }
     int mobCount;
-    int currentMobCount;
+    private int mCurrentMobCount;
+    public int CurrentMobCount
+    {
+        set{
+            mCurrentMobCount = value;
+        }
+        get{
+            return mCurrentMobCount;
+        }
+    }
+    
     [SerializeField]
     private bool mIsClear;
     public bool IsClear
@@ -278,11 +288,6 @@ public class StageGenerator : MonoBehaviour
         }
     }
 
-    public void DecreaseCurrentMobCount()
-    {
-        currentMobCount--;
-    }
-
     void GenerateNevMesh()
     {
         NavMeshSurface nav = GetComponent<NavMeshSurface>();
@@ -349,7 +354,7 @@ public class StageGenerator : MonoBehaviour
         {
 
         }
-        currentMobCount = mobArray.Count;
+        CurrentMobCount = mobArray.Count;
         if (mType == "start")
         {
             GameObject character = GameManager.Instance.playerGameObject;
@@ -370,7 +375,7 @@ public class StageGenerator : MonoBehaviour
     {
         if (!mIsClear)
         {
-            if (currentMobCount == 0 && GameManager.Instance.currentStage == this.gameObject)
+            if (CurrentMobCount == 0 && GameManager.Instance.currentStage == this.gameObject)
             {
                 mIsClear = true;
             }
