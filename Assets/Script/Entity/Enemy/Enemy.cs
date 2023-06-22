@@ -45,7 +45,7 @@ public class Enemy : Entity
 
     public override void Die()
     {
-        GameManager.Instance.globalEvent.OnEnemyDieEvent.ForEach(E => E.Invoke());
+        GameManager.Instance.GlobalEvent.OnEnemyDieEvent.ForEach(E => E.Invoke());
         isDie = true;
         chase = false;
         entityRigidbody.velocity = Vector3.zero;
@@ -54,7 +54,7 @@ public class Enemy : Entity
 
     public override void GetDamaged(int _amount){
         if(isDie == true) {return;}
-        GameManager.Instance.globalEvent.OnEnemyHitEvent.ForEach(E => E.Invoke());
+        GameManager.Instance.GlobalEvent.OnEnemyHitEvent.ForEach(E => E.Invoke());
         FinalData.HitStateRef.Invoke(ref _amount);
         imageGenerator.GenerateImage(_amount);
         CurrentHealth -= _amount;
@@ -63,7 +63,7 @@ public class Enemy : Entity
 
     public override void GetDamaged(int _amount, VFXObject _vfx){
         if(isDie == true) {return;}
-        GameManager.Instance.globalEvent.OnEnemyHitEvent.ForEach(E => E.Invoke());
+        GameManager.Instance.GlobalEvent.OnEnemyHitEvent.ForEach(E => E.Invoke());
         FinalData.HitStateRef.Invoke(ref _amount);
         imageGenerator.GenerateImage(_amount);
         CurrentHealth -= _amount;
@@ -95,7 +95,7 @@ public class Enemy : Entity
         CurrentHealth = FinalData.MaxHP;
 
         chase = false;
-        objectiveTarget = GameManager.Instance?.playerGameObject?.transform;
+        objectiveTarget = GameManager.Instance?.PlayerGameObject?.transform;
         isDie = false;
     }
 
@@ -106,7 +106,7 @@ public class Enemy : Entity
     private void FixedUpdate()
     {
         /***************************/
-        if(GameManager.Instance?.globalEvent.IsGamePaused == true){return;}
+        if(GameManager.Instance?.GlobalEvent.IsGamePaused == true){return;}
         /***************************/
         if (chase) {
             nav.SetDestination(objectiveTarget.position);
@@ -116,7 +116,7 @@ public class Enemy : Entity
     private void Update()
     {
         /***************************/
-        if(GameManager.Instance?.globalEvent.IsGamePaused == true){return;}
+        if(GameManager.Instance?.GlobalEvent.IsGamePaused == true){return;}
         /***************************/
         if (chase) { nav.enabled = true;}
         else {nav.enabled = false;}

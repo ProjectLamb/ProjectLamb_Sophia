@@ -23,11 +23,11 @@ public class PauseMenu : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Escape)){
             if(menuQueue.Count == 0){
                 OpenMenu(); 
-                GameManager.Instance.globalEvent.IsGamePaused = true;
+                GameManager.Instance.GlobalEvent.IsGamePaused = true;
             }
             else if(menuQueue.Count == 1){ 
                 CloseMenu();
-                GameManager.Instance.globalEvent.IsGamePaused = false;
+                GameManager.Instance.GlobalEvent.IsGamePaused = false;
             }
         }
     }
