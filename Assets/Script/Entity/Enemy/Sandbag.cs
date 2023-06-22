@@ -50,7 +50,7 @@ public class Sandbag : Entity
         FinalData = BaseEnemyData;
         CurrentHealth = FinalData.MaxHP;
 
-        this.ObjectiveTarget = GameManager.Instance.playerGameObject.transform;
+        this.ObjectiveTarget = GameManager.Instance.PlayerGameObject.transform;
     }
     private void Start() {
         mAnimEventInvoker.animCallback[(int)ANIME_STATE.ATTACK].AddListener( () => {
@@ -67,7 +67,7 @@ public class Sandbag : Entity
         FinalData.HitStateRef.Invoke(ref _amount);
         CurrentHealth -= _amount;
         mAnimator.SetTrigger("DoHit");
-        GameManager.Instance.globalEvent.OnEnemyHitEvent.ForEach(E => E.Invoke());
+        GameManager.Instance.GlobalEvent.OnEnemyHitEvent.ForEach(E => E.Invoke());
         if (CurrentHealth <= 0) {Die();}
     }
 
@@ -77,7 +77,7 @@ public class Sandbag : Entity
         CurrentHealth -= _amount;
         visualModulator.InteractByVFX(_vfx);
         mAnimator.SetTrigger("DoHit");
-        GameManager.Instance.globalEvent.OnEnemyHitEvent.ForEach(E => E.Invoke());
+        GameManager.Instance.GlobalEvent.OnEnemyHitEvent.ForEach(E => E.Invoke());
         if (CurrentHealth <= 0) {Die();}
     }
 
@@ -95,7 +95,7 @@ public class Sandbag : Entity
 
     private void Update() {
         /***************************/
-        if(GameManager.Instance?.globalEvent.IsGamePaused == true){return;}
+        if(GameManager.Instance?.GlobalEvent.IsGamePaused == true){return;}
         /***************************/
         if(!IsDie)transform.LookAt(ObjectiveTarget);
     }

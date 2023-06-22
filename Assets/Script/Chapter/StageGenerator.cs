@@ -263,8 +263,8 @@ public class StageGenerator : MonoBehaviour
     public void SetOnStage()
     {
         if (!mIsClear)
-            GameManager.Instance.playerGameObject.GetComponent<Player>().IsPortal = false;
-        GameManager.Instance.currentStage = this.gameObject;
+            GameManager.Instance.PlayerGameObject.GetComponent<Player>().IsPortal = false;
+        GameManager.Instance.CurrentStage = this.gameObject;
         foreach (var m in mobArray)
         {
             if (m != null)
@@ -348,8 +348,8 @@ public class StageGenerator : MonoBehaviour
         currentMobCount = mobArray.Count;
         if (mType == "start")
         {
-            GameObject character = GameManager.Instance.playerGameObject;
-            GameManager.Instance.currentStage = this.gameObject;
+            GameObject character = GameManager.Instance.PlayerGameObject;
+            GameManager.Instance.CurrentStage = this.gameObject;
             mIsClear = true;
             //character.transform.position = new Vector3(transform.localPosition.x, GameObject.Find("Character").transform.position.y, transform.localPosition.z);
             character.transform.position = new Vector3(transform.position.x, character.transform.position.y, transform.position.z);
@@ -365,7 +365,7 @@ public class StageGenerator : MonoBehaviour
     {
         if (!mIsClear)
         {
-            if (currentMobCount == 0 && GameManager.Instance.currentStage == this.gameObject)
+            if (currentMobCount == 0 && GameManager.Instance.CurrentStage == this.gameObject)
             {
                 mIsClear = true;
             }

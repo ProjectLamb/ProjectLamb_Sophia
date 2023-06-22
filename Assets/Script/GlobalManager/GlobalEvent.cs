@@ -12,27 +12,32 @@ using UnityEngine.Events;
 /// </summary>
 /// <param name="input"></param>
 /// <typeparam name="T"></typeparam>
-public delegate void UnityActionRef<T>(ref T input);
 
 public class GlobalEvent : MonoBehaviour
 {
+    public List<UnityAction>    OnEnemyHitEvent;
+    public List<UnityAction>    OnEnemyDieEvent;
 
-    public UnityEvent OnHitEvents;
-    public UnityEvent PausedEvent;
-    
-    public List<UnityAction> OnEnemyDieEvent;
-    public List<UnityAction> OnEnemyHitEvent;
-
-    private void Awake() {
+    private void Awake()
+    {
         OnEnemyDieEvent = new List<UnityAction>();
         OnEnemyHitEvent = new List<UnityAction>();
     }
-
-    ///////////////////////////////////////////////////////////////////
+    void Update()
+    {
+        Time.timeScale = GameTimeScale;
+    }
+    
+    /////////////////////////////////////////////////////////////////////////////////
+#region TimeScaleEventHandler
     [Range(0, 1)]
-    public float CurrentTimeScale = 1f;
-    float ContinouseTimeScale = 1f;
-    bool mIsGamePaused = false;
+    public UnityEvent       PausedEvent;
+    public float            GameTimeScale = 1f;
+    public float            TimeHoldingDuration;
+    float                   mCurrentTimeScale = 1f;
+    bool                    mIsGamePaused = false;
+    bool                    mIsSlowed = false;
+
     public bool IsGamePaused
     {
         get
@@ -41,55 +46,54 @@ public class GlobalEvent : MonoBehaviour
         }
         set
         {
-            if (value == true) { CurrentTimeScale = 0; }
-            else { CurrentTimeScale = ContinouseTimeScale; }
+            if (value == true) { GameTimeScale = 0; }
+            else { GameTimeScale = mCurrentTimeScale; }
             mIsGamePaused = value;
             Debug.Log("Time Changed");
         }
     }
 
-    ///////////////////////////////////////////////////////////////////
-
-    IEnumerator mCoSlowedTime;
-    public float mDurateTime;
-    bool mIsSlowed = false;
-
     public void HandleTimeSlow()
     {
         if (mIsSlowed) return;
         Debug.Log("StartSlowed");
-        mCoSlowedTime = SlowTimeCoroutine();
-        StartCoroutine(mCoSlowedTime);
-    }
-
-    public void PlayerWarp(GameObject departStage, GameObject arrvieStage, Vector3 warpPos)
-    {
-        arrvieStage.GetComponent<StageGenerator>().SetOnStage();
-        GameManager.Instance.playerGameObject.transform.position = warpPos;
-        departStage.GetComponent<StageGenerator>().SetOffStage();
+        StartCoroutine(SlowTimeCoroutine());
     }
 
     //DotTween 사용해서 증가 커브 설정하기
     IEnumerator SlowTimeCoroutine()
     {
         mIsSlowed = true;
-        ContinouseTimeScale = 0.25f;
-        float valueGap = 1f - ContinouseTimeScale;
-        CurrentTimeScale = ContinouseTimeScale;
+        mCurrentTimeScale = 0.25f;
+        float valueGap = 1f - mCurrentTimeScale;
+        GameTimeScale = mCurrentTimeScale;
         float passedTime = 0f;
-        while (mDurateTime > passedTime)
+        while (TimeHoldingDuration > passedTime)
         {
             if (!IsGamePaused)
             {
-                passedTime += (Time.deltaTime / mDurateTime);
-                ContinouseTimeScale += valueGap * (Time.deltaTime / mDurateTime);
-                CurrentTimeScale = ContinouseTimeScale;
+                passedTime += (Time.deltaTime / TimeHoldingDuration);
+                mCurrentTimeScale += valueGap * (Time.deltaTime / TimeHoldingDuration);
+                GameTimeScale = mCurrentTimeScale;
             }
             yield return null;
         }
-        ContinouseTimeScale = 1f;
-        CurrentTimeScale = ContinouseTimeScale;
+        mCurrentTimeScale = 1f;
+        GameTimeScale = mCurrentTimeScale;
         mIsSlowed = false;
     }
-    /////////////////////////////////////////////////////////////////
+#endregion
+
+    /////////////////////////////////////////////////////////////////////////////////
+
+#region MapEventHandler 
+    public void PlayerWarp(GameObject departStage, GameObject arrvieStage, Vector3 warpPos)
+    {
+        arrvieStage.GetComponent<StageGenerator>().SetOnStage();
+        GameManager.Instance.PlayerGameObject.transform.position = warpPos;
+        departStage.GetComponent<StageGenerator>().SetOffStage();
+    }
+#endregion
+
+    /////////////////////////////////////////////////////////////////////////////////
 }
