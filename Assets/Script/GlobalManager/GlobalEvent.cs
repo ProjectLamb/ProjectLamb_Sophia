@@ -30,8 +30,9 @@ public class GlobalEvent : MonoBehaviour
     
     /////////////////////////////////////////////////////////////////////////////////
 #region TimeScaleEventHandler
-    [Range(0, 1)]
+
     public UnityEvent       PausedEvent;
+    [Range(0, 1)]
     public float            GameTimeScale = 1f;
     public float            TimeHoldingDuration;
     float                   mCurrentTimeScale = 1f;

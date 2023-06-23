@@ -2125,8 +2125,60 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2336325239971760075, guid: c6c8706211f194706b90866ad4106f8a,
+        type: 3}
+      propertyPath: animCallback.Array.data[1].m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 808724501}
+    - target: {fileID: 2336325239971760075, guid: c6c8706211f194706b90866ad4106f8a,
+        type: 3}
+      propertyPath: animCallback.Array.data[2].m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 808724501}
+    - target: {fileID: 2336325239971760075, guid: c6c8706211f194706b90866ad4106f8a,
+        type: 3}
+      propertyPath: animCallback.Array.data[1].m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: UseProjectile_NormalAttack
+      objectReference: {fileID: 0}
+    - target: {fileID: 2336325239971760075, guid: c6c8706211f194706b90866ad4106f8a,
+        type: 3}
+      propertyPath: animCallback.Array.data[2].m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: UseProjectile_JumpAttack
+      objectReference: {fileID: 0}
+    - target: {fileID: 2336325239971760075, guid: c6c8706211f194706b90866ad4106f8a,
+        type: 3}
+      propertyPath: animCallback.Array.data[1].m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Sandbag, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 2336325239971760075, guid: c6c8706211f194706b90866ad4106f8a,
+        type: 3}
+      propertyPath: animCallback.Array.data[2].m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Sandbag, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 2336325239971760075, guid: c6c8706211f194706b90866ad4106f8a,
+        type: 3}
+      propertyPath: animCallback.Array.data[1].m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 2336325239971760075, guid: c6c8706211f194706b90866ad4106f8a,
+        type: 3}
+      propertyPath: animCallback.Array.data[2].m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c6c8706211f194706b90866ad4106f8a, type: 3}
+--- !u!114 &808724501 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2336325239599771861, guid: c6c8706211f194706b90866ad4106f8a,
+    type: 3}
+  m_PrefabInstance: {fileID: 808724500}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dfbb1412abc1e43d29bbe4f893feb646, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &885935976 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2336325239971760077, guid: c6c8706211f194706b90866ad4106f8a,

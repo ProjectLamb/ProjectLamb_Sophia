@@ -29,6 +29,7 @@ public class NeutralSkill_004 : AbstractSkill {
     public List<float>  NumericQ = new List<float> {0.3f, 0.5f, 0.7f};
     public List<float>  NumericE = new List<float> {0.3f, 0.5f, 0.7f};
     public List<float>  NumericR = new List<float> {0.5f, 0.7f, 1f};
+    public SkillManager skillManager;
 
     private void Awake() {
         this.skillName = "시간은 누구에게나 평등하지";
@@ -41,6 +42,7 @@ public class NeutralSkill_004 : AbstractSkill {
     {
         base.Init(_player);
         skillType = SKILL_TYPE.NEUTRAL;
+        skillManager = _player.skillManager;
     }
 
     protected override void UseQ(){

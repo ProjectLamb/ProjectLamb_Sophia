@@ -8,19 +8,17 @@ using Cysharp.Threading.Tasks;
 
 public class Weapon : MonoBehaviour
 {
-    private WEAPON_STATE                originState = WEAPON_STATE.NORMAL;
-    private WEAPON_STATE                curState = WEAPON_STATE.NORMAL;
     public static bool                  IsReady = true;
     public ScriptableObjWeaponData      ScriptableWD;
     public List<Projectile>             AttackProjectiles;
-    public Queue<Projectile>            OnHitProjectiles = new Queue<Projectile>();
-    public CarrierBucket                projectileBucket;
-    private Entity                      ownerEntity;
+    internal WEAPON_STATE               originState = WEAPON_STATE.NORMAL;
+    internal WEAPON_STATE               curState = WEAPON_STATE.NORMAL;
+    internal Queue<Projectile>          OnHitProjectiles = new Queue<Projectile>();
+    private CarrierBucket               projectileBucket;
     protected bool                      isInitialized = false;
+    protected Entity                    ownerEntity;
 
-    public virtual void ChangeState(WEAPON_STATE _STATE){
-        curState = _STATE;
-    }
+    public virtual void ChangeState(WEAPON_STATE _STATE){ curState = _STATE;}
 
     public virtual void Initialisze(Player _owner)
     {
