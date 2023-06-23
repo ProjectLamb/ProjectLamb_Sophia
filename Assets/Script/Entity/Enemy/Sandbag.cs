@@ -52,13 +52,13 @@ public class Sandbag : Entity
 
         this.ObjectiveTarget = GameManager.Instance.PlayerGameObject.transform;
     }
+    public void UseProjectile_NormalAttack(){
+        this.carrierBucket.CarrierInstantiatorByObjects(this, AttackProjectiles[0], new object[] {FinalData.Power * 1});
+    }
+    public void UseProjectile_JumpAttack(){
+        this.carrierBucket.CarrierInstantiatorByObjects(this, AttackProjectiles[1], new object[] {FinalData.Power * 2});
+    }
     private void Start() {
-        mAnimEventInvoker.animCallback[(int)ANIME_STATE.ATTACK].AddListener( () => {
-            this.carrierBucket.CarrierInstantiatorByObjects(this, AttackProjectiles[0], new object[] {FinalData.Power * 1});
-        });
-        mAnimEventInvoker.animCallback[(int)ANIME_STATE.JUMP].AddListener(() => {
-            this.carrierBucket.CarrierInstantiatorByObjects(this, AttackProjectiles[1], new object[] {FinalData.Power * 2});
-        });
         this.FinalData.HitStateRef = (ref int amount) => {DamageBarGenerator.GenerateImage(amount);};
     }
 
