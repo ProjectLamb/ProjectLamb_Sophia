@@ -16,7 +16,7 @@ public class AttackSkill_003 : AbstractSkill {
     //  public bool                                     IsReady = true;
     //  public float                                    PassedTime = 0f;
     //  public SerializedDictionary<SKILL_RANK, float>  coolTime = new SerializedDictionary<SKILL_RANK, float>();
-    //  protected SkillManager                          skillManager;
+    
     public Weapon weapon;
     public MoveProjectile       moveProjectileShort;
     public MoveProjectile       moveProjectileWide;
