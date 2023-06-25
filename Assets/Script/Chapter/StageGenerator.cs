@@ -27,6 +27,7 @@ public class StageGenerator : MonoBehaviour
             mStageNumber = value;
         }
     }
+    [SerializeField]
     private string mType;
     public string Type
     {
@@ -40,7 +41,17 @@ public class StageGenerator : MonoBehaviour
         }
     }
     int mobCount;
-    int currentMobCount;
+    private int mCurrentMobCount;
+    public int CurrentMobCount
+    {
+        set{
+            mCurrentMobCount = value;
+        }
+        get{
+            return mCurrentMobCount;
+        }
+    }
+    
     [SerializeField]
     private bool mIsClear;
     public bool IsClear
@@ -57,6 +68,7 @@ public class StageGenerator : MonoBehaviour
     public GameObject tile;
     public GameObject wall;
     public GameObject transWall;
+    public GameObject shop;
     public GameObject[,] tileArray;
     public GameObject mob;
     public List<GameObject> mobArray;
@@ -181,49 +193,33 @@ public class StageGenerator : MonoBehaviour
         {
             instance = Instantiate(portal, tileArray[1, height / 2 + 1].transform.position, Quaternion.identity);
             instance.transform.GetChild(0).GetComponent<Portal>().PortalType = "east";
-            //instance.transform.GetComponent<Portal>().PortalType = "east";
             instance.transform.parent = transform.GetChild(2);
             portalCount++;
             portalArray[0] = instance;
-            // tileArray[1, height / 2 + 1].GetComponent<Renderer>().material.color = Color.cyan;
-            // tileArray[1, height / 2 + 1].tag = "Portal";
-            // tileArray[1, height / 2 + 1].GetComponent<Tile>().SetPortalType("east");
         }
         if (mPortalW)
         {
             instance = Instantiate(portal, tileArray[width, height / 2 + 1].transform.position, Quaternion.identity);
             instance.transform.GetChild(0).GetComponent<Portal>().PortalType = "west";
-            //instance.transform.GetComponent<Portal>().PortalType = "west";
             instance.transform.parent = transform.GetChild(2);
             portalCount++;
             portalArray[1] = instance;
-            // tileArray[width, height / 2 + 1].GetComponent<Renderer>().material.color = Color.cyan;
-            // tileArray[width, height / 2 + 1].tag = "Portal";
-            // tileArray[width, height / 2 + 1].GetComponent<Tile>().SetPortalType("west");
         }
         if (mPortalN)
         {
             instance = Instantiate(portal, tileArray[width / 2 + 1, 1].transform.position, Quaternion.identity);
             instance.transform.GetChild(0).GetComponent<Portal>().PortalType = "north";
-            //instance.transform.GetComponent<Portal>().PortalType = "north";
             instance.transform.parent = transform.GetChild(2);
             portalCount++;
             portalArray[2] = instance;
-            // tileArray[width / 2 + 1, 1].GetComponent<Renderer>().material.color = Color.cyan;
-            // tileArray[width / 2 + 1, 1].tag = "Portal";
-            // tileArray[width / 2 + 1, 1].GetComponent<Tile>().SetPortalType("north");
         }
         if (mPortalS)
         {
             instance = Instantiate(portal, tileArray[width / 2 + 1, height].transform.position, Quaternion.identity);
             instance.transform.GetChild(0).GetComponent<Portal>().PortalType = "south";
-            //instance.transform.GetComponent<Portal>().PortalType = "south";
             instance.transform.parent = transform.GetChild(2);
             portalCount++;
             portalArray[3] = instance;
-            // tileArray[width / 2 + 1, height].GetComponent<Renderer>().material.color = Color.cyan;
-            // tileArray[width / 2 + 1, height].tag = "Portal";
-            // tileArray[width / 2 + 1, height].GetComponent<Tile>().SetPortalType("south");
         }
     }
 
@@ -264,7 +260,6 @@ public class StageGenerator : MonoBehaviour
     {
         if (!mIsClear)
             GameManager.Instance.playerGameObject.GetComponent<Player>().IsPortal = false;
-        GameManager.Instance.currentStage = this.gameObject;
         foreach (var m in mobArray)
         {
             if (m != null)
@@ -291,11 +286,6 @@ public class StageGenerator : MonoBehaviour
         {
             transform.GetChild(i).gameObject.SetActive(false);
         }
-    }
-
-    public void DecreaseCurrentMobCount()
-    {
-        currentMobCount--;
     }
 
     void GenerateNevMesh()
@@ -331,25 +321,45 @@ public class StageGenerator : MonoBehaviour
             InstantiateObstacle();
             InstantiateMob(mobCount);
         }
-        if (mType == "middleboss")
+        else if (mType == "shop")
         {
-            //InstantiateObstacle();
-            InstantiateMob(mobCount);
+            float x = 0;
+            float y = 0;
+            float z = 0;
+            GameObject instance;
+            if(mPortalE)
+            {
+                y = 180f;
+            }
+            else if (mPortalW)
+            {
+
+            }
+            else if (mPortalN)
+            {
+                y = 90f;
+            }
+            else if (mPortalS)
+            {
+                y = 270f;
+            }
+            instance = Instantiate(shop, transform.position, Quaternion.Euler(x, y, z));
+            instance.transform.parent = transform;
         }
         else if (mType == "hidden")
         {
-            //InstantiateObstacle();
-            InstantiateMob(mobCount);
+
         }
         else if (mType == "boss")
         {
 
         }
-        currentMobCount = mobArray.Count;
+        CurrentMobCount = mobArray.Count;
         if (mType == "start")
         {
             GameObject character = GameManager.Instance.playerGameObject;
             GameManager.Instance.currentStage = this.gameObject;
+            gameObject.transform.parent.GetComponent<ChapterGenerator>().stage[StageNumber].Discovered = true;
             mIsClear = true;
             //character.transform.position = new Vector3(transform.localPosition.x, GameObject.Find("Character").transform.position.y, transform.localPosition.z);
             character.transform.position = new Vector3(transform.position.x, character.transform.position.y, transform.position.z);
@@ -365,7 +375,7 @@ public class StageGenerator : MonoBehaviour
     {
         if (!mIsClear)
         {
-            if (currentMobCount == 0 && GameManager.Instance.currentStage == this.gameObject)
+            if (CurrentMobCount == 0 && GameManager.Instance.currentStage == this.gameObject)
             {
                 mIsClear = true;
             }
