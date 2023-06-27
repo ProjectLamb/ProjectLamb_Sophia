@@ -51,6 +51,7 @@ public class Sandbag : Entity
         CurrentHealth = FinalData.MaxHP;
 
         this.ObjectiveTarget = GameManager.Instance.PlayerGameObject.transform;
+        this.ObjectiveTarget = GameManager.Instance.PlayerGameObject.transform;
     }
     public void UseProjectile_NormalAttack(){
         this.carrierBucket.CarrierInstantiatorByObjects(this, AttackProjectiles[0], new object[] {FinalData.Power * 1});
@@ -68,6 +69,7 @@ public class Sandbag : Entity
         CurrentHealth -= _amount;
         mAnimator.SetTrigger("DoHit");
         GameManager.Instance.GlobalEvent.OnEnemyHitEvent.ForEach(E => E.Invoke());
+        GameManager.Instance.GlobalEvent.OnEnemyHitEvent.ForEach(E => E.Invoke());
         if (CurrentHealth <= 0) {Die();}
     }
 
@@ -77,6 +79,7 @@ public class Sandbag : Entity
         CurrentHealth -= _amount;
         visualModulator.InteractByVFX(_vfx);
         mAnimator.SetTrigger("DoHit");
+        GameManager.Instance.GlobalEvent.OnEnemyHitEvent.ForEach(E => E.Invoke());
         GameManager.Instance.GlobalEvent.OnEnemyHitEvent.ForEach(E => E.Invoke());
         if (CurrentHealth <= 0) {Die();}
     }

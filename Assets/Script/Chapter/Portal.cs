@@ -104,7 +104,7 @@ public class Portal : MonoBehaviour
             }
             visited = true;
         }
-        GameManager.Instance.GlobalEvent.PlayerWarp(departStage, arriveStage, newWarpPos);
+        GameManager.Instance.GlobalEvent.PlayerMoveStage(departStage, arriveStage, newWarpPos);
     }
 
     void Awake()

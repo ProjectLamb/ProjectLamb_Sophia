@@ -260,6 +260,7 @@ public class StageGenerator : MonoBehaviour
     {
         if (!mIsClear)
             GameManager.Instance.PlayerGameObject.GetComponent<Player>().IsPortal = false;
+            GameManager.Instance.PlayerGameObject.GetComponent<Player>().IsPortal = false;
         GameManager.Instance.CurrentStage = this.gameObject;
         foreach (var m in mobArray)
         {
