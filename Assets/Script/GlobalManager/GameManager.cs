@@ -23,12 +23,11 @@ public class GameManager : MonoBehaviour
     }
     
 
-    public GlobalEvent globalEvent;
-
-    public GlobalAudio globalAudio;
-    public GameObject playerGameObject;
-    public GameObject ChapterGenerator;
-    public GameObject currentStage;
+    public GlobalEvent  GlobalEvent;
+    public GlobalAudio  GlobalAudio;
+    public GameObject   PlayerGameObject;
+    public GameObject   ChapterGenerator;
+    public GameObject   CurrentStage;
 
     void Awake()
     {
@@ -40,15 +39,13 @@ public class GameManager : MonoBehaviour
         else if (_instance != this) {
             Destroy(gameObject);
         }
+        InitializeComponents();
         //DontDestroyOnLoad(gameObject);
     }
     // Update is called once per frame
-    void Update()
-    {
-        Time.timeScale = globalEvent.CurrentTimeScale;
-    }
+    
     public void InitializeComponents(){
-        if(globalEvent == null) globalEvent = GetComponentInChildren<GlobalEvent>();
-        if(globalAudio == null) globalAudio = GetComponentInChildren<GlobalAudio>();
+        if(GlobalEvent == null) GlobalEvent = GetComponentInChildren<GlobalEvent>();
+        if(GlobalAudio == null) GlobalAudio = GetComponentInChildren<GlobalAudio>();
     }
 }
