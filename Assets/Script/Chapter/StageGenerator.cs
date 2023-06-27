@@ -259,12 +259,8 @@ public class StageGenerator : MonoBehaviour
     public void SetOnStage()
     {
         if (!mIsClear)
-<<<<<<< HEAD
-            GameManager.Instance.playerGameObject.GetComponent<Player>().IsPortal = false;
-=======
             GameManager.Instance.PlayerGameObject.GetComponent<Player>().IsPortal = false;
         GameManager.Instance.CurrentStage = this.gameObject;
->>>>>>> TA_Escatrgot
         foreach (var m in mobArray)
         {
             if (m != null)
@@ -362,14 +358,8 @@ public class StageGenerator : MonoBehaviour
         CurrentMobCount = mobArray.Count;
         if (mType == "start")
         {
-<<<<<<< HEAD
-            GameObject character = GameManager.Instance.playerGameObject;
-            GameManager.Instance.currentStage = this.gameObject;
-            gameObject.transform.parent.GetComponent<ChapterGenerator>().stage[StageNumber].Discovered = true;
-=======
             GameObject character = GameManager.Instance.PlayerGameObject;
             GameManager.Instance.CurrentStage = this.gameObject;
->>>>>>> TA_Escatrgot
             mIsClear = true;
             //character.transform.position = new Vector3(transform.localPosition.x, GameObject.Find("Character").transform.position.y, transform.localPosition.z);
             character.transform.position = new Vector3(transform.position.x, character.transform.position.y, transform.position.z);
@@ -385,11 +375,7 @@ public class StageGenerator : MonoBehaviour
     {
         if (!mIsClear)
         {
-<<<<<<< HEAD
-            if (CurrentMobCount == 0 && GameManager.Instance.currentStage == this.gameObject)
-=======
-            if (currentMobCount == 0 && GameManager.Instance.CurrentStage == this.gameObject)
->>>>>>> TA_Escatrgot
+            if (CurrentMobCount == 0 && GameManager.Instance.CurrentStage == this.gameObject)
             {
                 mIsClear = true;
             }
