@@ -15,18 +15,11 @@ using UnityEngine.Events;
 
 public class GlobalEvent : MonoBehaviour
 {
-    public List<UnityAction>    OnEnemyHitEvent;
-    public List<UnityAction>    OnEnemyDieEvent;
-
-<<<<<<< HEAD
     public UnityEvent OnHitEvents;
-    public UnityEvent PausedEvent;
 
     public List<UnityAction> OnEnemyDieEvent;
     public List<UnityAction> OnEnemyHitEvent;
 
-=======
->>>>>>> TA_Escatrgot
     private void Awake()
     {
         OnEnemyDieEvent = new List<UnityAction>();
@@ -67,26 +60,7 @@ public class GlobalEvent : MonoBehaviour
     {
         if (mIsSlowed) return;
         Debug.Log("StartSlowed");
-<<<<<<< HEAD
-        mCoSlowedTime = SlowTimeCoroutine();
-        StartCoroutine(mCoSlowedTime);
-    }
-
-    public void PlayerMoveStage(GameObject departStage, GameObject arrvieStage, Vector3 warpPos)
-    {
-        arrvieStage.GetComponent<StageGenerator>().SetOnStage();
-        GameManager.Instance.currentStage = arrvieStage;
-        GameManager.Instance.ChapterGenerator.GetComponent<ChapterGenerator>().stage[arrvieStage.GetComponent<StageGenerator>().StageNumber].Discovered = true;
-        GameManager.Instance.playerGameObject.transform.position = warpPos;
-        departStage.GetComponent<StageGenerator>().SetOffStage();
-
-        //UI 반영하는 코드
-        GameObject minimapUI = GameObject.Find("Minimap");
-        minimapUI.transform.GetChild(0).GetComponent<Minimap>().ChangeCurrentPosition(departStage.GetComponent<StageGenerator>().StageNumber, arrvieStage.GetComponent<StageGenerator>().StageNumber);
-        //
-=======
         StartCoroutine(SlowTimeCoroutine());
->>>>>>> TA_Escatrgot
     }
 
     //DotTween 사용해서 증가 커브 설정하기
