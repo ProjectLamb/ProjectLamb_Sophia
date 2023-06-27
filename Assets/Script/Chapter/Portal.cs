@@ -6,7 +6,7 @@ public class Portal : MonoBehaviour
 {
     void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject == GameManager.Instance.playerGameObject)
+        if (other.gameObject == GameManager.Instance.PlayerGameObject)
         {
             //WarpPortal();   //디버깅용
             if (transform.parent.parent.parent.GetComponent<StageGenerator>().IsClear)
@@ -66,24 +66,24 @@ public class Portal : MonoBehaviour
         if (!visited)
         {
             string arrivePortalType = "";
-            int currentStageNumber = GameManager.Instance.currentStage.GetComponent<StageGenerator>().StageNumber;
+            int CurrentStageNumber = GameManager.Instance.CurrentStage.GetComponent<StageGenerator>().StageNumber;
             switch (mPortalType)
             {
                 case "east":
                     arrivePortalType = "west";
-                    arriveStage = map.GetComponent<ChapterGenerator>().stage[currentStageNumber].East.stageObject;
+                    arriveStage = map.GetComponent<ChapterGenerator>().stage[CurrentStageNumber].East.stageObject;
                     break;
                 case "west":
                     arrivePortalType = "east";
-                    arriveStage = map.GetComponent<ChapterGenerator>().stage[currentStageNumber].West.stageObject;
+                    arriveStage = map.GetComponent<ChapterGenerator>().stage[CurrentStageNumber].West.stageObject;
                     break;
                 case "south":
                     arrivePortalType = "north";
-                    arriveStage = map.GetComponent<ChapterGenerator>().stage[currentStageNumber].South.stageObject;
+                    arriveStage = map.GetComponent<ChapterGenerator>().stage[CurrentStageNumber].South.stageObject;
                     break;
                 case "north":
                     arrivePortalType = "south";
-                    arriveStage = map.GetComponent<ChapterGenerator>().stage[currentStageNumber].North.stageObject;
+                    arriveStage = map.GetComponent<ChapterGenerator>().stage[CurrentStageNumber].North.stageObject;
                     break;
             }
             newWarpPos = transform.position;
@@ -104,7 +104,7 @@ public class Portal : MonoBehaviour
             }
             visited = true;
         }
-        GameManager.Instance.globalEvent.PlayerMoveStage(departStage, arriveStage, newWarpPos);
+        GameManager.Instance.GlobalEvent.PlayerMoveStage(departStage, arriveStage, newWarpPos);
     }
 
     void Awake()
@@ -117,7 +117,7 @@ public class Portal : MonoBehaviour
     }
     void Start()
     {
-        departStage = GameManager.Instance.currentStage;
+        departStage = GameManager.Instance.CurrentStage;
     }
 
 }

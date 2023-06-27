@@ -249,71 +249,71 @@ public class ChapterGenerator : MonoBehaviour
         List<int> hiddenL = new List<int>();
         string bossDirection = "";
 
-        void DFS(Stage _currentStage, string _directionFromStart)
+        void DFS(Stage _CurrentStage, string _directionFromStart)
         {
             int count = 0;
-            if (_currentStage.East != null)
+            if (_CurrentStage.East != null)
             {
-                if (_currentStage.Depth == 0)
+                if (_CurrentStage.Depth == 0)
                     _directionFromStart = "East";
-                DFS(_currentStage.East, _directionFromStart);
+                DFS(_CurrentStage.East, _directionFromStart);
                 count++;
             }
-            if (_currentStage.West != null)
+            if (_CurrentStage.West != null)
             {
-                if (_currentStage.Depth == 0)
+                if (_CurrentStage.Depth == 0)
                     _directionFromStart = "West";
-                DFS(_currentStage.West, _directionFromStart);
+                DFS(_CurrentStage.West, _directionFromStart);
                 count++;
             }
-            if (_currentStage.North != null)
+            if (_CurrentStage.North != null)
             {
-                if (_currentStage.Depth == 0)
+                if (_CurrentStage.Depth == 0)
                     _directionFromStart = "North";
-                DFS(_currentStage.North, _directionFromStart);
+                DFS(_CurrentStage.North, _directionFromStart);
                 count++;
             }
-            if (_currentStage.South != null)
+            if (_CurrentStage.South != null)
             {
-                if (_currentStage.Depth == 0)
+                if (_CurrentStage.Depth == 0)
                     _directionFromStart = "South";
-                DFS(_currentStage.South, _directionFromStart);
+                DFS(_CurrentStage.South, _directionFromStart);
                 count++;
             }
             for (int i = 0; i < 4; i++)
             {
-                int num = _currentStage.StageNumber;
+                int num = _CurrentStage.StageNumber;
                 switch (i)
                 {
                     case 0:
                         num--;
                         if (!stage[num].Vacancy)
-                            _currentStage.East = stage[num];
+                            _CurrentStage.East = stage[num];
                         break;
                     case 1:
                         num++;
                         if (!stage[num].Vacancy)
-                            _currentStage.West = stage[num];
+                            _CurrentStage.West = stage[num];
                         break;
                     case 2:
                         num -= MAX;
                         if (!stage[num].Vacancy)
-                            _currentStage.North = stage[num];
+                            _CurrentStage.North = stage[num];
                         break;
                     case 3:
                         num += MAX;
                         if (!stage[num].Vacancy)
-                            _currentStage.South = stage[num];
+                            _CurrentStage.South = stage[num];
                         break;
                 }
             }
             if (count == 0)  //endStage
             {
-                _currentStage.directionFromStart = _directionFromStart;
-                if (_currentStage.Depth == Stage.maxDepth)
-                    bossL.Add(_currentStage.StageNumber);
-                else if (_currentStage.Depth >= minimumDistanceOfEndStage)
-                    endL.Add(_currentStage.StageNumber);
+                _CurrentStage.directionFromStart = _directionFromStart;
+                if (_CurrentStage.Depth == Stage.maxDepth)
+                    bossL.Add(_CurrentStage.StageNumber);
+                else if (_CurrentStage.Depth >= minimumDistanceOfEndStage)
+                    endL.Add(_CurrentStage.StageNumber);
             }
         }
 
