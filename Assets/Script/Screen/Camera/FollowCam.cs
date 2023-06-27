@@ -11,7 +11,7 @@ public class FollowCam : MonoBehaviour
     // Update is called once per frame
     void Awake()
     {
-        chrTr = GameManager.Instance.playerGameObject.transform;
+        chrTr = GameManager.Instance.PlayerGameObject.transform;
     }
     void Update()
     {
