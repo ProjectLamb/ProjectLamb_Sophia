@@ -9,7 +9,7 @@ using UnityEngine.Events;
 using Component = UnityEngine.Component;
 using Random = UnityEngine.Random;
 
-public abstract class Entity : MonoBehaviour, IEntityAddressable
+public abstract class Entity : MonoBehaviour, IDamagable, IDieable, IAffectable, IEntityDataAddressable
 {
     [HideInInspector] public Collider entityCollider;
     [HideInInspector] public Rigidbody entityRigidbody;
@@ -27,7 +27,7 @@ public abstract class Entity : MonoBehaviour, IEntityAddressable
         }
     }
 
-    public Dictionary<STATE_TYPE, AffectorStruct> AffectorStacks = new Dictionary<STATE_TYPE, AffectorStruct>();
+    public Dictionary<STATE_TYPE, AffectorPackage> AffectorStacks = new Dictionary<STATE_TYPE, AffectorPackage>();
 
     protected virtual void Awake()
     {
@@ -44,16 +44,16 @@ public abstract class Entity : MonoBehaviour, IEntityAddressable
     public abstract void GetDamaged(int _amount);
     public abstract void GetDamaged(int _amount, VFXObject _vfx);
     public abstract void Die();
-    public virtual void AffectHandler(AffectorStruct _affectorStruct)
+    public virtual void AffectHandler(AffectorPackage _affectorPackage)
     {
-        STATE_TYPE stateType = _affectorStruct.affectorType;
-        AffectorStruct returnAS;
+        STATE_TYPE stateType = _affectorPackage.affectorType;
+        AffectorPackage returnAS;
         if(AffectorStacks.TryGetValue(stateType, out returnAS)){
             returnAS?.AsyncAffectorCoroutine.ForEach(coroutine => { StopCoroutine(coroutine); });
-            AffectorStacks[_affectorStruct.affectorType] = null;
+            AffectorStacks[_affectorPackage.affectorType] = null;
         }
-        this.AffectorStacks[_affectorStruct.affectorType] = _affectorStruct;
-        _affectorStruct.Affector.ForEach((E) => E.Invoke());
-        _affectorStruct.AsyncAffectorCoroutine.ForEach(coroutine => { StartCoroutine(coroutine); });
+        this.AffectorStacks[_affectorPackage.affectorType] = _affectorPackage;
+        _affectorPackage.Affector.ForEach((E) => E.Invoke());
+        _affectorPackage.AsyncAffectorCoroutine.ForEach(coroutine => { StartCoroutine(coroutine); });
     }
 }

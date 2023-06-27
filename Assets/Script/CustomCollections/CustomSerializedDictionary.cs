@@ -10,9 +10,6 @@ namespace AYellowpaper.SerializedCollections
     {
         [SerializedDictionary("Skill Rank", "Float")]
         public SerializedDictionary<SKILL_RANK, float> DictionaryFloatByRank;
-
-        [SerializedDictionary("Skill Rank", "Numeric")]
-        public SerializedDictionary<SKILL_RANK, SkillNumeric> DictionaryNumericsByRank;
         
         [SerializedDictionary("Skill Rank", "Projectiles")]
         public SerializedDictionary<SKILL_RANK, List<Projectile>> DictionaryProjectileByRank;
