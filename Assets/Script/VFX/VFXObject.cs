@@ -4,17 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-
-/// <summary>
-/// `NONE_STACK` 리면 단 하나만 생성되고 끝날때 까지는 생성할 수 없음을 나타냄 <br/>
-/// `STACK`     리면 계속 생성가능 <br/>
-/// </summary>
-public enum BUCKET_STACKING_TYPE
-{
-    NONE_STACK, STACK
-}
-
-
 /// <summary>
 /// 게임에 영향을 일절 주지 않고, 오직 비주얼적인 역할만 담당하는 컴포넌트 주로 ParticleSystem에 붙음 <br/>
 /// > Method : 파괴되는 타이밍
@@ -28,7 +17,7 @@ public class VFXObject : MonoBehaviour
     public STATE_TYPE                   AffectorType;
     public ParticleSystem               Particle;
     public UnityEvent                   OnDestroyEvent;
-    public UnityAction<STATE_TYPE>      OnDestroyAction;
+    public UnityAction<STATE_TYPE>      OnDestroyActionByState;
     private ParticleSystem.MainModule   mParticleModule;
     //단, 이 오브젝트는 무조건 파티클의 부모, 자식으로 구성된 놈만.
     private void Awake()
@@ -50,7 +39,7 @@ public class VFXObject : MonoBehaviour
 
     private void OnDestroy() { 
         OnDestroyEvent?.Invoke(); 
-        OnDestroyAction?.Invoke(AffectorType);
-        OnDestroyAction = null;
+        OnDestroyActionByState?.Invoke(AffectorType);
+        OnDestroyActionByState = null;
     }
 }
