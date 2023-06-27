@@ -12,6 +12,7 @@ using UnityEngine.Events;
 
 [CreateAssetMenu(fileName = "EntityAffectorVariator", menuName = "ScriptableObject/EntityAffectorVariator", order = int.MaxValue)]
 public class EntityAffectorVariator : ScriptableObject, IModifier {
+    
     private int mAffectCount = 0;
     protected int affectCount {
         get {return mAffectCount;}
