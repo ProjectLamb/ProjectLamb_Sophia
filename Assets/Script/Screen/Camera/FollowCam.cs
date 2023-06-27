@@ -10,7 +10,7 @@ public class FollowCam : MonoBehaviour
 
     void Awake() 
     {
-        chrTr = GameManager.Instance.PlayerGameObject.transform;    
+        chrTr = GameManager.Instance.PlayerGameObject.transform;
     }
 
     void Update()

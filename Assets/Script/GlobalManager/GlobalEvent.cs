@@ -15,8 +15,6 @@ using UnityEngine.Events;
 
 public class GlobalEvent : MonoBehaviour
 {
-    public UnityEvent OnHitEvents;
-
     public List<UnityAction> OnEnemyDieEvent;
     public List<UnityAction> OnEnemyHitEvent;
 
@@ -32,9 +30,8 @@ public class GlobalEvent : MonoBehaviour
     
     /////////////////////////////////////////////////////////////////////////////////
 #region TimeScaleEventHandler
-
-    public UnityEvent       PausedEvent;
     [Range(0, 1)]
+    public UnityEvent       PausedEvent;
     public float            GameTimeScale = 1f;
     public float            TimeHoldingDuration;
     float                   mCurrentTimeScale = 1f;
@@ -60,9 +57,10 @@ public class GlobalEvent : MonoBehaviour
     {
         if (mIsSlowed) return;
         Debug.Log("StartSlowed");
+
         StartCoroutine(SlowTimeCoroutine());
     }
-
+    
     //DotTween 사용해서 증가 커브 설정하기
     IEnumerator SlowTimeCoroutine()
     {
@@ -90,11 +88,18 @@ public class GlobalEvent : MonoBehaviour
     /////////////////////////////////////////////////////////////////////////////////
 
 #region MapEventHandler 
-    public void PlayerWarp(GameObject departStage, GameObject arrvieStage, Vector3 warpPos)
+    public void PlayerMoveStage(GameObject departStage, GameObject arrvieStage, Vector3 warpPos)
     {
         arrvieStage.GetComponent<StageGenerator>().SetOnStage();
+        GameManager.Instance.CurrentStage = arrvieStage;
+        GameManager.Instance.ChapterGenerator.GetComponent<ChapterGenerator>().stage[arrvieStage.GetComponent<StageGenerator>().StageNumber].Discovered = true;
         GameManager.Instance.PlayerGameObject.transform.position = warpPos;
         departStage.GetComponent<StageGenerator>().SetOffStage();
+
+        //UI 반영하는 코드
+        GameObject minimapUI = GameObject.Find("Minimap");
+        minimapUI.transform.GetChild(0).GetComponent<Minimap>().ChangeCurrentPosition(departStage.GetComponent<StageGenerator>().StageNumber, arrvieStage.GetComponent<StageGenerator>().StageNumber);
+        //
     }
 #endregion
 
