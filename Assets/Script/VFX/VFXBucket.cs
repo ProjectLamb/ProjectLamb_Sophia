@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.AI;
 
 /// <summary>
@@ -10,13 +11,20 @@ using UnityEngine.AI;
 /// > Method : 파괴되는 타이밍
 /// </summary>
 public class VFXBucket : MonoBehaviour {
-    public Dictionary<STATE_TYPE, VFXObject> VisualStacks = new Dictionary<STATE_TYPE, VFXObject>();
+    public Dictionary<STATE_TYPE, VFXObject>    VisualStacks = new Dictionary<STATE_TYPE, VFXObject>();
+    public UnityAction<STATE_TYPE>              OnDestroyHandler;
+    
     private void Awake() {
-        foreach(STATE_TYPE E in Enum.GetValues(typeof(STATE_TYPE))){
-            VisualStacks.Add(E, null);
-        }
+        InitializeVisualStacksByEnums(Enum.GetValues(typeof(STATE_TYPE)));
+        OnDestroyHandler = (STATE_TYPE type) => {RemoveStateByType(type);};
     }
-    public void RemoveStateByType(STATE_TYPE _type){ VisualStacks[_type] = null; }
+    
+    private void InitializeVisualStacksByEnums(Array _stateTypes){
+        foreach(STATE_TYPE E in _stateTypes){ VisualStacks.Add(E, null); }
+    }
+    
+    private void RemoveStateByType(STATE_TYPE _type){ VisualStacks[_type] = null; }
+    
     public void VFXInstantiator(VFXObject _vfx){
         switch(_vfx.BucketStaking){
             case BUCKET_STACKING_TYPE.NONE_STACK : 
@@ -27,7 +35,7 @@ public class VFXBucket : MonoBehaviour {
                     if(value != null){return;}
                 }
                 VFXObject vfxObject = Instantiate(_vfx, transform);
-                vfxObject.OnDestroyAction += (STATE_TYPE type) => {RemoveStateByType(type);};
+                vfxObject.OnDestroyActionByState += OnDestroyHandler;
                 vfxObject.SetScale(transform.localScale.z);
                 VisualStacks[stateType] = vfxObject;
                 VisualStacks[stateType].DestroyVFX();
@@ -42,7 +50,7 @@ public class VFXBucket : MonoBehaviour {
             }
         }
     }
-    public GameObject VFXGameObjectInstantiator(Entity _owner, GameObject _go){
+    public GameObject VFXGameObjectInstantiator(Entity _owner, GameObject _obj){
         //재작성하기
         return null;
     }

@@ -46,7 +46,7 @@ public class Enemy : Entity
 
     public override void Die()
     {
-        GameManager.Instance.globalEvent.OnEnemyDieEvent.ForEach(E => E.Invoke());
+        GameManager.Instance.GlobalEvent.OnEnemyDieEvent.ForEach(E => E.Invoke());
         isDie = true;
         chase = false;
         entityRigidbody.velocity = Vector3.zero;
@@ -54,20 +54,32 @@ public class Enemy : Entity
         Invoke("DestroySelf", 0.5f);
     }
 
+<<<<<<< HEAD
     public override void GetDamaged(int _amount)
     {
         if (isDie == true) { return; }
         GameManager.Instance.globalEvent.OnEnemyHitEvent.ForEach(E => E.Invoke());
+=======
+    public override void GetDamaged(int _amount){
+        if(isDie == true) {return;}
+        GameManager.Instance.GlobalEvent.OnEnemyHitEvent.ForEach(E => E.Invoke());
+>>>>>>> TA_Escatrgot
         FinalData.HitStateRef.Invoke(ref _amount);
         imageGenerator.GenerateImage(_amount);
         CurrentHealth -= _amount;
         if (CurrentHealth <= 0) { this.Die(); }
     }
 
+<<<<<<< HEAD
     public override void GetDamaged(int _amount, VFXObject _vfx)
     {
         if (isDie == true) { return; }
         GameManager.Instance.globalEvent.OnEnemyHitEvent.ForEach(E => E.Invoke());
+=======
+    public override void GetDamaged(int _amount, VFXObject _vfx){
+        if(isDie == true) {return;}
+        GameManager.Instance.GlobalEvent.OnEnemyHitEvent.ForEach(E => E.Invoke());
+>>>>>>> TA_Escatrgot
         FinalData.HitStateRef.Invoke(ref _amount);
         imageGenerator.GenerateImage(_amount);
         CurrentHealth -= _amount;
@@ -100,7 +112,7 @@ public class Enemy : Entity
         CurrentHealth = FinalData.MaxHP;
 
         chase = false;
-        objectiveTarget = GameManager.Instance?.playerGameObject?.transform;
+        objectiveTarget = GameManager.Instance?.PlayerGameObject?.transform;
         isDie = false;
     }
 
@@ -112,7 +124,11 @@ public class Enemy : Entity
     private void FixedUpdate()
     {
         /***************************/
+<<<<<<< HEAD
         if (GameManager.Instance?.globalEvent.IsGamePaused == true) { return; }
+=======
+        if(GameManager.Instance?.GlobalEvent.IsGamePaused == true){return;}
+>>>>>>> TA_Escatrgot
         /***************************/
         if (chase)
         {
@@ -123,7 +139,11 @@ public class Enemy : Entity
     private void Update()
     {
         /***************************/
+<<<<<<< HEAD
         if (GameManager.Instance?.globalEvent.IsGamePaused == true) { return; }
+=======
+        if(GameManager.Instance?.GlobalEvent.IsGamePaused == true){return;}
+>>>>>>> TA_Escatrgot
         /***************************/
         if (chase) { nav.enabled = true; }
         else { nav.enabled = false; }

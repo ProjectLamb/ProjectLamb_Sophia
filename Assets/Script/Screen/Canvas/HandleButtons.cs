@@ -11,7 +11,7 @@ public class HandleButtons : MonoBehaviour
     }
     public void HandleReturn(){
         pauseMenu.CloseMenu();
-        GameManager.Instance.globalEvent.IsGamePaused = false;
+        GameManager.Instance.GlobalEvent.IsGamePaused = false;
     }
     public void HanldeRestart(){
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
