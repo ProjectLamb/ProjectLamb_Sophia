@@ -50,6 +50,11 @@ using UnityEngine;
     {
         NONE_STACK, STACK
     }
+
+    public enum GEAR_TYPE
+    {
+        BRONZE, SILVER, GOLD, PLATINUM, DIAMOND
+    }
     
 #endregion
 

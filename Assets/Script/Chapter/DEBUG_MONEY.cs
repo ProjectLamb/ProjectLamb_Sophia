@@ -7,8 +7,8 @@ public class DEBUG_MONEY : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // GameManager.Instance.playerGameObject.GetComponent<PlayerDataManager>().
-        // GameManager.Instance.playerGameObject.GetComponent<Player>().playerData.CurHP = 1;
+        PlayerDataManager.GetPlayerData().Gear = 100;
+        GameManager.Instance.PlayerGameObject.GetComponent<Player>().CurrentHealth = 1;
     }
 
     // Update is called once per frame
