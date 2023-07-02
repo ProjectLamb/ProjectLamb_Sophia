@@ -2,26 +2,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShopItem : Purchase
+namespace Sophia_Carriers
 {
-    public bool IsEquipmentItem;
-    public bool IsSkillItem;
-    public bool IsHeartItem;
-    [SerializeField]
-    private int mItemPrice;
-    public int ItemPrice
+    public class ShopItem : Purchase
     {
-        get { return mItemPrice; }
-        set { mItemPrice = value; }
-    }
-    public int heartRecoveryRate;
-    private GameObject shop;
-    private string errorCode;
-
-    void OnCollisionEnter(Collision other)
-    {
-        if (other.gameObject.tag == "Player")
+        public bool IsEquipmentItem;
+        public bool IsSkillItem;
+        public bool IsHeartItem;
+        [SerializeField]
+        private int mItemPrice;
+        public int ItemPrice
         {
+            get { return mItemPrice; }
+            set { mItemPrice = value; }
+        }
+        public int heartRecoveryRate;
+        private GameObject shop;
+        private string errorCode;
+
+        void OnCollisionEnter(Collision other)
+        {
+            if(other.gameObject != GameManager.Instance.PlayerGameObject) {return;}
+
             if (IsEquipmentItem)  //부품
             {
                 // if(부품 구매할 수 있는 조건)
@@ -65,32 +67,33 @@ public class ShopItem : Purchase
             }
             else if (IsHeartItem)    //체력
             {
-                // if (GameManager.Instance.playerGameObject.GetComponent<Player>().playerData.CurHP < GameManager.Instance.playerGameObject.GetComponent<Player>().playerData.MaxHP) //만약 플레이어 HP가 FULL HP가 아니고
-                // {
-                //     if (purchase(mItemPrice))
-                //     {
-                //         GameManager.Instance.playerGameObject.GetComponent<Player>().playerData.CurHP += heartRecoveryRate;
-                //         shop.GetComponent<Shop>().HeartCount++;
-                //         Destroy(gameObject);
-                //         return;
-                //     }
-                //     else
-                //     {
-                //         errorCode = "(기어 부족)";
-                //     }
-                // }
-                // else
-                // {
-                //     errorCode = "(체력 다 참)";
-                // }
+                if (GameManager.Instance.PlayerGameObject.GetComponent<Player>().CurrentHealth < GameManager.Instance.PlayerGameObject.GetComponent<Player>().ScriptablePD.MaxHP) //만약 플레이어 HP가 FULL HP가 아니고
+                {
+                    if (purchase(mItemPrice))
+                    {
+                        GameManager.Instance.PlayerGameObject.GetComponent<Player>().CurrentHealth += heartRecoveryRate;
+                        shop.GetComponent<Shop>().HeartCount++;
+                        Destroy(gameObject);
+                        return;
+                    }
+                    else
+                    {
+                        errorCode = "(기어 부족)";
+                    }
+                }
+                else
+                {
+                    errorCode = "(체력 다 참)";
+                }
             }
             Debug.Log("아이템을 구매할 수 없습니다" + errorCode);   //UI로 출력할 것
         }
-    }
 
-    void Start()
-    {
-        mItemPrice = 0;
-        shop = transform.parent.gameObject;
+        void Start()
+        {
+            mItemPrice = 0;
+            shop = transform.parent.gameObject;
+        }
     }
 }
+
