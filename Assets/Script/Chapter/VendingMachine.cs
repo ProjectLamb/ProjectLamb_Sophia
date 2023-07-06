@@ -12,7 +12,6 @@ namespace Sophia_Carriers
         public CarrierBucket carrierBucket;
         float[] probs;
         float totalProbs = 100.0f;
-        public int price;
         bool IsReady = true;
         // Start is called before the first frame update
         void Start()

@@ -7,6 +7,8 @@ namespace Sophia_Carriers
 {
     public class Purchase : Carrier
     {
+        public bool IsShopItem;
+        public int price;
         public override Carrier Clone()
         {
             if (this.IsCloned == true) throw new SystemException("복제본이 복제본을 만들 수 는 없다.");
@@ -28,11 +30,11 @@ namespace Sophia_Carriers
         public bool purchase(int price)
         {
             int current_gear = PlayerDataManager.GetPlayerData().Gear;
-            Debug.Log(current_gear);
 
             if (current_gear >= price)  //구매 가능
             {
                 PlayerDataManager.GetPlayerData().Gear -= price;
+                Debug.Log(current_gear);
                 return true;
             }
             else

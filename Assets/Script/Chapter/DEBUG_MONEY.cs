@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class DEBUG_MONEY : MonoBehaviour
 {
+    public int moneyHack;
     // Start is called before the first frame update
     void Start()
     {
-        PlayerDataManager.GetPlayerData().Gear = 100;
+        PlayerDataManager.GetPlayerData().Gear = moneyHack;
         GameManager.Instance.PlayerGameObject.GetComponent<Player>().CurrentHealth = 1;
     }
 

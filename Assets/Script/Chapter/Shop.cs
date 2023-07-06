@@ -1,77 +1,106 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-namespace Sophia_Carriers
+using UnityEngine.Events;
+using Cysharp.Threading.Tasks;
+using System;
+using Sophia_Carriers;
+public class Shop : MonoBehaviour
 {
-    public class Shop : MonoBehaviour
+    public GameObject equipmentPivot;
+    public GameObject skillPivot;
+    public GameObject heartPivot;
+    public GameObject rerollMachine;
+    public GameObject vendingMachine;
+    private int equipmentCount = 0;
+    public int EquipmentCount
     {
-        public GameObject equipmentItem;
-        public GameObject skillItem;
-        public GameObject heartItem;
-        public GameObject rerollMachine;
-        public GameObject vendingMachine;
-        private int equipmentCount = 0;
-        public int EquipmentCount
-        {
-            get { return equipmentCount; }
-            set { equipmentCount = value; }
-        }
-        private int heartCount = 0;
-        public int HeartCount
-        {
-            get { return heartCount; }
-            set { heartCount = value; }
-        }
-        private int equipmentPrice = 20;
-        private int heartPrice = 10;
-        private int skillPrice = 50;
-        public GameObject[] rerollable;
-        GameObject equipmentItemLocation;
-        GameObject skillItemLocation;
-        GameObject heartItemLocation;
+        get { return equipmentCount; }
+        set { equipmentCount = value; }
+    }
+    private int heartCount = 0;
+    public int HeartCount
+    {
+        get { return heartCount; }
+        set { heartCount = value; }
+    }
+    private int skillCount = 0;
+    public int SkillCount
+    {
+        get { return skillCount; }
+        set { skillCount = value; }
+    }
+    private int equipmentPrice = 20;
+    private int heartPrice = 10;
+    private int skillPrice = 50;
+    public Carrier[] ItemArray;
 
-        void Awake()
+    private UnityAction<int> onPurchaseEvent;
+    void Awake()
+    {
+        ItemArray = new Carrier[3];
+        vendingMachine.GetComponent<VendingMachine>().price = 10;
+        rerollMachine.GetComponent<RerollMachine>().price = 5;
+    }
+    void Start()
+    {
+        GameManager.Instance.Shop = gameObject;
+        onPurchaseEvent = (int _id) => {InstantiateItemById(_id);};
+        for (int i = 0; i < 3; i++)
         {
-            rerollable = new GameObject[2];
-            rerollable[0] = equipmentItem;
-            rerollable[1] = skillItem;
-            equipmentItemLocation = transform.GetChild(0).gameObject;
-            skillItemLocation = transform.GetChild(1).gameObject;
-            heartItemLocation = transform.GetChild(2).gameObject;
+            InstantiateItem(i, 0);
         }
-        void Start()
-        {
-            for (int i = 0; i < 3; i++)
-            {
-                InstantiateItem(i);
-            }
-        }
+    }
 
-        void Update()
+    public void InstantiateItem(int id, int flag)
+    {
+        if (flag == 1)
         {
-            //체력이랑 부품 리필되는 알고리즘
+            AsyncWaitUse(2, id, onPurchaseEvent).Forget();
+            return;
         }
-        void InstantiateItem(int id)
-        {
-            GameObject temp = null;
-            if (id == 0) //equipment
+        else  {
+            onPurchaseEvent.Invoke(id);
+        }
+    }
+
+    private void InstantiateItemById(int id){
+        Carrier temp = null;
+            CarrierBucket carrierBucket = null;
+            if (id == 0 && equipmentCount < 3) //equipment
             {
-                temp = Instantiate(equipmentItem, equipmentItemLocation.transform.position, Quaternion.identity);
-                temp.GetComponent<ShopItem>().ItemPrice = equipmentPrice + equipmentCount * 5;
+                temp = GameManager.Instance.GlobalCarrierManager.GetRandomItem("Equipment").Clone();
+                temp.Init(GameManager.Instance.PlayerGameObject.GetComponent<Player>());
+                temp.GetComponent<ItemEquipment>().IsShopItem = true;
+                temp.GetComponent<ItemEquipment>().price = equipmentPrice + equipmentCount * 5;
+                carrierBucket = equipmentPivot.GetComponent<CarrierBucket>();
+                ItemArray[0] = temp;
             }
             else if (id == 1)   //skill
             {
-                temp = Instantiate(skillItem, skillItemLocation.transform.position, Quaternion.identity);
-                temp.GetComponent<ShopItem>().ItemPrice = skillPrice;
+                temp = GameManager.Instance.GlobalCarrierManager.GetRandomItem("Skill").Clone();
+                temp.Init(GameManager.Instance.PlayerGameObject.GetComponent<Player>());
+                temp.GetComponent<ItemSkill>().IsShopItem = true;
+                temp.GetComponent<ItemSkill>().price = skillPrice;
+                carrierBucket = skillPivot.GetComponent<CarrierBucket>();
+                ItemArray[1] = temp;
             }
             else if (id == 2)   //heart
             {
-                temp = Instantiate(heartItem, heartItemLocation.transform.position, Quaternion.identity);
-                temp.GetComponent<ShopItem>().ItemPrice = heartPrice + heartCount * 5;
-                temp.GetComponent<ShopItem>().heartRecoveryRate = 20;    //하트 회복 수치
+                temp = GameManager.Instance.GlobalCarrierManager.itemHeart.Clone();
+                temp.InitByObject(null, new object[] { 30 });
+                temp.GetComponent<ItemHeart>().IsShopItem = true;
+                temp.GetComponent<ItemHeart>().price = heartPrice + heartCount * 5;
+                carrierBucket = heartPivot.GetComponent<CarrierBucket>();
+                ItemArray[2] = temp;
             }
+            carrierBucket.CarrierTransformPositionning(gameObject, temp);
             temp.transform.parent = transform;
-        }
+    }
+
+    public async UniTaskVoid AsyncWaitUse(float _waitSecondTime, int _id, UnityAction<int> _onPurchaseEvent)
+    {
+        await UniTask.Delay(TimeSpan.FromSeconds(_waitSecondTime));
+        _onPurchaseEvent.Invoke(_id);
     }
 }
