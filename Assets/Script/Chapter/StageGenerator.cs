@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using Sophia_Carriers;
 
 public class StageGenerator : MonoBehaviour
 {
@@ -44,14 +45,16 @@ public class StageGenerator : MonoBehaviour
     private int mCurrentMobCount;
     public int CurrentMobCount
     {
-        set{
+        set
+        {
             mCurrentMobCount = value;
         }
-        get{
+        get
+        {
             return mCurrentMobCount;
         }
     }
-    
+
     [SerializeField]
     private bool mIsClear;
     public bool IsClear
@@ -64,6 +67,8 @@ public class StageGenerator : MonoBehaviour
     private bool mPortalS = false;
     private bool mPortalN = false;
     int portalCount = 0;
+    float[] probs;
+    float totalProbs = 100.0f;
     public GameObject portal;
     public GameObject tile;
     public GameObject wall;
@@ -73,6 +78,7 @@ public class StageGenerator : MonoBehaviour
     public GameObject mob;
     public List<GameObject> mobArray;
     public GameObject[] portalArray;
+    CarrierBucket carrierBucket;
 
     public void SetPortal(bool e, bool w, bool s, bool n)
     {
@@ -260,7 +266,7 @@ public class StageGenerator : MonoBehaviour
     {
         if (!mIsClear)
             GameManager.Instance.PlayerGameObject.GetComponent<Player>().IsPortal = false;
-            GameManager.Instance.PlayerGameObject.GetComponent<Player>().IsPortal = false;
+        GameManager.Instance.PlayerGameObject.GetComponent<Player>().IsPortal = false;
         GameManager.Instance.CurrentStage = this.gameObject;
         foreach (var m in mobArray)
         {
@@ -269,7 +275,7 @@ public class StageGenerator : MonoBehaviour
                 m.GetComponent<Enemy>().chase = true;
             }
         }
-        for(int i = 0; i < transform.childCount; i++)
+        for (int i = 0; i < transform.childCount; i++)
         {
             transform.GetChild(i).gameObject.SetActive(true);
         }
@@ -284,7 +290,7 @@ public class StageGenerator : MonoBehaviour
                 m.GetComponent<Enemy>().chase = false;
             }
         }
-        for(int i = 0; i < transform.childCount; i++)
+        for (int i = 0; i < transform.childCount; i++)
         {
             transform.GetChild(i).gameObject.SetActive(false);
         }
@@ -295,6 +301,71 @@ public class StageGenerator : MonoBehaviour
         NavMeshSurface nav = GetComponent<NavMeshSurface>();
         nav.RemoveData();
         nav.BuildNavMesh();
+    }
+
+    int Gacha()
+    {
+        int returnValue = 0;
+        float randomValue = Random.value * totalProbs;
+
+        float temp = 0.0f;
+
+        for (int i = 0; i < 7; i++)
+        {
+            temp += probs[i];
+            if (randomValue <= temp)
+            {
+                returnValue = i;
+                break;
+            }
+        }
+
+        return returnValue;
+    }
+
+    void StageClear()
+    {
+        mIsClear = true;
+        Carrier tmp = null;
+        switch (Gacha())
+        {
+            case 0:
+                Debug.Log("부품");
+                tmp = GameManager.Instance.GlobalCarrierManager.GetRandomItem("Equipment").Clone();
+                tmp.Init(GameManager.Instance.PlayerGameObject.GetComponent<Player>());
+                break;
+            case 1:
+                Debug.Log("체력");
+                tmp = GameManager.Instance.GlobalCarrierManager.itemHeart.Clone();
+                tmp.InitByObject(null, new object[] { 30 });
+                break;
+            case 2:
+                Debug.Log("30원");
+                tmp = GameManager.Instance.GlobalCarrierManager.GearList[(int)GEAR_TYPE.DIAMOND].Clone();
+                tmp.Init(null);
+                break;
+            case 3:
+                Debug.Log("20원");
+                tmp = GameManager.Instance.GlobalCarrierManager.GearList[(int)GEAR_TYPE.PLATINUM].Clone();
+                tmp.Init(null);
+                break;
+            case 4:
+                Debug.Log("10원");
+                tmp = GameManager.Instance.GlobalCarrierManager.GearList[(int)GEAR_TYPE.GOLD].Clone();
+                tmp.Init(null);
+                break;
+            case 5:
+                Debug.Log("5원");
+                tmp = GameManager.Instance.GlobalCarrierManager.GearList[(int)GEAR_TYPE.SILVER].Clone();
+                tmp.Init(null);
+                break;
+            case 6:
+                Debug.Log("1원");
+                tmp = GameManager.Instance.GlobalCarrierManager.GearList[(int)GEAR_TYPE.BRONZE].Clone();
+                tmp.Init(null);
+                break;
+        }
+        carrierBucket.CarrierTransformPositionning(gameObject, tmp);
     }
 
     void Awake()
@@ -311,6 +382,8 @@ public class StageGenerator : MonoBehaviour
         mobCount = Random.Range(3, 3 + 3);
         mIsClear = false;
         portalArray = new GameObject[4];
+        probs = new float[7] { 1.0f, 14.0f, 10.0f, 15.0f, 20.0f, 20.0f, 20.0f };
+        carrierBucket = GetComponent<CarrierBucket>();
     }
     void Start()
     {
@@ -329,7 +402,7 @@ public class StageGenerator : MonoBehaviour
             float y = 0;
             float z = 0;
             GameObject instance;
-            if(mPortalE)
+            if (mPortalE)
             {
                 y = 180f;
             }
@@ -347,6 +420,7 @@ public class StageGenerator : MonoBehaviour
             }
             instance = Instantiate(shop, transform.position, Quaternion.Euler(x, y, z));
             instance.transform.parent = transform;
+            mIsClear = true;
         }
         else if (mType == "hidden")
         {
@@ -362,7 +436,6 @@ public class StageGenerator : MonoBehaviour
             GameObject character = GameManager.Instance.PlayerGameObject;
             GameManager.Instance.CurrentStage = this.gameObject;
             mIsClear = true;
-            //character.transform.position = new Vector3(transform.localPosition.x, GameObject.Find("Character").transform.position.y, transform.localPosition.z);
             character.transform.position = new Vector3(transform.position.x, character.transform.position.y, transform.position.z);
         }
         else
@@ -378,7 +451,7 @@ public class StageGenerator : MonoBehaviour
         {
             if (CurrentMobCount == 0 && GameManager.Instance.CurrentStage == this.gameObject)
             {
-                mIsClear = true;
+                StageClear();
             }
         }
     }
