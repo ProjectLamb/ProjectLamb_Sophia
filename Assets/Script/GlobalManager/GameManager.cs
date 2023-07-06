@@ -25,8 +25,10 @@ public class GameManager : MonoBehaviour
 
     public GlobalEvent  GlobalEvent;
     public GlobalAudio  GlobalAudio;
+    public GlobalCarrierManger GlobalCarrierManager;
     public GameObject   PlayerGameObject;
     public GameObject   ChapterGenerator;
+    public GameObject Shop;
     public GameObject   CurrentStage;
 
     void Awake()

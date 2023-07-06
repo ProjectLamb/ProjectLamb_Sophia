@@ -15,7 +15,7 @@ namespace Sophia_Carriers {
         
         [SerializeField] bool IsTracking = false;
         [SerializeField] private float flowSpeed = 5;
-        public int num = 1;
+        public int value = 1;
         
         public override Carrier Clone()
         {
@@ -40,7 +40,7 @@ namespace Sophia_Carriers {
         public override void InitByObject(Entity _ownerEntity, object[] _objects)
         {
             if(IsCloned == false) throw new System.Exception("원본데이터를 조작하고 있음");
-            num = (int)_objects[0];
+            value = (int)_objects[0];
         }
     
         private void OnEnable() { Invoke("ActivateTracking", 1f); }
@@ -56,12 +56,12 @@ namespace Sophia_Carriers {
     
         private void OnTriggerEnter(Collider other) {
             if(!other.TryGetComponent<Player>(out Player player)){return;}
-            PlayerDataManager.GetPlayerData().Gear += num;
+            PlayerDataManager.GetPlayerData().Gear += value;
             DestroySelf();
         }
     
         private void FixedUpdate() {
-            if(IsTracking) { FlowLerp(); }
+            //if(IsTracking) { FlowLerp(); }
         }
         private void ActivateTracking(){IsTracking = true;}
     
