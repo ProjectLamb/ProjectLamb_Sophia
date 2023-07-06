@@ -28,6 +28,7 @@ public class GameManager : MonoBehaviour
     public GlobalCarrierManger GlobalCarrierManager;
     public GameObject   PlayerGameObject;
     public GameObject   ChapterGenerator;
+    public GameObject Shop;
     public GameObject   CurrentStage;
 
     void Awake()
