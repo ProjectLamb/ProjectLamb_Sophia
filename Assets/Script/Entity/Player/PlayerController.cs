@@ -19,6 +19,8 @@ public class PlayerController : MonoBehaviour
     }
 
     private void Update() {
+        //player.AimAssist();
+
         if(IsMoveAllow){ 
             player.Move(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
             if(Input.GetKeyDown(KeyCode.Space)){player.Dash();}
