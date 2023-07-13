@@ -73,6 +73,7 @@ public class Player : Entity {
     private bool                    mIsBorder;
     private bool                    mIsDashed;
     private bool                    mIsDie;
+    
     public  bool                    isAttack;
     [HideInInspector] Animator anim;
 
