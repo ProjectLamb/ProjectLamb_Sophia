@@ -54,7 +54,7 @@ public class Player : Entity {
     public EquipmentManager         equipmentManager;
     public ImageGenerator           imageGenerator;
     public LayerMask                groundMask; // 바닥을 인식하는 마스크
-    
+    public AttackAnim               attackAnim;
     /// <summary>
     /// RoomGenerator.cs에서 참조하는 변수 (리펙토링 필요해 보인다.) <br/>
     /// * 포탈을 사용할수 있는지 없는지는 Map이 책임을 가져아 한다. <br/>
@@ -73,6 +73,8 @@ public class Player : Entity {
     private bool                    mIsBorder;
     private bool                    mIsDashed;
     private bool                    mIsDie;
+    
+    public  bool                    isAttack;
     [HideInInspector] Animator anim;
 
     IEnumerator mCoWaitDash;        // StopCorutine을 사용하기 위해서는 코루틴 변수가 필요하다. 
@@ -86,12 +88,14 @@ public class Player : Entity {
         //CurrentHealth = 마스터 데이터
         base.Awake();
         model.TryGetComponent<Animator>(out anim);
+        model.TryGetComponent<AttackAnim>(out attackAnim);
     }
 
     private void Start() {
         CurrentHealth = PlayerDataManager.GetEntityData().MaxHP;//FinalPlayerData.PlayerEntityData.MaxHP;
         CurrentStamina = PlayerDataManager.GetPlayerData().MaxStamina;//FinalPlayerData.PlayerEntityData.MaxHP;
         IsPortal = true;
+        isAttack = false;
     }
     
     public override void GetDamaged(int _amount){
@@ -266,6 +270,17 @@ public class Player : Entity {
             Gizmos.DrawRay(transform.position,transform.forward*hit.distance);
             Gizmos.DrawWireSphere(transform.position + transform.forward * hit.distance, sphereScale/2.0f);
             }
+    }
+
+    public void checkAttack()
+    {
+        isAttack = attackAnim.nowAttack();
+        if(isAttack){
+            anim.SetBool("isAttack",true);
+        }
+        else{
+            anim.SetBool("isAttack",false);
+        }
     }
 
 }
