@@ -73,7 +73,6 @@ public class Player : Entity {
     private bool                    mIsBorder;
     private bool                    mIsDashed;
     private bool                    mIsDie;
-    
     public  bool                    isAttack;
     [HideInInspector] Animator anim;
 
@@ -249,26 +248,9 @@ public class Player : Entity {
     {
         float camRayLength = 200f;
         Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-        //Physics.SphereCast(transform.position, sphereScale/2.0f, Input.mousePosition - transform.position, out RaycastHit hit, 200.0f))
-        float sphereScale = Mathf.Max(transform.lossyScale.x, transform.lossyScale.y, transform.lossyScale.z);
-
-        if (Physics.Raycast(camRay, out RaycastHit hit, camRayLength, groundMask)){
-            
-            }
-    }
-
-    void OnDrawGizmos()
-    {
-        Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-        Gizmos.color = Color.red;
-
-        //Physics.SphereCast(transform.position, sphereScale/2.0f, Input.mousePosition - transform.position, out RaycastHit hit, 200.0f))
-        float sphereScale = Mathf.Max(transform.lossyScale.x, transform.lossyScale.y, transform.lossyScale.z);
-
-        if (Physics.Raycast(camRay, out RaycastHit hit, 200f, groundMask)){
-            Gizmos.DrawRay(transform.position,transform.forward*hit.distance);
-            Gizmos.DrawWireSphere(transform.position + transform.forward * hit.distance, sphereScale/2.0f);
+        
+        if (Physics.Raycast(camRay, out RaycastHit hit, camRayLength)){
+            Debug.DrawRay(transform.position, (Input.mousePosition-transform.position)*200f,Color.blue,0.3f);
             }
     }
 
