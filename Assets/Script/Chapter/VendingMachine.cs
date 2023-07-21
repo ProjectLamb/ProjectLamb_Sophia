@@ -17,7 +17,7 @@ namespace Sophia_Carriers
         void Start()
         {
             carrierBucket = GetComponentInChildren<CarrierBucket>();
-            probs = new float[7] { 5.0f, 10.0f, 10.0f, 15.0f, 20.0f, 20.0f, 20.0f };
+            probs = new float[7] { 2.5f, 7f, 3.5f, 7f, 20.0f, 30f, 30f };
         }
 
         int Gacha()
@@ -61,12 +61,12 @@ namespace Sophia_Carriers
                         tmp.InitByObject(null, new object[]{30});
                         break;
                     case 2:
-                        Debug.Log("30원");
+                        Debug.Log("50원");
                         tmp = GameManager.Instance.GlobalCarrierManager.GearList[(int)GEAR_TYPE.DIAMOND].Clone();
                         tmp.Init(null);
                         break;
                     case 3:
-                        Debug.Log("20원");
+                        Debug.Log("25원");
                         tmp = GameManager.Instance.GlobalCarrierManager.GearList[(int)GEAR_TYPE.PLATINUM].Clone();
                         tmp.Init(null);
                         break;
@@ -81,9 +81,9 @@ namespace Sophia_Carriers
                         tmp.Init(null);
                         break;
                     case 6:
-                        Debug.Log("1원");
-                        tmp = GameManager.Instance.GlobalCarrierManager.GearList[(int)GEAR_TYPE.BRONZE].Clone();
-                        tmp.Init(null);
+                        Debug.Log("꽝");
+                        // tmp = GameManager.Instance.GlobalCarrierManager.GearList[(int)GEAR_TYPE.BRONZE].Clone();
+                        // tmp.Init(null);
                         break;
                 }
                 carrierBucket.CarrierTransformPositionning(gameObject, tmp);
