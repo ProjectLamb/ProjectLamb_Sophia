@@ -78,6 +78,14 @@ public class Enemy : Entity
         Destroy(gameObject);
     }
 
+    void OnCollisionEnter(Collision other)  //테스트 용 공격, 후에 삭제할 것
+    {
+        if(other.gameObject == GameManager.Instance.PlayerGameObject)
+        {
+            other.gameObject.GetComponent<Player>().GetDamaged(10);
+        }
+    }
+
     protected override void Awake()
     {
         /*아래 3줄은 절때 활성화 하지마라. base.Awake() 에서 이미 이걸 하고 있다.*/
