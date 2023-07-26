@@ -54,7 +54,7 @@ public class Player : Entity {
     public EquipmentManager         equipmentManager;
     public ImageGenerator           imageGenerator;
     public LayerMask                groundMask; // 바닥을 인식하는 마스크
-    
+    public AttackAnim               attackAnim;
     /// <summary>
     /// RoomGenerator.cs에서 참조하는 변수 (리펙토링 필요해 보인다.) <br/>
     /// * 포탈을 사용할수 있는지 없는지는 Map이 책임을 가져아 한다. <br/>
@@ -73,6 +73,7 @@ public class Player : Entity {
     private bool                    mIsBorder;
     private bool                    mIsDashed;
     private bool                    mIsDie;
+    public  bool                    isAttack;
     [HideInInspector] Animator anim;
 
     IEnumerator mCoWaitDash;        // StopCorutine을 사용하기 위해서는 코루틴 변수가 필요하다. 
@@ -86,12 +87,14 @@ public class Player : Entity {
         //CurrentHealth = 마스터 데이터
         base.Awake();
         model.TryGetComponent<Animator>(out anim);
+        model.TryGetComponent<AttackAnim>(out attackAnim);
     }
 
     private void Start() {
         CurrentHealth = PlayerDataManager.GetEntityData().MaxHP;//FinalPlayerData.PlayerEntityData.MaxHP;
         CurrentStamina = PlayerDataManager.GetPlayerData().MaxStamina;//FinalPlayerData.PlayerEntityData.MaxHP;
         IsPortal = true;
+        isAttack = false;
     }
     
     public override void GetDamaged(int _amount){
@@ -238,6 +241,35 @@ public class Player : Entity {
             // 플레이어가 바라보는 방향 설정
             this.entityRigidbody.MoveRotation(newRotatation);
             action.Invoke();
+        }
+    }
+
+    public void AimAssist()
+    {
+        float camRayLength = 200f;
+        Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);   
+        if (Physics.Raycast(camRay, out RaycastHit hit, camRayLength)){
+            if(hit.collider.name == "SandBag"){
+                // 공격중이라면
+                if(isAttack){
+                    // RAYCASTHIT가 닿은 대상의 중심을 바라본다
+                    transform.rotation = Quaternion.LookRotation(hit.collider.transform.position - this.transform.position);
+                }
+                Debug.Log("sandbag hit!");
+            }
+
+            Debug.DrawRay(transform.position, (Input.mousePosition-transform.position)*200f,Color.blue,0.3f);
+            }
+    }
+
+    public void checkAttack()
+    {
+        isAttack = attackAnim.nowAttack();
+        if(isAttack){
+            anim.SetBool("isAttack",true);
+        }
+        else{
+            anim.SetBool("isAttack",false);
         }
     }
 
