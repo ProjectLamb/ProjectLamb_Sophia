@@ -247,9 +247,17 @@ public class Player : Entity {
     public void AimAssist()
     {
         float camRayLength = 200f;
-        Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-        
+        Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);   
         if (Physics.Raycast(camRay, out RaycastHit hit, camRayLength)){
+            if(hit.collider.name == "SandBag"){
+                // 공격중이라면
+                if(isAttack){
+                    // RAYCASTHIT가 닿은 대상의 중심을 바라본다
+                    transform.rotation = Quaternion.LookRotation(hit.collider.transform.position - this.transform.position);
+                }
+                Debug.Log("sandbag hit!");
+            }
+
             Debug.DrawRay(transform.position, (Input.mousePosition-transform.position)*200f,Color.blue,0.3f);
             }
     }
