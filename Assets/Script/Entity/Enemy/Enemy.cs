@@ -21,8 +21,8 @@ public class Enemy : Entity
 
     [field: SerializeField]
     public ScriptableObjEnemyData ScriptableED;
-    private EntityData BaseEnemyData;
-    private EntityData FinalData;
+    protected EntityData BaseEnemyData;
+    protected EntityData FinalData;
 
     public override void ResetData()
     {
@@ -40,6 +40,8 @@ public class Enemy : Entity
     public Projectile[] projectiles;
 
     public ImageGenerator imageGenerator;
+    public StageGenerator stageGenerator;
+    public MobGenerator mobGenerator;
     public Animator animator;
     public AnimEventInvoker animEventInvoker;
     public ParticleSystem DieParticle;
@@ -48,14 +50,13 @@ public class Enemy : Entity
     {
         GameManager.Instance.GlobalEvent.OnEnemyDieEvent.ForEach(E => E.Invoke());
         isDie = true;
-        chase = false;
-        entityRigidbody.velocity = Vector3.zero;
-        gameObject.transform.parent.parent.GetComponent<StageGenerator>().CurrentMobCount--;
-        Invoke("DestroySelf", 0.5f);
+        Freeze();
+        entityCollider.enabled = false;
     }
 
-    public override void GetDamaged(int _amount){
-        if(isDie == true) {return;}
+    public override void GetDamaged(int _amount)
+    {
+        if (isDie == true) { return; }
         GameManager.Instance.GlobalEvent.OnEnemyHitEvent.ForEach(E => E.Invoke());
         FinalData.HitStateRef.Invoke(ref _amount);
         imageGenerator.GenerateImage(_amount);
@@ -63,8 +64,9 @@ public class Enemy : Entity
         if (CurrentHealth <= 0) { this.Die(); }
     }
 
-    public override void GetDamaged(int _amount, VFXObject _vfx){
-        if(isDie == true) {return;}
+    public override void GetDamaged(int _amount, VFXObject _vfx)
+    {
+        if (isDie == true) { return; }
         GameManager.Instance.GlobalEvent.OnEnemyHitEvent.ForEach(E => E.Invoke());
         FinalData.HitStateRef.Invoke(ref _amount);
         imageGenerator.GenerateImage(_amount);
@@ -76,6 +78,28 @@ public class Enemy : Entity
     public void DestroySelf()
     {
         Destroy(gameObject);
+    }
+
+    void NavMeshSet()
+    {
+        nav.speed = FinalData.MoveSpeed;
+        nav.acceleration = nav.speed * 2;
+        nav.updateRotation = false;
+
+        nav.stoppingDistance = 2;
+    }
+
+    public void Freeze()
+    {
+        chase = false;
+        entityRigidbody.velocity = Vector3.zero;
+        entityRigidbody.constraints = RigidbodyConstraints.FreezeAll;
+    }
+
+    public void UnFreeze()
+    {
+        chase = true;
+        entityRigidbody.constraints = RigidbodyConstraints.None;
     }
 
     protected override void Awake()
@@ -100,31 +124,32 @@ public class Enemy : Entity
         chase = false;
         objectiveTarget = GameManager.Instance?.PlayerGameObject?.transform;
         isDie = false;
+        NavMeshSet();
     }
 
     private void Start()
     {
-        nav.speed = FinalData.MoveSpeed;
+
     }
 
-    private void FixedUpdate()
+    protected virtual void FixedUpdate()
     {
         /***************************/
-        if(GameManager.Instance?.GlobalEvent.IsGamePaused == true){return;}
+        if (GameManager.Instance?.GlobalEvent.IsGamePaused == true) { return; }
         /***************************/
         if (chase)
         {
             nav.SetDestination(objectiveTarget.position);
+            transform.LookAt(objectiveTarget.position);
         }
     }
 
-    private void Update()
+    protected virtual void Update()
     {
         /***************************/
-        if(GameManager.Instance?.GlobalEvent.IsGamePaused == true){return;}
+        if (GameManager.Instance?.GlobalEvent.IsGamePaused == true) { return; }
         /***************************/
         if (chase) { nav.enabled = true; }
         else { nav.enabled = false; }
-        nav.speed = FinalData.MoveSpeed;
     }
 }
