@@ -13,16 +13,20 @@ public abstract class Entity : MonoBehaviour, IDamagable, IDieable, IAffectable,
 {
     [HideInInspector] public Collider entityCollider;
     [HideInInspector] public Rigidbody entityRigidbody;
-    [SerializeField]  public GameObject model;
-    [SerializeField]  public VisualModulator visualModulator;
-    [SerializeField]  public CarrierBucket carrierBucket;
-    [SerializeField]  public int mCurrentHealth;
+    [SerializeField] public GameObject model;
+    [SerializeField] public VisualModulator visualModulator;
+    [SerializeField] public CarrierBucket carrierBucket;
+    [SerializeField] public int mCurrentHealth;
     public int CurrentHealth
     {
         get { return mCurrentHealth; }
         set
         {
             mCurrentHealth = value;
+            if (mCurrentHealth >= GetFinalData().MaxHP)
+            {
+                mCurrentHealth = GetFinalData().MaxHP;
+            }
             if (mCurrentHealth < 0) { mCurrentHealth = 0; }
         }
     }
@@ -34,7 +38,8 @@ public abstract class Entity : MonoBehaviour, IDamagable, IDieable, IAffectable,
         TryGetComponent<Collider>(out entityCollider);
         TryGetComponent<Rigidbody>(out entityRigidbody);
         model ??= transform.GetChild(0).Find("model").gameObject;
-        foreach(STATE_TYPE E in Enum.GetValues(typeof(STATE_TYPE))){
+        foreach (STATE_TYPE E in Enum.GetValues(typeof(STATE_TYPE)))
+        {
             AffectorStacks.Add(E, null);
         }
     }
@@ -48,7 +53,8 @@ public abstract class Entity : MonoBehaviour, IDamagable, IDieable, IAffectable,
     {
         STATE_TYPE stateType = _affectorPackage.affectorType;
         AffectorPackage returnAS;
-        if(AffectorStacks.TryGetValue(stateType, out returnAS)){
+        if (AffectorStacks.TryGetValue(stateType, out returnAS))
+        {
             returnAS?.AsyncAffectorCoroutine.ForEach(coroutine => { StopCoroutine(coroutine); });
             AffectorStacks[_affectorPackage.affectorType] = null;
         }

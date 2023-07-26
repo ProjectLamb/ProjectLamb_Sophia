@@ -10,8 +10,10 @@ using UnityEngine;
     {
         //0 ~ 99 // 디버프
         MOVE = 0, DASH, ATTACK, SKILL, GET_DAMAGE, DIE, TRIGGER,
+        
         //100 ~ 199 //디버프
         BURN = 100, POISONED, BLEED, CONTRACTED, FREEZE, CONFUSED, FEAR, STERN, BOUNDED, EXECUTION, KNOCKBACK, BLACK_HOLE,
+        
         //200 ~ 299
         MOVE_SPEED_UP = 200, TENACITY_UP, POWER_UP, ATTACK_SPEED_UP, BARRIER, INVISIBLE, INVINCIBLE, ON_HIT, DEFENCE, PROJECTILE_GENERATOR
     }
@@ -49,6 +51,11 @@ using UnityEngine;
     public enum BUCKET_STACKING_TYPE
     {
         NONE_STACK, STACK
+    }
+
+    public enum GEAR_TYPE
+    {
+        BRONZE, SILVER, GOLD, PLATINUM, DIAMOND
     }
     
 #endregion
@@ -89,6 +96,13 @@ using UnityEngine;
     public enum UNITY_TAGS
     {
         Mesh, Wall, Enemy, Portal, PlayerProjectile, EnemyProjectile, Equipment, DebugUI,
+    }
+#endregion
+
+#region Enemy Enums
+    public enum Enemy_TYPE
+    {
+        Enemy_Template, Raptor,
     }
 #endregion
 

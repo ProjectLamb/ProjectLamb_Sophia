@@ -33,17 +33,20 @@ public class Minimap : MonoBehaviour
                 tmp.transform.localPosition = new Vector3(pos.x - 250, pos.y, 0);
                 if (map.GetComponent<ChapterGenerator>().stage[i].Type == "start")
                 {
-                    tmp.color = Color.green;
+                    tmp.transform.GetChild(0).GetComponent<Image>().color = Color.green;
                     startStageNumber = map.GetComponent<ChapterGenerator>().stage[i].StageNumber;
                 }
                 else if (map.GetComponent<ChapterGenerator>().stage[i].Type == "boss")
-                    tmp.color = Color.red;
+                {
+                    tmp.transform.GetChild(0).GetComponent<Image>().color = Color.red;
+                }
                 else if (map.GetComponent<ChapterGenerator>().stage[i].Type == "shop")
-                    tmp.color = Color.blue;
-                else if (map.GetComponent<ChapterGenerator>().stage[i].Type == "middleboss")
-                    tmp.color = Color.yellow;
-                else if (map.GetComponent<ChapterGenerator>().stage[i].Type == "hidden")
-                    tmp.color = Color.grey;
+                {
+                    tmp.transform.GetChild(0).GetComponent<Image>().color = Color.yellow;
+                }
+                Color tmpAlpha = tmp.transform.GetChild(0).GetComponent<Image>().color;
+                tmpAlpha.a = 0.4f;
+                tmp.transform.GetChild(0).GetComponent<Image>().color = tmpAlpha;
                 imgList.Add(tmp);
             }
 
@@ -77,11 +80,21 @@ public class Minimap : MonoBehaviour
 
     public void ChangeCurrentPosition(int depart, int arrive)
     {
-        imgList[imgDic[depart]].transform.GetChild(0).gameObject.SetActive(false);
-        imgList[imgDic[arrive]].transform.GetChild(0).gameObject.SetActive(true);
-        Color tmpColor = imgList[imgDic[arrive]].gameObject.GetComponent<Image>().color;
-        tmpColor.a = 1;
-        imgList[imgDic[arrive]].gameObject.GetComponent<Image>().color = tmpColor;
+        imgList[imgDic[depart]].transform.GetChild(1).gameObject.SetActive(false);
+        if (GameManager.Instance.ChapterGenerator.GetComponent<ChapterGenerator>().stage[depart].Discovered)
+        {
+            if(GameManager.Instance.ChapterGenerator.GetComponent<ChapterGenerator>().stage[depart].Type == "hidden")
+            {
+                imgList[imgDic[depart]].GetComponent<Image>().transform.GetChild(0).GetComponent<Image>().color = Color.magenta;
+            }
+            Color departColor = imgList[imgDic[depart]].GetComponent<Image>().transform.GetChild(0).GetComponent<Image>().color;
+            departColor.a = 0.7f;
+            imgList[imgDic[depart]].GetComponent<Image>().transform.GetChild(0).GetComponent<Image>().color = departColor;
+        }
+        imgList[imgDic[arrive]].transform.GetChild(1).gameObject.SetActive(true);
+        Color arriveColor = imgList[imgDic[arrive]].gameObject.GetComponent<Image>().transform.GetChild(0).GetComponent<Image>().color;
+        arriveColor.a = 1;
+        imgList[imgDic[arrive]].gameObject.GetComponent<Image>().transform.GetChild(0).GetComponent<Image>().color = arriveColor;
         if (!BlackSheepWall)
         {
             if (map.GetComponent<ChapterGenerator>().stage[arrive].East != null)

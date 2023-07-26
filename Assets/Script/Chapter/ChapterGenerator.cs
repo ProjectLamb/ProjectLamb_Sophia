@@ -7,6 +7,22 @@ public class ChapterGenerator : MonoBehaviour
 {
     static int MAX = 15;
     public int startNumber = 1 + (MAX / 2) + (MAX / 2 * MAX);
+    public bool IsLoading = false;
+    private int mLoadingStage = 0;
+    public bool hiddenStage;
+    float loadingTimer = 0;
+    float waitingTime = 0.5f;
+    public int LoadingStage
+    {
+        get
+        {
+            return mLoadingStage;
+        }
+        set
+        {
+            mLoadingStage = value;
+        }
+    }
 
     [SerializeField]
     int stageAmount;
@@ -49,7 +65,8 @@ public class ChapterGenerator : MonoBehaviour
             {
                 mDiscovered = value;
             }
-            get{
+            get
+            {
                 return mDiscovered;
             }
         }
@@ -121,7 +138,7 @@ public class ChapterGenerator : MonoBehaviour
         int stageAmount = n;
         int maxStage = MAX * MAX;
         int amount; //현재 방 개수
-        bool hiddenStage = Randomizer.GetThisChanceResult_Percentage(hiddenStageSpawnRate); //히든 보스
+        hiddenStage = Randomizer.GetThisChanceResult_Percentage(hiddenStageSpawnRate); //히든 보스
 
         // 큐 선언
         Queue<int> q = new Queue<int>();
@@ -337,6 +354,7 @@ public class ChapterGenerator : MonoBehaviour
 
         if (hiddenStage)
         {
+            Debug.Log("히든방 소환됨"); //UI로 바꾸기
             bool assign = false;
 
             foreach (int num in bossL)
@@ -426,9 +444,26 @@ public class ChapterGenerator : MonoBehaviour
     }
     void Awake()
     {
+        waitingTime = 0.5f;
         stageAmount = Random.Range(10, 16);
         minimumDistanceOfEndStage = 2;
         hiddenStageSpawnRate = 10f; //10% possibility
         GenerateStage(stageAmount);
+    }
+
+    void Update()
+    {
+        if (!IsLoading)
+        {
+            if (LoadingStage >= stageAmount)
+            {
+                loadingTimer += Time.deltaTime;
+                Debug.Log("챕터 로딩 완료");
+                if (loadingTimer >= waitingTime)
+                {
+                    IsLoading = true;
+                }
+            }
+        }
     }
 }
