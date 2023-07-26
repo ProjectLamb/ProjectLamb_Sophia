@@ -99,4 +99,11 @@ using UnityEngine;
     }
 #endregion
 
+#region Enemy Enums
+    public enum Enemy_TYPE
+    {
+        Enemy_Template, Raptor,
+    }
+#endregion
+
 /////////////////////////////////////////////////////////////////////////////////
