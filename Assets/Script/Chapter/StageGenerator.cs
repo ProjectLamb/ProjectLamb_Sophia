@@ -6,7 +6,7 @@ using Sophia_Carriers;
 
 public class StageGenerator : MonoBehaviour
 {
-    int initWidth = 10;
+    int initWidth = 15;
     int initIncrease = 5;
     int width;
     int increase;
@@ -14,6 +14,7 @@ public class StageGenerator : MonoBehaviour
     int wallHeight = 5;
     int size;
     int maxSize;
+    [SerializeField]
     int stageSizeRandom;
     int obstacleAmount;
     [SerializeField]
@@ -77,7 +78,7 @@ public class StageGenerator : MonoBehaviour
     public GameObject shop;
     int[,] tileArray;    //0: empty, 1: tile, 2: wall
     public GameObject[,] tileGameObjectArray;
-    public GameObject mob;
+    public GameObject[] Mobs;
     public GameObject ElderOne;
     public List<GameObject> mobArray;
     public GameObject[] portalArray;
@@ -600,10 +601,21 @@ public class StageGenerator : MonoBehaviour
                 continue;
             if (tileGameObjectArray[i, j].tag == "Portal")
                 continue;
+            int randomValue = Random.Range(0, Mobs.Length);
             GameObject instance;
-            instance = Instantiate(mob, tileGameObjectArray[i, j].transform.position, Quaternion.identity);
+            instance = Instantiate(Mobs[randomValue], new Vector3(tileGameObjectArray[i, j].transform.position.x, Mobs[randomValue].transform.localScale.y, tileGameObjectArray[i, j].transform.position.z), Quaternion.identity);
             mobArray.Add(instance);
             instance.transform.parent = transform.GetChild(4);
+
+            switch (randomValue)
+            {
+                case (int)Enemy_TYPE.Enemy_Template:
+                    instance.GetComponent<Enemy>().stageGenerator = this;
+                    break;
+                case (int)Enemy_TYPE.Raptor:
+                    instance.GetComponent<RaptorFlocks>().stageGenerator = this;
+                    break;
+            }
             amount--;
         }
     }
@@ -618,7 +630,12 @@ public class StageGenerator : MonoBehaviour
         {
             if (m != null)
             {
-                m.GetComponent<Enemy>().chase = true;
+                if (m.tag != "Enemy")
+                {
+                    m.GetComponent<RaptorFlocks>().Chase(true);
+                }
+                else
+                    m.GetComponent<Enemy>().chase = true;
             }
         }
         for (int i = 0; i < transform.childCount; i++)
@@ -633,7 +650,12 @@ public class StageGenerator : MonoBehaviour
         {
             if (m != null)
             {
-                m.GetComponent<Enemy>().chase = false;
+                if (m.tag != "Enemy")
+                {
+                    m.GetComponent<RaptorFlocks>().Chase(false);
+                }
+                else
+                    m.GetComponent<Enemy>().chase = false;
             }
         }
         for (int i = 0; i < transform.childCount; i++)
