@@ -8,11 +8,11 @@ public class PlayerDataManager : MonoBehaviour
 {
     [SerializeField] private Player player; 
     [SerializeField] private WeaponManager weaponManager;
-    public static PlayerData BasePlayerData;
-    public static WeaponData BaseWeaponData;
-    private static MasterData EquipmentAddingData;
-    private static MasterData BaseData;
-    private static MasterData FinalData;
+    public  static  PlayerData BasePlayerData;
+    public  static  WeaponData BaseWeaponData;
+    private static  MasterData EquipmentAddingData;
+    private static  MasterData BaseData;
+    private static  MasterData FinalData;
 
     private TextMeshProUGUI debugText;
 
@@ -45,6 +45,18 @@ public class PlayerDataManager : MonoBehaviour
         BaseData += BaseWeaponData;
     }
     public void CalculateEquipmentAddingData(){
+        /*
+            BaseData
+                EntityData (버프로 영향이 가지는 수치들) 즉, 이놈들은 초기화를 해도 되긴한데.
+                PlayerData (아직까지는 없지만 현재 기획상에서 PlayerData가 일시적으로 변하는것은 없는듯 하다);
+            
+            그말은 즉슨, 돈이 초기화 되는 오류는
+            EntityData만 초기화 해야하는데 PlayerData 부분도 같이 초기화 되서 생기는 문제였다.
+            그렇다면 EntityData만 중점적으로 초기화 하도록하고 PlayerData 는 가져와도 될것 같다.
+            사실 FinalData에 초기화를 가하는것은 버프, 디버프 같은 일시적인 변화되는 데이터가 
+
+            
+        */
         FinalData = BaseData;
         EquipmentAddingData = new MasterData();
         //Adding계산하기

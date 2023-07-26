@@ -8,19 +8,22 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Sophia_Carriers;
 
-namespace Sophia_Carriers {
-    public class ItemSkill : Carrier {
-//      public      VFXObject       DestroyEffect       = null;
-//      public      CARRIER_TYPE    CarrierType;
-//      public      BUCKET_POSITION BucketPosition;
-//      public      bool            IsInitialized       = false;
-//      public      bool            IsActivated         = false;
-//      public      bool            IsCloned         = false;
-//      protected   Collider        carrierCollider     = null;
-//      protected   Rigidbody       carrierRigidBody    = null;
+namespace Sophia_Carriers
+{
+    public class ItemSkill : Purchase
+    {
+        //      public      VFXObject       DestroyEffect       = null;
+        //      public      CARRIER_TYPE    CarrierType;
+        //      public      BUCKET_POSITION BucketPosition;
+        //      public      bool            IsInitialized       = false;
+        //      public      bool            IsActivated         = false;
+        //      public      bool            IsCloned         = false;
+        //      protected   Collider        carrierCollider     = null;
+        //      protected   Rigidbody       carrierRigidBody    = null;
         public AbstractSkill skill;
-        public override Carrier Clone(){
-            if(this.IsCloned == true) throw new SystemException("복제본이 복제본을 만들 수 는 없다.");
+        public override Carrier Clone()
+        {
+            if (this.IsCloned == true) throw new SystemException("복제본이 복제본을 만들 수 는 없다.");
             Carrier res = Instantiate(this);
             res.DisableSelf();
             res.IsCloned = true;
@@ -28,15 +31,17 @@ namespace Sophia_Carriers {
         }
 
 
-        protected override void Awake() {
+        protected override void Awake()
+        {
             base.Awake();
             this.CarrierType = CARRIER_TYPE.ITEM;
+            IsShopItem = false;
         }
 
         public override void Init(Entity _ownerEntity)
         {
-            if(IsCloned == false) throw new System.Exception("원본데이터를 조작하고 있음");
-            if(_ownerEntity == null) throw new System.Exception("투사체 생성 엔티티가 NULL임");
+            if (IsCloned == false) throw new System.Exception("원본데이터를 조작하고 있음");
+            if (_ownerEntity == null) throw new System.Exception("투사체 생성 엔티티가 NULL임");
             IsInitialized = true;
         }
         public override void InitByObject(Entity _ownerEntity, object[] _objects)
@@ -52,8 +57,15 @@ namespace Sophia_Carriers {
         //     Destroy(gameObject);
         // }
 
-        private void OnTriggerEnter(Collider other) {
-            if(!other.TryGetComponent<Player>(out Player player)){return;}
+        private void OnTriggerEnter(Collider other)
+        {
+            if (!other.TryGetComponent<Player>(out Player player)) { return; }
+            if (IsShopItem)
+            {
+                if (!purchase(price))
+                    return;
+                GameManager.Instance.Shop.GetComponent<Shop>().SkillCount++;
+            }
 
             player.skillManager.AssignSkill(skill, SKILL_KEY.Q);
             player.skillManager.AssignSkill(skill, SKILL_KEY.E);
