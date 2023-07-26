@@ -11,14 +11,25 @@ using UnityEngine.Events;
 public class PlayerController : MonoBehaviour
 {
     Player player;
+
     static public bool IsMoveAllow = true; //인풋을 받을수 있는지 없는지
     static public bool IsAttackAllow = true; //인풋을 받을수 있는지 없는지
     static public bool IsReversedInput = false; //인풋을 받을수 있는지 없는지
+
     private void Awake() {
         if (!TryGetComponent<Player>(out player)) { Debug.Log("컴포넌트 로드 실패 : Player"); }
+        IsMoveAllow = true;
     }
 
     private void Update() {
+        player.AimAssist();
+        player.checkAttack();
+        if(player.isAttack){
+            IsMoveAllow = false;
+        }
+        else{
+            IsMoveAllow = true;
+        }
         if(IsMoveAllow){ 
             player.Move(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
             if(Input.GetKeyDown(KeyCode.Space)){player.Dash();}
