@@ -74,6 +74,7 @@ public class Player : Entity {
     private bool                    mIsDie;
     
     public  bool                    isAttack;
+    public  bool                    isThrAttack;
     [HideInInspector] Animator anim;
 
     IEnumerator mCoWaitDash;        // StopCorutine을 사용하기 위해서는 코루틴 변수가 필요하다. 
@@ -94,6 +95,7 @@ public class Player : Entity {
         CurrentHealth = PlayerDataManager.GetEntityData().MaxHP;//FinalPlayerData.PlayerEntityData.MaxHP;
         CurrentStamina = PlayerDataManager.GetPlayerData().MaxStamina;//FinalPlayerData.PlayerEntityData.MaxHP;
         isAttack = false;
+        isThrAttack = false;
     }
     
     public override void GetDamaged(int _amount){
@@ -262,11 +264,18 @@ public class Player : Entity {
     public void checkAttack()
     {
         isAttack = attackAnim.nowAttack();
+        isThrAttack = attackAnim.nowAttack();
+
         if(isAttack){
             anim.SetBool("isAttack",true);
         }
         else{
             anim.SetBool("isAttack",false);
+        }
+
+        if(isThrAttack)
+        {
+            anim.ResetTrigger("DoAttack");
         }
     }
 
