@@ -9,19 +9,17 @@ public class AttackAnim : MonoBehaviour
     // Start is called before the first frame update
     void attackStart(){
         isAttack = true;
-        Debug.Log("now attack");
     }
 
     void attackEnd(){
         isAttack = false;
-        Debug.Log("attack end");
     }
 
-    void thrAttackTrue(){
+    void thrAttackOn(){ // 세번째 공격이 실행됨
         isThrAttack = true;
     }
 
-    void thrAttackFalse(){
+    void thrAttackOff(){ // 세번째 공격이 종료되고 idle 상태로 전환
         isThrAttack = false;
     }
 
