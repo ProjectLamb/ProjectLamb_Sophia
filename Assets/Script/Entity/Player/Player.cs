@@ -73,9 +73,8 @@ public class Player : Entity {
     private bool                    mIsBorder;
     private bool                    mIsDashed;
     private bool                    mIsDie;
-    
-    public  bool                    isAttack;
-    public  bool                    isThrAttack;
+    public  bool                    isAttack; // 일반 공격(1,2,3타) 여부
+    public  bool                    isThrAttack; // 세번째 공격 여부
     [HideInInspector] Animator anim;
 
     IEnumerator mCoWaitDash;        // StopCorutine을 사용하기 위해서는 코루틴 변수가 필요하다. 
@@ -275,8 +274,8 @@ public class Player : Entity {
             anim.SetBool("isAttack",false);
         }
 
-        if(isThrAttack)
-        {
+        if(isThrAttack) // 세번째 공격이 이루어졌다면
+        { // DoAttack 트리거 무시
             anim.ResetTrigger("DoAttack");
         }
     }
