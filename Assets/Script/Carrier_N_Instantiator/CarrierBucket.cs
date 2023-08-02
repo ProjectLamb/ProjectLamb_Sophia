@@ -3,7 +3,30 @@ using System.Collections.Generic;
 using UnityEngine;
 using Sophia_Carriers;
 
-public class CarrierBucket : MonoBehaviour {
+public class CarrierBucket : MonoBehaviour {    
+    public void CarrierTransformPositionning(GameObject _owner, Carrier _carrier){
+        Vector3     position     = transform.position;
+        Quaternion  forwardAngle = GetForwardingAngle(_carrier.transform);
+        _carrier.transform.position = position;
+        _carrier.transform.rotation = forwardAngle;
+        switch (_carrier.BucketPosition)
+        {
+            case BUCKET_POSITION.INNER   :
+            {
+                _carrier.transform.SetParent(transform);
+                _carrier.SetScale(_owner.transform.localScale.z);
+                _carrier.EnableSelf();
+                break;
+            }
+            case BUCKET_POSITION.OUTER  :
+            {
+                _carrier.SetScale(_owner.transform.localScale.z);
+                _carrier.EnableSelf();
+                break;
+            }
+        }
+    }
+
     public void CarrierTransformPositionning(Entity _owner, Carrier _carrier){
         Vector3     position     = transform.position;
         Quaternion  forwardAngle = GetForwardingAngle(_carrier.transform);
@@ -27,28 +50,6 @@ public class CarrierBucket : MonoBehaviour {
         }
     }
 
-    public void CarrierTransformPositionning(GameObject _owner, Carrier _carrier){
-        Vector3     position     = transform.position;
-        Quaternion  forwardAngle = GetForwardingAngle(_carrier.transform);
-        _carrier.transform.position = position;
-        _carrier.transform.rotation = forwardAngle;
-        switch (_carrier.BucketPosition)
-        {
-            case BUCKET_POSITION.INNER   :
-            {
-                _carrier.transform.SetParent(transform);
-                //_carrier.SetScale(_owner.transform.localScale.z);
-                _carrier.EnableSelf();
-                break;
-            }
-            case BUCKET_POSITION.OUTER  :
-            {
-                //_carrier.SetScale(_owner.transform.localScale.z);
-                _carrier.EnableSelf();
-                break;
-            }
-        }
-    }
     public GameObject GameObjectInstantiator(Entity _owner, GameObject _go){
         //재작성하기
         return null;
