@@ -13,7 +13,7 @@ public class HandleButtons : MonoBehaviour
         pauseMenu.CloseMenu();
         GameManager.Instance.GlobalEvent.IsGamePaused = false;
     }
-    public void HanldeRestart(){
+    public void HandleRestart(){
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
     public void HandleQuit(){
