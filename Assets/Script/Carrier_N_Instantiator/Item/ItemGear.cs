@@ -54,8 +54,8 @@ namespace Sophia_Carriers {
         //     Destroy(gameObject);
         // }
     
-        private void OnTriggerEnter(Collider other) {
-            if(!other.TryGetComponent<Player>(out Player player)){return;}
+        private void OnCollisionEnter(Collision other) {
+            if(other.gameObject != GameManager.Instance.PlayerGameObject){return;}
             PlayerDataManager.GetPlayerData().Gear += value;
             DestroySelf();
         }

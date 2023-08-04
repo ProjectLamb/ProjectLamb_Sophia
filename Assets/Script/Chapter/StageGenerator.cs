@@ -635,7 +635,7 @@ public class StageGenerator : MonoBehaviour
                     m.GetComponent<RaptorFlocks>().Chase(true);
                 }
                 else
-                    m.GetComponent<Enemy>().chase = true;
+                    m.GetComponent<Enemy>().isRecog = true;
             }
         }
         for (int i = 0; i < transform.childCount; i++)
@@ -655,7 +655,7 @@ public class StageGenerator : MonoBehaviour
                     m.GetComponent<RaptorFlocks>().Chase(false);
                 }
                 else
-                    m.GetComponent<Enemy>().chase = false;
+                    m.GetComponent<Enemy>().isRecog = false;
             }
         }
         for (int i = 0; i < transform.childCount; i++)

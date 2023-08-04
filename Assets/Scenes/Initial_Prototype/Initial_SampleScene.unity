@@ -1288,6 +1288,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f7dda9ef524ccf45838c9a496708873, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moneyHack: 0
 --- !u!4 &627609097
 Transform:
   m_ObjectHideFlags: 0
@@ -1301,7 +1302,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &678806401
 GameObject:
@@ -2081,7 +2082,9 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 6857
+  attackAnim: {fileID: 0}
   IsPortal: 0
+  isAttack: 0
   DieParticle: {fileID: 0}
 --- !u!136 &969919186
 CapsuleCollider:
@@ -2128,7 +2131,7 @@ Transform:
   - {fileID: 439069650}
   - {fileID: 1659995315}
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &977054145
 GameObject:
