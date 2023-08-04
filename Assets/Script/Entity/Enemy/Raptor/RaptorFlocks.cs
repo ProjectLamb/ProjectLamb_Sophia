@@ -6,7 +6,7 @@ public class RaptorFlocks : MonoBehaviour
 {
     public StageGenerator stageGenerator;
     public GameObject smallRaptor;
-    int smallAmount;
+    public int smallAmount;
     private int index = 1;
     private int mCurrentAmount;
     public int CurrentAmount
@@ -61,7 +61,7 @@ public class RaptorFlocks : MonoBehaviour
     {
         RaptorArray[0] = transform.GetChild(0).gameObject;
         RaptorArray[0].GetComponent<Enemy>().stageGenerator = this.stageGenerator;
-        InstantiateSmallRaptor(smallAmount);
+        //InstantiateSmallRaptor(smallAmount);
     }
 
     // Update is called once per frame
@@ -75,9 +75,9 @@ public class RaptorFlocks : MonoBehaviour
         Destroy(gameObject);
     }
 
-    void InstantiateSmallRaptor(int count)
+    public void InstantiateSmallRaptor()
     {
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < smallAmount; i++)
         {
             GameObject temp;
             temp = Instantiate(smallRaptor, new Vector3(RaptorArray[0].transform.position.x + Random.Range(-5, 6), RaptorArray[0].transform.position.y, RaptorArray[0].transform.position.z + Random.Range(-5, 6)), Quaternion.identity);
@@ -91,7 +91,7 @@ public class RaptorFlocks : MonoBehaviour
     {
         for (int i = 0; i < index - 1; i++)
         {
-            RaptorArray[i].GetComponent<Enemy>().chase = flag;
+            RaptorArray[i].GetComponent<Enemy>().isRecog = flag;
         }
     }
 }

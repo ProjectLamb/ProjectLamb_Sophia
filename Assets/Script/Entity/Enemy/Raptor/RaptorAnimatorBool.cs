@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RaptorAnimatorBoolEnd : StateMachineBehaviour
+public class RaptorAnimatorBool : StateMachineBehaviour
 {
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     //override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -13,29 +13,21 @@ public class RaptorAnimatorBoolEnd : StateMachineBehaviour
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
+        if(animator.GetBool("IsRush"))
         {
-            if (animator.GetBool("IsHowl"))
-            {
-                animator.SetBool("IsHowl", false);
-            }
-            else if (animator.GetBool("IsMelee"))
-            {
-                animator.SetBool("IsMelee", false);
-                //animator.gameObject.transform.parent.parent.parent.GetComponent<RaptorFlocks>().AttackCount++;
-            }
-            else if (animator.GetBool("IsRush"))
-            {
-                animator.SetBool("IsRush", false);
-            }
+            animator.SetBool("IsTap", true);
         }
     }
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
-    // override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    // {
+    override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        if (animator.GetBool("IsRush"))
+        {
+            animator.SetBool("IsTap", false);
+        }
 
-    // }
+    }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()
     //override public void OnStateMove(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
