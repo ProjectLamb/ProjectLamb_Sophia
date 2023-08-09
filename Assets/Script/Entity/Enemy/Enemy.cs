@@ -36,6 +36,8 @@ public class Enemy : Entity
     public Transform objectiveTarget;
     public bool isRecog;
     public bool isDie;
+    public bool isOffensive;    //!isOffensive = Defensive
+    int offensiveRate;
 
     public Projectile[] projectiles;
 
@@ -89,15 +91,13 @@ public class Enemy : Entity
 
     public void Freeze()
     {
-        isRecog = false;
         entityRigidbody.velocity = Vector3.zero;
         entityRigidbody.constraints = RigidbodyConstraints.FreezeAll;
     }
 
     public void UnFreeze()
     {
-        isRecog = true;
-        entityRigidbody.constraints = RigidbodyConstraints.None;
+        entityRigidbody.constraints = RigidbodyConstraints.FreezeRotation;
     }
 
     protected override void Awake()
@@ -122,6 +122,11 @@ public class Enemy : Entity
         isRecog = false;
         objectiveTarget = GameManager.Instance?.PlayerGameObject?.transform;
         isDie = false;
+
+        isOffensive = false;
+        if (Random.Range(0, 10) < offensiveRate)
+            isOffensive = true;
+
         NavMeshSet();
     }
 
@@ -135,11 +140,6 @@ public class Enemy : Entity
         /***************************/
         if (GameManager.Instance?.GlobalEvent.IsGamePaused == true) { return; }
         /***************************/
-        if (isRecog)
-        {
-            //nav.SetDestination(objectiveTarget.position);
-            transform.LookAt(objectiveTarget.position);
-        }
     }
 
     protected virtual void Update()

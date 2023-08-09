@@ -16,19 +16,36 @@ public class Raptor : Enemy
     int wanderingTime = 5;
     int howlTime = 10;
 
-    int rushRange = 45;
+    int rushRange = 50;
+    float rushForce = 100f;
+    float rushTime = 1.5f;
 
     bool IsFirstRecog;
     bool IsWandering;
     bool IsChase;
     bool IsWalk;
     bool IsLook;
+    bool IsTapEnd;
+    bool IsRushEnd;
+    public bool IsRush;
     // Start is called before the first frame update
+    protected override void NavMeshSet()
+    {
+        base.NavMeshSet();
+
+        if (IsSmallRaptor)
+        {
+            nav.stoppingDistance = rushRange;
+            nav.autoBraking = false;
+        }
+
+    }
     public override void Die()
     {
         animator.SetTrigger("DoDie");
         transform.parent.GetComponent<RaptorFlocks>().CurrentAmount--;
         base.Die();
+        IsLook = false;
         nav.enabled = false;
     }
 
@@ -47,10 +64,11 @@ public class Raptor : Enemy
     public void DoHowl()
     {
         animator.SetBool("IsHowl", true);
-        if (!IsFirstRecog)
+        if (!IsFirstRecog || transform.parent.GetComponent<RaptorFlocks>().CurrentAmount == 1)
             transform.parent.GetComponent<RaptorFlocks>().InstantiateSmallRaptor();
         else
             DoBuff();
+
         Invoke("DoHowl", Random.Range(howlTime - 1, howlTime + 3));
     }
 
@@ -66,7 +84,7 @@ public class Raptor : Enemy
         int range = Random.Range(25, 30);
         Vector3 destination = gameObject.transform.position;
 
-        switch(direction)
+        switch (direction)
         {
             case 0: //동
                 destination = new Vector3(destination.x + range, destination.y, destination.z);
@@ -102,9 +120,9 @@ public class Raptor : Enemy
     {
         //버프 주는 이펙트
         RaptorFlocks rf = transform.parent.GetComponent<RaptorFlocks>();
-        for(int i = 0; i < rf.smallAmount; i++)
+        for (int i = 0; i < rf.smallAmount; i++)
         {
-            if(rf.RaptorArray[i] != null)
+            if (rf.RaptorArray[i] != null)
                 rf.RaptorArray[i].GetComponent<Raptor>().GetBuff();
         }
     }
@@ -120,12 +138,15 @@ public class Raptor : Enemy
     void DoRush()
     {
         float distance = Vector3.Distance(transform.position, objectiveTarget.position);
-        //Debug.Log(distance);
-        if (distance <= rushRange)
+        if (distance > rushRange)
         {
             IsChase = true;
             return;
         }
+        nav.enabled = false;
+        IsChase = false;
+        IsWalk = false;
+        currentTimer = 0;
         animator.SetBool("IsRush", true);
     }
     protected override void Awake()
@@ -134,6 +155,7 @@ public class Raptor : Enemy
         if (IsSmallRaptor)
         {
             isRecog = true;
+            IsLook = true;
             animationWalkSpeed = 2.0f + FinalData.MoveSpeed * 0.01f;
         }
         else
@@ -144,13 +166,13 @@ public class Raptor : Enemy
     void Start()
     {
         animator.SetFloat("MoveSpeed", animationWalkSpeed);
-        if(!IsSmallRaptor)
+        if (!IsSmallRaptor)
         {
             DoWandering();
         }
         else
         {
-            Invoke("DoRush", Random.Range(0, 2));
+            Invoke("DoRush", Random.Range(0f, 1f));
         }
     }
 
@@ -158,34 +180,34 @@ public class Raptor : Enemy
     protected override void Update()
     {
         base.Update();
-        if (!IsSmallRaptor && GetComponent<FieldOfView>().IsRecog)
-        {
-            isRecog = true;
-            if(!IsFirstRecog)
-            {
-                CancelInvoke();
-                DoHowl();
-                IsWandering = false;
-                IsFirstRecog = true;
-            }
-        }
-        else
-        {
-            isRecog = false;
-        }
-
         if (!IsSmallRaptor)  //큰 개체
         {
+            if(GetComponent<FieldOfView>().IsRecog) //첫 발견
+            {
+                isRecog = true;
+                IsWandering = false;
+                IsWalk = false;
+                IsLook = true;
+                if (!IsFirstRecog)
+                {
+                    CancelInvoke();
+                    DoHowl();
+                    IsFirstRecog = true;
+                }
+            }
+
             if (IsWandering)
             {
                 currentTimer += Time.deltaTime;
-                IsWalk = true;
+                animator.SetBool("IsWalk", true);
+                IsLook = true;
 
                 if (nav.remainingDistance <= nav.stoppingDistance)
                 {
                     if (!nav.hasPath || nav.velocity.sqrMagnitude == 0f)
                     {
                         Invoke("DoWandering", Random.Range(3, 6));
+                        animator.SetBool("IsWalk", false);
                         IsWandering = false;
                     }
                 }
@@ -195,34 +217,41 @@ public class Raptor : Enemy
                     IsWandering = false;
                 }
             }
-            else
-            {
-                IsWalk = false;
-            }
         }
         else  //작은 개체
         {
             if (IsChase)
             {
-                float distance = Vector3.Distance(transform.position, objectiveTarget.position);
                 IsWalk = true;
-
-                if (distance <= rushRange + 5)
+                if (nav.remainingDistance <= nav.stoppingDistance)
                 {
-                    IsChase = false;
-                    DoRush();
+                    if (!nav.hasPath || nav.velocity.sqrMagnitude == 0f)
+                    {
+                        IsChase = false;
+                        DoRush();
+                    }
                 }
             }
-            else
-            {
-                IsWalk = false;
-            }
 
-            if(animator.GetBool("IsTap"))
+            if (animator.GetBool("IsTap"))   //발 구를 때
             {
                 IsLook = true;
-                nav.destination = objectiveTarget.position;
-                //돌진 이펙트
+                IsTapEnd = true;
+            }
+            if (!animator.GetBool("IsTap") && IsTapEnd)
+            {
+                IsLook = false;
+                IsTapEnd = false;
+            }
+
+            if (!animator.GetBool("IsRush"))
+            {
+                if(IsRushEnd)
+                {
+                    Freeze();
+                    nav.enabled = true;
+                    IsChase = true;
+                }
             }
         }
     }
@@ -231,33 +260,45 @@ public class Raptor : Enemy
     {
         base.FixedUpdate();
 
-        if(IsWalk)
+        if (IsWalk)
         {
-            if (IsSmallRaptor)
-                nav.destination = objectiveTarget.position;
-            nav.SetDestination(nav.destination);
+            nav.SetDestination(objectiveTarget.position);
             IsLook = true;
             animator.SetBool("IsWalk", true);
         }
         else
         {
             animator.SetBool("IsWalk", false);
-            IsLook = false;
         }
 
-        if(IsLook)
+        if (IsLook)
         {
-            transform.LookAt(nav.destination);
+            if (!IsSmallRaptor && !IsFirstRecog)
+                transform.LookAt(nav.destination);
+            else
+                transform.LookAt(objectiveTarget);
+        }
+
+        if(IsRush)
+        {
+            currentTimer += Time.deltaTime;
+            UnFreeze();
+            entityRigidbody.AddForce(transform.forward * rushForce, ForceMode.Acceleration);
+
+            if(currentTimer >= rushTime)
+            {
+                IsRushEnd = true;
+                animator.SetTrigger("DoRushQuit");
+                IsRush = false;
+            }
         }
     }
 
-    /*void OnCollisionEnter(Collision other)
+    void OnCollisionEnter(Collision other)
     {
         if (other.gameObject == GameManager.Instance.PlayerGameObject)
         {
-            DoMelee();
             GameManager.Instance.PlayerGameObject.GetComponent<Player>().GetDamaged(FinalData.Power);
         }
-
-    }*/
+    }
 }
