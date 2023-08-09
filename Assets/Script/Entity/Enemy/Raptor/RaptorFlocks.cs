@@ -7,7 +7,7 @@ public class RaptorFlocks : MonoBehaviour
     public StageGenerator stageGenerator;
     public GameObject smallRaptor;
     public int smallAmount;
-    private int index = 1;
+    private int index;
     private int mCurrentAmount;
     public int CurrentAmount
     {
@@ -52,10 +52,10 @@ public class RaptorFlocks : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        smallAmount = Random.Range(3, 6);
-        mCurrentAmount = smallAmount + 1;
+        smallAmount = Random.Range(1, 6);
+        mCurrentAmount = 1;
         HowlCount = mCurrentAmount;
-        RaptorArray = new GameObject[mCurrentAmount];
+        RaptorArray = new GameObject[mCurrentAmount + smallAmount];
     }
     void Start()
     {
@@ -77,6 +77,7 @@ public class RaptorFlocks : MonoBehaviour
 
     public void InstantiateSmallRaptor()
     {
+        index = 1;
         for (int i = 0; i < smallAmount; i++)
         {
             GameObject temp;
@@ -84,6 +85,7 @@ public class RaptorFlocks : MonoBehaviour
             temp.GetComponent<Enemy>().stageGenerator = this.stageGenerator;
             RaptorArray[index++] = temp;
             temp.transform.parent = transform;
+            mCurrentAmount++;
         }
     }
 
