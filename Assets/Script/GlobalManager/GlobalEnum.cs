@@ -55,7 +55,7 @@ using UnityEngine;
 
     public enum GEAR_TYPE
     {
-        BRONZE, SILVER, GOLD, PLATINUM, DIAMOND
+        SILVER, GOLD
     }
     
 #endregion
