@@ -5572,6 +5572,7 @@ GameObject:
   - component: {fileID: 2906788766718216230}
   - component: {fileID: 2906788766718216229}
   - component: {fileID: 2906788766718216228}
+  - component: {fileID: 2906788766718216233}
   m_Layer: 12
   m_Name: Player
   m_TagString: Player
@@ -6434,6 +6435,7 @@ MonoBehaviour:
   attackAnim: {fileID: 0}
   IsPortal: 0
   isAttack: 0
+  isThrAttack: 0
   DieParticle: {fileID: 5724422084065114389, guid: af98d17f147974a44b1a9677683b6d00,
     type: 3}
 --- !u!114 &2906788766718216228
@@ -6507,6 +6509,53 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &2906788766718216233
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 243639901359974393}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: 707b9163d7e32254fb56d189c3839408,
+    type: 3}
+  m_NotificationBehavior: 2
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents:
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2906788766718216227}
+        m_TargetAssemblyTypeName: Player, Assembly-CSharp
+        m_MethodName: OnMove
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Player.OnMove
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 78fe6b25-b46b-45ae-a48d-82e8d0c038b0
+    m_ActionName: PlayerActions/Move[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d]
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: PC
+  m_DefaultActionMap: PlayerActions
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
 --- !u!1001 &3392030406074694765
 PrefabInstance:
   m_ObjectHideFlags: 0
