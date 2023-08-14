@@ -635,7 +635,7 @@ public class StageGenerator : MonoBehaviour
                     m.GetComponent<RaptorFlocks>().Chase(true);
                 }
                 else
-                    m.GetComponent<Enemy>().chase = true;
+                    m.GetComponent<Enemy>().isRecog = true;
             }
         }
         for (int i = 0; i < transform.childCount; i++)
@@ -655,7 +655,7 @@ public class StageGenerator : MonoBehaviour
                     m.GetComponent<RaptorFlocks>().Chase(false);
                 }
                 else
-                    m.GetComponent<Enemy>().chase = false;
+                    m.GetComponent<Enemy>().isRecog = false;
             }
         }
         for (int i = 0; i < transform.childCount; i++)
@@ -706,6 +706,7 @@ public class StageGenerator : MonoBehaviour
         }
         else
         {
+            int count = 1;
             switch (Gacha())
             {
                 case 0:
@@ -720,33 +721,39 @@ public class StageGenerator : MonoBehaviour
                     break;
                 case 2:
                     Debug.Log("30원");
-                    tmp = GameManager.Instance.GlobalCarrierManager.GearList[(int)GEAR_TYPE.DIAMOND].Clone();
+                    count = 6;
+                    tmp = GameManager.Instance.GlobalCarrierManager.GearList[(int)GEAR_TYPE.GOLD].Clone();
                     tmp.Init(null);
                     break;
                 case 3:
                     Debug.Log("20원");
-                    tmp = GameManager.Instance.GlobalCarrierManager.GearList[(int)GEAR_TYPE.PLATINUM].Clone();
+                    count = 4;
+                    tmp = GameManager.Instance.GlobalCarrierManager.GearList[(int)GEAR_TYPE.GOLD].Clone();
                     tmp.Init(null);
                     break;
                 case 4:
                     Debug.Log("10원");
+                    count = 2;
                     tmp = GameManager.Instance.GlobalCarrierManager.GearList[(int)GEAR_TYPE.GOLD].Clone();
                     tmp.Init(null);
                     break;
                 case 5:
                     Debug.Log("5원");
-                    tmp = GameManager.Instance.GlobalCarrierManager.GearList[(int)GEAR_TYPE.SILVER].Clone();
+                    tmp = GameManager.Instance.GlobalCarrierManager.GearList[(int)GEAR_TYPE.GOLD].Clone();
                     tmp.Init(null);
                     break;
                 case 6:
                     Debug.Log("1원");
-                    tmp = GameManager.Instance.GlobalCarrierManager.GearList[(int)GEAR_TYPE.BRONZE].Clone();
+                    tmp = GameManager.Instance.GlobalCarrierManager.GearList[(int)GEAR_TYPE.SILVER].Clone();
                     tmp.Init(null);
                     break;
             }
+            for (int i = 0; i < count; i++)
+            {
+                if (tileArray[width / 2 + 1, height / 2 + 1] == 1)  //더 손보기
+                    carrierBucket.CarrierTransformPositionning(tileGameObjectArray[width / 2 + 1, height / 2 + 1].gameObject, tmp);
+            }
         }
-        if (tileArray[width / 2 + 1, height / 2 + 1] == 1)
-            carrierBucket.CarrierTransformPositionning(tileGameObjectArray[width / 2 + 1, height / 2 + 1].gameObject, tmp);
     }
 
     void Awake()
