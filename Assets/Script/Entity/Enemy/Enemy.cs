@@ -34,8 +34,10 @@ public class Enemy : Entity
 
     public UnityEngine.AI.NavMeshAgent nav;
     public Transform objectiveTarget;
-    public bool chase;
+    public bool isRecog;
     public bool isDie;
+    public bool isOffensive;    //!isOffensive = Defensive
+    int offensiveRate;
 
     public Projectile[] projectiles;
 
@@ -80,26 +82,22 @@ public class Enemy : Entity
         Destroy(gameObject);
     }
 
-    void NavMeshSet()
+    protected virtual void NavMeshSet()
     {
         nav.speed = FinalData.MoveSpeed;
-        nav.acceleration = nav.speed * 2;
+        nav.acceleration = nav.speed * 1.5f;
         nav.updateRotation = false;
-
-        nav.stoppingDistance = 2;
     }
 
     public void Freeze()
     {
-        chase = false;
         entityRigidbody.velocity = Vector3.zero;
         entityRigidbody.constraints = RigidbodyConstraints.FreezeAll;
     }
 
     public void UnFreeze()
     {
-        chase = true;
-        entityRigidbody.constraints = RigidbodyConstraints.None;
+        entityRigidbody.constraints = RigidbodyConstraints.FreezeRotation;
     }
 
     protected override void Awake()
@@ -121,9 +119,14 @@ public class Enemy : Entity
         FinalData = BaseEnemyData;
         CurrentHealth = FinalData.MaxHP;
 
-        chase = false;
+        isRecog = false;
         objectiveTarget = GameManager.Instance?.PlayerGameObject?.transform;
         isDie = false;
+
+        isOffensive = false;
+        if (Random.Range(0, 10) < offensiveRate)
+            isOffensive = true;
+
         NavMeshSet();
     }
 
@@ -137,11 +140,6 @@ public class Enemy : Entity
         /***************************/
         if (GameManager.Instance?.GlobalEvent.IsGamePaused == true) { return; }
         /***************************/
-        if (chase)
-        {
-            nav.SetDestination(objectiveTarget.position);
-            transform.LookAt(objectiveTarget.position);
-        }
     }
 
     protected virtual void Update()
@@ -149,7 +147,20 @@ public class Enemy : Entity
         /***************************/
         if (GameManager.Instance?.GlobalEvent.IsGamePaused == true) { return; }
         /***************************/
-        if (chase) { nav.enabled = true; }
-        else { nav.enabled = false; }
+
+        /*if (isRecog) { nav.enabled = true; }
+        else { nav.enabled = false; }*/
     }
+
+    /*private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject == GameManager.Instance.PlayerGameObject)
+            entityRigidbody.constraints = RigidbodyConstraints.FreezePosition;
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject == GameManager.Instance.PlayerGameObject)
+            entityRigidbody.constraints = RigidbodyConstraints.None;
+    }*/
 }
