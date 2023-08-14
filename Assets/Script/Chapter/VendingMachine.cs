@@ -9,6 +9,7 @@ namespace Sophia_Carriers
 {
     public class VendingMachine : Purchase
     {
+        Transform instantiatePivot;
         public CarrierBucket carrierBucket;
         float[] probs;
         float totalProbs = 100.0f;
@@ -17,6 +18,7 @@ namespace Sophia_Carriers
         void Start()
         {
             carrierBucket = GetComponentInChildren<CarrierBucket>();
+            instantiatePivot = transform.GetChild(0).transform;
             probs = new float[7] { 2.5f, 7f, 3.5f, 7f, 20.0f, 30f, 30f };
         }
 
@@ -47,6 +49,7 @@ namespace Sophia_Carriers
                 return;
             if (purchase(price))
             {
+                int count = 1;
                 Carrier tmp = null;
                 switch (Gacha())
                 {
@@ -62,31 +65,33 @@ namespace Sophia_Carriers
                         break;
                     case 2:
                         Debug.Log("50원");
-                        tmp = GameManager.Instance.GlobalCarrierManager.GearList[(int)GEAR_TYPE.DIAMOND].Clone();
+                        count = 10;
+                        tmp = GameManager.Instance.GlobalCarrierManager.GearList[(int)GEAR_TYPE.GOLD].Clone();
                         tmp.Init(null);
                         break;
                     case 3:
                         Debug.Log("25원");
-                        tmp = GameManager.Instance.GlobalCarrierManager.GearList[(int)GEAR_TYPE.PLATINUM].Clone();
+                        count = 5;
+                        tmp = GameManager.Instance.GlobalCarrierManager.GearList[(int)GEAR_TYPE.GOLD].Clone();
                         tmp.Init(null);
                         break;
                     case 4:
                         Debug.Log("10원");
+                        count = 2;
                         tmp = GameManager.Instance.GlobalCarrierManager.GearList[(int)GEAR_TYPE.GOLD].Clone();
                         tmp.Init(null);
                         break;
                     case 5:
                         Debug.Log("5원");
-                        tmp = GameManager.Instance.GlobalCarrierManager.GearList[(int)GEAR_TYPE.SILVER].Clone();
+                        tmp = GameManager.Instance.GlobalCarrierManager.GearList[(int)GEAR_TYPE.GOLD].Clone();
                         tmp.Init(null);
                         break;
                     case 6:
                         Debug.Log("꽝");
-                        // tmp = GameManager.Instance.GlobalCarrierManager.GearList[(int)GEAR_TYPE.BRONZE].Clone();
-                        // tmp.Init(null);
                         break;
                 }
-                carrierBucket.CarrierTransformPositionning(gameObject, tmp);
+                for(int i = 0; i < count; i++)
+                    carrierBucket.CarrierTransformPositionning(instantiatePivot.gameObject, tmp);
             }
             else
             {

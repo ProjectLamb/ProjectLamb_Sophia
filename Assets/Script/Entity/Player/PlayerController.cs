@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
 
 /// <summary>
 /// 키보드의 인풋에 따른 동작을 담당한다.
@@ -31,7 +32,7 @@ public class PlayerController : MonoBehaviour
             IsMoveAllow = true;
         }
         if(IsMoveAllow){ 
-            player.Move(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+            player.Move();
             if(Input.GetKeyDown(KeyCode.Space)){player.Dash();}
         }
         if(IsAttackAllow){

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
 
 using Component = UnityEngine.Component;
 using Random = UnityEngine.Random;
@@ -73,8 +74,13 @@ public class Player : Entity {
     private bool                    mIsBorder;
     private bool                    mIsDashed;
     private bool                    mIsDie;
-    public  bool                    isAttack;
+    public  bool                    isAttack; // 일반 공격(1,2,3타) 여부
+    public  bool                    isThrAttack; // 세번째 공격 여부
     [HideInInspector] Animator anim;
+
+    private Vector2 inputVec;
+    private Vector3 moveDirection;
+    private float moveSpeed = 4f;
 
     IEnumerator mCoWaitDash;        // StopCorutine을 사용하기 위해서는 코루틴 변수가 필요하다. 
     public ParticleSystem DieParticle;
@@ -95,6 +101,7 @@ public class Player : Entity {
         CurrentStamina = PlayerDataManager.GetPlayerData().MaxStamina;//FinalPlayerData.PlayerEntityData.MaxHP;
         IsPortal = true;
         isAttack = false;
+        isThrAttack = false;
     }
     
     public override void GetDamaged(int _amount){
@@ -128,7 +135,17 @@ public class Player : Entity {
 
     public override void Die(){Debug.Log("죽었다는 로직 작성하기");}
 
-    public void Move(float _hAxis, float _vAxis)
+    void OnMove(InputAction.CallbackContext context) // new input system 사용
+    {
+        inputVec = context.ReadValue<Vector2>();
+        if(inputVec!=null)
+        {
+            moveDirection = new Vector3(inputVec.x, 0f, inputVec.y);
+        }
+        
+    }
+
+    public void Move() // new input system을 사용한 방식
     {
         Vector3 AngleToVector(float _angle) {
             _angle *= Mathf.Deg2Rad;
@@ -138,7 +155,7 @@ public class Player : Entity {
         if (this.entityRigidbody.velocity.magnitude > PlayerDataManager.GetEntityData().MoveSpeed) return; 
         anim.SetFloat("Move", entityRigidbody.velocity.magnitude);
 
-        mMoveVec = AngleToVector(Camera.main.transform.eulerAngles.y + 90f) * _hAxis + AngleToVector(Camera.main.transform.eulerAngles.y) * _vAxis;
+        mMoveVec = AngleToVector(Camera.main.transform.eulerAngles.y + 90f) * inputVec.x + AngleToVector(Camera.main.transform.eulerAngles.y) * inputVec.y; // vaxis : inputvec.y , haxis : inputvec.x
         mMoveVec = mMoveVec.normalized;
 
         bool IsBorder(){return Physics.Raycast(transform.position, mMoveVec.normalized, 2, LayerMask.GetMask("Wall"));}
@@ -154,7 +171,8 @@ public class Player : Entity {
             }
             PlayerDataManager.GetEntityData().MoveState.Invoke();
         }
-    }
+        
+    } 
 
     public void Dash()
     {
@@ -249,27 +267,32 @@ public class Player : Entity {
         float camRayLength = 200f;
         Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);   
         if (Physics.Raycast(camRay, out RaycastHit hit, camRayLength)){
-            if(hit.collider.name == "SandBag"){
+            if(hit.collider.tag == "Enemy"){
                 // 공격중이라면
                 if(isAttack){
                     // RAYCASTHIT가 닿은 대상의 중심을 바라본다
                     transform.rotation = Quaternion.LookRotation(hit.collider.transform.position - this.transform.position);
+                    }
+                Debug.Log("enemy raycast hit!");
                 }
-                Debug.Log("sandbag hit!");
-            }
-
-            Debug.DrawRay(transform.position, (Input.mousePosition-transform.position)*200f,Color.blue,0.3f);
             }
     }
 
     public void checkAttack()
     {
         isAttack = attackAnim.nowAttack();
+        isThrAttack = attackAnim.nowAttack();
+
         if(isAttack){
             anim.SetBool("isAttack",true);
         }
         else{
             anim.SetBool("isAttack",false);
+        }
+
+        if(isThrAttack) // 세번째 공격이 이루어졌다면
+        { // DoAttack 트리거 무시
+            anim.ResetTrigger("DoAttack");
         }
     }
 
