@@ -17,13 +17,13 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - Map
+  - 
   - Water
   - UI
   - Wall
-  - Tile
+  - Map
   - Lighting
-  - Ground
+  - Dash
   - Postprocessing
   - Carrier
   - PlayerEntity

@@ -9,6 +9,7 @@ public class Raptor : Enemy
 {
     public Projectile[] AttackProjectiles;
     public bool IsSmallRaptor;
+    Collider collider;
 
     float animationWalkSpeed;
 
@@ -27,6 +28,7 @@ public class Raptor : Enemy
     bool IsLook;
     bool IsTapEnd;
     bool IsRushEnd;
+    bool IsCollider;
     public bool IsRush;
     // Start is called before the first frame update
     protected override void NavMeshSet()
@@ -39,6 +41,11 @@ public class Raptor : Enemy
             nav.autoBraking = false;
         }
 
+    }
+    protected override void UnFreeze()
+    {
+        base.UnFreeze();
+        entityRigidbody.constraints = RigidbodyConstraints.FreezePositionY;
     }
     public override void Die()
     {
@@ -72,18 +79,28 @@ public class Raptor : Enemy
         Invoke("DoHowl", Random.Range(howlTime - 1, howlTime + 3));
     }
 
-    public void DoMelee()
+    public void DoDamage()
     {
-        animator.SetBool("IsMelee", true);
-        transform.parent.GetComponent<RaptorFlocks>().AttackCount++;
+        //캐리어 소환하는 방식으로 딜하기
+        GameManager.Instance.PlayerGameObject.GetComponent<Player>().GetDamaged(FinalData.Power);
     }
 
     void DoWandering()
     {
-        int direction = Random.Range(0, 8);
-        int range = Random.Range(25, 30);
-        Vector3 destination = gameObject.transform.position;
+        float range = GetComponent<FieldOfView>().viewRadius;
+        Vector3 randomDirection = UnityEngine.Random.insideUnitSphere * range;
 
+        randomDirection += transform.position;
+
+        NavMeshHit navHit;
+
+        NavMesh.SamplePosition(randomDirection, out navHit, range, -1);
+
+        nav.destination = navHit.position;
+
+        /*
+         *        int direction = Random.Range(0, 8); 
+                Vector3 destination = gameObject.transform.position;
         switch (direction)
         {
             case 0: //동
@@ -111,7 +128,7 @@ public class Raptor : Enemy
                 destination = new Vector3(destination.x + range / 2, destination.y, destination.z + range / 2);
                 break;
         }
-        nav.destination = destination;
+        nav.destination = destination;*/
         currentTimer = 0;
         IsWandering = true;
     }
@@ -152,6 +169,8 @@ public class Raptor : Enemy
     protected override void Awake()
     {
         base.Awake();
+        collider = GetComponent<CapsuleCollider>();
+        IsCollider = false;
         if (IsSmallRaptor)
         {
             isRecog = true;
@@ -187,11 +206,15 @@ public class Raptor : Enemy
                 isRecog = true;
                 IsWandering = false;
                 IsWalk = false;
-                IsLook = true;
                 if (!IsFirstRecog)
                 {
                     CancelInvoke();
+                    Freeze();
+                    nav.enabled = false;
+                    IsCollider = true;
                     DoHowl();
+                    IsLook = true;
+                    GetComponent<FieldOfView>().enabled = false;
                     IsFirstRecog = true;
                 }
             }
@@ -283,10 +306,13 @@ public class Raptor : Enemy
         {
             currentTimer += Time.deltaTime;
             UnFreeze();
+            IsCollider = true;
             entityRigidbody.AddForce(transform.forward * rushForce, ForceMode.Acceleration);
 
             if(currentTimer >= rushTime)
             {
+                Invoke("Freeze", 0.5f);
+                IsCollider = false;
                 IsRushEnd = true;
                 animator.SetTrigger("DoRushQuit");
                 IsRush = false;
@@ -296,9 +322,42 @@ public class Raptor : Enemy
 
     void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject == GameManager.Instance.PlayerGameObject)
+        if(IsCollider)
         {
-            GameManager.Instance.PlayerGameObject.GetComponent<Player>().GetDamaged(FinalData.Power);
+            if (other.gameObject == GameManager.Instance.PlayerGameObject)
+            {
+                if (!IsSmallRaptor)
+                    animator.SetBool("IsMelee", true);
+                else
+                {
+                    DoDamage();
+                    /*if(IsRush)
+                    {
+                        collider.isTrigger = true;
+                    }*/
+                }
+            }
         }
     }
+
+    /*private void OnCollisionExit(Collision collision)
+    {
+        if(IsCollider)
+        {
+            if(collision.gameObject == GameManager.Instance.PlayerGameObject)
+            {
+                if(!IsSmallRaptor)
+                {
+
+                }
+                else
+                {
+                    if(IsRush)
+                    {
+                        collider.isTrigger = false;
+                    }
+                }
+            }
+        }
+    }*/
 }
