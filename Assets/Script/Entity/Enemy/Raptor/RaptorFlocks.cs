@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class RaptorFlocks : MonoBehaviour
 {
-    public StageGenerator stageGenerator;
+    public Stage stage;
     public GameObject smallRaptor;
     public int smallAmount;
     private int index;
@@ -20,7 +20,7 @@ public class RaptorFlocks : MonoBehaviour
             mCurrentAmount = value;
             if (mCurrentAmount == 0)
             {
-                stageGenerator.CurrentMobCount--;
+                stage.mobGenerator.CurrentMobCount--;
                 Invoke("DestroySelf", 3f);
             }
         }
@@ -60,7 +60,7 @@ public class RaptorFlocks : MonoBehaviour
     void Start()
     {
         RaptorArray[0] = transform.GetChild(0).gameObject;
-        RaptorArray[0].GetComponent<Enemy>().stageGenerator = this.stageGenerator;
+        RaptorArray[0].GetComponent<Enemy>().stage = this.stage;
         //InstantiateSmallRaptor(smallAmount);
     }
 
@@ -82,7 +82,7 @@ public class RaptorFlocks : MonoBehaviour
         {
             GameObject temp;
             temp = Instantiate(smallRaptor, new Vector3(RaptorArray[0].transform.position.x + Random.Range(-5, 6), RaptorArray[0].transform.position.y, RaptorArray[0].transform.position.z + Random.Range(-5, 6)), Quaternion.identity);
-            temp.GetComponent<Enemy>().stageGenerator = this.stageGenerator;
+            temp.GetComponent<Enemy>().stage = this.stage;
             RaptorArray[index++] = temp;
             temp.transform.parent = transform;
             mCurrentAmount++;

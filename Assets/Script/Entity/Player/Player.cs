@@ -67,7 +67,6 @@ public class Player : Entity {
 // 대쉬를 했는지 
 // 대쉬를 했는지 
 
-    public  bool                    IsPortal;
     private Vector3                 mMoveVec;
     private Quaternion              mRotate;
     private bool                    mIsBorder;
@@ -93,7 +92,6 @@ public class Player : Entity {
     private void Start() {
         CurrentHealth = PlayerDataManager.GetEntityData().MaxHP;//FinalPlayerData.PlayerEntityData.MaxHP;
         CurrentStamina = PlayerDataManager.GetPlayerData().MaxStamina;//FinalPlayerData.PlayerEntityData.MaxHP;
-        IsPortal = true;
         isAttack = false;
     }
     
