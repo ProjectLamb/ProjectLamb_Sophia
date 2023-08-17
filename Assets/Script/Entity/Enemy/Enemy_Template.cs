@@ -7,7 +7,7 @@ public class Enemy_Template : Enemy
     public override void Die()
     {
         base.Die();
-        stageGenerator.CurrentMobCount--;
+        stage.mobGenerator.CurrentMobCount--;
         Invoke("DestroySelf", 0.5f);
     }
     // Start is called before the first frame update
