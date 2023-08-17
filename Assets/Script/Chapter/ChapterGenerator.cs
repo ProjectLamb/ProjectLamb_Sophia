@@ -31,7 +31,7 @@ public class ChapterGenerator : MonoBehaviour
     float hiddenStageSpawnRate;
     public GameObject obj;
 
-    public class Stage
+    public class StageClass 
     {
         //type
         private int mStageNumber;
@@ -98,21 +98,21 @@ public class ChapterGenerator : MonoBehaviour
             }
         }
         public string directionFromStart = null;
-        public Stage East = null;
-        public Stage West = null;
-        public Stage South = null;
-        public Stage North = null;
+        public StageClass East = null;
+        public StageClass West = null;
+        public StageClass South = null;
+        public StageClass North = null;
         public GameObject stageObject = null;
 
         //methods
-        public Stage()
+        public StageClass()
         {
             mStageNumber = 0;
             mType = "normal";
             mVacancy = true;
             mDepth = 0;
         }
-        public bool CheckAdjacency(Stage[] r)
+        public bool CheckAdjacency(StageClass[] r)
         {
             int i = 0;
             if (!r[mStageNumber - 1].mVacancy)
@@ -131,7 +131,11 @@ public class ChapterGenerator : MonoBehaviour
         }
     };
 
-    public Stage[] stage = new Stage[MAX * MAX + 1];
+    public StageClass[] stage = new StageClass[MAX * MAX + 1];
+
+    public int BossStageNumber;
+    public int ShopStageNumber;
+    public int HiddenStageNumber;
 
     void GenerateStage(int n)
     {
@@ -145,10 +149,10 @@ public class ChapterGenerator : MonoBehaviour
 
         void Initialize()
         {
-            Stage.maxDepth = -1;
+            StageClass.maxDepth = -1;
             for (int i = 1; i <= maxStage; i++)
             {
-                stage[i] = new Stage();
+                stage[i] = new StageClass();
                 stage[i].StageNumber = i;
                 if ((i >= 1 && i <= MAX) || i % MAX == 1 || i % MAX == 0 || (i >= (maxStage - MAX + 1) && i <= maxStage))
                 {
@@ -266,7 +270,7 @@ public class ChapterGenerator : MonoBehaviour
         List<int> hiddenL = new List<int>();
         string bossDirection = "";
 
-        void DFS(Stage _CurrentStage, string _directionFromStart)
+        void DFS(StageClass _CurrentStage, string _directionFromStart)
         {
             int count = 0;
             if (_CurrentStage.East != null)
@@ -327,7 +331,7 @@ public class ChapterGenerator : MonoBehaviour
             if (count == 0)  //endStage
             {
                 _CurrentStage.directionFromStart = _directionFromStart;
-                if (_CurrentStage.Depth == Stage.maxDepth)
+                if (_CurrentStage.Depth == StageClass.maxDepth)
                     bossL.Add(_CurrentStage.StageNumber);
                 else if (_CurrentStage.Depth >= minimumDistanceOfEndStage)
                     endL.Add(_CurrentStage.StageNumber);
@@ -349,6 +353,7 @@ public class ChapterGenerator : MonoBehaviour
 
         int bossRandom = Random.Range(0, bossL.Count);
         stage[bossL[bossRandom]].Type = "boss";
+        BossStageNumber = bossL[bossRandom];
         bossDirection = stage[bossL[bossRandom]].directionFromStart;
         bossL.RemoveAt(bossRandom);
 
@@ -383,6 +388,7 @@ public class ChapterGenerator : MonoBehaviour
 
             int hiddenRandom = Random.Range(0, hiddenL.Count);
             stage[hiddenL[hiddenRandom]].Type = "hidden";
+            HiddenStageNumber = hiddenL[hiddenRandom];
 
             for (int i = 0; i < endL.Count; i++)
             {
@@ -393,6 +399,7 @@ public class ChapterGenerator : MonoBehaviour
         }
         else
         {
+            HiddenStageNumber = -1;
             foreach (int num in bossL)
             {
                 endL.Add(num);
@@ -402,6 +409,7 @@ public class ChapterGenerator : MonoBehaviour
         bossL.Clear();
         int endRandom = Random.Range(0, endL.Count);
         stage[endL[endRandom]].Type = "shop";
+        ShopStageNumber = endL[endRandom];
 
         //Assign real stage objects in Unity
         int x = 0;
@@ -416,8 +424,8 @@ public class ChapterGenerator : MonoBehaviour
                 GameObject instance;
                 bool[] portal = new bool[4]; //east, west, south, north
                 instance = Instantiate(obj, stagePos, Quaternion.identity);
-                instance.GetComponent<StageGenerator>().Type = stage[i].Type;
-                instance.GetComponent<StageGenerator>().StageNumber = stage[i].StageNumber;
+                instance.GetComponent<Stage>().Type = stage[i].Type;
+                instance.GetComponent<Stage>().StageNumber = stage[i].StageNumber;
                 instance.transform.parent = transform;
 
                 if (stage[i].East != null)
@@ -445,9 +453,8 @@ public class ChapterGenerator : MonoBehaviour
     void Awake()
     {
         waitingTime = 0.5f;
-        stageAmount = Random.Range(10, 16);
+        stageAmount = Random.Range(stageAmount, stageAmount + 6);
         minimumDistanceOfEndStage = 2;
-        hiddenStageSpawnRate = 10f; //10% possibility
         GenerateStage(stageAmount);
     }
 
