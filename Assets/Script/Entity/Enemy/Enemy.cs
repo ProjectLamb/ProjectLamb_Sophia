@@ -42,7 +42,7 @@ public class Enemy : Entity
     public Projectile[] projectiles;
 
     public ImageGenerator imageGenerator;
-    public StageGenerator stageGenerator;
+    public Stage stage;
     public MobGenerator mobGenerator;
     public Animator animator;
     public AnimEventInvoker animEventInvoker;
@@ -89,13 +89,13 @@ public class Enemy : Entity
         nav.updateRotation = false;
     }
 
-    public void Freeze()
+    protected virtual void Freeze()
     {
         entityRigidbody.velocity = Vector3.zero;
         entityRigidbody.constraints = RigidbodyConstraints.FreezeAll;
     }
 
-    public void UnFreeze()
+    protected virtual void UnFreeze()
     {
         entityRigidbody.constraints = RigidbodyConstraints.FreezeRotation;
     }
