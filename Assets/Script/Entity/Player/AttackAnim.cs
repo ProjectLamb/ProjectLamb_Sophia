@@ -25,6 +25,6 @@ public class AttackAnim : MonoBehaviour
 
     public bool nowAttack(){
         return isAttack;
-        //return isThrAttack; ??
+        return isThrAttack;
     }
 }
