@@ -8,9 +8,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Sophia_Carriers;
 
-namespace Sophia_Carriers
-{
-    public class ItemEquipment : Purchase
+    public class ItemEquipment : Carrier
     {
         //      public      VFXObject       DestroyEffect       = null;
         //      public      CARRIER_TYPE    CarrierType;
@@ -30,11 +28,9 @@ namespace Sophia_Carriers
             return res;
         }
 
-
         protected override void Awake()
         {
             base.Awake();
-            IsShopItem = false;
             this.CarrierType = CARRIER_TYPE.ITEM;
         }
 
@@ -60,16 +56,11 @@ namespace Sophia_Carriers
         private void OnTriggerEnter(Collider other)
         {
             if (!other.TryGetComponent<Player>(out Player player)) { return; }
-            if(IsShopItem)
-            {
-                if(!purchase(price))
-                    return;
-                GameManager.Instance.Shop.GetComponent<Shop>().EquipmentCount++;
-                GameManager.Instance.Shop.GetComponent<Shop>().InstantiateItem(0, 1);
+            if(transform.TryGetComponent(out PurchaseComponent pc)) {
+                if(!pc.Purchase()) {return;}
             }
             player.equipmentManager.Equip(this.equipment);
             Debug.Log($"장비 장착! : {equipment.equipmentName}");
             DestroySelf();
         }
     }
-}
