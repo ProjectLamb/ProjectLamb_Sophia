@@ -51,3 +51,7 @@ public interface ITimeAffectable
     public void Pause();
     public void Play();
 }
+
+public interface IPurchase {
+    
+}
