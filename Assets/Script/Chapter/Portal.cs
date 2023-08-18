@@ -4,15 +4,8 @@ using UnityEngine;
 
 public class Portal : MonoBehaviour
 {
-    void OnCollisionEnter(Collision other)
-    {
-        if (other.gameObject == GameManager.Instance.PlayerGameObject)
-        {
-            //WarpPortal();   //디버깅용
-            if (transform.parent.parent.parent.GetComponent<StageGenerator>().IsClear)
-                WarpPortal();
-        }
-    }
+    public Animator animator;
+    public bool IsCollider;
     bool visited;
     [SerializeField]
     private Vector3 mWarpPos;
@@ -63,10 +56,11 @@ public class Portal : MonoBehaviour
     }
     public void WarpPortal()
     {
+        departStage = GameManager.Instance.CurrentStage;
         if (!visited)
         {
             string arrivePortalType = "";
-            int CurrentStageNumber = GameManager.Instance.CurrentStage.GetComponent<StageGenerator>().StageNumber;
+            int CurrentStageNumber = GameManager.Instance.CurrentStage.GetComponent<Stage>().StageNumber;
             switch (mPortalType)
             {
                 case "east":
@@ -90,16 +84,16 @@ public class Portal : MonoBehaviour
             switch (arrivePortalType)
             {
                 case "east":
-                    newWarpPos = arriveStage.GetComponent<StageGenerator>().portalArray[0].transform.GetChild(0).GetComponent<Portal>().WarpPos;
+                    newWarpPos = arriveStage.GetComponent<StageGenerator>().portalArray[0].GetComponent<Portal>().WarpPos;
                     break;
                 case "west":
-                    newWarpPos = arriveStage.GetComponent<StageGenerator>().portalArray[1].transform.GetChild(0).GetComponent<Portal>().WarpPos;
+                    newWarpPos = arriveStage.GetComponent<StageGenerator>().portalArray[1].GetComponent<Portal>().WarpPos;
                     break;
                 case "north":
-                    newWarpPos = arriveStage.GetComponent<StageGenerator>().portalArray[2].transform.GetChild(0).GetComponent<Portal>().WarpPos;
+                    newWarpPos = arriveStage.GetComponent<StageGenerator>().portalArray[2].GetComponent<Portal>().WarpPos;
                     break;
                 case "south":
-                    newWarpPos = arriveStage.GetComponent<StageGenerator>().portalArray[3].transform.GetChild(0).GetComponent<Portal>().WarpPos;
+                    newWarpPos = arriveStage.GetComponent<StageGenerator>().portalArray[3].GetComponent<Portal>().WarpPos;
                     break;
             }
             visited = true;
@@ -109,6 +103,8 @@ public class Portal : MonoBehaviour
 
     void Awake()
     {
+        IsCollider = false;
+        animator = GetComponentInChildren<Animator>();
         visited = false;
         mPortalType = "";
         mWarpInterval = transform.localScale.x;
@@ -117,7 +113,14 @@ public class Portal : MonoBehaviour
     }
     void Start()
     {
-        departStage = GameManager.Instance.CurrentStage;
+        
     }
-
+    void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject == GameManager.Instance.PlayerGameObject)
+        {
+            if (IsCollider)
+                WarpPortal();
+        }
+    }
 }
