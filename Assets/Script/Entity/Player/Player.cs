@@ -76,6 +76,7 @@ public class Player : Entity {
     private bool                    mIsDie;
     public  bool                    isAttack; // 일반 공격(1,2,3타) 여부
     public  bool                    isThrAttack; // 세번째 공격 여부
+    public  bool                    canExitAttack;
     [HideInInspector] Animator anim;
 
     private Vector2 inputVec;
@@ -171,7 +172,6 @@ public class Player : Entity {
             }
             PlayerDataManager.GetEntityData().MoveState.Invoke();
         }
-        
     } 
 
     public void Dash()
@@ -273,15 +273,16 @@ public class Player : Entity {
                     // RAYCASTHIT가 닿은 대상의 중심을 바라본다
                     transform.rotation = Quaternion.LookRotation(hit.collider.transform.position - this.transform.position);
                     }
-                Debug.Log("enemy raycast hit!");
+                //Debug.Log("enemy raycast hit!");
                 }
             }
     }
 
     public void checkAttack()
     {
-        isAttack = attackAnim.nowAttack();
-        isThrAttack = attackAnim.nowAttack();
+        isAttack = attackAnim.NowAttack();
+        isThrAttack = attackAnim.NowAttack();
+        canExitAttack = attackAnim.NowAttack();
 
         if(isAttack){
             anim.SetBool("isAttack",true);
@@ -293,6 +294,15 @@ public class Player : Entity {
         if(isThrAttack) // 세번째 공격이 이루어졌다면
         { // DoAttack 트리거 무시
             anim.ResetTrigger("DoAttack");
+        }
+        
+        if(canExitAttack && inputVec != Vector2.zero)
+        {
+            anim.SetBool("canExitAttack",true);
+        }
+        else if(!canExitAttack)
+        {
+            anim.SetBool("canExitAttack",false);
         }
     }
 
