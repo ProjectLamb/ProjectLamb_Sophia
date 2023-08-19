@@ -47,10 +47,10 @@ public class AttackFasterState : EntityAffector {
     }
 
     IEnumerator Boost(){
-        originAttackSpeed = this.ownerEntity.GetOriginData().AttackSpeed;
-        this.ownerEntity.GetFinalData().AttackSpeed = originAttackSpeed * Ratio;
+        originAttackSpeed = this.targetEntity.GetOriginData().AttackSpeed;
+        this.targetEntity.GetFinalData().AttackSpeed = originAttackSpeed * Ratio;
         yield return YieldInstructionCache.WaitForSeconds(DurationTime);
-        this.ownerEntity.GetFinalData().AttackSpeed = originAttackSpeed;
+        this.targetEntity.GetFinalData().AttackSpeed = originAttackSpeed;
     }
 
 //  IEnumerator VisualActivate(){
