@@ -22,7 +22,7 @@ public class Enemy : Entity
     [field: SerializeField]
     public ScriptableObjEnemyData ScriptableED;
     protected EntityData BaseEnemyData;
-    protected EntityData FinalData;
+    [SerializeField] protected EntityData FinalData;
 
     public override void ResetData()
     {
