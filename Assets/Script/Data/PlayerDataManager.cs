@@ -14,8 +14,6 @@ public class PlayerDataManager : MonoBehaviour
     private static  MasterData BaseData;
     private static  MasterData FinalData;
 
-    private TextMeshProUGUI debugText;
-
     [SerializeField]private EquipmentManager equipmentManager;
     private void Awake()
     {
@@ -34,8 +32,7 @@ public class PlayerDataManager : MonoBehaviour
 
         FinalData = new MasterData();
         FinalData += (BaseData + EquipmentAddingData);
-        
-        debugText = GameObject.FindGameObjectWithTag("DebugUI").transform.GetComponentInChildren<TextMeshProUGUI>(true);
+    
     }
     private void Start() {
         equipmentManager.OnChangeEvent.AddListener(() => {CalculateEquipmentAddingData();});
@@ -71,10 +68,6 @@ public class PlayerDataManager : MonoBehaviour
 
         FinalData.playerData.Gear = SaveGear;
         FinalData.playerData.Frag = SaveFrag;
-    }
-
-    private void Update() {
-        debugText.text = FinalData.ToString();
     }
 
     public static void ResetFinal(){

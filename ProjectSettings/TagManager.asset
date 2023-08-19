@@ -21,15 +21,15 @@ TagManager:
   - Water
   - UI
   - Wall
+  - Map
   - Lighting
+  - Dash
+  - Postprocessing
   - Carrier
   - PlayerEntity
   - Entity
   - Projectile
   - Invincible
-  - 
-  - 
-  - 
   - 
   - 
   - 
