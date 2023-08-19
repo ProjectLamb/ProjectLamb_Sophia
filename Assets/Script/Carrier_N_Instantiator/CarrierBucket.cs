@@ -5,6 +5,7 @@ using Sophia_Carriers;
 
 public class CarrierBucket : MonoBehaviour {    
     public void CarrierTransformPositionning(GameObject _owner, Carrier _carrier){
+        Vector3     offset       = _carrier.transform.position;
         Vector3     position     = transform.position;
         Quaternion  forwardAngle = GetForwardingAngle(_carrier.transform);
         _carrier.transform.position = position;
@@ -15,12 +16,14 @@ public class CarrierBucket : MonoBehaviour {
             {
                 _carrier.transform.SetParent(transform);
                 _carrier.SetScale(_owner.transform.localScale.z);
+                _carrier.transform.position += offset * _owner.transform.localScale.z;
                 _carrier.EnableSelf();
                 break;
             }
             case BUCKET_POSITION.OUTER  :
             {
                 _carrier.SetScale(_owner.transform.localScale.z);
+                _carrier.transform.position += offset * _owner.transform.localScale.z;
                 _carrier.EnableSelf();
                 break;
             }
@@ -28,6 +31,7 @@ public class CarrierBucket : MonoBehaviour {
     }
 
     public void CarrierTransformPositionning(Entity _owner, Carrier _carrier){
+        Vector3     offset       = _carrier.transform.position;
         Vector3     position     = transform.position;
         Quaternion  forwardAngle = GetForwardingAngle(_carrier.transform);
         _carrier.transform.position = position;
@@ -38,12 +42,14 @@ public class CarrierBucket : MonoBehaviour {
             {
                 _carrier.transform.SetParent(transform);
                 _carrier.SetScale(_owner.transform.localScale.z);
+                _carrier.transform.position += offset * _owner.transform.localScale.z;
                 _carrier.EnableSelf();
                 break;
             }
             case BUCKET_POSITION.OUTER  :
             {
                 _carrier.SetScale(_owner.transform.localScale.z);
+                _carrier.transform.position += offset * _owner.transform.localScale.z;
                 _carrier.EnableSelf();
                 break;
             }
@@ -55,7 +61,8 @@ public class CarrierBucket : MonoBehaviour {
         return null;
     }
 
-    public Carrier CarrierInstantiator(Entity _owner, Carrier _carrier){
+    public Carrier CarrierInstantiator(Entity _owner, Carrier _carrier)
+    {
         Vector3     position     = transform.position;
         Quaternion  forwardAngle = GetForwardingAngle(_carrier.transform);
         Carrier carrierInstant = _carrier.Clone();
@@ -107,6 +114,7 @@ public class CarrierBucket : MonoBehaviour {
         return carrierInstant;
     }    
     public Quaternion GetForwardingAngle(Transform _useCarrier){
+        Debug.Log(Quaternion.Euler(transform.eulerAngles + _useCarrier.transform.eulerAngles).eulerAngles);
         return Quaternion.Euler(transform.eulerAngles + _useCarrier.transform.eulerAngles);
     }
     

@@ -191,7 +191,7 @@ public class Player : Entity {
 
         Vector3 dashPower = mMoveVec * -Mathf.Log(1 / this.entityRigidbody.drag);
         this.entityRigidbody.AddForce(dashPower.normalized * PlayerDataManager.GetEntityData().MoveSpeed * 10, ForceMode.VelocityChange);
-
+        
         if (CurrentStamina > 0) { CurrentStamina--; }
 
         if (!mIsDashed)
@@ -236,28 +236,30 @@ public class Player : Entity {
         Turning(TurnningCallback);
     }
 
-    void Turning(UnityAction action)
+    void Turning(UnityAction _turningCallback)
     {
         //100으로 해서 바닥을 인식 못했었다. 더 길게 하는게 좋다.
         float camRayLength = 500f;          // 씬으로 보내는 카메라의 Ray 길이
-
         // 마우스 커서에서 씬을 향해 발사되는 Ray 생성
         Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-        // Hit된 오브젝트의 정보를 담는것
-        RaycastHit groundHit;
-
         // 레이캐스트 시작
-        if (Physics.Raycast(camRay, out groundHit, camRayLength, groundMask))
+        if (Physics.Raycast(camRay, out RaycastHit groundHit, camRayLength, groundMask))
         {
-            // 마우스 눌린곳, 플레이어 위치 계산
-            Vector3 playerToMouse = groundHit.point - transform.position;
-            playerToMouse.y = 0f;
-            Quaternion newRotatation = Quaternion.LookRotation(playerToMouse);
-            // 플레이어가 바라보는 방향 설정
-            this.entityRigidbody.MoveRotation(newRotatation);
-            action.Invoke();
+            StartCoroutine(AsyncTurning(groundHit, _turningCallback));
         }
+    }
+
+    IEnumerator AsyncTurning(RaycastHit _groundHit, UnityAction _action){
+        yield return new WaitForEndOfFrame();
+        Vector3 playerToMouse = _groundHit.point - transform.position;
+        playerToMouse.y = 0f;
+        Quaternion newRotatation = Quaternion.LookRotation(playerToMouse);
+        // 플레이어가 바라보는 방향 설정
+        this.entityRigidbody.MoveRotation(newRotatation);
+        yield return new WaitForEndOfFrame();
+        _action.Invoke();
+        yield return new WaitForEndOfFrame();
     }
 
     public void AimAssist()
