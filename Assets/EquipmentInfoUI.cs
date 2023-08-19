@@ -5,17 +5,11 @@ using UnityEngine.UI;
 using TMPro;
 public class EquipmentInfoUI : MonoBehaviour
 {
-    public TextMeshProUGUI  NameText;
-    public TextMeshProUGUI  AgeText;
-    public TextMeshProUGUI  StatusText;
-    public UITextList       StatsList;
+    public UISliderList     SliderList;
     private void OnEnable() {
         GetData();
     }
     public void GetData() {
-        NameText.text = "_NameText_";
-        AgeText.text = "_AgeText_";
-        StatusText.text = "Stauts";
-        StatsList.SetAllTextListByStats();
+        SliderList.SetAllTextListByStats();
     }
 }
