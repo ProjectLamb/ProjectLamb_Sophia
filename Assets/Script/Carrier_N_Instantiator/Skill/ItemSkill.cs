@@ -10,7 +10,7 @@ using Sophia_Carriers;
 
 namespace Sophia_Carriers
 {
-    public class ItemSkill : Purchase
+    public class ItemSkill : Carrier
     {
         //      public      VFXObject       DestroyEffect       = null;
         //      public      CARRIER_TYPE    CarrierType;
@@ -35,7 +35,6 @@ namespace Sophia_Carriers
         {
             base.Awake();
             this.CarrierType = CARRIER_TYPE.ITEM;
-            IsShopItem = false;
         }
 
         public override void Init(Entity _ownerEntity)
@@ -60,13 +59,11 @@ namespace Sophia_Carriers
         private void OnTriggerEnter(Collider other)
         {
             if (!other.TryGetComponent<Player>(out Player player)) { return; }
-            if (IsShopItem)
-            {
-                if (!purchase(price))
-                    return;
-                GameManager.Instance.Shop.GetComponent<Shop>().SkillCount++;
+            
+            if(transform.TryGetComponent(out PurchaseComponent pc)) {
+                if(!pc.Purchase()) {return;}
             }
-
+            
             player.skillManager.AssignSkill(skill, SKILL_KEY.Q);
             player.skillManager.AssignSkill(skill, SKILL_KEY.E);
             player.skillManager.AssignSkill(skill, SKILL_KEY.R);
