@@ -17,13 +17,13 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - Map
+  - 
   - Water
   - UI
   - Wall
-  - Tile
+  - Map
   - Lighting
-  - Ground
+  - Dash
   - Postprocessing
   - Carrier
   - PlayerEntity
@@ -46,10 +46,13 @@ TagManager:
   - 
   - 
   - 
+  - 
+  - 
+  - 
   m_SortingLayers:
-  - name: Fire
-    uniqueID: 3804908061
-    locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: ScreenCover
+    uniqueID: 3704855319
     locked: 0

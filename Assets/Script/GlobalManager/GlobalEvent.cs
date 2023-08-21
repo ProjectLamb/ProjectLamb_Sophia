@@ -90,15 +90,15 @@ public class GlobalEvent : MonoBehaviour
 #region MapEventHandler 
     public void PlayerMoveStage(GameObject departStage, GameObject arrvieStage, Vector3 warpPos)
     {
-        arrvieStage.GetComponent<StageGenerator>().SetOnStage();
+        arrvieStage.GetComponent<Stage>().SetOnStage();
         GameManager.Instance.CurrentStage = arrvieStage;
-        GameManager.Instance.ChapterGenerator.GetComponent<ChapterGenerator>().stage[arrvieStage.GetComponent<StageGenerator>().StageNumber].Discovered = true;
+        GameManager.Instance.ChapterGenerator.GetComponent<ChapterGenerator>().stage[arrvieStage.GetComponent<Stage>().StageNumber].Discovered = true;
         GameManager.Instance.PlayerGameObject.transform.position = warpPos;
-        departStage.GetComponent<StageGenerator>().SetOffStage();
+        departStage.GetComponent<Stage>().SetOffStage();
 
         //UI 반영하는 코드
         GameObject minimapUI = GameObject.Find("Minimap");
-        minimapUI.transform.GetChild(0).GetComponent<Minimap>().ChangeCurrentPosition(departStage.GetComponent<StageGenerator>().StageNumber, arrvieStage.GetComponent<StageGenerator>().StageNumber);
+        minimapUI.transform.GetChild(0).GetComponent<Minimap>().ChangeCurrentPosition(departStage.GetComponent<Stage>().StageNumber, arrvieStage.GetComponent<Stage>().StageNumber);
         //
     }
 #endregion

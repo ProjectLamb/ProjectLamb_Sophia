@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Sophia_Carriers;
-public class ItemHeart : Purchase
+public class ItemHeart : Carrier
 {
     int recoveryValue;
     public override Carrier Clone()
@@ -33,19 +33,10 @@ public class ItemHeart : Purchase
         if (!other.TryGetComponent<Player>(out Player player)) { return; }
         if (player.CurrentHealth >= player.GetFinalData().MaxHP)
             return;
-        if (IsShopItem)
-        {
-            if (!purchase(price))
-                return;
-            GameManager.Instance.Shop.GetComponent<Shop>().HeartCount++;
-            GameManager.Instance.Shop.GetComponent<Shop>().InstantiateItem(2, 1);
+        if(transform.TryGetComponent(out PurchaseComponent pc)) {
+            if(!pc.Purchase()) {return;}
         }
         GameManager.Instance.PlayerGameObject.GetComponent<Player>().CurrentHealth += recoveryValue;
         DestroySelf();
-    }
-
-    protected override void Awake()
-    {
-        IsShopItem = false;
     }
 }

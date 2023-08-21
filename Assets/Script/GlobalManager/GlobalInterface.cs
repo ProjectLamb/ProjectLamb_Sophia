@@ -45,3 +45,13 @@ public interface IEntityDataAddressable
     public EntityData GetOriginData();
     public void ResetData();
 }
+
+public interface ITimeAffectable
+{
+    public void Pause();
+    public void Play();
+}
+
+public interface IPurchase {
+    
+}

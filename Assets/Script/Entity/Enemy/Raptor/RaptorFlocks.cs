@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class RaptorFlocks : MonoBehaviour
 {
-    public StageGenerator stageGenerator;
+    public Stage stage;
     public GameObject smallRaptor;
-    int smallAmount;
-    private int index = 1;
+    public int smallAmount;
+    private int index;
     private int mCurrentAmount;
     public int CurrentAmount
     {
@@ -20,7 +20,7 @@ public class RaptorFlocks : MonoBehaviour
             mCurrentAmount = value;
             if (mCurrentAmount == 0)
             {
-                stageGenerator.CurrentMobCount--;
+                stage.mobGenerator.CurrentMobCount--;
                 Invoke("DestroySelf", 3f);
             }
         }
@@ -52,16 +52,16 @@ public class RaptorFlocks : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        smallAmount = Random.Range(3, 6);
-        mCurrentAmount = smallAmount + 1;
+        smallAmount = Random.Range(1, 6);
+        mCurrentAmount = 1;
         HowlCount = mCurrentAmount;
-        RaptorArray = new GameObject[mCurrentAmount];
+        RaptorArray = new GameObject[mCurrentAmount + smallAmount];
     }
     void Start()
     {
         RaptorArray[0] = transform.GetChild(0).gameObject;
-        RaptorArray[0].GetComponent<Enemy>().stageGenerator = this.stageGenerator;
-        InstantiateSmallRaptor(smallAmount);
+        RaptorArray[0].GetComponent<Enemy>().stage = this.stage;
+        //InstantiateSmallRaptor(smallAmount);
     }
 
     // Update is called once per frame
@@ -75,15 +75,17 @@ public class RaptorFlocks : MonoBehaviour
         Destroy(gameObject);
     }
 
-    void InstantiateSmallRaptor(int count)
+    public void InstantiateSmallRaptor()
     {
-        for (int i = 0; i < count; i++)
+        index = 1;
+        for (int i = 0; i < smallAmount; i++)
         {
             GameObject temp;
             temp = Instantiate(smallRaptor, new Vector3(RaptorArray[0].transform.position.x + Random.Range(-5, 6), RaptorArray[0].transform.position.y, RaptorArray[0].transform.position.z + Random.Range(-5, 6)), Quaternion.identity);
-            temp.GetComponent<Enemy>().stageGenerator = this.stageGenerator;
+            temp.GetComponent<Enemy>().stage = this.stage;
             RaptorArray[index++] = temp;
             temp.transform.parent = transform;
+            mCurrentAmount++;
         }
     }
 
@@ -91,7 +93,7 @@ public class RaptorFlocks : MonoBehaviour
     {
         for (int i = 0; i < index - 1; i++)
         {
-            RaptorArray[i].GetComponent<Enemy>().chase = flag;
+            RaptorArray[i].GetComponent<Enemy>().isRecog = flag;
         }
     }
 }
