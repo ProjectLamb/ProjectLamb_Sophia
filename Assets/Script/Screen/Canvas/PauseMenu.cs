@@ -6,28 +6,31 @@ public class PauseMenu : MonoBehaviour
 {
     public GameObject pauseMenuObject;
 
-    Queue<GameObject> menuQueue = new Queue<GameObject>();
-    public void OpenMenu(){
-        menuQueue.Enqueue(pauseMenuObject);
-        var topMenu = menuQueue.Peek();
+    Stack<GameObject> menuStack = new Stack<GameObject>();
+    public void OpenMenu(GameObject _canvas){
+        menuStack.Push(_canvas);
+        var topMenu = menuStack.Peek();
         topMenu.SetActive(true);
     }
 
     public void CloseMenu(){
-        var topMenu = menuQueue.Peek();
+        var topMenu = menuStack.Peek();
         topMenu.SetActive(false);
-        menuQueue.Dequeue();
+        menuStack.Pop();
     }
 
     private void Update() {
         if(Input.GetKeyDown(KeyCode.Escape)){
-            if(menuQueue.Count == 0){
-                OpenMenu(); 
+            if(menuStack.Count == 0){
+                OpenMenu(pauseMenuObject);
                 GameManager.Instance.GlobalEvent.IsGamePaused = true;
             }
-            else if(menuQueue.Count == 1){ 
+            else if(menuStack.Count == 1){ 
                 CloseMenu();
                 GameManager.Instance.GlobalEvent.IsGamePaused = false;
+            }
+            else {
+                CloseMenu();
             }
         }
     }
