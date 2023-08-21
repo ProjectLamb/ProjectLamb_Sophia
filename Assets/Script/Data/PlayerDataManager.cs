@@ -14,8 +14,6 @@ public class PlayerDataManager : MonoBehaviour
     private static  MasterData BaseData;
     private static  MasterData FinalData;
 
-    private TextMeshProUGUI debugText;
-
     [SerializeField]private EquipmentManager equipmentManager;
     private void Awake()
     {
@@ -34,8 +32,10 @@ public class PlayerDataManager : MonoBehaviour
 
         FinalData = new MasterData();
         FinalData += (BaseData + EquipmentAddingData);
-        
-        debugText = GameObject.FindGameObjectWithTag("DebugUI").transform.GetComponentInChildren<TextMeshProUGUI>(true);
+    
+    }
+    private void Start() {
+        equipmentManager.OnChangeEvent.AddListener(() => {CalculateEquipmentAddingData();});
     }
     public void CalculateBaseData(){
         BaseData = new MasterData();
@@ -54,9 +54,10 @@ public class PlayerDataManager : MonoBehaviour
             EntityData만 초기화 해야하는데 PlayerData 부분도 같이 초기화 되서 생기는 문제였다.
             그렇다면 EntityData만 중점적으로 초기화 하도록하고 PlayerData 는 가져와도 될것 같다.
             사실 FinalData에 초기화를 가하는것은 버프, 디버프 같은 일시적인 변화되는 데이터가 
-
-            
         */
+        int SaveGear = FinalData.playerData.Gear;
+        int SaveFrag = FinalData.playerData.Frag;
+
         FinalData = BaseData;
         EquipmentAddingData = new MasterData();
         //Adding계산하기
@@ -64,10 +65,9 @@ public class PlayerDataManager : MonoBehaviour
             EquipmentAddingData += equipment.AddingData;
         }
         FinalData += EquipmentAddingData;
-    }
 
-    private void Update() {
-        debugText.text = FinalData.ToString();
+        FinalData.playerData.Gear = SaveGear;
+        FinalData.playerData.Frag = SaveFrag;
     }
 
     public static void ResetFinal(){

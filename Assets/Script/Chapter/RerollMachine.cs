@@ -5,7 +5,7 @@ using System;
 using Cysharp.Threading.Tasks;
 using Sophia_Carriers;
 
-public class RerollMachine : Purchase
+public class RerollMachine : MonoBehaviour
 {
     GameObject shop;
     bool IsReady = true;
@@ -15,7 +15,7 @@ public class RerollMachine : Purchase
     }
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject != GameManager.Instance.PlayerGameObject) { return; }
+        /*if (other.gameObject != GameManager.Instance.PlayerGameObject) { return; }
         if (!IsReady)
             return;
         if (!purchase(price))
@@ -24,10 +24,10 @@ public class RerollMachine : Purchase
         {
             if (shop.GetComponent<Shop>().ItemArray[i] != null)
             {
-                shop.GetComponent<Shop>().ItemArray[i].DestroySelf();
-                shop.GetComponent<Shop>().InstantiateItem(i, 0);
+                // shop.GetComponent<Shop>().ItemArray[i].DestroySelf();
+                // shop.GetComponent<Shop>().InstantiateItem(i, 0);
             }
-        }
+        }*/
         AsyncWaitUse(2).Forget();
     }
     public async UniTaskVoid AsyncWaitUse(float _waitSecondTime)

@@ -9,6 +9,9 @@ public abstract class AbstractEquipment : MonoBehaviour {
     public string description;
     public Sprite sprite;
     [SerializeField] public MasterData AddingData;
+
+    List<EQUIPMENT_GENERATE_POOL_TYPE> GeneratePoolType;
+
     public bool mIsInitialized = false;
     
     public abstract void InitEquipment(int _selectIndex);

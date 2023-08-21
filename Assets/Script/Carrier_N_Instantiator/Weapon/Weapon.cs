@@ -14,7 +14,7 @@ public class Weapon : MonoBehaviour
     internal WEAPON_STATE               originState = WEAPON_STATE.NORMAL;
     internal WEAPON_STATE               curState = WEAPON_STATE.NORMAL;
     internal Queue<Projectile>          OnHitProjectiles = new Queue<Projectile>();
-    private CarrierBucket               projectileBucket;
+    protected CarrierBucket             projectileBucket;
     protected bool                      isInitialized = false;
     protected Entity                    ownerEntity;
 
