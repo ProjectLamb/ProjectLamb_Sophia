@@ -50,11 +50,12 @@ public class PowerUpState : EntityAffector {
     }
 
     IEnumerator Boost(){
-        originPower = this.ownerEntity.GetOriginData().Power;
-        this.ownerEntity.GetFinalData().Power = (int)(originPower * Ratio + 0.5f);
+        originPower = this.targetEntity.GetOriginData().Power;
+        this.targetEntity.GetFinalData().Power = (int)(originPower * Ratio + 0.5f);
         yield return YieldInstructionCache.WaitForSeconds(DurationTime);
-        this.ownerEntity.GetFinalData().Power = originPower;
+        this.targetEntity.GetFinalData().Power = originPower;
     }
+    
     IEnumerator VisualActivate(){
         this.targetEntity.visualModulator.InteractByMaterial(skin);
         this.targetEntity.visualModulator.InteractByVFX(vfx);

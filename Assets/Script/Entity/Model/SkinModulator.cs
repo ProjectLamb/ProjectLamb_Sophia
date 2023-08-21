@@ -24,7 +24,13 @@ public class SkinModulator : MonoBehaviour
     }
 
     public void ChangeSkin(Material _skin){
+        StartCoroutine(AsyncChangeSkin(_skin));
+    }
+
+    IEnumerator AsyncChangeSkin(Material _skin){
+        yield return new WaitForEndOfFrame();
         mSkinMaterials[1] = _skin;
+        yield return new WaitForEndOfFrame();
         if(mode == RENDERER_MODE.SKIN){
             for(int j = 0; j < skinnedMeshRenderers.Length; j++){
                 skinnedMeshRenderers[j].sharedMaterials = mSkinMaterials.ToArray();
@@ -38,7 +44,12 @@ public class SkinModulator : MonoBehaviour
     }
 
     public void RevertSkin() {
+        StartCoroutine(AsyncRevertSkin());
+    }
+    IEnumerator AsyncRevertSkin() {
+        yield return new WaitForEndOfFrame();
         mSkinMaterials[1] = TransMaterial;
+        yield return new WaitForEndOfFrame();
         if(mode == RENDERER_MODE.SKIN){
             for(int j = 0; j < skinnedMeshRenderers.Length; j++){
                 skinnedMeshRenderers[j].sharedMaterials = mSkinMaterials.ToArray();

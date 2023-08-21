@@ -47,10 +47,10 @@ public class MoveFasterState : EntityAffector {
     }
 
     IEnumerator Boost(){
-        originMoveSpeed = this.ownerEntity.GetOriginData().MoveSpeed;
-        this.ownerEntity.GetFinalData().MoveSpeed = originMoveSpeed * Ratio; 
+        originMoveSpeed = this.targetEntity.GetOriginData().MoveSpeed;
+        this.targetEntity.GetFinalData().MoveSpeed = originMoveSpeed * Ratio; 
         yield return YieldInstructionCache.WaitForSeconds(DurationTime);
-        this.ownerEntity.GetFinalData().MoveSpeed = originMoveSpeed;
+        this.targetEntity.GetFinalData().MoveSpeed = originMoveSpeed;
     }
 
     IEnumerator VisualActivate(){
