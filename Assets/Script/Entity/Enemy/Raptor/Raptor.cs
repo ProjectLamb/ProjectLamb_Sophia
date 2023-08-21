@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,6 +8,17 @@ using Sophia_Carriers;
 
 public class Raptor : Enemy
 {
+    /* 아래 4줄은 절때 활성화 하지마라. 상속받은 Entity에 이미 정의 되어 있다. */
+    //public Collider entityCollider;
+    //public Rigidbody entityRigidbody;
+    //public VisualModulator visualModulator;
+    //public GameObject model;
+
+    // [field: SerializeField]
+    // public ScriptableObjEnemyData ScriptableED;
+    // protected EntityData BaseEnemyData;
+    // protected EntityData FinalData;
+
     public Projectile[] AttackProjectiles;
     public bool IsSmallRaptor;
     Collider collider;
@@ -21,6 +33,8 @@ public class Raptor : Enemy
     float rushForce = 100f;
     float rushTime = 1.5f;
 
+    float buffDuration = 10f;
+
     bool IsFirstRecog;
     bool IsWandering;
     bool IsChase;
@@ -31,6 +45,9 @@ public class Raptor : Enemy
     bool IsCollider;
     public bool IsRush;
     // Start is called before the first frame update
+
+    public PowerUpState     powerUpState;
+    
     protected override void NavMeshSet()
     {
         base.NavMeshSet();
@@ -137,16 +154,16 @@ public class Raptor : Enemy
     {
         //버프 주는 이펙트
         RaptorFlocks rf = transform.parent.GetComponent<RaptorFlocks>();
-        for (int i = 0; i < rf.smallAmount; i++)
-        {
-            if (rf.RaptorArray[i] != null)
-                rf.RaptorArray[i].GetComponent<Raptor>().GetBuff();
+        foreach(var E in rf.RaptorArray) {
+            if (E != null && E.GetComponent<Raptor>().IsSmallRaptor)
+                GetBuff(this , E.GetComponent<Raptor>());
         }
     }
 
-    public void GetBuff()
+    public void GetBuff(Entity _owenr, Entity _target)
     {
         //버프 받기
+        powerUpState.Init(_owenr, _target).Modifiy();
         //FinalData.Power = BaseEnemyData.Power + 5;
         //FinalData.Defence = BaseEnemyData.Defence + 5;
         //Invoke("DeBuff", debuffTime);
