@@ -49,6 +49,7 @@ public abstract class Entity : MonoBehaviour, IDamagable, IDieable, IAffectable,
     public abstract void GetDamaged(int _amount);
     public abstract void GetDamaged(int _amount, VFXObject _vfx);
     public abstract void Die();
+
     public virtual void AffectHandler(AffectorPackage _affectorPackage)
     {
         STATE_TYPE stateType = _affectorPackage.affectorType;
