@@ -26,7 +26,7 @@ using UnityEngine;
     {
         PORTAL = 0, ROULETTE, ATTACK, NEUTRAL, ITEM
     }
-
+    
     /// <summary>
     /// `INNER` 라면 버켓의 자식으로 생성됨을 나타냄 <br/>
     /// `OUTER` 라면 버켓의 transform.position 에서 생성됨을 나타냄 <br/>
@@ -55,9 +55,12 @@ using UnityEngine;
 
     public enum GEAR_TYPE
     {
-        BRONZE, SILVER, GOLD, PLATINUM, DIAMOND
+        SILVER, GOLD
     }
     
+    public enum EQUIPMENT_GENERATE_POOL_TYPE {
+        DEFAULT, NORMAL, BOSS, SHOP, HIDDEN
+    }
 #endregion
 
 /////////////////////////////////////////////////////////////////////////////////
