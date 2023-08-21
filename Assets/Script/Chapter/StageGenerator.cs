@@ -6,83 +6,41 @@ using Sophia_Carriers;
 
 public class StageGenerator : MonoBehaviour
 {
-    int initWidth = 15;
-    int initIncrease = 5;
-    int width;
-    int increase;
-    int height;
+    //  StageGenerator //Stage[10];
+    //  Stage[(int).Enum.Boss];
+    //  Stage[(int).Enum.Boss];
+    Stage stage;
+
+    public int initWidth = 15;
+    public int initIncrease = 5;
+    public int width;
+    public int increase;
+    public int height;
     int wallHeight = 5;
-    int size;
+    public int size;
     int maxSize;
     [SerializeField]
-    int stageSizeRandom;
-    int obstacleAmount;
-    [SerializeField]
-    private int mStageNumber;
-    public int StageNumber
-    {
-        get
-        {
-            return mStageNumber;
-        }
-        set
-        {
-            mStageNumber = value;
-        }
-    }
-    [SerializeField]
-    private string mType;
-    public string Type
-    {
-        get
-        {
-            return mType;
-        }
-        set
-        {
-            mType = value;
-        }
-    }
-    int mobCount;
-    private int mCurrentMobCount;
-    public int CurrentMobCount
-    {
-        set
-        {
-            mCurrentMobCount = value;
-        }
-        get
-        {
-            return mCurrentMobCount;
-        }
-    }
+    public int stageSizeRandom;
+    public int obstacleAmount;
 
-    [SerializeField]
-    private bool mIsClear;
-    public bool IsClear
-    {
-        get { return mIsClear; }
-        set { mIsClear = value; }
-    }
-    private bool mPortalE = false;
-    private bool mPortalW = false;
-    private bool mPortalS = false;
-    private bool mPortalN = false;
-    int portalCount = 0;
-    float[] probs;
-    float totalProbs = 100.0f;
-    public GameObject portal;
+    public GameObject[] portal;
     public GameObject tile;
     public GameObject wall;
     public GameObject transWall;
     public GameObject shop;
-    int[,] tileArray;    //0: empty, 1: tile, 2: wall
+    public int[,] tileArray;    //0: empty, 1: tile, 2: wall
     public GameObject[,] tileGameObjectArray;
-    public GameObject[] Mobs;
-    public GameObject ElderOne;
-    public List<GameObject> mobArray;
     public GameObject[] portalArray;
-    CarrierBucket carrierBucket;
+
+    private bool mPortalE = false;
+    public bool PortalE { get; set; }
+    private bool mPortalW = false;
+    public bool PortalW { get; set; }
+    private bool mPortalS = false;
+    public bool PortalS { get; set; }
+    private bool mPortalN = false;
+    public bool PortalN { get; set; }
+    int portalCount = 0;
 
     public void SetPortal(bool e, bool w, bool s, bool n)
     {
@@ -107,12 +65,14 @@ public class StageGenerator : MonoBehaviour
             portalCount++;
         }
     }
+
     public int GetMaxSize()
     {
         maxSize = (initWidth + 3 * initIncrease) * (initWidth + 3 * initIncrease);
         return maxSize;
     }
-    void SetFloorType()
+
+    public void SetFloorType()
     {
         int randomValue;
         int typeInterval = 0;
@@ -428,7 +388,7 @@ public class StageGenerator : MonoBehaviour
                 break;
         }
     }
-    void InstantiateTile(int r, int c)
+    public void InstantiateTile(int r, int c)
     {
         float interval = tile.transform.localScale.x * 1.5f;   //tile interval
         float x = transform.position.x - interval * (r / 2);
@@ -442,7 +402,7 @@ public class StageGenerator : MonoBehaviour
                 if (tileArray[i, j] == 0)
                 {
                     instance = Instantiate(transWall, pos, Quaternion.identity);
-                    instance.transform.parent = transform.GetChild(0);
+                    instance.transform.parent = transform.GetChild((int)Stage.STAGE_CHILD.TILE);
                 }
                 else if (tileArray[i, j] == 1)
                 {
@@ -451,7 +411,7 @@ public class StageGenerator : MonoBehaviour
                     //instance = Instantiate(tile, pos, Quaternion.Euler(-90, 90 * randomValue, 0));
                     instance.GetComponent<Tile>().i = i;
                     instance.GetComponent<Tile>().j = j;
-                    instance.transform.parent = transform.GetChild(0);
+                    instance.transform.parent = transform.GetChild((int)Stage.STAGE_CHILD.TILE);
                     // if (mType == "shop")
                     //     instance.GetComponent<Renderer>().material.color = Color.yellow;
                     // else if (mType == "start")
@@ -475,7 +435,7 @@ public class StageGenerator : MonoBehaviour
                         {
                             wallPos = new Vector3(pos.x, (interval / 2) + interval * k, pos.z - interval);
                             wallInstance = Instantiate(wall, wallPos, Quaternion.identity);
-                            wallInstance.transform.parent = transform.GetChild(1);
+                            wallInstance.transform.parent = transform.GetChild((int)Stage.STAGE_CHILD.WALL);
                         }
                     }
                     if (i == width)
@@ -484,88 +444,88 @@ public class StageGenerator : MonoBehaviour
                         {
                             wallPos = new Vector3(pos.x + interval, (interval / 2) + interval * k, pos.z);
                             wallInstance = Instantiate(wall, wallPos, Quaternion.identity);
-                            wallInstance.transform.parent = transform.GetChild(1);
+                            wallInstance.transform.parent = transform.GetChild((int)Stage.STAGE_CHILD.WALL);
                         }
                     }
                     if (j == width)
                     {
                         wallPos = new Vector3(pos.x, interval / 2, pos.z + interval);
                         wallInstance = Instantiate(transWall, wallPos, Quaternion.identity);
-                        wallInstance.transform.parent = transform.GetChild(1);
+                        wallInstance.transform.parent = transform.GetChild((int)Stage.STAGE_CHILD.WALL);
                     }
                     if (i == 1)
                     {
                         wallPos = new Vector3(pos.x - interval, interval / 2, pos.z);
                         wallInstance = Instantiate(transWall, wallPos, Quaternion.identity);
-                        wallInstance.transform.parent = transform.GetChild(1);
+                        wallInstance.transform.parent = transform.GetChild((int)Stage.STAGE_CHILD.WALL);
                     }
 
                     if (i == 1 && j == 1)
                     {
                         wallPos = new Vector3(pos.x - interval, interval / 2, pos.z - interval);
                         wallInstance = Instantiate(transWall, wallPos, Quaternion.identity);
-                        wallInstance.transform.parent = transform.GetChild(1);
+                        wallInstance.transform.parent = transform.GetChild((int)Stage.STAGE_CHILD.WALL);
                     }
 
                     if (i == 1 && j == width)
                     {
                         wallPos = new Vector3(pos.x - interval, interval / 2, pos.z + interval);
                         wallInstance = Instantiate(transWall, wallPos, Quaternion.identity);
-                        wallInstance.transform.parent = transform.GetChild(1);
+                        wallInstance.transform.parent = transform.GetChild((int)Stage.STAGE_CHILD.WALL);
                     }
 
                     if (i == width && j == 1)
                     {
                         wallPos = new Vector3(pos.x + interval, interval / 2, pos.z - interval);
                         wallInstance = Instantiate(transWall, wallPos, Quaternion.identity);
-                        wallInstance.transform.parent = transform.GetChild(1);
+                        wallInstance.transform.parent = transform.GetChild((int)Stage.STAGE_CHILD.WALL);
                     }
 
                     if (i == width && j == width)
                     {
                         wallPos = new Vector3(pos.x + interval, interval / 2, pos.z + interval);
                         wallInstance = Instantiate(transWall, wallPos, Quaternion.identity);
-                        wallInstance.transform.parent = transform.GetChild(1);
+                        wallInstance.transform.parent = transform.GetChild((int)Stage.STAGE_CHILD.WALL);
                     }
                 }
             }
         }
     }
 
-    void InstantiatePortal()
+    public void InstantiatePortal()
     {
         GameObject instance;
         if (mPortalE)
         {
-            instance = Instantiate(portal, tileGameObjectArray[1, height / 2 + 1].transform.position, Quaternion.identity);
-            instance.transform.GetChild(0).GetComponent<Portal>().PortalType = "east";
-            instance.transform.parent = transform.GetChild(2);
+            instance = Instantiate(portal[(int)Stage.PORTAL_TYPE.NORMAL], tileGameObjectArray[1, height / 2 + 1].transform.position, Quaternion.Euler(0, 90, 0));
+            instance.GetComponent<Portal>().PortalType = "east";
+            instance.transform.parent = transform.GetChild((int)Stage.STAGE_CHILD.PORTAL);
             portalArray[0] = instance;
         }
         if (mPortalW)
         {
-            instance = Instantiate(portal, tileGameObjectArray[width, height / 2 + 1].transform.position, Quaternion.identity);
-            instance.transform.GetChild(0).GetComponent<Portal>().PortalType = "west";
-            instance.transform.parent = transform.GetChild(2);
+            instance = Instantiate(portal[(int)Stage.PORTAL_TYPE.NORMAL], tileGameObjectArray[width, height / 2 + 1].transform.position, Quaternion.Euler(0, -90, 0));
+            instance.GetComponent<Portal>().PortalType = "west";
+            instance.transform.parent = transform.GetChild((int)Stage.STAGE_CHILD.PORTAL);
             portalArray[1] = instance;
         }
         if (mPortalN)
         {
-            instance = Instantiate(portal, tileGameObjectArray[width / 2 + 1, 1].transform.position, Quaternion.identity);
-            instance.transform.GetChild(0).GetComponent<Portal>().PortalType = "north";
-            instance.transform.parent = transform.GetChild(2);
+            instance = Instantiate(portal[(int)Stage.PORTAL_TYPE.NORMAL], tileGameObjectArray[width / 2 + 1, 1].transform.position, Quaternion.identity);
+            instance.GetComponent<Portal>().PortalType = "north";
+            instance.transform.parent = transform.GetChild((int)Stage.STAGE_CHILD.PORTAL);
             portalArray[2] = instance;
         }
         if (mPortalS)
         {
-            instance = Instantiate(portal, tileGameObjectArray[width / 2 + 1, height].transform.position, Quaternion.identity);
-            instance.transform.GetChild(0).GetComponent<Portal>().PortalType = "south";
-            instance.transform.parent = transform.GetChild(2);
+            instance = Instantiate(portal[(int)Stage.PORTAL_TYPE.NORMAL], tileGameObjectArray[width / 2 + 1, height].transform.position, Quaternion.Euler(0, 180, 0));
+            instance.GetComponent<Portal>().PortalType = "south";
+            instance.transform.parent = transform.GetChild((int)Stage.STAGE_CHILD.PORTAL);
             portalArray[3] = instance;
         }
     }
 
-    void InstantiateObstacle(int amount)
+    public void InstantiateObstacle(int amount)
     {
         int temp = amount;
         while (temp > 0)
@@ -586,280 +546,21 @@ public class StageGenerator : MonoBehaviour
                 continue;
             GameObject instance;
             instance = Instantiate(wall, tileGameObjectArray[i, j].transform.position, Quaternion.identity);
-            instance.transform.parent = transform.GetChild(3);
+            instance.transform.parent = transform.GetChild((int)Stage.STAGE_CHILD.OBSTACLE);
             temp--;
         }
     }
-
-    void InstantiateMob(int amount)
-    {
-        while (amount > 0)
-        {
-            int i = Random.Range(1, width + 1);
-            int j = Random.Range(1, height + 1);
-            if (tileArray[i, j] == 0 || tileArray[i, j] == 2)
-                continue;
-            if (tileGameObjectArray[i, j].tag == "Portal")
-                continue;
-            int randomValue = Random.Range(0, Mobs.Length);
-            GameObject instance;
-            instance = Instantiate(Mobs[randomValue], new Vector3(tileGameObjectArray[i, j].transform.position.x, Mobs[randomValue].transform.localScale.y, tileGameObjectArray[i, j].transform.position.z), Quaternion.identity);
-            mobArray.Add(instance);
-            instance.transform.parent = transform.GetChild(4);
-
-            switch (randomValue)
-            {
-                case (int)Enemy_TYPE.Enemy_Template:
-                    instance.GetComponent<Enemy>().stageGenerator = this;
-                    break;
-                case (int)Enemy_TYPE.Raptor:
-                    instance.GetComponent<RaptorFlocks>().stageGenerator = this;
-                    break;
-            }
-            amount--;
-        }
-    }
-
-    public void SetOnStage()
-    {
-        if (!mIsClear)
-            GameManager.Instance.PlayerGameObject.GetComponent<Player>().IsPortal = false;
-        GameManager.Instance.PlayerGameObject.GetComponent<Player>().IsPortal = false;
-        GameManager.Instance.CurrentStage = this.gameObject;
-        foreach (var m in mobArray)
-        {
-            if (m != null)
-            {
-                if (m.tag != "Enemy")
-                {
-                    m.GetComponent<RaptorFlocks>().Chase(true);
-                }
-                else
-                    m.GetComponent<Enemy>().chase = true;
-            }
-        }
-        for (int i = 0; i < transform.childCount; i++)
-        {
-            transform.GetChild(i).gameObject.SetActive(true);
-        }
-    }
-
-    public void SetOffStage()
-    {
-        foreach (var m in mobArray)
-        {
-            if (m != null)
-            {
-                if (m.tag != "Enemy")
-                {
-                    m.GetComponent<RaptorFlocks>().Chase(false);
-                }
-                else
-                    m.GetComponent<Enemy>().chase = false;
-            }
-        }
-        for (int i = 0; i < transform.childCount; i++)
-        {
-            transform.GetChild(i).gameObject.SetActive(false);
-        }
-    }
-
-    void GenerateNevMesh()
+    public void GenerateNevMesh()
     {
         NavMeshSurface nav = GetComponent<NavMeshSurface>();
         nav.RemoveData();
         nav.BuildNavMesh();
     }
 
-    int Gacha()
+    private void Awake()
     {
-        int returnValue = 0;
-        float randomValue = Random.value * totalProbs;
-
-        float temp = 0.0f;
-
-        for (int i = 0; i < 7; i++)
-        {
-            temp += probs[i];
-            if (randomValue <= temp)
-            {
-                returnValue = i;
-                break;
-            }
-        }
-
-        return returnValue;
-    }
-
-    void StageClear()
-    {
-        mIsClear = true;
-        Carrier tmp = null;
-        if (Type == "hidden")
-        {
-            tmp = GameManager.Instance.GlobalCarrierManager.GetRandomItem("Skill").Clone();
-            tmp.Init(GameManager.Instance.PlayerGameObject.GetComponent<Player>());
-        }
-        else if (Type == "boss")
-        {
-            //다량의 기어, 부품 1종, 스킬 1종
-        }
-        else
-        {
-            switch (Gacha())
-            {
-                case 0:
-                    Debug.Log("부품");
-                    tmp = GameManager.Instance.GlobalCarrierManager.GetRandomItem("Equipment").Clone();
-                    tmp.Init(GameManager.Instance.PlayerGameObject.GetComponent<Player>());
-                    break;
-                case 1:
-                    Debug.Log("체력");
-                    tmp = GameManager.Instance.GlobalCarrierManager.itemHeart.Clone();
-                    tmp.InitByObject(null, new object[] { 30 });
-                    break;
-                case 2:
-                    Debug.Log("30원");
-                    tmp = GameManager.Instance.GlobalCarrierManager.GearList[(int)GEAR_TYPE.DIAMOND].Clone();
-                    tmp.Init(null);
-                    break;
-                case 3:
-                    Debug.Log("20원");
-                    tmp = GameManager.Instance.GlobalCarrierManager.GearList[(int)GEAR_TYPE.PLATINUM].Clone();
-                    tmp.Init(null);
-                    break;
-                case 4:
-                    Debug.Log("10원");
-                    tmp = GameManager.Instance.GlobalCarrierManager.GearList[(int)GEAR_TYPE.GOLD].Clone();
-                    tmp.Init(null);
-                    break;
-                case 5:
-                    Debug.Log("5원");
-                    tmp = GameManager.Instance.GlobalCarrierManager.GearList[(int)GEAR_TYPE.SILVER].Clone();
-                    tmp.Init(null);
-                    break;
-                case 6:
-                    Debug.Log("1원");
-                    tmp = GameManager.Instance.GlobalCarrierManager.GearList[(int)GEAR_TYPE.BRONZE].Clone();
-                    tmp.Init(null);
-                    break;
-            }
-        }
-        if (tileArray[width / 2 + 1, height / 2 + 1] == 1)
-            carrierBucket.CarrierTransformPositionning(tileGameObjectArray[width / 2 + 1, height / 2 + 1].gameObject, tmp);
-    }
-
-    void Awake()
-    {
+        stage = GetComponent<Stage>();
         obstacleAmount = 0;
-        mobCount = Random.Range(3, 3 + 3);
-        mIsClear = false;
         portalArray = new GameObject[4];
-        probs = new float[7] { 1.0f, 14.0f, 10.0f, 15.0f, 20.0f, 20.0f, 20.0f };
-        carrierBucket = GetComponent<CarrierBucket>();
-    }
-    void Start()
-    {
-        width = initWidth;
-        increase = initIncrease;
-        if (mType == "normal")
-        {
-            stageSizeRandom = Random.Range(1, 4);   //1, 2, 3
-        }
-        else
-            stageSizeRandom = 1;
-
-        width += increase * stageSizeRandom;
-        height = width;
-        tileArray = new int[width + 1, height + 1];
-
-        for (int i = 1; i <= width; i++)
-            for (int j = 1; j <= height; j++)
-                tileArray[i, j] = 1;
-
-        if (mType == "normal")
-        {
-            SetFloorType();
-        }
-
-        tileGameObjectArray = new GameObject[width + 1, height + 1];
-        InstantiateTile(width, height);
-        InstantiatePortal();
-        size = width * height;
-        GenerateNevMesh();
-        switch (stageSizeRandom)    //장애물 개수
-        {
-            case 1:
-                obstacleAmount = Random.Range(0, 11);
-                break;
-            case 2:
-                obstacleAmount = Random.Range(0, 21);
-                break;
-            case 3:
-                obstacleAmount = Random.Range(10, 31);
-                break;
-        }
-        if (mType == "normal")
-        {
-            InstantiateObstacle(obstacleAmount);
-            InstantiateMob(mobCount);
-        }
-        else if (mType == "shop")
-        {
-            float x = 0;
-            float y = 0;
-            float z = 0;
-            GameObject instance;
-            if (mPortalE)
-            {
-                y = 180f;
-            }
-            else if (mPortalW)
-            {
-
-            }
-            else if (mPortalN)
-            {
-                y = 90f;
-            }
-            else if (mPortalS)
-            {
-                y = 270f;
-            }
-            instance = Instantiate(shop, transform.position, Quaternion.Euler(x, y, z));
-            instance.transform.parent = transform;
-            mIsClear = true;
-        }
-        else if (mType == "hidden")
-        {
-
-        }
-        else if (mType == "boss")
-        {
-            Instantiate(ElderOne, transform.position, Quaternion.identity);
-        }
-        CurrentMobCount = mobArray.Count;
-        if (mType == "start")
-        {
-            GameObject character = GameManager.Instance.PlayerGameObject;
-            GameManager.Instance.CurrentStage = this.gameObject;
-            mIsClear = true;
-            character.transform.position = new Vector3(transform.position.x, character.transform.position.y, transform.position.z);
-        }
-        else
-        {
-            SetOffStage();
-        }
-        transform.parent.GetComponent<ChapterGenerator>().LoadingStage++;   //로딩 완료
-    }
-    void Update()
-    {
-        if (!mIsClear)
-        {
-            if (CurrentMobCount == 0 && GameManager.Instance.CurrentStage == this.gameObject)
-            {
-                StageClear();
-            }
-        }
     }
 }
