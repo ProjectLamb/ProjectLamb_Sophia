@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class AttackAnim : MonoBehaviour
 {
-    static public bool isAttack = false;
-    static public bool isThrAttack = false;
-    static public bool canExitAttack = false;
+    public bool isAttack = false;
+    public bool isThrAttack = false;
+    public bool canExitAttack = false;
     // Start is called before the first frame update
     void AttackStart()
     {
@@ -37,11 +37,5 @@ public class AttackAnim : MonoBehaviour
     {
         canExitAttack = false;
         isAttack = false;
-    }
-
-    public bool NowAttack(){
-        return isAttack;
-        return isThrAttack;
-        return canExitAttack;
     }
 }
