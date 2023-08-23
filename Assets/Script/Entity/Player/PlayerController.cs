@@ -24,13 +24,8 @@ public class PlayerController : MonoBehaviour
 
     private void Update() {
         player.AimAssist();
-        player.checkAttack();
-        if(player.isAttack){
-            IsMoveAllow = false;
-        }
-        else{
-            IsMoveAllow = true;
-        }
+        player.CheckAttack();
+        
         if(IsMoveAllow){ 
             player.Move();
             if(Input.GetKeyDown(KeyCode.Space)){player.Dash();}

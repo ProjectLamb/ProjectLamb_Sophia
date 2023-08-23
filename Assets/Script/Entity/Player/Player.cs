@@ -159,7 +159,7 @@ public class Player : Entity {
 
         bool IsBorder(){return Physics.Raycast(transform.position, mMoveVec.normalized, 2, LayerMask.GetMask("Wall"));}
         
-        if (!IsBorder())
+        if (!IsBorder() && !isAttack) // 벽으로 막혀있지 않고 공격중이 아닐때만 이동 가능
         {
             Vector3 rbVel = mMoveVec * PlayerDataManager.GetEntityData().MoveSpeed;
             this.entityRigidbody.velocity = rbVel;
@@ -278,11 +278,11 @@ public class Player : Entity {
             }
     }
 
-    public void checkAttack()
+    public void CheckAttack()
     {
-        isAttack = attackAnim.NowAttack();
-        isThrAttack = attackAnim.NowAttack();
-        canExitAttack = attackAnim.NowAttack();
+        isAttack = attackAnim.isAttack;
+        isThrAttack = attackAnim.isThrAttack;
+        canExitAttack = attackAnim.canExitAttack;
 
         if(isAttack){
             anim.SetBool("isAttack",true);
