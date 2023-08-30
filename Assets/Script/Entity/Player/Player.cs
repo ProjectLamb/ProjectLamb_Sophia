@@ -134,14 +134,9 @@ public class Player : Entity {
 
     public override void Die(){Debug.Log("죽었다는 로직 작성하기");}
 
-    void OnMove(InputAction.CallbackContext context) // new input system 사용
+    public void OnMove(InputValue value) // new input system 사용
     {
-        inputVec = context.ReadValue<Vector2>();
-        if(inputVec!=null)
-        {
-            moveDirection = new Vector3(inputVec.x, 0f, inputVec.y);
-        }
-        
+        inputVec = value.Get<Vector2>();
     }
 
     public void Move() // new input system을 사용한 방식
@@ -205,7 +200,6 @@ public class Player : Entity {
     {
         anim.SetTrigger("DoAttack");
         Turning(() => weaponManager.weapon.Use(PlayerDataManager.GetEntityData().Power));
-        
     }
     
     /// <summary>
@@ -244,7 +238,7 @@ public class Player : Entity {
         Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
 
         // 레이캐스트 시작
-        if (Physics.Raycast(camRay, out RaycastHit groundHit, camRayLength, groundMask))
+        if (Physics.Raycast(camRay, out RaycastHit groundHit, camRayLength, groundMask) && !isAttack) // 공격 도중에는 방향 전환 금지
         {
             StartCoroutine(AsyncTurning(groundHit, _turningCallback));
         }
@@ -267,13 +261,13 @@ public class Player : Entity {
         float camRayLength = 200f;
         Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);   
         if (Physics.Raycast(camRay, out RaycastHit hit, camRayLength)){
+            // 마우스가 "Enemy" 태그를 가진 collider와 충돌했을때
             if(hit.collider.tag == "Enemy"){
                 // 공격중이라면
                 if(isAttack){
                     // RAYCASTHIT가 닿은 대상의 중심을 바라본다
                     transform.rotation = Quaternion.LookRotation(hit.collider.transform.position - this.transform.position);
                     }
-                //Debug.Log("enemy raycast hit!");
                 }
             }
     }
@@ -284,6 +278,7 @@ public class Player : Entity {
         isThrAttack = attackAnim.isThrAttack;
         canExitAttack = attackAnim.canExitAttack;
 
+        // 공격중이라면
         if(isAttack){
             anim.SetBool("isAttack",true);
         }
@@ -291,11 +286,14 @@ public class Player : Entity {
             anim.SetBool("isAttack",false);
         }
 
-        if(isThrAttack) // 세번째 공격이 이루어졌다면
-        { // DoAttack 트리거 무시
+        // 세번째 공격이 이루어졌다면
+        if(isThrAttack)
+        { 
+            // DoAttack 트리거 무시
             anim.ResetTrigger("DoAttack");
         }
         
+        //공격 중 이동이 감지되었다면
         if(canExitAttack && inputVec != Vector2.zero)
         {
             anim.SetBool("canExitAttack",true);
