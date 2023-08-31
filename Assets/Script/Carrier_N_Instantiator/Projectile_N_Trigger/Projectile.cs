@@ -12,23 +12,24 @@ using Sophia_Carriers;
 namespace Sophia_Carriers {
     public class Projectile : Carrier
     {
-//      public      VFXObject           DestroyEffect       = null;
-//      public      CARRIER_TYPE        CarrierType;
-//      public      BUCKET_POSITION     BucketPosition;
-//      public      bool                IsInitialized       = false;
-//      public      bool                IsActivated         = false;
-//      public      bool                IsCloned         = false;
-//      protected   Collider            carrierCollider     = null;
-//      protected   Rigidbody           carrierRigidBody    = null;
+        //               public     VFXObject       DestroyEffect       = null;
+        //               public     CARRIER_TYPE    CarrierType;
+        //               public     BUCKET_POSITION BucketPosition;
+        //               public     bool            IsInitialized       = false;
+        //               public     bool            IsActivated         = false;
+        //               public     bool            IsCloned         = false;
+        //               protected  Collider        carrierCollider     = null;
+        //               public     Entity          ownerEntity;
+        //               public     CollisionDelegator collisionDelegator;
 
-        [SerializeField] public VFXObject       HitEffect = null;
-        [SerializeField] public ParticleSystem  ProjectileParticle = null;
+        [SerializeField] public     VFXObject       HitEffect = null;
+        [SerializeField] public     ParticleSystem  ProjectileParticle = null;
+        [SerializeField] public     float           ProjecttileDamage;
+        [SerializeField] public     float           DestroyTime = 0.5f;
+        [SerializeField] public     float           ColliderTime = 0.5f;
+        [SerializeField] protected bool             isDestroyBySelf;
+        public List<EntityAffector>                 projectileAffector;
         
-        [SerializeField] public float           ProjecttileDamage;
-        [SerializeField] public float           DestroyTime = 0.5f;
-        [SerializeField] public float           ColliderTime = 0.5f;
-        [SerializeField] protected bool         isDestroyBySelf;
-        public List<EntityAffector>             projectileAffector;
 
         public override Carrier Clone()
         {
@@ -49,9 +50,9 @@ namespace Sophia_Carriers {
         }
 
         protected override void Awake()
-        {
+        {            
             base.Awake();
-            TryGetComponent<ParticleSystem>(out ProjectileParticle);
+            if(ProjectileParticle == null) transform.Find("Particles").TryGetComponent<ParticleSystem>(out ProjectileParticle);
             projectileAffector = new List<EntityAffector>();
         }
 
@@ -96,6 +97,7 @@ namespace Sophia_Carriers {
         //     Destroy(gameObject);
         // }
         // public virtual void SetScale(float _sizeRatio){transform.localScale *= _sizeRatio;}
+        // https://www.youtube.com/watch?v=t4y2XJ7L4DM : 자식의 콜라이더도 마치 자신의 것으로 판정을 한다. 유의할것
         protected virtual void OnTriggerEnter(Collider _other) {
             CheckException();
             if(!CheckIsOwnerCollider(_other)) {
@@ -116,7 +118,8 @@ namespace Sophia_Carriers {
         protected void CheckException(){
             if (IsInitialized == false) { throw new System.Exception("투사체가 초기화 되지 않음"); }
             if (ProjecttileDamage == 0) { Debug.Log("데미지가 0임 의도한 거 맞지?"); }
-        }    
+        }
+
         protected void HitTarget(Collider _other) {
             if(ProjecttileDamage == 0) {return;}
             IDamagable damagableTarget;
