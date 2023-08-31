@@ -7,7 +7,9 @@ public class AttackAnim : MonoBehaviour
     public bool isAttack = false;
     public bool isThrAttack = false;
     public bool canExitAttack = false;
+    public bool attackProTime = false;
     // Start is called before the first frame update
+    
     void AttackStart()
     {
         isAttack = true;
@@ -33,9 +35,15 @@ public class AttackAnim : MonoBehaviour
         canExitAttack = true;
     }
     
-    void NowMove()
+    void NowMove() // 이동 중일때
     {
         canExitAttack = false;
         isAttack = false;
+        attackProTime = false;
+    }
+
+    void AttackPro()
+    {
+        attackProTime = true;
     }
 }
