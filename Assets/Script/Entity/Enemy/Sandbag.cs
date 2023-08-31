@@ -30,6 +30,7 @@ public class Sandbag : Entity
     public ImageGenerator           DamageBarGenerator;
     private Animator                mAnimator;
     private AnimEventInvoker        mAnimEventInvoker;
+    
     /*********************************************************************************
     *
     * 
