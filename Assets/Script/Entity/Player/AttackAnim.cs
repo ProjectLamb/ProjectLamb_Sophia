@@ -47,10 +47,4 @@ public class AttackAnim : MonoBehaviour
         canExitAttack = false;
         isAttack = false;
     }
-
-    public bool NowAttack(){
-        return isAttack;
-        return isThrAttack;
-        return canExitAttack;
-    }
 }
