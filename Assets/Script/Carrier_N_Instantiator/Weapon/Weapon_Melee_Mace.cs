@@ -17,6 +17,7 @@ public class Weapon_Melee_Mace : Weapon
     //protected CarrierBucket             projectileBucket;
     //protected bool                      isInitialized = false;
     //protected Entity                    ownerEntity;
+    Player player;
 
     public int currentProjectileIndex = 0;
     public override void Initialisze(Player _owner)

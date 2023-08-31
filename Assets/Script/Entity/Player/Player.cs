@@ -73,9 +73,11 @@ public class Player : Entity {
     private bool                    mIsBorder;
     private bool                    mIsDashed;
     private bool                    mIsDie;
+
     public  bool                    isAttack; // 일반 공격(1,2,3타) 여부
     public  bool                    isThrAttack; // 세번째 공격 여부
-    public  bool                    canExitAttack;
+    public  bool                    canExitAttack; // 공격 중 탈출가능시점
+    public  bool                    attackProTime; // 공격 이펙트 출현시점
     [HideInInspector] Animator anim;
 
     private Vector2 inputVec;
@@ -208,9 +210,10 @@ public class Player : Entity {
     /// 좋지 않은 구조니 하루빨리 개선사항을 고민하자. <br/>
     /// 이렇게 공격 방식이 바뀌는 매커니즘을 다루는 커플링을 줄일까? <br/>
     /// </summary>
+
     public void JustAttack(){
         Turning(() => { weaponManager.weapon.Use(PlayerDataManager.GetEntityData().Power); });
-    }
+    } 
     
     public void Skill(SKILL_KEY _key)
     {
@@ -277,6 +280,7 @@ public class Player : Entity {
         isAttack = attackAnim.isAttack;
         isThrAttack = attackAnim.isThrAttack;
         canExitAttack = attackAnim.canExitAttack;
+        attackProTime = attackAnim.attackProTime;
 
         // 공격중이라면
         if(isAttack){
