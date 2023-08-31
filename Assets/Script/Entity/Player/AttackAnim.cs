@@ -1,12 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
+using AYellowpaper.SerializedCollections;
 
 public class AttackAnim : MonoBehaviour
 {
+    //public UnityEvent[] animCallback;
+
+    public Player player;
+    
     static public bool isAttack = false;
     static public bool isThrAttack = false;
     static public bool canExitAttack = false;
+    void AttackProjectile(){
+        player.Attack();
+    }
     // Start is called before the first frame update
     void AttackStart()
     {

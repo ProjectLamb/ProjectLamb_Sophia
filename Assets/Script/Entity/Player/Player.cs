@@ -205,7 +205,6 @@ public class Player : Entity {
     {
         anim.SetTrigger("DoAttack");
         Turning(() => weaponManager.weapon.Use(PlayerDataManager.GetEntityData().Power));
-        
     }
     
     /// <summary>
