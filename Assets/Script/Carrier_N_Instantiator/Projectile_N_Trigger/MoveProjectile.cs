@@ -35,7 +35,6 @@ namespace Sophia_Carriers {
             base.Awake();
             TryGetComponent<ParticleSystem>(out ProjectileParticle);
             projectileAffector ??= new List<EntityAffector>();
-            carrierRigidBody ??= GetComponent<Rigidbody>();
         }
 
         public override void Init(Entity _ownerEntity)

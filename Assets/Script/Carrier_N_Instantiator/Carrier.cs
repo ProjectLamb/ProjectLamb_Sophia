@@ -24,7 +24,7 @@ namespace Sophia_Carriers{
         public abstract Carrier Clone();
         
         protected virtual void Awake() {
-            TryGetComponent<Collider>(out carrierCollider);
+            carrierCollider = transform.GetComponentInChildren<Collider>();
         }
 
         public abstract void Init(Entity _ownerEntity);
