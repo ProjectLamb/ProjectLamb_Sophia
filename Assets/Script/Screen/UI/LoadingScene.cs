@@ -5,10 +5,9 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class LoadingScene : MonoBehaviour {
-    public GlobalSceneLoader globalSceneLoader;
     public string sceneString;
     public Slider slider;
-    private void Awake() {
-        globalSceneLoader.AsyncLoadScene(sceneString, slider);
+    private async void OnEnable() {
+        await GlobalSceneLoader.AsyncLoadScene(sceneString, slider);
     }    
 }
