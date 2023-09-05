@@ -27,7 +27,6 @@ public class GlobalEvent : MonoBehaviour
     {
         Time.timeScale = GameTimeScale;
     }
-    
     /////////////////////////////////////////////////////////////////////////////////
 #region TimeScaleEventHandler
     [Range(0, 1)]
