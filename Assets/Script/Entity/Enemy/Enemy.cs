@@ -73,7 +73,7 @@ public class Enemy : Entity
         FinalData.HitStateRef.Invoke(ref _amount);
         imageGenerator.GenerateImage(_amount);
         CurrentHealth -= _amount;
-        visualModulator.InteractByVFX(_vfx);
+        visualModulator.InteractByVFX(this,_vfx);
         if (CurrentHealth <= 0) { this.Die(); }
     }
 

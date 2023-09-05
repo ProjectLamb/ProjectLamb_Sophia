@@ -16,8 +16,8 @@ public class VisualModulator : MonoBehaviour
         skinModulator.ChangeSkin(skin);
     }
     
-    public void InteractByVFX(VFXObject vfx){
-        vfxModulator.VFXInstantiator(vfx);
+    public void InteractByVFX(Entity owner, VFXObject vfx){
+        vfxModulator.VFXInstantiator(owner, vfx);
     }
 
     public void RevertByMaterial(STATE_TYPE _type){

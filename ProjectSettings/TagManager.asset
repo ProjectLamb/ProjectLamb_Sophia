@@ -46,12 +46,21 @@ TagManager:
   - 
   - 
   - 
-  - 
-  - 
-  - 
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Map
+    uniqueID: 1737144673
+    locked: 0
+  - name: Entity
+    uniqueID: 3906427097
+    locked: 0
+  - name: Projectile
+    uniqueID: 4261385891
+    locked: 0
+  - name: VFX
+    uniqueID: 332342885
     locked: 0
   - name: ScreenCover
     uniqueID: 3704855319

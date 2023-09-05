@@ -34,6 +34,7 @@ public class PlayerController : MonoBehaviour
             if(Input.GetKeyDown(KeyCode.Q)){player.Skill(SKILL_KEY.Q);}
             if(Input.GetKeyDown(KeyCode.E)){player.Skill(SKILL_KEY.E);}
             if(Input.GetKeyDown(KeyCode.R)){player.Skill(SKILL_KEY.R);}
+            if(Input.GetMouseButtonDown(0)){player.Attack();}
         }
     }
 }

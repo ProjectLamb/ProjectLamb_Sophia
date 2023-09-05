@@ -24,7 +24,6 @@ public class Weapon_Melee_Mace : Weapon
         ownerEntity = _owner;
         projectileBucket = _owner.carrierBucket;
         curState = WEAPON_STATE.NORMAL;
-        currentProjectileIndex = 0;
         isInitialized = true;
     }
     
@@ -50,9 +49,9 @@ public class Weapon_Melee_Mace : Weapon
         useProjectile.ProjecttileDamage = _amount * PlayerDataManager.GetWeaonData().DamageRatio;
         useProjectile.SetScale(PlayerDataManager.GetWeaonData().Range);
         projectileBucket.CarrierTransformPositionning(ownerEntity, useProjectile);
-        currentProjectileIndex %= 3;
         WaitWeaponDelay();
     }
+    
     private void UseOnHit(int _amount){
         if (isInitialized == false) { throw new System.Exception("무기가 초기화 되지 않음 WeaponManager에서 weapon.Initialize(Entity _owner); 했는지 확인"); }
         PlayerDataManager.GetEntityData().AttackState.Invoke();

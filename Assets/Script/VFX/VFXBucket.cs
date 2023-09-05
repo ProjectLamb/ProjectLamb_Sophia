@@ -25,7 +25,7 @@ public class VFXBucket : MonoBehaviour {
     
     private void RemoveStateByType(STATE_TYPE _type){ VisualStacks[_type] = null; }
     
-    public void VFXInstantiator(VFXObject _vfx){
+    public void VFXInstantiator(Entity _owner, VFXObject _vfx){
         switch(_vfx.BucketStaking){
             case BUCKET_STACKING_TYPE.NONE_STACK : 
             {
@@ -34,9 +34,10 @@ public class VFXBucket : MonoBehaviour {
                     //null이 아니라면 더 쌓을 수 없으므로 리턴
                     if(value != null){return;}
                 }
+
                 VFXObject vfxObject = Instantiate(_vfx, transform);
                 vfxObject.OnDestroyActionByState += OnDestroyHandler;
-                vfxObject.SetScale(transform.localScale.z);
+                vfxObject.SetScale(_owner.transform.localScale.z);
                 VisualStacks[stateType] = vfxObject;
                 VisualStacks[stateType].DestroyVFX();
                 break;
@@ -44,7 +45,7 @@ public class VFXBucket : MonoBehaviour {
             case BUCKET_STACKING_TYPE.STACK : 
             {
                 VFXObject vfxObject = Instantiate(_vfx, transform);
-                vfxObject.SetScale(transform.localScale.z);
+                vfxObject.SetScale(_owner.transform.localScale.z);
                 vfxObject.DestroyVFX();
                 break;
             }

@@ -117,7 +117,7 @@ public class Player : Entity {
         CurrentHealth -= _amount;
         PlayerDataManager.GetEntityData().HitState.Invoke();
         imageGenerator.GenerateImage(_amount);
-        visualModulator.InteractByVFX(obj);
+        visualModulator.InteractByVFX(this, obj);
     }
 
     //베리어 가 있다면 베리어를 깎고 값을 리턴 
@@ -199,7 +199,7 @@ public class Player : Entity {
     public void Attack()
     {
         anim.SetTrigger("DoAttack");
-        Turning(() => weaponManager.weapon.Use(PlayerDataManager.GetEntityData().Power));
+        //Turning(() => weaponManager.weapon.Use(PlayerDataManager.GetEntityData().Power));
     }
     
     /// <summary>
@@ -209,7 +209,9 @@ public class Player : Entity {
     /// 이렇게 공격 방식이 바뀌는 매커니즘을 다루는 커플링을 줄일까? <br/>
     /// </summary>
     public void JustAttack(){
-        Turning(() => { weaponManager.weapon.Use(PlayerDataManager.GetEntityData().Power); });
+        Turning(() => {
+            weaponManager.weapon.Use(PlayerDataManager.GetEntityData().Power);
+        });
     }
     
     public void Skill(SKILL_KEY _key)
@@ -238,7 +240,7 @@ public class Player : Entity {
         Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
 
         // 레이캐스트 시작
-        if (Physics.Raycast(camRay, out RaycastHit groundHit, camRayLength, groundMask) && !isAttack) // 공격 도중에는 방향 전환 금지
+        if (Physics.Raycast(camRay, out RaycastHit groundHit, camRayLength, groundMask)) // 공격 도중에는 방향 전환 금지
         {
             StartCoroutine(AsyncTurning(groundHit, _turningCallback));
         }
