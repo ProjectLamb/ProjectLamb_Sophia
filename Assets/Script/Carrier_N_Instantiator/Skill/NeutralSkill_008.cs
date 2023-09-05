@@ -50,17 +50,17 @@ public class NeutralSkill_008 : AbstractSkill {
     }
 
     protected override void UseQ(){
-        float damage = PlayerDataManager.GetEntityData().Power * NumericQ[(int)skillRank] + 1;
-        ParticleProjectile useProjectile = ParticleProjectileQ.CloneParticleProjectile();
-        useProjectile.Init(player);
-        useProjectile.ProjecttileDamage = 0;
-        useProjectile.ParticleMainModule.duration = 0.5f;
-        useProjectile.ParticleMainModule.startLifetime = 20f;
-        useProjectile.ParticleEmissionModule.rateOverTime = (1f / 0.25f);
-        burnState.DurationTime = 3f;
-        burnState.Damage = damage;
-        useProjectile.projectileAffector.Add(burnState);
-        player.carrierBucket.CarrierTransformPositionning(player, useProjectile);
+        // float damage = PlayerDataManager.GetEntityData().Power * NumericQ[(int)skillRank] + 1;
+        // ParticleProjectile useProjectile = ParticleProjectileQ.CloneParticleProjectile();
+        // useProjectile.Init(player);
+        // useProjectile.ProjecttileDamage = 0;
+        // useProjectile.ParticleMainModule.duration = 0.5f;
+        // useProjectile.ParticleMainModule.startLifetime = 20f;
+        // useProjectile.ParticleEmissionModule.rateOverTime = (1f / 0.25f);
+        // burnState.DurationTime = 3f;
+        // burnState.Damage = damage;
+        // useProjectile.projectileAffector.Add(burnState);
+        // player.carrierBucket.CarrierTransformPositionning(player, useProjectile);
     }
     protected override void UseE(){
 

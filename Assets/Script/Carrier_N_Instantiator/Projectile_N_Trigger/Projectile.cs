@@ -125,7 +125,7 @@ namespace Sophia_Carriers {
             IDamagable damagableTarget;
             if(transform.CompareTag(_other.transform.tag)) {return;}
             if(_other.TryGetComponent<IDamagable>(out damagableTarget)){
-                damagableTarget.GetDamaged((int)ProjecttileDamage, HitEffect); 
+                damagableTarget.GetDamaged((int)ProjecttileDamage, this.HitEffect); 
             }
         }
 

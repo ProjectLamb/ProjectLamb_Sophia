@@ -55,7 +55,7 @@ public class NeutralSkill_002 : AbstractSkill {
         Projectile onHitProjectile = onHitState.ActivateOnHit(
             weapon.AttackProjectiles[0]
         );
-        ParticleSystem.MainModule particleModule = onHitProjectile.GetComponent<ParticleSystem>().main;
+        ParticleSystem.MainModule particleModule = onHitProjectile.ProjectileParticle.main;
         particleModule.startColor = Color.red;
         weapon.OnHitProjectiles.Enqueue(onHitProjectile);
         weapon.ChangeState(WEAPON_STATE.ON_HIT);
@@ -69,7 +69,7 @@ public class NeutralSkill_002 : AbstractSkill {
             weapon.AttackProjectiles[0], 
             new List<EntityAffector>{sternState}
         );
-        ParticleSystem.MainModule particleModule = onHitProjectile.GetComponent<ParticleSystem>().main;
+        ParticleSystem.MainModule particleModule = onHitProjectile.ProjectileParticle.main;
         particleModule.startColor = Color.yellow;
         weapon.OnHitProjectiles.Enqueue(onHitProjectile);
         weapon.ChangeState(WEAPON_STATE.ON_HIT);
@@ -82,7 +82,7 @@ public class NeutralSkill_002 : AbstractSkill {
             weapon.AttackProjectiles[0], 
             new List<EntityAffector>{sternState}
         );
-        ParticleSystem.MainModule particleModule = onHitProjectile.GetComponent<ParticleSystem>().main;
+        ParticleSystem.MainModule particleModule = onHitProjectile.ProjectileParticle.main;
         particleModule.startColor = Color.magenta;
         weapon.OnHitProjectiles.Enqueue(onHitProjectile);
         weapon.ChangeState(WEAPON_STATE.ON_HIT);
