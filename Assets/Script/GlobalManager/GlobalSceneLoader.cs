@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Cysharp.Threading.Tasks;
 
 public class GlobalSceneLoader : MonoBehaviour {
-    public void LoadScene(string _scene){
+    public static void LoadScene(string _scene){
         SceneManager.LoadScene(_scene);
     }
-    public void QuitGame(){
+    public static void QuitGame(){
         #if UNITY_EDITOR
             // Application.Quit() does not work in the editor so
             // UnityEditor.EditorApplication.isPlaying need to be set to false to end the game
@@ -18,19 +19,15 @@ public class GlobalSceneLoader : MonoBehaviour {
         #endif
     }
 
-    public void AsyncLoadScene(string _scene, Slider _progressBar) {
-        StartCoroutine(ILoadScene(_scene, _progressBar));
-    }
-
-    IEnumerator ILoadScene(string _scene, Slider _progressBar)
-    {
-        yield return null;
+    public static async UniTask AsyncLoadScene(string _scene, Slider _progressBar) {
+        //https://wlsdn629.tistory.com/entry/%EC%9C%A0%EB%8B%88%ED%8B%B0-%EC%BD%94%EB%A3%A8%ED%8B%B4-%EB%8C%80%EC%8B%A0-unitask
+        await UniTask.NextFrame();
         AsyncOperation op = SceneManager.LoadSceneAsync(_scene);
         op.allowSceneActivation = false;
         float timer = 0.0f;
-        while (!op.isDone)
-        {
-            yield return null;
+        
+        while(!op.isDone) {
+            await UniTask.NextFrame();
             timer += Time.deltaTime;
             if (op.progress < 0.9f)
             {
@@ -46,7 +43,7 @@ public class GlobalSceneLoader : MonoBehaviour {
                 if (_progressBar.value == 1.0f)
                 {
                     op.allowSceneActivation = true;
-                    yield break;
+                    break;
                 }
             }
         }

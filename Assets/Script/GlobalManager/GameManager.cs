@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
     public GlobalEvent  GlobalEvent;
     public GlobalAudio  GlobalAudio;
     public GlobalCarrierManger GlobalCarrierManager;
+    public GlobalSceneLoader GlobalSceneLoader;
     public GameObject   PlayerGameObject;
     public GameObject   ChapterGenerator;
     public GameObject   Shop;
