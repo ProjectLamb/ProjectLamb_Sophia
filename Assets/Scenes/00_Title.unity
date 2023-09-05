@@ -98,7 +98,8 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_LightingSettings: {fileID: 0}
+  m_LightingSettings: {fileID: 4890085278179872738, guid: 085db2b4d47674a81857df2a37d330a6,
+    type: 2}
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -2943,9 +2944,23 @@ MonoBehaviour:
   OnClickEvent:
     m_PersistentCalls:
       m_Calls: []
+  OnEnterEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnExitEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDownEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnUpEvent:
+    m_PersistentCalls:
+      m_Calls: []
   _uiImageData:
+    IsActivate: 0
     ImageCompoenet: {fileID: 0}
     _imageMaterial: {fileID: 0}
+    IsOutLine: 0
     _outLineGradient:
       serializedVersion: 2
       key0: {r: 1, g: 1, b: 1, a: 0}
@@ -2976,6 +2991,7 @@ MonoBehaviour:
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
   _uiTextData:
+    IsActivate: 0
     TMPComponent: {fileID: 0}
     _defaultColor: {r: 1, g: 1, b: 1, a: 0}
     _hoverColor: {r: 0, g: 1, b: 1, a: 0}
@@ -3564,9 +3580,23 @@ MonoBehaviour:
           m_StringArgument: 01_Loading
           m_BoolArgument: 0
         m_CallState: 2
+  OnEnterEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnExitEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDownEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnUpEvent:
+    m_PersistentCalls:
+      m_Calls: []
   _uiImageData:
+    IsActivate: 0
     ImageCompoenet: {fileID: 0}
     _imageMaterial: {fileID: 0}
+    IsOutLine: 0
     _outLineGradient:
       serializedVersion: 2
       key0: {r: 1, g: 1, b: 1, a: 0}
@@ -3597,6 +3627,7 @@ MonoBehaviour:
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
   _uiTextData:
+    IsActivate: 0
     TMPComponent: {fileID: 0}
     _defaultColor: {r: 1, g: 1, b: 1, a: 0}
     _hoverColor: {r: 0, g: 1, b: 1, a: 0}
@@ -5820,9 +5851,23 @@ MonoBehaviour:
   OnClickEvent:
     m_PersistentCalls:
       m_Calls: []
+  OnEnterEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnExitEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDownEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnUpEvent:
+    m_PersistentCalls:
+      m_Calls: []
   _uiImageData:
+    IsActivate: 0
     ImageCompoenet: {fileID: 0}
     _imageMaterial: {fileID: 0}
+    IsOutLine: 0
     _outLineGradient:
       serializedVersion: 2
       key0: {r: 1, g: 1, b: 1, a: 0}
@@ -5853,6 +5898,7 @@ MonoBehaviour:
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
   _uiTextData:
+    IsActivate: 0
     TMPComponent: {fileID: 0}
     _defaultColor: {r: 1, g: 1, b: 1, a: 0}
     _hoverColor: {r: 0, g: 1, b: 1, a: 0}
@@ -6293,9 +6339,23 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  OnEnterEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnExitEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDownEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnUpEvent:
+    m_PersistentCalls:
+      m_Calls: []
   _uiImageData:
+    IsActivate: 0
     ImageCompoenet: {fileID: 0}
     _imageMaterial: {fileID: 0}
+    IsOutLine: 0
     _outLineGradient:
       serializedVersion: 2
       key0: {r: 1, g: 1, b: 1, a: 1}
@@ -6326,6 +6386,7 @@ MonoBehaviour:
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
   _uiTextData:
+    IsActivate: 0
     TMPComponent: {fileID: 0}
     _defaultColor: {r: 0, g: 0, b: 0, a: 0}
     _hoverColor: {r: 0, g: 0, b: 0, a: 0}
@@ -7477,9 +7538,23 @@ MonoBehaviour:
   OnClickEvent:
     m_PersistentCalls:
       m_Calls: []
+  OnEnterEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnExitEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDownEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnUpEvent:
+    m_PersistentCalls:
+      m_Calls: []
   _uiImageData:
+    IsActivate: 0
     ImageCompoenet: {fileID: 0}
     _imageMaterial: {fileID: 0}
+    IsOutLine: 0
     _outLineGradient:
       serializedVersion: 2
       key0: {r: 1, g: 1, b: 1, a: 0}
@@ -7510,6 +7585,7 @@ MonoBehaviour:
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
   _uiTextData:
+    IsActivate: 0
     TMPComponent: {fileID: 0}
     _defaultColor: {r: 1, g: 1, b: 1, a: 0}
     _hoverColor: {r: 0, g: 1, b: 1, a: 0}
