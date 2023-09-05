@@ -50,7 +50,7 @@ public class PoisonState : EntityAffector {
         float tenacity =this.targetEntity.GetFinalData().Tenacity;
         float visualDurateTime = DurationTime * (1 - tenacity);
         this.targetEntity.visualModulator.InteractByMaterial(skin);
-        this.targetEntity.visualModulator.InteractByVFX(vfx);
+        this.targetEntity.visualModulator.InteractByVFX(ownerEntity,vfx);
         yield return YieldInstructionCache.WaitForSeconds(visualDurateTime);
         this.targetEntity.visualModulator.RevertByMaterial(this.affectorPackage.affectorType);
         this.targetEntity.visualModulator.RevertByVFX(this.affectorPackage.affectorType);

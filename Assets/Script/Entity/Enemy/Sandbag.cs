@@ -78,7 +78,7 @@ public class Sandbag : Entity
         if(IsDie == true) {return;}
         FinalData.HitStateRef.Invoke(ref _amount);
         CurrentHealth -= _amount;
-        visualModulator.InteractByVFX(_vfx);
+        visualModulator.InteractByVFX(this, _vfx);
         mAnimator.SetTrigger("DoHit");
         GameManager.Instance.GlobalEvent.OnEnemyHitEvent.ForEach(E => E.Invoke());
         GameManager.Instance.GlobalEvent.OnEnemyHitEvent.ForEach(E => E.Invoke());
@@ -90,7 +90,7 @@ public class Sandbag : Entity
         IsDie = true;
         this.entityCollider.enabled = false;
         mAnimator.SetTrigger("DoDie");
-        visualModulator.InteractByVFX(DieParticle);
+        visualModulator.InteractByVFX(this,DieParticle);
     }
 
     public void DestroySelf(){

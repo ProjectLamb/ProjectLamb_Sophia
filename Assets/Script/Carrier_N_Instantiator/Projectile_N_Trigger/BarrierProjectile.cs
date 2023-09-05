@@ -47,7 +47,6 @@ namespace Sophia_Carriers
         protected override void Awake()
         {
             base.Awake();
-            TryGetComponent<ParticleSystem>(out ProjectileParticle);
             particleModule = ProjectileParticle.main;
         }
         
