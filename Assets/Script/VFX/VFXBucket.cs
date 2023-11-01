@@ -13,7 +13,7 @@ using UnityEngine.AI;
 public class VFXBucket : MonoBehaviour {
     public Dictionary<STATE_TYPE, VFXObject>    VisualStacks = new Dictionary<STATE_TYPE, VFXObject>();
     public UnityAction<STATE_TYPE>              OnDestroyHandler;
-    
+    public float BucketScale = 1;
     private void Awake() {
         InitializeVisualStacksByEnums(Enum.GetValues(typeof(STATE_TYPE)));
         OnDestroyHandler = (STATE_TYPE type) => {RemoveStateByType(type);};
@@ -37,7 +37,7 @@ public class VFXBucket : MonoBehaviour {
 
                 VFXObject vfxObject = Instantiate(_vfx, transform);
                 vfxObject.OnDestroyActionByState += OnDestroyHandler;
-                vfxObject.SetScale(_owner.transform.localScale.z);
+                vfxObject.SetScale(BucketScale);
                 VisualStacks[stateType] = vfxObject;
                 VisualStacks[stateType].DestroyVFX();
                 break;
@@ -45,7 +45,7 @@ public class VFXBucket : MonoBehaviour {
             case BUCKET_STACKING_TYPE.STACK : 
             {
                 VFXObject vfxObject = Instantiate(_vfx, transform);
-                vfxObject.SetScale(_owner.transform.localScale.z);
+                vfxObject.SetScale(BucketScale);
                 vfxObject.DestroyVFX();
                 break;
             }

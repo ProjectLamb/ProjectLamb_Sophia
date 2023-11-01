@@ -48,7 +48,7 @@ public class Weapon : MonoBehaviour
         Projectile useProjectile = AttackProjectiles[0].CloneProjectile();
         useProjectile.Init(ownerEntity);
         useProjectile.ProjecttileDamage = _amount * PlayerDataManager.GetWeaonData().DamageRatio;
-        useProjectile.SetScale(PlayerDataManager.GetWeaonData().Range);
+        //useProjectile.SetScale(PlayerDataManager.GetWeaonData().Range);
         projectileBucket.CarrierTransformPositionning(ownerEntity, useProjectile);
         //Carrier useProjectile = projectileBucket.CarrierInstantiatorByObjects(ownerEntity, AttackProjectiles[0], new object[1] {_amount});
         WaitWeaponDelay();
@@ -60,7 +60,7 @@ public class Weapon : MonoBehaviour
         Projectile useProjectile = OnHitProjectiles.Dequeue();
         useProjectile.Init(ownerEntity);
         useProjectile.ProjecttileDamage = _amount * useProjectile.ProjecttileDamage * PlayerDataManager.GetWeaonData().DamageRatio;
-        useProjectile.SetScale(PlayerDataManager.GetWeaonData().Range);
+        //useProjectile.SetScale(PlayerDataManager.GetWeaonData().Range);
         projectileBucket.CarrierTransformPositionning(ownerEntity, useProjectile);
         if(OnHitProjectiles.Count == 0) ChangeState(originState);
     }

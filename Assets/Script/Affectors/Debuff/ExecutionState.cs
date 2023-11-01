@@ -23,8 +23,8 @@ public class ExecutionState : EntityAffector{
         this.isInitialized  = _eaData.isInitialized;
         this.affectorPackage.affectorType = STATE_TYPE.EXECUTION;
         this.affectorPackage.Affector.Add(Execution);
-        this.affectorPackage.Affector.Add(GameManager.Instance.GlobalEvent.HandleTimeSlow);
-        this.affectorPackage.Affector.Add(Camera.main.GetComponent<CameraEffect>().HandleZoomIn);
+        //this.affectorPackage.Affector.Add(GameManager.Instance.GlobalEvent.HandleTimeSlow);
+        //this.affectorPackage.Affector.Add(Camera.main.GetComponent<CameraEffect>().HandleZoomIn);
         this.affectorPackage.AsyncAffectorCoroutine.Add(VisualActivate());
     }
 
