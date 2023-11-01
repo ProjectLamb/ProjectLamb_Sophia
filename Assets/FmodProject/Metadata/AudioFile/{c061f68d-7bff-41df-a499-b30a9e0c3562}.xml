@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{c061f68d-7bff-41df-a499-b30a9e0c3562}">
+		<property name="assetPath">
+			<value>SFX/Player/DoorOpen/B-3.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>1</value>
+		</property>
+		<property name="length">
+			<value>0.5</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{4b57926b-638d-447f-bdfe-72701e0b1fcc}</destination>
+		</relationship>
+	</object>
+</objects>
