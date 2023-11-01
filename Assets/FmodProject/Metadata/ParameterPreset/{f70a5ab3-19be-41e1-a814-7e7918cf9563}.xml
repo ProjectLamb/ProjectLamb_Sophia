@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="ParameterPreset" id="{f70a5ab3-19be-41e1-a814-7e7918cf9563}">
+		<property name="name">
+			<value>NoiseWorker</value>
+		</property>
+		<relationship name="folder">
+			<destination>{1afecc0b-991b-4d32-a297-576288aeb6bf}</destination>
+		</relationship>
+		<relationship name="parameter">
+			<destination>{49bfbbb1-63fa-423d-86d6-ec860720eeb6}</destination>
+		</relationship>
+	</object>
+	<object class="GameParameter" id="{49bfbbb1-63fa-423d-86d6-ec860720eeb6}">
+		<property name="parameterType">
+			<value>1</value>
+		</property>
+		<property name="maximum">
+			<value>2</value>
+		</property>
+		<property name="initialValue">
+			<value>0</value>
+		</property>
+		<property name="seekSpeed">
+			<value>2</value>
+		</property>
+		<relationship name="automators">
+			<destination>{33ff147b-004f-4f1c-bc3f-42deeee19187}</destination>
+		</relationship>
+	</object>
+	<object class="Automator" id="{33ff147b-004f-4f1c-bc3f-42deeee19187}">
+		<property name="nameOfPropertyBeingAutomated">
+			<value>cursorPosition</value>
+		</property>
+	</object>
+</objects>

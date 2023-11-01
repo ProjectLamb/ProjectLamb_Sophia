@@ -47,7 +47,6 @@ public class Weapon_Melee_Mace : Weapon
         Projectile useProjectile = AttackProjectiles[currentProjectileIndex++].CloneProjectile();
         useProjectile.Init(ownerEntity);
         useProjectile.ProjecttileDamage = _amount * PlayerDataManager.GetWeaonData().DamageRatio;
-        useProjectile.SetScale(PlayerDataManager.GetWeaonData().Range);
         projectileBucket.CarrierTransformPositionning(ownerEntity, useProjectile);
         WaitWeaponDelay();
     }
@@ -58,7 +57,6 @@ public class Weapon_Melee_Mace : Weapon
         Projectile useProjectile = OnHitProjectiles.Dequeue();
         useProjectile.Init(ownerEntity);
         useProjectile.ProjecttileDamage = _amount * useProjectile.ProjecttileDamage * PlayerDataManager.GetWeaonData().DamageRatio;
-        useProjectile.SetScale(PlayerDataManager.GetWeaonData().Range);
         projectileBucket.CarrierTransformPositionning(ownerEntity, useProjectile);
         if(OnHitProjectiles.Count == 0) ChangeState(originState);
     }

@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Sophia_Carriers;
 
-public class CarrierBucket : MonoBehaviour {    
+public class CarrierBucket : MonoBehaviour {
+    public float BucketScale = 1f;
     public void CarrierTransformPositionning(GameObject _owner, Carrier _carrier){
         Vector3     offset       = _carrier.transform.position;
         Vector3     position     = transform.position;
@@ -15,14 +16,14 @@ public class CarrierBucket : MonoBehaviour {
             case BUCKET_POSITION.INNER   :
             {
                 _carrier.transform.SetParent(transform);
-                _carrier.SetScale(_owner.transform.localScale.z);
+                _carrier.SetScale(BucketScale);
                 _carrier.transform.position += offset * _owner.transform.localScale.z;
                 _carrier.EnableSelf();
                 break;
             }
             case BUCKET_POSITION.OUTER  :
             {
-                _carrier.SetScale(_owner.transform.localScale.z);
+                _carrier.SetScale(BucketScale);
                 _carrier.transform.position += offset * _owner.transform.localScale.z;
                 _carrier.EnableSelf();
                 break;
@@ -41,14 +42,14 @@ public class CarrierBucket : MonoBehaviour {
             case BUCKET_POSITION.INNER   :
             {
                 _carrier.transform.SetParent(transform);
-                _carrier.SetScale(_owner.transform.localScale.z);
+                _carrier.SetScale(BucketScale);
                 _carrier.transform.position += offset * _owner.transform.localScale.z;
                 _carrier.EnableSelf();
                 break;
             }
             case BUCKET_POSITION.OUTER  :
             {
-                _carrier.SetScale(_owner.transform.localScale.z);
+                _carrier.SetScale(BucketScale);
                 _carrier.transform.position += offset * _owner.transform.localScale.z;
                 _carrier.EnableSelf();
                 break;
@@ -74,13 +75,13 @@ public class CarrierBucket : MonoBehaviour {
             case BUCKET_POSITION.INNER   :
             {
                 carrierInstant.transform.SetParent(transform);
-                carrierInstant.SetScale(_owner.transform.localScale.z);
+                carrierInstant.SetScale(BucketScale);
                 carrierInstant.EnableSelf();
                 break;
             }
             case BUCKET_POSITION.OUTER  : 
             {
-                carrierInstant.SetScale(_owner.transform.localScale.z);
+                carrierInstant.SetScale(BucketScale);
                 carrierInstant.EnableSelf();
                 break;
             }
@@ -100,13 +101,13 @@ public class CarrierBucket : MonoBehaviour {
             case BUCKET_POSITION.INNER   :
             {
                 carrierInstant.transform.SetParent(transform);
-                carrierInstant.SetScale(_owner.transform.localScale.z);
+                carrierInstant.SetScale(BucketScale);
                 carrierInstant.EnableSelf();
                 break;
             }
             case BUCKET_POSITION.OUTER  :
             {
-                carrierInstant.SetScale(_owner.transform.localScale.z);
+                carrierInstant.SetScale(BucketScale);
                 carrierInstant.EnableSelf();
                 break;
             }
