@@ -15,19 +15,24 @@ using UnityEngine.Events;
 
 public class GlobalEvent : MonoBehaviour
 {
-    public List<UnityAction> OnEnemyDieEvent;
-    public List<UnityAction> OnEnemyHitEvent;
+    public List<UnityAction>       OnEnemyDieEvent;
+    public List<UnityAction>       OnEnemyHitEvent;
+    public List<UnityAction<bool>> OnStageClear;
+    public List<UnityAction<bool>> OnStageEnter;
 
     private void Awake()
     {
         OnEnemyDieEvent = new List<UnityAction>();
         OnEnemyHitEvent = new List<UnityAction>();
     }
+    
     void Update()
     {
         Time.timeScale = GameTimeScale;
     }
+
     /////////////////////////////////////////////////////////////////////////////////
+
 #region TimeScaleEventHandler
     [Range(0, 1)]
     public UnityEvent       PausedEvent;

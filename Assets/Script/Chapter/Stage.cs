@@ -42,12 +42,16 @@ public class Stage : MonoBehaviour
         }
     }
 
+
     [SerializeField]
     private bool mIsClear;
     public bool IsClear
     {
         get { return mIsClear; }
-        set { mIsClear = value; }
+        set { 
+            mIsClear = value; 
+            GameManager.Instance.GlobalEvent.OnStageClear.ForEach(e => e.Invoke(value));
+        }
     }
 
     public void SetOnStage()
