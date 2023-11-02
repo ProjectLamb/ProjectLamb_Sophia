@@ -2,7 +2,7 @@
 <objects serializationModel="Studio.02.02.00">
 	<object class="Workspace" id="{3ab16397-a04d-489a-b27e-d0db899f1d80}">
 		<property name="builtBanksOutputDirectory">
-			<value>FMODAssets</value>
+			<value>Build</value>
 		</property>
 		<relationship name="masterEventFolder">
 			<destination>{4f732388-2684-4e06-8c3c-fc06d0a6f256}</destination>
@@ -32,7 +32,7 @@
 			<destination>{a0f0f22e-54f6-4be4-b5cc-a99765efcea4}</destination>
 		</relationship>
 		<relationship name="platforms">
-			<destination>{216a94fa-ac88-4aae-b5c1-28b4efdbceb7}</destination>
+			<destination>{513eed79-37fa-4520-8f8e-1bc789e2c827}</destination>
 		</relationship>
 	</object>
 </objects>

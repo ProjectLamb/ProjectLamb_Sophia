@@ -5,7 +5,7 @@
 			<value>Dash</value>
 		</property>
 		<property name="outputFormat">
-			<value>2</value>
+			<value>1</value>
 		</property>
 		<relationship name="folder">
 			<destination>{decf2436-2991-46bd-8764-2acb4a30fcf9}</destination>
@@ -115,6 +115,9 @@
 		<property name="length">
 			<value>0.875</value>
 		</property>
+		<property name="startOffset">
+			<value>16.5</value>
+		</property>
 		<property name="timelockedOffset">
 			<value>0.21875</value>
 		</property>
@@ -145,6 +148,9 @@
 		</property>
 		<property name="length">
 			<value>0.5</value>
+		</property>
+		<property name="startOffset">
+			<value>19.5</value>
 		</property>
 		<property name="volume">
 			<value>-2.5</value>
@@ -185,6 +191,9 @@
 		<property name="length">
 			<value>0.5</value>
 		</property>
+		<property name="startOffset">
+			<value>19</value>
+		</property>
 		<property name="volume">
 			<value>-2.5</value>
 		</property>
@@ -216,7 +225,6 @@
 	<object class="MixerBusEffectChain" id="{a0ac7979-3d20-44a5-81b1-66f16a1e24e6}">
 		<relationship name="effects">
 			<destination>{5b72e541-b2a1-447a-ba34-525164e675c9}</destination>
-			<destination>{6bd648eb-031e-4657-8acd-441e617a270f}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{21d9ea1a-e1b8-4b91-9531-abda26a876e8}" />
@@ -279,7 +287,6 @@
 	</object>
 	<object class="MixerBusPanner" id="{0fc7f639-3278-499a-98f5-2b0a916cff56}" />
 	<object class="MixerBusFader" id="{5b72e541-b2a1-447a-ba34-525164e675c9}" />
-	<object class="SpatialiserEffect" id="{6bd648eb-031e-4657-8acd-441e617a270f}" />
 	<object class="MixerBusFader" id="{3ede7e9d-2037-46b1-bc17-f5692517dda6}" />
 	<object class="MixerBusFader" id="{7e8c9b57-8fbb-479f-8c18-65c2537bc14b}" />
 	<object class="MixerBusFader" id="{38f0f843-ad30-4f97-925b-1f79472b3b2b}" />
