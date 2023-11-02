@@ -5,7 +5,7 @@
 			<value>MaceSwing</value>
 		</property>
 		<property name="outputFormat">
-			<value>2</value>
+			<value>1</value>
 		</property>
 		<relationship name="folder">
 			<destination>{d9f28a63-d37e-4efa-a01a-b69bae80ec82}</destination>
@@ -109,11 +109,11 @@
 	</object>
 	<object class="MixerBusPanner" id="{49f5ebbb-0b45-4c1c-9722-bc829a3cc2d3}" />
 	<object class="MultiSound" id="{18288f75-99a0-4299-9962-8af0090da5b6}">
-		<property name="isAsync">
-			<value>true</value>
-		</property>
 		<property name="length">
 			<value>0.44321995464852609</value>
+		</property>
+		<property name="startOffset">
+			<value>19.5</value>
 		</property>
 		<relationship name="modulators">
 			<destination>{12ed0f07-f7ff-4330-847d-419d3b251b17}</destination>
@@ -139,14 +139,14 @@
 		</relationship>
 	</object>
 	<object class="SingleSound" id="{db35aea4-52eb-451d-9ec5-61171d3c2b13}">
-		<property name="isAsync">
-			<value>true</value>
-		</property>
 		<property name="start">
 			<value>0.03125</value>
 		</property>
 		<property name="length">
 			<value>0.40385416666666668</value>
+		</property>
+		<property name="startOffset">
+			<value>13</value>
 		</property>
 		<relationship name="audioFile">
 			<destination>{9ae64357-3fae-4859-962a-c902a2b3e42c}</destination>
@@ -170,14 +170,14 @@
 		</relationship>
 	</object>
 	<object class="SingleSound" id="{6b13d7e0-5be3-4bfc-9a60-34ce159bad84}">
-		<property name="isAsync">
-			<value>true</value>
-		</property>
 		<property name="start">
 			<value>0.09375</value>
 		</property>
 		<property name="length">
 			<value>0.23693877551020409</value>
+		</property>
+		<property name="startOffset">
+			<value>23</value>
 		</property>
 		<property name="pitch">
 			<value>2</value>
@@ -209,7 +209,6 @@
 	<object class="MixerBusEffectChain" id="{50508edb-4c45-4d55-98dd-44d8eb6cb9c1}">
 		<relationship name="effects">
 			<destination>{6f8d32a0-2d96-4b02-9ab6-39c292443a85}</destination>
-			<destination>{c0ce7c48-ff3f-4522-a155-3e2dfe1532d8}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{dd780d9b-0470-479f-9795-ca42251a2851}" />
@@ -264,7 +263,6 @@
 	</object>
 	<object class="MixerBusPanner" id="{55884ced-6781-4dd3-a2af-15647cd82c5a}" />
 	<object class="MixerBusFader" id="{6f8d32a0-2d96-4b02-9ab6-39c292443a85}" />
-	<object class="SpatialiserEffect" id="{c0ce7c48-ff3f-4522-a155-3e2dfe1532d8}" />
 	<object class="MixerBusFader" id="{14c22a9c-8867-454f-911b-98f7c5e13883}" />
 	<object class="MixerBusFader" id="{cea72815-9ad3-4d08-bfa3-3b153e5e44bb}" />
 	<object class="MixerBusFader" id="{4e0d99fa-d455-4148-b504-f8d910012515}" />

@@ -6,6 +6,7 @@ using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using FMODPlus;
 
 using Component = UnityEngine.Component;
 using Random = UnityEngine.Random;
@@ -166,7 +167,7 @@ public class Player : Entity {
             PlayerDataManager.GetEntityData().MoveState.Invoke();
         }
     } 
-
+    public FMODAudioSource DashSource;
     public void Dash()
     {
         IEnumerator CoWaitDash()
@@ -187,6 +188,8 @@ public class Player : Entity {
         Vector3 dashPower = mMoveVec * -Mathf.Log(1 / this.entityRigidbody.drag);
         this.entityRigidbody.AddForce(dashPower.normalized * PlayerDataManager.GetEntityData().MoveSpeed * 10, ForceMode.VelocityChange);
         
+        DashSource.Play();
+
         if (CurrentStamina > 0) { CurrentStamina--; }
 
         if (!mIsDashed)
