@@ -23,8 +23,8 @@ public class GameManager : MonoBehaviour
     }
     
 
-    public GlobalEvent  GlobalEvent;
-    public GlobalAudio  GlobalAudio;
+    public GlobalEvent GlobalEvent;
+    public GlobalAudioManager  GlobalAudioManager;
     public GlobalCarrierManger GlobalCarrierManager;
     public GlobalSceneLoader GlobalSceneLoader;
     public GameObject   PlayerGameObject;
@@ -49,6 +49,6 @@ public class GameManager : MonoBehaviour
     
     public void InitializeComponents(){
         if(GlobalEvent == null) GlobalEvent = GetComponentInChildren<GlobalEvent>();
-        if(GlobalAudio == null) GlobalAudio = GetComponentInChildren<GlobalAudio>();
+        if(GlobalAudioManager == null) GlobalAudioManager = GetComponentInChildren<GlobalAudioManager>();
     }
 }
