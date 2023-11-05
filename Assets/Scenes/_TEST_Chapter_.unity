@@ -2808,6 +2808,16 @@ PrefabInstance:
       propertyPath: hiddenStageSpawnRate
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 6010878358661589270, guid: 0854eb25531ab0047b2cfd966170a735,
+        type: 3}
+      propertyPath: stageAmount
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6010878358661589270, guid: 0854eb25531ab0047b2cfd966170a735,
+        type: 3}
+      propertyPath: hiddenStageSpawnRate
+      value: 10
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0854eb25531ab0047b2cfd966170a735, type: 3}
 --- !u!1 &1191879650
@@ -3587,6 +3597,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91ea8609de0e30044a35c14b898af8ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isAttack: 0
+  isThrAttack: 0
+  canExitAttack: 0
 --- !u!1 &1409285511
 GameObject:
   m_ObjectHideFlags: 0
@@ -5507,7 +5520,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Actions: {fileID: -944628639613478452, guid: 707b9163d7e32254fb56d189c3839408,
     type: 3}
-  m_NotificationBehavior: 2
+  m_NotificationBehavior: 0
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
     m_PersistentCalls:
