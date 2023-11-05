@@ -73,9 +73,11 @@ public class Player : Entity {
     private bool                    mIsBorder;
     private bool                    mIsDashed;
     private bool                    mIsDie;
+
     public  bool                    isAttack; // 일반 공격(1,2,3타) 여부
     public  bool                    isThrAttack; // 세번째 공격 여부
-    public  bool                    canExitAttack;
+    public  bool                    canExitAttack; // 공격 중 탈출가능시점
+    public  bool                    attackProTime; // 공격 이펙트 출현시점
     [HideInInspector] Animator anim;
 
     private Vector2 inputVec;
@@ -134,14 +136,9 @@ public class Player : Entity {
 
     public override void Die(){Debug.Log("죽었다는 로직 작성하기");}
 
-    void OnMove(InputAction.CallbackContext context) // new input system 사용
+    public void OnMove(InputValue value) // new input system 사용
     {
-        inputVec = context.ReadValue<Vector2>();
-        if(inputVec!=null)
-        {
-            moveDirection = new Vector3(inputVec.x, 0f, inputVec.y);
-        }
-        
+        inputVec = value.Get<Vector2>();
     }
 
     public void Move() // new input system을 사용한 방식
@@ -159,7 +156,7 @@ public class Player : Entity {
 
         bool IsBorder(){return Physics.Raycast(transform.position, mMoveVec.normalized, 2, LayerMask.GetMask("Wall"));}
         
-        if (!IsBorder())
+        if (!IsBorder() && !isAttack) // 벽으로 막혀있지 않고 공격중이 아닐때만 이동 가능
         {
             Vector3 rbVel = mMoveVec * PlayerDataManager.GetEntityData().MoveSpeed;
             this.entityRigidbody.velocity = rbVel;
@@ -205,7 +202,6 @@ public class Player : Entity {
     {
         anim.SetTrigger("DoAttack");
         Turning(() => weaponManager.weapon.Use(PlayerDataManager.GetEntityData().Power));
-        
     }
     
     /// <summary>
@@ -214,9 +210,10 @@ public class Player : Entity {
     /// 좋지 않은 구조니 하루빨리 개선사항을 고민하자. <br/>
     /// 이렇게 공격 방식이 바뀌는 매커니즘을 다루는 커플링을 줄일까? <br/>
     /// </summary>
+
     public void JustAttack(){
         Turning(() => { weaponManager.weapon.Use(PlayerDataManager.GetEntityData().Power); });
-    }
+    } 
     
     public void Skill(SKILL_KEY _key)
     {
@@ -244,7 +241,7 @@ public class Player : Entity {
         Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
 
         // 레이캐스트 시작
-        if (Physics.Raycast(camRay, out RaycastHit groundHit, camRayLength, groundMask))
+        if (Physics.Raycast(camRay, out RaycastHit groundHit, camRayLength, groundMask) && !isAttack) // 공격 도중에는 방향 전환 금지
         {
             StartCoroutine(AsyncTurning(groundHit, _turningCallback));
         }
@@ -267,23 +264,25 @@ public class Player : Entity {
         float camRayLength = 200f;
         Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);   
         if (Physics.Raycast(camRay, out RaycastHit hit, camRayLength)){
+            // 마우스가 "Enemy" 태그를 가진 collider와 충돌했을때
             if(hit.collider.tag == "Enemy"){
                 // 공격중이라면
                 if(isAttack){
                     // RAYCASTHIT가 닿은 대상의 중심을 바라본다
                     transform.rotation = Quaternion.LookRotation(hit.collider.transform.position - this.transform.position);
                     }
-                //Debug.Log("enemy raycast hit!");
                 }
             }
     }
 
-    public void checkAttack()
+    public void CheckAttack()
     {
-        isAttack = attackAnim.NowAttack();
-        isThrAttack = attackAnim.NowAttack();
-        canExitAttack = attackAnim.NowAttack();
+        isAttack = attackAnim.isAttack;
+        isThrAttack = attackAnim.isThrAttack;
+        canExitAttack = attackAnim.canExitAttack;
+        attackProTime = attackAnim.attackProTime;
 
+        // 공격중이라면
         if(isAttack){
             anim.SetBool("isAttack",true);
         }
@@ -291,11 +290,14 @@ public class Player : Entity {
             anim.SetBool("isAttack",false);
         }
 
-        if(isThrAttack) // 세번째 공격이 이루어졌다면
-        { // DoAttack 트리거 무시
+        // 세번째 공격이 이루어졌다면
+        if(isThrAttack)
+        { 
+            // DoAttack 트리거 무시
             anim.ResetTrigger("DoAttack");
         }
         
+        //공격 중 이동이 감지되었다면
         if(canExitAttack && inputVec != Vector2.zero)
         {
             anim.SetBool("canExitAttack",true);
