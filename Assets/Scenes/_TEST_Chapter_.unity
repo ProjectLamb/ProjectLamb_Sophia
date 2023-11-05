@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18075201, g: 0.22627321, b: 0.3071689, a: 1}
+  m_IndirectSpecularColor: {r: 0.18075138, g: 0.22627205, b: 0.3071673, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2796,7 +2796,17 @@ PrefabInstance:
     - target: {fileID: 6010878358661589267, guid: 0854eb25531ab0047b2cfd966170a735,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6010878358661589270, guid: 0854eb25531ab0047b2cfd966170a735,
+        type: 3}
+      propertyPath: stageAmount
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6010878358661589270, guid: 0854eb25531ab0047b2cfd966170a735,
+        type: 3}
+      propertyPath: hiddenStageSpawnRate
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 6010878358661589270, guid: 0854eb25531ab0047b2cfd966170a735,
         type: 3}
