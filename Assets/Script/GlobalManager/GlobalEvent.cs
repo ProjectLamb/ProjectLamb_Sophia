@@ -17,13 +17,15 @@ public class GlobalEvent : MonoBehaviour
 {
     public List<UnityAction>       OnEnemyDieEvent;
     public List<UnityAction>       OnEnemyHitEvent;
-    public List<UnityAction<bool>> OnStageClear;
-    public List<UnityAction<bool>> OnStageEnter;
+    public List<UnityAction<Stage>>        OnStageClear;
+    public List<UnityAction<Stage, Stage>> OnStageEnter;
 
     private void Awake()
     {
         OnEnemyDieEvent = new List<UnityAction>();
         OnEnemyHitEvent = new List<UnityAction>();
+        OnStageClear    = new List<UnityAction<Stage>>();
+        OnStageEnter    = new List<UnityAction<Stage, Stage>>();
     }
     
     void Update()
@@ -94,6 +96,8 @@ public class GlobalEvent : MonoBehaviour
 #region MapEventHandler 
     public void PlayerMoveStage(GameObject departStage, GameObject arrvieStage, Vector3 warpPos)
     {
+        OnStageEnter.ForEach(E => E.Invoke(departStage.GetComponent<Stage>(), arrvieStage.GetComponent<Stage>()));
+
         arrvieStage.GetComponent<Stage>().SetOnStage();
         GameManager.Instance.CurrentStage = arrvieStage;
         GameManager.Instance.ChapterGenerator.GetComponent<ChapterGenerator>().stage[arrvieStage.GetComponent<Stage>().StageNumber].Discovered = true;
@@ -103,6 +107,7 @@ public class GlobalEvent : MonoBehaviour
         //UI 반영하는 코드
         GameObject minimapUI = GameObject.Find("Minimap");
         minimapUI.transform.GetChild(0).GetComponent<Minimap>().ChangeCurrentPosition(departStage.GetComponent<Stage>().StageNumber, arrvieStage.GetComponent<Stage>().StageNumber);
+        
         //
     }
 #endregion
