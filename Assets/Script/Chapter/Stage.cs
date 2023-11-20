@@ -50,7 +50,9 @@ public class Stage : MonoBehaviour
         get { return mIsClear; }
         set { 
             mIsClear = value; 
-            GameManager.Instance.GlobalEvent.OnStageClear.ForEach(e => e.Invoke(value));
+            if(value == true) {
+                GameManager.Instance.GlobalEvent.OnStageClear.ForEach(e => e.Invoke(this));
+            }
         }
     }
 
@@ -101,7 +103,7 @@ public class Stage : MonoBehaviour
 
     void StageClear()
     {
-        mIsClear = true;
+        IsClear = true;
         for (int i = 0; i < stageGenerator.portalArray.Length; i++)
         {
             if (stageGenerator.portalArray[i] == null)
@@ -128,7 +130,7 @@ public class Stage : MonoBehaviour
         stageGenerator = GetComponent<StageGenerator>();
         mobGenerator = GetComponent<MobGenerator>();
         gachaComponent = GetComponent<GachaComponent>();
-        mIsClear = false;
+        IsClear = false;
     }
     void Start()
     {
@@ -229,7 +231,7 @@ public class Stage : MonoBehaviour
     }
     void Update()
     {
-        if (!mIsClear)
+        if (!IsClear)
         {
             if (mobGenerator.CurrentMobCount == 0 && GameManager.Instance.CurrentStage == this.gameObject)
             {
