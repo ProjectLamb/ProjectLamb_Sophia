@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using FMODPlus;
 
 public class Portal : MonoBehaviour
 {
+    public CommandSender portalSFXSource;
     public Animator animator;
     public bool IsCollider;
     bool visited;
@@ -119,8 +121,10 @@ public class Portal : MonoBehaviour
     {
         if (other.gameObject == GameManager.Instance.PlayerGameObject)
         {
-            if (IsCollider)
+            if (IsCollider){
                 WarpPortal();
+                portalSFXSource.SendCommand();
+            }
         }
     }
 }
