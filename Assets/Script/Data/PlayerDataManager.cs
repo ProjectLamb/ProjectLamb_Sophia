@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.Events;
+
 public class PlayerDataManager : MonoBehaviour
 {
     [SerializeField] private Player player; 
