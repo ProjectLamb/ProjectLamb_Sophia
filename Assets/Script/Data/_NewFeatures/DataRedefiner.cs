@@ -98,6 +98,7 @@ namespace Feature_NewData
         public float ReferingRatioEfficienceMultiplyer;
         public float ReferingRatioAccecerate;
     }
+
     public class SkillAddtionalFunctionals {
         public UnityAction AddedUse;
         public UnityAction AddedSkillChange;
@@ -106,15 +107,16 @@ namespace Feature_NewData
 
     public class NonTemporalCalculatedAddings {
         public PlayerFixedAmounts               playerFixedAmounts;
-        public PlayerReferingRatioAmounts       playerBaseReferingRatioAmounts;
-        public PlayerReferingRatioAmounts       playerCalculatedReferingRatioAmounts;
+        public PlayerReferingRatioAmounts       playerReferingRatioAmounts;
         public PlayerAdditionalFunctionals      playerAdditionalFunctional;
     }
 
-    public class NonTemporalOnUsePostAddings
+    public class NonTemporalOnUsePostWeaponAddings
     {
         public WeaponReferingRatioAmount        weaponReferingRatioAmount;
         public WeaponAdditionalFunctionals      weaponAdditionalFunctionals;
+    }
+    public class NonTemporalOnUsePostSkillAddings {
         public SkillReferingRatioAmonts         skillReferingRatioAmonts;
         public SkillAddtionalFunctionals        skillAddtionalFunctionals;
     }
