@@ -1,9 +1,96 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Events;
+using System.Linq;
+using UnityEngine.Analytics;
 
 namespace Feature_NewData
 {
+    public enum E_STAT_USE_TYPE {
+        Fixed, Ratio
+    }
+    public enum E_STAT_CALC_TYPE  {
+        MulBefore_1 = 1, Add_2, MulAfter_3
+    }
+
+    public class Stat {
+        public readonly float BaseValue;
+        public readonly E_STAT_USE_TYPE UseType;
+        private float value;
+        private bool isDirty;
+        public float Value {
+            get {
+                if(isDirty) RecalculateValue();
+                return value;
+            }
+        }
+
+        private readonly List<StatCalculator> statCalculatorList = new();
+
+        public Stat(float baseValue, E_STAT_USE_TYPE UseType){
+            value = BaseValue = baseValue;
+            this.UseType = UseType;
+        }
+
+        public static implicit operator int(Stat stat) {
+            if(stat.UseType == E_STAT_USE_TYPE.Fixed)
+                return (int) stat.Value;
+            throw new System.Exception("Ratio 형식을 int로 리턴 불가.");
+        }
+        
+        public static implicit operator float(Stat stat) {
+            if(stat.UseType == E_STAT_USE_TYPE.Ratio)
+                return stat.Value;
+            throw new System.Exception("Value 형식을 float로 리턴 불가.");
+        }
+
+        public void AddCalculator(StatCalculator StatCalculator)
+        {
+            statCalculatorList.Add(StatCalculator);
+            statCalculatorList.OrderBy(calc => calc.Order);
+            isDirty = true;
+        }
+
+        public void RemoveCalculator(StatCalculator StatCalculator)
+        {
+            statCalculatorList.Remove(StatCalculator);
+            isDirty = true;
+        }
+        
+        public void ClearAllCalculators()
+        {
+            statCalculatorList.Clear();
+            isDirty = true;
+        }
+
+        public void RecalculateValue()
+        {
+            value = BaseValue;
+            statCalculatorList.ForEach( (calc) => {
+                    if(calc.ClacType == E_STAT_CALC_TYPE.Add_2) {
+                        this.value += calc.Value;
+                    }
+                    else {this.value *= value;}
+                }
+            );
+
+            isDirty = false;            
+        }
+    }
+
+
+    public class StatCalculator
+    {   
+        public readonly float Value;
+        public readonly E_STAT_CALC_TYPE ClacType;
+        public readonly int Order;
+        
+        public StatCalculator(float value, E_STAT_CALC_TYPE Type)
+        {
+            Value = value;
+            ClacType = Type; 
+            Order = (int) Type;
+        }
+    }
 
     /*********************************************************************************
     *
@@ -18,22 +105,34 @@ namespace Feature_NewData
         public EntityType Type;
         public string Name;
     }
+    
+    public enum E_NUMERIC_STAT_MEMBERS {
+        FixedMaxHp = 100, FixedDefence, FixedPower, FixedTenacity = 105, FixedMaxStamina, FixedLuck = 108,
+
+        RatioMaxHp = 200 , RatioDefence , RatioPower , RatioAttackSpeed , RatioMoveSpeed , RatioTenacity, ReferingRatioStaminaRestoreSpeed = 207,
+        RatioMaxDistance = 210, RatioMaxDuration, RatioSize, RatioSpeed,
+        RatioMaxProjectilePoolSize = 220, RatioRestoreSpeed, RatioMeleeDamage, RatioRangeDamage, RatioTechDamage,
+        RatioEfficienceMultiplyer = 230, RatioAccecerate
+    }
+
+    public enum E_FUNCTIONAL_ACTION_MEMBERS {
+        Move = 0, Damaged, Attack, Affected, Dead, Standing, PhyiscTriggered, Skill, 
+        
+        Created = 10, Interacted,  Released, Forwarding, 
+        WeaponUse = 20, WeaponChange, ProjectileRestore, 
+        SkillUse = 30, SkillChange, SkillRefilled
+    }
    
-    public interface INumericAccessable<T>
+    public interface INumericAccessable
     {
-        public T GetNumeric();
-        public void SetNumeric(T genericT);
+        public Stat GetNumeric(E_NUMERIC_STAT_MEMBERS numericMemberType);
+        public void SetNumeric(E_NUMERIC_STAT_MEMBERS numericMemberType, Stat stat);
     }
 
-    public interface IFunctionalAccessable<T>
+    public interface IFunctionalAccessable
     {
-        public T GetFunctional();
-        public void SetFunctional(T genericT);
-    }
-
-    public interface IDataAccessable<T> : INumericAccessable<T>, IFunctionalAccessable<T>
-    {
-
+        public UnityAction GetFunctional(E_FUNCTIONAL_ACTION_MEMBERS functionalActionType);
+        //public void SetFunctional(E_FUNCTIONAL_ACTION_MEMBERS functionalActionType);
     }
 
     /*
@@ -48,7 +147,7 @@ namespace Feature_NewData
     *********************************************************************************/
     #region Entity  Datas
 
-    public class EntityNumerics
+    public class EntityNumerics : INumericAccessable
     {
         public int MaxHp;           //OnDamaged
         public int Defence;       //OnDamaged
