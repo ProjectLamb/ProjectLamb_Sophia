@@ -51,5 +51,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Sophia_P_V_1_0.sln"
+    "dotnet.defaultSolution": "ProjectLamb_Sophia.sln"
 }

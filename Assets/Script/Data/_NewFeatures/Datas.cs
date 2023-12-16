@@ -1,97 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine.Events;
 using System.Linq;
+using UnityEngine;
 using UnityEngine.Analytics;
+using Feature_NewData;
 
 namespace Feature_NewData
 {
-    public enum E_STAT_USE_TYPE {
-        Fixed, Ratio
-    }
-    public enum E_STAT_CALC_TYPE  {
-        MulBefore_1 = 1, Add_2, MulAfter_3
-    }
-
-    public class Stat {
-        public readonly float BaseValue;
-        public readonly E_STAT_USE_TYPE UseType;
-        private float value;
-        private bool isDirty;
-        public float Value {
-            get {
-                if(isDirty) RecalculateValue();
-                return value;
-            }
-        }
-
-        private readonly List<StatCalculator> statCalculatorList = new();
-
-        public Stat(float baseValue, E_STAT_USE_TYPE UseType){
-            value = BaseValue = baseValue;
-            this.UseType = UseType;
-        }
-
-        public static implicit operator int(Stat stat) {
-            if(stat.UseType == E_STAT_USE_TYPE.Fixed)
-                return (int) stat.Value;
-            throw new System.Exception("Ratio 형식을 int로 리턴 불가.");
-        }
-        
-        public static implicit operator float(Stat stat) {
-            if(stat.UseType == E_STAT_USE_TYPE.Ratio)
-                return stat.Value;
-            throw new System.Exception("Value 형식을 float로 리턴 불가.");
-        }
-
-        public void AddCalculator(StatCalculator StatCalculator)
-        {
-            statCalculatorList.Add(StatCalculator);
-            statCalculatorList.OrderBy(calc => calc.Order);
-            isDirty = true;
-        }
-
-        public void RemoveCalculator(StatCalculator StatCalculator)
-        {
-            statCalculatorList.Remove(StatCalculator);
-            isDirty = true;
-        }
-        
-        public void ClearAllCalculators()
-        {
-            statCalculatorList.Clear();
-            isDirty = true;
-        }
-
-        public void RecalculateValue()
-        {
-            value = BaseValue;
-            statCalculatorList.ForEach( (calc) => {
-                    if(calc.ClacType == E_STAT_CALC_TYPE.Add_2) {
-                        this.value += calc.Value;
-                    }
-                    else {this.value *= value;}
-                }
-            );
-
-            isDirty = false;            
-        }
-    }
-
-
-    public class StatCalculator
-    {   
-        public readonly float Value;
-        public readonly E_STAT_CALC_TYPE ClacType;
-        public readonly int Order;
-        
-        public StatCalculator(float value, E_STAT_CALC_TYPE Type)
-        {
-            Value = value;
-            ClacType = Type; 
-            Order = (int) Type;
-        }
-    }
-
     /*********************************************************************************
     *
     * Data의 모든 수치가 
@@ -105,35 +20,17 @@ namespace Feature_NewData
         public EntityType Type;
         public string Name;
     }
-    
-    public enum E_NUMERIC_STAT_MEMBERS {
-        FixedMaxHp = 100, FixedDefence, FixedPower, FixedTenacity = 105, FixedMaxStamina, FixedLuck = 108,
 
-        RatioMaxHp = 200 , RatioDefence , RatioPower , RatioAttackSpeed , RatioMoveSpeed , RatioTenacity, ReferingRatioStaminaRestoreSpeed = 207,
-        RatioMaxDistance = 210, RatioMaxDuration, RatioSize, RatioSpeed,
-        RatioMaxProjectilePoolSize = 220, RatioRestoreSpeed, RatioMeleeDamage, RatioRangeDamage, RatioTechDamage,
-        RatioEfficienceMultiplyer = 230, RatioAccecerate
-    }
 
-    public enum E_FUNCTIONAL_ACTION_MEMBERS {
-        Move = 0, Damaged, Attack, Affected, Dead, Standing, PhyiscTriggered, Skill, 
-        
-        Created = 10, Interacted,  Released, Forwarding, 
-        WeaponUse = 20, WeaponChange, ProjectileRestore, 
-        SkillUse = 30, SkillChange, SkillRefilled
-    }
-   
-    public interface INumericAccessable
+
+
+    public enum E_SYNERGY_MEMBERS 
     {
-        public Stat GetNumeric(E_NUMERIC_STAT_MEMBERS numericMemberType);
-        public void SetNumeric(E_NUMERIC_STAT_MEMBERS numericMemberType, Stat stat);
+        Viking, Barbarian,Crusader,
+        Cowboy
     }
 
-    public interface IFunctionalAccessable
-    {
-        public UnityAction GetFunctional(E_FUNCTIONAL_ACTION_MEMBERS functionalActionType);
-        //public void SetFunctional(E_FUNCTIONAL_ACTION_MEMBERS functionalActionType);
-    }
+    public interface IDataAccessable : INumericAccessable, IFunctionalAccessable { }
 
     /*
     float은 비율이다.
@@ -147,94 +44,155 @@ namespace Feature_NewData
     *********************************************************************************/
     #region Entity  Datas
 
-    public class EntityNumerics : INumericAccessable
+    public class EntityNumerics : Numerics
     {
-        public int MaxHp;           //OnDamaged
-        public int Defence;       //OnDamaged
-        public int Power;           //OnAttack
-        public float AttackSpeed;     //OnAttack
-        public float MoveSpeed;     //OnMove
-        public int Tenacity;      //OnAffected
+        public EntityNumerics()
+        {
+            numerics.Add(E_NUMERIC_STAT_MEMBERS.FixedMaxHp, new Stat(0, E_STAT_USE_TYPE.Fixed));
+            numerics.Add(E_NUMERIC_STAT_MEMBERS.FixedDefence, new Stat(0, E_STAT_USE_TYPE.Fixed));
+            numerics.Add(E_NUMERIC_STAT_MEMBERS.FixedPower, new Stat(0, E_STAT_USE_TYPE.Fixed));
+            numerics.Add(E_NUMERIC_STAT_MEMBERS.FixedTenacity, new Stat(0, E_STAT_USE_TYPE.Fixed));
+            numerics.Add(E_NUMERIC_STAT_MEMBERS.FixedMaxStamina, new Stat(0, E_STAT_USE_TYPE.Fixed));
+            numerics.Add(E_NUMERIC_STAT_MEMBERS.FixedLuck, new Stat(0, E_STAT_USE_TYPE.Fixed));
+
+            numerics.Add(E_NUMERIC_STAT_MEMBERS.RatioMaxHp, new Stat(1f, E_STAT_USE_TYPE.Ratio));
+            numerics.Add(E_NUMERIC_STAT_MEMBERS.RatioDefence, new Stat(1f, E_STAT_USE_TYPE.Ratio));
+            numerics.Add(E_NUMERIC_STAT_MEMBERS.RatioPower, new Stat(1f, E_STAT_USE_TYPE.Ratio));
+            numerics.Add(E_NUMERIC_STAT_MEMBERS.RatioAttackSpeed, new Stat(1f, E_STAT_USE_TYPE.Ratio));
+            numerics.Add(E_NUMERIC_STAT_MEMBERS.RatioMoveSpeed, new Stat(1f, E_STAT_USE_TYPE.Ratio));
+            numerics.Add(E_NUMERIC_STAT_MEMBERS.RatioTenacity, new Stat(1f, E_STAT_USE_TYPE.Ratio));
+            numerics.Add(E_NUMERIC_STAT_MEMBERS.RatioStaminaRestoreSpeed, new Stat(1f, E_STAT_USE_TYPE.Ratio));
+        }
     }
 
     public class EntityFunctionals
     {
-        public UnityAction OnMove;
-        public UnityAction OnDamaged;
-        public UnityAction OnAttack;
-        public UnityAction OnAffected;
-        public UnityAction OnDead;
-        public UnityAction OnStanding;
-        public UnityAction OnPhyiscTriggered;
+        ExtraAction<bool>        moveExtra;
+        ExtraAction<int>         damagedExtra;
+        ExtraAction<bool>        attackExtra;
+        ExtraAction<bool>        deadExtra;
+        ExtraAction<bool>        standingExtra;
+        ExtraAction<Collision>   phyiscTriggeredExtra;
+
+        public EntityFunctionals()
+        {
+            ExtraAction<bool>        moveExtra               = new ExtraAction<bool>();
+            ExtraAction<int>         damagedExtra            = new ExtraAction<int>();
+            ExtraAction<bool>        attackExtra             = new ExtraAction<bool>();
+            ExtraAction<bool>        deadExtra               = new ExtraAction<bool>();
+            ExtraAction<bool>        standingExtra           = new ExtraAction<bool>();
+            ExtraAction<Collision>   phyiscTriggeredExtra    = new ExtraAction<Collision>();
+        }
+
+        public void TempFunction(){
+            Dictionary<E_EXTRA_PERFORM_TYPE, UnityActionRef<bool>> voidExtras = moveExtra;
+            bool voidBool = true;
+            voidExtras[E_EXTRA_PERFORM_TYPE.Start].Invoke(ref voidBool);
+        }
     }
 
-    public class EntityData : INumericAccessable<EntityNumerics>, IFunctionalAccessable<EntityFunctionals>
+    public class EntityData : IDataAccessable
     {
         private EntityNumerics entityNumerics;
         private EntityFunctionals entityFunctionals;
         /*  Numeric     Data    */
-        public EntityNumerics GetNumeric()
+        public Stat GetNumeric(E_NUMERIC_STAT_MEMBERS numericMemberType)
         {
-            return null;
+            return entityNumerics.GetNumeric(numericMemberType);
         }
 
-        public void SetNumeric(EntityNumerics genericT)
+        public void SetNumeric(E_NUMERIC_STAT_MEMBERS numericMemberType, float value, E_STAT_USE_TYPE useType)
         {
-
+            entityNumerics.SetNumeric(numericMemberType, value, useType);
         }
 
-        /*  Functional  Data    */
-        public EntityFunctionals GetFunctional()
+        public void AddCalculator(E_NUMERIC_STAT_MEMBERS numericMemberType, StatCalculator calc)
         {
-            return null;
+            entityNumerics.AddCalculator(numericMemberType, calc);
         }
 
-        public void SetFunctional(EntityFunctionals genericT)
+        public void RemoveCalculator(E_NUMERIC_STAT_MEMBERS numericMemberType, StatCalculator calc)
         {
+            entityNumerics.RemoveCalculator(numericMemberType, calc);
+        }
 
+        public void ResetCalculators(E_NUMERIC_STAT_MEMBERS numericMemberType)
+        {
+            entityNumerics.ResetCalculators(numericMemberType);
+        }
+
+        public UnityAction GetFunctional(E_FUNCTIONAL_ACTION_MEMBERS functionalActionType)
+        {
+            return entityFunctionals.GetFunctional(functionalActionType);
+        }
+
+        public void SetFunctional(E_FUNCTIONAL_ACTION_MEMBERS functionalActionType, UnityAction action)
+        {
+            entityFunctionals.SetFunctional(functionalActionType, action);
         }
     }
 
-    public class PlayerNumerics : EntityNumerics
+    public class PlayerNumerics : Numerics
     {
-        public int MaxStamina;
-        public float StaminaRestoreSpeed;
-        public int Luck;
+        public PlayerNumerics()
+        {
+            numerics.Add(E_NUMERIC_STAT_MEMBERS.FixedMaxStamina, new Stat(0, E_STAT_USE_TYPE.Fixed));
+            numerics.Add(E_NUMERIC_STAT_MEMBERS.FixedLuck, new Stat(0, E_STAT_USE_TYPE.Fixed));
+            numerics.Add(E_NUMERIC_STAT_MEMBERS.RatioStaminaRestoreSpeed, new Stat(1f, E_STAT_USE_TYPE.Ratio));
+        }
     }
 
-    public class Wealths {
+    public struct Wealths
+    {
         public int Gear;
         public int Frag;
     }
 
 
-    public class PlayerFunctionals
+    public class PlayerFunctionals : Functional
     {
-        public UnityAction OnSkill;
+        public PlayerFunctionals()
+        {
+            functionals.Add(E_FUNCTIONAL_ACTION_MEMBERS.Skill, () => { });
+        }
     }
 
-    public class PlayerData : INumericAccessable<PlayerNumerics>, IFunctionalAccessable<PlayerFunctionals>
+    public class PlayerData : IDataAccessable
     {
-        private PlayerNumerics PlayerNumerics;
-        private PlayerFunctionals PlayerFunctionals;
-        /*  Numeric     Data    */
-        public PlayerNumerics GetNumeric()
+        private PlayerNumerics playerNumerics;
+        private PlayerFunctionals playerFunctionals;
+
+        public Stat GetNumeric(E_NUMERIC_STAT_MEMBERS numericMemberType)
         {
-            return null;
+            return playerNumerics.GetNumeric(numericMemberType);
         }
 
-        public void SetNumeric(PlayerNumerics genericT)
+        public void SetNumeric(E_NUMERIC_STAT_MEMBERS numericMemberType, float value, E_STAT_USE_TYPE useType)
         {
-
+            playerNumerics.SetNumeric(numericMemberType, value, useType);
         }
 
-        /*  Functional  Data    */
-        public PlayerFunctionals GetFunctional()
+        public void AddCalculator(E_NUMERIC_STAT_MEMBERS numericMemberType, StatCalculator calc)
         {
-            return null;
+            playerNumerics.AddCalculator(numericMemberType, calc);
         }
 
-        public void SetFunctional(PlayerFunctionals genericT)
+        public void RemoveCalculator(E_NUMERIC_STAT_MEMBERS numericMemberType, StatCalculator calc)
+        {
+            playerNumerics.RemoveCalculator(numericMemberType, calc);
+        }
+
+        public void ResetCalculators(E_NUMERIC_STAT_MEMBERS numericMemberType)
+        {
+            playerNumerics.ResetCalculators(numericMemberType);
+        }
+
+        public UnityAction GetFunctional(E_FUNCTIONAL_ACTION_MEMBERS functionalActionType)
+        {
+            return playerFunctionals.GetFunctional(functionalActionType);
+        }
+
+        public void SetFunctional(E_FUNCTIONAL_ACTION_MEMBERS functionalActionType, UnityAction action)
         {
 
         }
@@ -248,101 +206,147 @@ namespace Feature_NewData
     *
     *********************************************************************************/
     #region Carrier Instantiator  Datas
-    public class InstatiatorNumerics
+    public class InstatiatorNumerics : Numerics
     {
-        public float MaxDistance;
-        public float MaxDuration;
-        public float Size;
-        public float Speed;
+        public InstatiatorNumerics()
+        {
+            numerics.Add(E_NUMERIC_STAT_MEMBERS.RatioMaxDistance, new Stat(1f, E_STAT_USE_TYPE.Ratio));
+            numerics.Add(E_NUMERIC_STAT_MEMBERS.RatioMaxDuration, new Stat(1f, E_STAT_USE_TYPE.Ratio));
+            numerics.Add(E_NUMERIC_STAT_MEMBERS.RatioSize, new Stat(1f, E_STAT_USE_TYPE.Ratio));
+            numerics.Add(E_NUMERIC_STAT_MEMBERS.RatioSpeed, new Stat(1f, E_STAT_USE_TYPE.Ratio));
+        }
     }
 
-    public class InstatiatorFunctionals
+    public class InstatiatorFunctionals : Functional
     {
-        public UnityAction OnCreated;
-        public UnityAction OnInteracted;
-        public UnityAction OnReleased;
-        public UnityAction OnForwarding;
+        public InstatiatorFunctionals()
+        {
+            functionals.Add(E_FUNCTIONAL_ACTION_MEMBERS.Created, () => { });
+            functionals.Add(E_FUNCTIONAL_ACTION_MEMBERS.Triggerd, () => { });
+            functionals.Add(E_FUNCTIONAL_ACTION_MEMBERS.Released, () => { });
+            functionals.Add(E_FUNCTIONAL_ACTION_MEMBERS.Forwarding, () => { });
+        }
     }
 
     public class WeaponNumerics : InstatiatorNumerics
     {
-        public int   MaxProjectilePoolSize;  // 근접 3단 공격이면 3개, 총알이면 30개
-        public float RestoreSpeed;          // Projectile 회수딜레이
-        public float MeleeDamageRatio;      // 근접공격 비례댐
-        public float RangeDamageRatio;      // 원거리 공격 비례댐
-        public float TechDamageRatio;       // 해킹/테크 공격 비례댐
+        public WeaponNumerics() : base()
+        {
+            numerics.Add(E_NUMERIC_STAT_MEMBERS.RatioMaxProjectilePoolSize, new Stat(1f, E_STAT_USE_TYPE.Ratio));        // 근접 3단 공격이면 3개, 총알이면 30개
+            numerics.Add(E_NUMERIC_STAT_MEMBERS.RatioRestoreSpeed, new Stat(1f, E_STAT_USE_TYPE.Ratio));                 // Projectile 회수딜레이
+            numerics.Add(E_NUMERIC_STAT_MEMBERS.RatioMeleeDamage, new Stat(1f, E_STAT_USE_TYPE.Ratio));                  // 근접공격 비례댐
+            numerics.Add(E_NUMERIC_STAT_MEMBERS.RatioRangeDamage, new Stat(1f, E_STAT_USE_TYPE.Ratio));                  // 원거리 공격 비례댐
+            numerics.Add(E_NUMERIC_STAT_MEMBERS.RatioTechDamage, new Stat(1f, E_STAT_USE_TYPE.Ratio));                   // 해킹/테크 공격 비례댐
+        }
     }
 
     public class WeaponFunctionals : InstatiatorFunctionals
     {
-        public UnityAction OnWeaponUse;
-        public UnityAction OnWeaponChange;
-        public UnityAction OnProjectileRestore;
+        public WeaponFunctionals()
+        {
+            functionals.Add(E_FUNCTIONAL_ACTION_MEMBERS.WeaponUse, () => { });
+            functionals.Add(E_FUNCTIONAL_ACTION_MEMBERS.ProjectileRestore, () => { });
+        }
     }
-    
-    public class WeaponData : INumericAccessable<WeaponNumerics>, IFunctionalAccessable<WeaponFunctionals>
+
+    public class WeaponData : IDataAccessable
     {
-        private WeaponNumerics WeaponNumerics;
-        private WeaponFunctionals WeaponFunctionals;
+        private WeaponNumerics weaponNumerics;
+        private WeaponFunctionals weaponFunctionals;
         /*  Numeric     Data    */
-        public WeaponNumerics GetNumeric()
+
+        public Stat GetNumeric(E_NUMERIC_STAT_MEMBERS numericMemberType)
         {
-            return null;
+            return weaponNumerics.GetNumeric(numericMemberType);
         }
 
-        public void SetNumeric(WeaponNumerics genericT)
+        public void SetNumeric(E_NUMERIC_STAT_MEMBERS numericMemberType, float value, E_STAT_USE_TYPE useType)
         {
-
+            weaponNumerics.SetNumeric(numericMemberType, value, useType);
         }
 
-        /*  Functional  Data    */
-        public WeaponFunctionals GetFunctional()
+        public void AddCalculator(E_NUMERIC_STAT_MEMBERS numericMemberType, StatCalculator calc)
         {
-            return null;
+            weaponNumerics.AddCalculator(numericMemberType, calc);
         }
 
-        public void SetFunctional(WeaponFunctionals genericT)
+        public void RemoveCalculator(E_NUMERIC_STAT_MEMBERS numericMemberType, StatCalculator calc)
         {
+            weaponNumerics.RemoveCalculator(numericMemberType, calc);
+        }
 
+        public void ResetCalculators(E_NUMERIC_STAT_MEMBERS numericMemberType)
+        {
+            weaponNumerics.ResetCalculators(numericMemberType);
+        }
+
+        public UnityAction GetFunctional(E_FUNCTIONAL_ACTION_MEMBERS functionalActionType)
+        {
+            return weaponFunctionals.GetFunctional(functionalActionType);
+        }
+
+        public void SetFunctional(E_FUNCTIONAL_ACTION_MEMBERS functionalActionType, UnityAction action)
+        {
+            weaponFunctionals.SetFunctional(functionalActionType, action);
         }
     }
 
-    public class SkillNumerics : InstatiatorNumerics{
-        public float EfficienceMultiplyer;
-        public float Accecerate;
-    }
-
-    public class SkillFunctionals : InstatiatorFunctionals{
-        public UnityAction OnUse;
-        public UnityAction OnSkillChange;
-        public UnityAction OnSkillRefilled;
-    }
-
-    public class SkillData : INumericAccessable<SkillNumerics>, IFunctionalAccessable<SkillFunctionals>
+    public class SkillNumerics : InstatiatorNumerics
     {
-        private SkillNumerics SkillNumerics;
-        private SkillFunctionals SkillFunctionals;
-        /*  Numeric     Data    */
-        public SkillNumerics GetNumeric()
+        public SkillNumerics() : base()
         {
-            return null;
+            numerics.Add(E_NUMERIC_STAT_MEMBERS.RatioEfficienceMultiplyer, new Stat(1f, E_STAT_USE_TYPE.Ratio));
+            numerics.Add(E_NUMERIC_STAT_MEMBERS.RatioAccecerate, new Stat(1f, E_STAT_USE_TYPE.Ratio));
         }
 
-        public void SetNumeric(SkillNumerics genericT)
-        {
+    }
 
+    public class SkillFunctionals : InstatiatorFunctionals
+    {
+        public SkillFunctionals()
+        {
+            functionals.Add(E_FUNCTIONAL_ACTION_MEMBERS.SkillUse, () => { });
+            functionals.Add(E_FUNCTIONAL_ACTION_MEMBERS.SkillRefilled, () => { });
+        }
+    }
+
+    public class SkillData : IDataAccessable
+    {
+        public SkillNumerics skillNumerics;
+        public SkillFunctionals skillFunctionals;
+        public Stat GetNumeric(E_NUMERIC_STAT_MEMBERS numericMemberType)
+        {
+            return skillNumerics.GetNumeric(numericMemberType);
+        }
+        public void SetNumeric(E_NUMERIC_STAT_MEMBERS numericMemberType, float value, E_STAT_USE_TYPE useType)
+        {
+            skillNumerics.SetNumeric(numericMemberType, value, useType);
+        }
+        public void AddCalculator(E_NUMERIC_STAT_MEMBERS numericMemberType, StatCalculator calc)
+        {
+            skillNumerics.AddCalculator(numericMemberType, calc);
         }
 
-        /*  Functional  Data    */
-        public SkillFunctionals GetFunctional()
+        public void RemoveCalculator(E_NUMERIC_STAT_MEMBERS numericMemberType, StatCalculator calc)
         {
-            return null;
+            skillNumerics.RemoveCalculator(numericMemberType, calc);
         }
 
-        public void SetFunctional(SkillFunctionals genericT)
+        public void ResetCalculators(E_NUMERIC_STAT_MEMBERS numericMemberType)
         {
-
+            skillNumerics.ResetCalculators(numericMemberType);
         }
+        public UnityAction GetFunctional(E_FUNCTIONAL_ACTION_MEMBERS functionalActionType)
+        {
+            return skillFunctionals.GetFunctional(functionalActionType);
+        }
+
+        public void SetFunctional(E_FUNCTIONAL_ACTION_MEMBERS functionalActionType, UnityAction action)
+        {
+            skillFunctionals.SetFunctional(functionalActionType, action);
+        }
+
+
     }
 
     // 아이템 데이터는 매우 많기 때문에 Numerica Acceable과 FunctionalAcceable을 통해 가져와야한다... 
