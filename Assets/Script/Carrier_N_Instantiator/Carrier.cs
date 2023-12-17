@@ -34,7 +34,7 @@ namespace Sophia_Carriers{
         //    if(_genOwner == null) {throw new System.Exception("투사체 생성 엔티티가 NULL임");}
         //    this.isInitialized = true;
         //}
-        public virtual void  SetScale(float _sizeRatio){transform.localScale *= _sizeRatio;}
+        public virtual void SetScale(float _sizeRatio){transform.localScale *= _sizeRatio;}
         public virtual void EnableSelf() {gameObject.SetActive(true); this.IsActivated = true; }
         public virtual void DisableSelf() {gameObject.SetActive(false); this.IsActivated = false;}
         public virtual void DestroySelf()  {

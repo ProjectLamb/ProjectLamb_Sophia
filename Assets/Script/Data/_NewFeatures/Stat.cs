@@ -1,12 +1,20 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using AYellowpaper.SerializedCollections.Editor;
+using UnityEngine.EventSystems;
 
 namespace Feature_NewData
 {
     public enum E_STAT_USE_TYPE
     {
-        Fixed, Ratio
+        Natural, Ratio
+    }
+
+    [System.Serializable]
+    public struct StatData {
+        public float BaseValue;
+        public E_STAT_USE_TYPE UseType;
     }
 
     public class Stat
@@ -24,9 +32,10 @@ namespace Feature_NewData
             this.UseType = UseType;
         }
 
+
         public static implicit operator int(Stat stat)
         {
-            if (stat.UseType == E_STAT_USE_TYPE.Fixed)
+            if (stat.UseType == E_STAT_USE_TYPE.Natural)
             {
                 stat.RecalculateStat();
                 return (int)stat.value;
@@ -42,6 +51,20 @@ namespace Feature_NewData
                 return stat.value;
             }
             throw new System.Exception("Value 형식을 float로 리턴 불가.");
+        }
+        
+        // 모든것은 float로 관리하려고 했지만. MaxStamina는 무조건 Int형이 되야 한다.
+        public int GetValueByNature() {
+            if(UseType.Equals(E_STAT_USE_TYPE.Natural)) {
+                return (int)Math.Clamp(value, 0, int.MaxValue);
+            }
+            throw new System.Exception("Ratio 형식을 Natural로 리턴 불가.");
+        }
+        public float GetValueByRatio() {
+            if(UseType.Equals(E_STAT_USE_TYPE.Ratio)) {
+                return Math.Clamp(value, 0.0f, 100);
+            }
+            throw new System.Exception("Natural 형식을 Ratio로 리턴 불가.");
         }
 
         public void AddCalculator(StatCalculator StatCalculator)
@@ -68,15 +91,16 @@ namespace Feature_NewData
             if(isDirty == false) return;
 
             value = BaseValue;
-            statCalculatorList.ForEach((calc) =>
-            {
-                if (calc.ClacType == E_STAT_CALC_TYPE.Add_2)
-                {
-                    this.value += calc.Value;
+            statCalculatorList.ForEach((calc) => {
+                    if (calc.ClacType == E_STAT_CALC_TYPE.Add_2)
+                    {
+                        this.value += calc.Value;
+                    }
+                    else { this.value *= value; }
                 }
-                else { this.value *= value; }
-            }
             );
+            if(value <= 0.001f) {value = 0;}
+            else {value = (float) Math.Round(value, 3);}
 
             isDirty = false;
         }
