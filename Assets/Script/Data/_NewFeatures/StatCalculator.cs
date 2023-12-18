@@ -7,7 +7,7 @@ namespace Feature_NewData
 {
     public enum E_STAT_CALC_TYPE
     {
-        MulBefore_1 = 1, Add_2, MulAfter_3
+        Add, Mul
     }
 
     public class StatCalculator

@@ -6,10 +6,14 @@ using UnityEngine.Pool;
 
 namespace Feature_NewData
 {
-    public class MeleeWeapon : MonoBehaviour{
+    /*
+    is read에 대한것은 Statemachine으로 관리하기
+    */
+    public class MeleeWeapon : MonoBehaviour, IWeaponStatAccessable{
         private List<IObjectPool<Projectile>> ProjectilePool;
         private List<Projectile> creatableProjectile;
-        private int creteIndex = 0;
+        private int createIndex = 0;
+        private int currentProjectileIndex = 0;
         public int MaxPoolSize;
         public int bucketSize;
 
@@ -17,20 +21,21 @@ namespace Feature_NewData
         private Stat AttackSpeed;
 
         private Player playerRef;
-        
+
+        public Stat GetWeaponRatioDamage() { return RatioMeleeDamage;  }
+        public Stat GetAttackSpeed() { return AttackSpeed;  }        
 
         private void Awake() {
             RatioMeleeDamage = new Stat(1, E_STAT_USE_TYPE.Ratio);
             AttackSpeed = new Stat(-1, E_STAT_USE_TYPE.Ratio);     // ?? 어떤 수치를 가지고 공식은 어떻게 되야 하는걸까?
+            ProjectilePool = new List<IObjectPool<Projectile>>(creatableProjectile.Count);
         }
 
         private void OnEnable() {
-            ProjectilePool = new List<IObjectPool<Projectile>>(creatableProjectile.Count);
-            while(creteIndex < creatableProjectile.Count) {
-                ProjectilePool.Add(new ObjectPool<Projectile>(CreateProjectile, GetProjectile ,ReleaseProjectile, DestroyProjectile ,maxSize:MaxPoolSize));
-                creteIndex++;
+            while(createIndex < creatableProjectile.Count) {
+                ProjectilePool[createIndex] = new ObjectPool<Projectile>(CreateProjectile, GetProjectile ,ReleaseProjectile, DestroyProjectile ,maxSize:MaxPoolSize);
+                createIndex++;
             }
-            creteIndex = 0;
         }
 
         public void SetPlayer(Player player) {
@@ -41,14 +46,13 @@ namespace Feature_NewData
             creatableProjectile = new List<Projectile>(projectiles);
         }
         
-        public void Attack(){
-            var projectile = ProjectilePool[(creteIndex++ % creatableProjectile.Count)].Get();
-            
+        public void Use(){
+            var projectile = ProjectilePool[currentProjectileIndex++ % createIndex].Get();
         }
 
         private Projectile CreateProjectile() {
-            Projectile concreteProjectile = Instantiate(creatableProjectile[creteIndex]);
-            concreteProjectile.SetPool(ProjectilePool[creteIndex]);
+            Projectile concreteProjectile = Instantiate(creatableProjectile[createIndex]);
+            concreteProjectile.SetPool(ProjectilePool[createIndex]);
             return concreteProjectile;
         }
 
