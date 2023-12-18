@@ -5,38 +5,28 @@ namespace Feature_NewData
 {
     public class Player 
         : MonoBehaviour, IRestoreable, IDamagable, IDieable, 
-        IStatAccessable, IModelAccessable {
+        IPlayerStatAccessable, IWeaponStatAccessable, IModelAccessable {
         
-        private Stat MaxHp;
-        private float CurrentHealth;
-        private Stat Defence;
-        private Stat Power;        
-        private Stat MoveSpeed;
-        private Stat Tenacity;
-        public Stat MaxStamina;
+        private float currentHealth;
         private int CurrentStamina;
         public Stat StaminaRestoreSpeed;
         public Stat Luck;
-
         public Wealths PlayerWealth;
-
         public ModelManger modelManger;
+        public MeleeWeapon meleeWeapon;
 
-        public Stat GetMaxUp() { return MaxHp; }
-
+        public Stat GetMaxHP() { return MaxHp; }
         public Stat GetDefence() { return Defence; }
-
         public Stat GetPower() { return Power; }
-
         public Stat GetMoveSpeed() { return MoveSpeed; }
-
         public Stat GetTenacity() { return Tenacity; }
-
+        public Stat GetMaxStamina() {return MaxStamina;}
+        public Stat GetStaminaRestoreSpeed() {return StaminaRestoreSpeed;}
+        public Stat GetLuck() {return Luck;}
+        public Stat GetWeaponRatioDamage() { return meleeWeapon.GetWeaponRatioDamage();  }
+        public Stat GetAttackSpeed() { return meleeWeapon.GetAttackSpeed();  }
         
-        public IStatAccessable GetStat()
-        {
-            return this;
-        }
+        public IPlayerStatAccessable GetStat() {return this;}
 
         public void ChangeSkin(Material skin) { modelManger.ChangeSkin(skin); }
         public void RevertSkin() { modelManger.RevertSkin(); }
