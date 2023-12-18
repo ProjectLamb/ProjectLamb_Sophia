@@ -22,6 +22,9 @@ namespace Feature_NewData
         public void SetForwardingAngle(Quaternion instantiatorAngle) {
             this.transform.rotation = Quaternion.Euler(instantiatorAngle.eulerAngles + this.transform.eulerAngles);
         }
+        public void OnDisable() {
+            OnBecameInvisible();
+        }
 
         private void OnTriggerEnter(Collider other) {
             if(other.TryGetComponent<IDamagable>(out IDamagable damagables)) {
@@ -39,7 +42,7 @@ namespace Feature_NewData
             poolRefer = pool;
         }
 
-        public void OnBecameInvisible() {
+        private void OnBecameInvisible() {
             poolRefer.Release(this);
             this.transform.localScale = Vector3.one;
             this.transform.rotation = Quaternion.identity;
