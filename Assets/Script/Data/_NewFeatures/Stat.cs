@@ -70,7 +70,7 @@ namespace Feature_NewData
         public void AddCalculator(StatCalculator StatCalculator)
         {
             statCalculatorList.Add(StatCalculator);
-            statCalculatorList.OrderBy(calc => calc.Order);
+            // statCalculatorList.OrderBy(calc => calc.Order);
             isDirty = true;
         }
 
@@ -91,15 +91,23 @@ namespace Feature_NewData
             if(isDirty == false) return;
 
             value = BaseValue;
+            float Adder = 0;
+            float Multiplier = 1.0f;
             statCalculatorList.ForEach((calc) => {
-                    if (calc.ClacType == E_STAT_CALC_TYPE.Add_2)
-                    {
-                        this.value += calc.Value;
+                switch(calc.ClacType) {
+                    case E_STAT_CALC_TYPE.Add:  {
+                        Adder += calc.Value;
+                        break;
                     }
-                    else { this.value *= value; }
+                    case E_STAT_CALC_TYPE.Mul:  {
+                        Multiplier *= calc.Value;
+                        break;
+                    }
                 }
-            );
-            if(value <= 0.001f) {value = 0;}
+                value = (value + Adder) * Multiplier;
+            });
+
+            if(value <= 1.001f) {value = 1;}
             else {value = (float) Math.Round(value, 3);}
 
             isDirty = false;

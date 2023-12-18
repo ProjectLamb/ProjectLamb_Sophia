@@ -12,14 +12,6 @@ namespace Feature_NewData
     * 양수로 되면 더 좋아진다라고 판단하면 됩니다.
     *
     *********************************************************************************/
-
-    public struct EntityIdentifier
-    {
-        public int ID;
-        public EntityType Type;
-        public string Name;
-    }
-
     public enum E_SYNERGY_MEMBERS 
     {
         Viking, Barbarian,Crusader,
@@ -40,10 +32,7 @@ namespace Feature_NewData
 
     public class EntityNumerics : Numerics
     {
-        public EntityNumerics(ScriptableObjEntityNumerics scriptableObj)
-        {
-            
-        }
+        public EntityNumerics(){}
     }
 
     public class EntityData 
@@ -74,9 +63,7 @@ namespace Feature_NewData
 
     public class PlayerNumerics : Numerics
     {
-        public PlayerNumerics(ScriptableObjPlayerNumeric scriptableObj)
-        {
-        }
+        public PlayerNumerics(){}
     }
 
     public struct Wealths

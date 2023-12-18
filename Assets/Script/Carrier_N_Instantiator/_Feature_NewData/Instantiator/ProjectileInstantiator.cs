@@ -9,17 +9,17 @@ namespace Feature_NewData
     {
         private IObjectPool<Projectile> ProjectilePool;
         private List<Projectile> creatableProjectile;
-        private int creteIndex = 0;
-        public int PoolMaxSize;
+        private int createIndex = 0;
+        public int MaxPoolSize;
         public int bucketSize;
 
-        private void Awake() {
+        private void OnEnable() {
             ProjectilePool = new ObjectPool<Projectile>(
                 createFunc: CreateProjectile,
                 actionOnGet: GetProjectile,
                 actionOnRelease: ReleaseProjectile,
                 actionOnDestroy: DestroyProjectile,
-                maxSize: PoolMaxSize
+                maxSize: MaxPoolSize
             );
         }
 
@@ -28,7 +28,7 @@ namespace Feature_NewData
         }
 
         private Projectile CreateProjectile() {
-            Projectile concreteProjectile = Instantiate(creatableProjectile[creteIndex++ % creatableProjectile.Count]);
+            Projectile concreteProjectile = Instantiate(creatableProjectile[createIndex++ % creatableProjectile.Count]);
             concreteProjectile.SetPool(ProjectilePool);
             return concreteProjectile;
         }
