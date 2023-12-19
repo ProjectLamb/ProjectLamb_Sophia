@@ -61,6 +61,7 @@ namespace Feature_NewData
             }
         }
         
+        private const float baseAccelerationAmount = 1f;
         private float accelerationAmount = 1f; // Ratio;
         private readonly bool IsDebug = false;
 
@@ -82,7 +83,7 @@ namespace Feature_NewData
             }
         }
 
-        public CoolTimeManager(float baseCoolTime, bool debugState) : this (baseCoolTime, 1, debugState){}
+        public CoolTimeManager(float baseCoolTime, int stackAmount) : this (baseCoolTime, stackAmount, false){}
         public CoolTimeManager(float baseCoolTime) : this (baseCoolTime, 1, false){}
 
 #endregion
@@ -102,14 +103,21 @@ namespace Feature_NewData
 #endregion
              
 #region Setter
+        public CoolTimeManager SetMaxStackCounts(int counts) {
+            baseStacksCount = counts;
+            CurrentStacksCount = counts;
+            return this;
+        }
 
         public CoolTimeManager SetAcceleratrion(float amount) { 
+            if(amount <= 0) {amount = 0;}
             accelerationAmount = amount; 
             return this;
         }
         
         public void AccelerateRemainByCurrentCoolTime(float dimRatio) {
-            CurrentPassedTime += CurrentPassedTime * dimRatio;    
+            CurrentPassedTime += CurrentPassedTime * dimRatio;
+            if(CurrentPassedTime >= baseCoolTime) {OnFinished.Invoke();}
         }
 
         public void AccelerateFixedCoolTime (ref float second) {
@@ -152,11 +160,18 @@ namespace Feature_NewData
             return this;
         }
 
+        private event UnityAction OnInitialized = null;
+        public CoolTimeManager AddOnInitialized(UnityAction action) {
+            OnInitialized += action;
+            return this;
+        }
+
         public void ClearEvents() {
             OnStartCooldown = null; 
             OnTicking = null; 
             OnFinished = null; 
                  
+            OnInitialized     ??= (this.IsDebug) ? () => {Debug.Log("Initialized");}                        :  () => {};
             OnFinished          ??= (this.IsDebug) ? () => {Debug.Log("Started");}                         :  () => {};
             OnUseAction         ??= (this.IsDebug) ?() => {Debug.Log($"Use ... {CurrentStacksCount}");}     :  () => {};
             OnTicking           ??= (this.IsDebug) ? (float val) => {Debug.Log($"Ticking ... {val}");}     :  (float val) => {};
@@ -203,6 +218,7 @@ namespace Feature_NewData
                     if(CurrentStacksCount == baseStacksCount) {
                         CurrentPassedTime = baseCoolTime;
                         OnFinished.Invoke();
+                        OnInitialized.Invoke();
                         return;
                     }
                     CurrentPassedTime = 0.0f;
