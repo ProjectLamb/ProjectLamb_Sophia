@@ -10,6 +10,7 @@ using FMODPlus;
 
 using Component = UnityEngine.Component;
 using Random = UnityEngine.Random;
+using Feature_NewData;
 
 public class Player : Entity {
 
@@ -22,6 +23,8 @@ public class Player : Entity {
     [SerializeField]
     public ScriptableObjPlayerData ScriptablePD;
     //고유성을 가지고 있다는것이 특징이라서 Static하면 안되지 않을까?    
+
+    /*
     [SerializeField] private int mCurrentStamina;
     public  int CurrentStamina {
         get {return mCurrentStamina;}
@@ -30,6 +33,9 @@ public class Player : Entity {
             if(mCurrentStamina < 0) {mCurrentStamina = 0;}
         }
     }
+    */
+
+    public DashSkill DashSkillAbility;
     
     [SerializeField] private int mBarrierAmount;
     public  int BarrierAmount {
@@ -101,7 +107,11 @@ public class Player : Entity {
 
     private void Start() {
         CurrentHealth = PlayerDataManager.GetEntityData().MaxHP;//FinalPlayerData.PlayerEntityData.MaxHP;
-        CurrentStamina = PlayerDataManager.GetPlayerData().MaxStamina;//FinalPlayerData.PlayerEntityData.MaxHP;
+        // CurrentStamina = PlayerDataManager.GetPlayerData().MaxStamina;//FinalPlayerData.PlayerEntityData.MaxHP;
+        
+        DashSkillAbility = new DashSkill(entityRigidbody);
+        DashSkillAbility.SetAudioSource(DashSource);
+
         isAttack = false;
         isThrAttack = false;
     }
@@ -170,8 +180,18 @@ public class Player : Entity {
         }
     } 
     public FMODAudioSource DashSource;
+
+    [ContextMenu("TEST_MOD_DASHSTATS")]
+    public void TEST_MOD_DASHSTATS() {
+        DashSkillAbility.MaxStamina.AddCalculator(new StatCalculator(1, E_STAT_CALC_TYPE.Add));
+    }
+    
     public void Dash()
     {
+        if(DashSkillAbility.GetCanUseDash()){
+            DashSkillAbility.UseDashSkill(mMoveVec, PlayerDataManager.GetEntityData().MoveSpeed);
+        }
+        /*
         IEnumerator CoWaitDash()
         {
             float recoveryTime = 3f - (3f * (PlayerDataManager.GetPlayerData().StaminaRestoreRatio / 100));
@@ -199,6 +219,7 @@ public class Player : Entity {
             mCoWaitDash = CoWaitDash();
             StartCoroutine(mCoWaitDash);
         }
+        */
     }
 
     public void Attack()
@@ -311,5 +332,4 @@ public class Player : Entity {
             anim.SetBool("canExitAttack",false);
         }
     }
-
 }

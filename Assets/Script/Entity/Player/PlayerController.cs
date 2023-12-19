@@ -31,7 +31,9 @@ public class PlayerController : MonoBehaviour
         
         if(IsMoveAllow){ 
             player.Move();
-            if(Input.GetKeyDown(KeyCode.Space)){player.Dash();}
+            if(Input.GetKeyDown(KeyCode.Space)){
+                player.Dash();
+            }
         }
         if(IsAttackAllow){
             if(Input.GetKeyDown(KeyCode.Q)){player.Skill(SKILL_KEY.Q);}

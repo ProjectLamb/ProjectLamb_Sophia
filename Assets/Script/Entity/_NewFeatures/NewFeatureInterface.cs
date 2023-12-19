@@ -57,4 +57,11 @@ namespace Feature_NewData
     public interface IUseMonobehaviourConstructor {
         public void Initialize(object data);
     }
+    public interface IGlobalGameTimeUpdator
+    {
+        public void LateTick();
+        public void FrameTick();
+        public void PhysicsTick();
+    
+    }
 }
