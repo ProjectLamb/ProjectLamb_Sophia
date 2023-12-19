@@ -1,88 +1,215 @@
 using System.Net.Http.Headers;
+using AYellowpaper.SerializedCollections.Editor;
+using UniRx;
+using UnityEditor.Searcher;
+using System;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.PlayerLoop;
 
 namespace Feature_NewData
-{
+{    /*********************************************************************************
+    * 쿨타임 매니저
+    * 멤버
+        baseCoolTime
+        CurrentPassedTime : Getable
+
+
+        baseStacksCount : / 최대 사용 가능 사이즈 (Staking)
+        CurrentStacksCount : Getable / 현재 사용 가능 개수 
+
+        accelerationAmount : /가속도
+
+        IsDebug
+
+    * Getter
+        현재 쿨타임이 돌아가고 있는지
+        현재 사용할 수 있는지
+        현재 진생 상황
+    * Setter : 체이닝 방식 가농.
+        가속도
+        현재 진행상황 비례 가속
+        고정 시간 가속
+        현재 진행상황 대입
+    * EventSetter : 체이닝 방식 가능
+        OnStart : 쿨타임 시작시
+        Ticking : 틱당 실행할 함수
+        OnFinished : 종료될때 함수
+    *********************************************************************************/
     public class CoolTimeManager {
+
+#region Members 
+        
         private readonly float baseCoolTime;
         public float CurrentPassedTime {get; private set;}
 
-        private int BaseStacksCount;
-        public int CurrentStacksCount {get; private set;}
+        private int baseStacksCount;
+        private int mCurrentStacksCount;
+        public int CurrentStacksCount {
+            get {
+                if(mCurrentStacksCount > baseStacksCount) {
+                    mCurrentStacksCount = baseStacksCount;
+                }
+                return mCurrentStacksCount;
+            }
+            private set {
+                if(value > baseStacksCount) {
+                    mCurrentStacksCount = baseStacksCount; return;
+                }
+                if(value < 0) {mCurrentStacksCount = 0; return;}
+                mCurrentStacksCount = value;
+            }
+        }
         
-        private float AccelerationAmount; // Ratio;
+        private float accelerationAmount = 1f; // Ratio;
+        private readonly bool IsDebug = false;
 
-        public CoolTimeManager(float baseCoolTime) {
+        public bool IsBlocked {get; private set;}
+
+        public CoolTimeManager(float baseCoolTime, int stackAmount, bool debugState) {
             this.CurrentPassedTime = this.baseCoolTime = baseCoolTime;
-            this.CurrentStacksCount = this.BaseStacksCount = 1;
+            this.CurrentStacksCount = this.baseStacksCount = stackAmount;
+            this.IsDebug = debugState;
+            if(IsDebug) {
+                OnStartCooldown ??= () => {Debug.Log("Started");};
+                OnUseAction ??= () => { Debug.Log($"Use ... {CurrentStacksCount }"); };
+                OnTicking ??= (float val) =>
+                {
+                    float res = (float)Math.Round(val, 1);
+                    Debug.Log($"Ticking ... {res}");
+                };
+                OnFinished ??= () => {Debug.Log("Finished");};
+            }
         }
 
-        public CoolTimeManager(float baseCoolTime, int stackAmount) {
-            this.CurrentPassedTime = this.baseCoolTime = baseCoolTime;
-            this.CurrentStacksCount = this.BaseStacksCount = stackAmount;
-        }
+        public CoolTimeManager(float baseCoolTime, bool debugState) : this (baseCoolTime, 1, debugState){}
+        public CoolTimeManager(float baseCoolTime) : this (baseCoolTime, 1, false){}
 
-        #region Gettter 
-        public bool GetIsCoolingDown() {
-            return CurrentStacksCount < BaseStacksCount ? true : false;
-        }
-        public bool GetIsReadyToUse() {
-            return CurrentStacksCount <= 0 ? false : true;
-        }
-        #endregion
+#endregion
+
+#region Gettter 
         
-        #region Setter
+        public bool GetIsInitialized() {
+            if(CurrentPassedTime >= baseCoolTime - 0.001f && baseStacksCount == CurrentStacksCount) {return true;}
+            return false;
+        }
 
-        public void SetAcceleratrion(float amount) { AccelerationAmount = amount; }
+        public bool GetIsReadyToUse() { return (IsBlocked == true || CurrentStacksCount <= 0) ? false : true; }
+
+        public float GetProgressAmount() { return CurrentPassedTime / baseCoolTime; }
+
+        
+#endregion
+             
+#region Setter
+
+        public CoolTimeManager SetAcceleratrion(float amount) { 
+            accelerationAmount = amount; 
+            return this;
+        }
         
         public void AccelerateRemainByCurrentCoolTime(float dimRatio) {
-            CurrentPassedTime += CurrentPassedTime * dimRatio;
+            CurrentPassedTime += CurrentPassedTime * dimRatio;    
         }
 
-        public void AccelerateFixedCoolTime (float second) {
+        public void AccelerateFixedCoolTime (ref float second) {
             CurrentPassedTime += second;
         }
+        public void SetCooldownFixedTime(ref float value){
+            if( baseCoolTime < value ) {CurrentPassedTime = baseCoolTime;}
+            else if(value <= 0.001f) {CurrentPassedTime = 0.1f;}
+            else {CurrentPassedTime = value;}
+        }
 
-        #endregion
+        public void SetBlock() {IsBlocked = true;}
 
-        UnityAction actionRef;
+        public void SetRelease() {IsBlocked = false;}
+
+#endregion
+
+#region Event Adder
+
+        private event UnityAction OnStartCooldown = null;
+        public CoolTimeManager AddOnStartCooldownEvent(UnityAction action) {
+            OnStartCooldown += action;
+            return this;
+        }
+
+        private event UnityAction OnUseAction = null;
+        public CoolTimeManager AddOnUseEvent(UnityAction action) {
+            OnUseAction += action;
+            return this;
+        }
+        
+        private event UnityAction<float> OnTicking = null;
+        public CoolTimeManager AddOnTickingEvent(UnityAction<float> action) {
+            OnTicking += action;
+            return this;
+        }
+        private event UnityAction OnFinished = null;
+        public CoolTimeManager AddOnFinishedEvent(UnityAction action) {
+            OnFinished += action;
+            return this;
+        }
+
+        public void ClearEvents() {
+            OnStartCooldown = null; 
+            OnTicking = null; 
+            OnFinished = null; 
+                 
+            OnFinished          ??= (this.IsDebug) ? () => {Debug.Log("Started");}                         :  () => {};
+            OnUseAction         ??= (this.IsDebug) ?() => {Debug.Log($"Use ... {CurrentStacksCount}");}     :  () => {};
+            OnTicking           ??= (this.IsDebug) ? (float val) => {Debug.Log($"Ticking ... {val}");}     :  (float val) => {};
+            OnStartCooldown     ??= (this.IsDebug) ? () => {Debug.Log("Finished");}                        :  () => {};
+        }
+
+#endregion
+
 
         public void ActionStart(UnityAction action) {
             if(!GetIsReadyToUse()) return;
-            if(actionRef == null) {
-                action.Invoke();
-                actionRef = action; 
-                StartCooldown();
-            }
+            action?.Invoke();
+            StartCooldown();
         }
 
-        public void StartCooldown() {
+        public void DebugStart() {
+            if(!IsDebug) throw new System.Exception("디버그 상태가 아님");
 
-            if(CurrentPassedTime >= baseCoolTime - 0.001f && CurrentStacksCount == BaseStacksCount) {
+            if(!GetIsReadyToUse()) return;
+            Debug.Log("Some Action Started");
+            StartCooldown();
+        }
+
+        private void StartCooldown() {
+            // 꽉 채워져 있는 상황인가?
+            if(GetIsReadyToUse()) {
+                if(GetIsInitialized()) {
+                    CurrentPassedTime = 0.0f;
+                    OnStartCooldown.Invoke();
+                }
                 CurrentStacksCount--;
-                CurrentPassedTime = 0.0f;
-            }
-            else if (0 <= CurrentStacksCount) {
-                CurrentStacksCount--;
+                OnUseAction.Invoke();
             }
         }
 
         public void Tick() {
-            if(CurrentPassedTime < baseCoolTime) {
-                CurrentPassedTime += Time.deltaTime * AccelerationAmount;
-                return;
+            if(CurrentStacksCount == baseStacksCount) {return;}
+            if(CurrentPassedTime < baseCoolTime -0.001f) {
+                CurrentPassedTime += Time.deltaTime * accelerationAmount;
+                OnTicking.Invoke(CurrentPassedTime);
             }
-            if(CurrentStacksCount < BaseStacksCount) {
-                if(++CurrentStacksCount == BaseStacksCount) {FinishedCooldown(); return;}
-                CurrentPassedTime = 0.0f;
+            else {
+                if(CurrentStacksCount++ < baseStacksCount){
+                    if(CurrentStacksCount == baseStacksCount) {
+                        CurrentPassedTime = baseCoolTime;
+                        OnFinished.Invoke();
+                        return;
+                    }
+                    CurrentPassedTime = 0.0f;
+                    OnFinished.Invoke();
+                }
+                else {return;}
             }
-        }
-
-        public void FinishedCooldown() {
-            CurrentPassedTime = baseCoolTime;
-            actionRef = null;
         }
     }
 }

@@ -7,7 +7,13 @@ namespace Feature_NewData
         : MonoBehaviour, IRestoreable, IDamagable, IDieable, 
         IPlayerStatAccessable, IWeaponStatAccessable, IModelAccessable {
         
-        private float currentHealth;
+        private Stat MaxHp;
+        private float CurrentHealth;
+        private Stat Defence;
+        private Stat Power;        
+        private Stat MoveSpeed;
+        private Stat Tenacity;
+        public Stat MaxStamina;
         private int CurrentStamina;
         public Stat StaminaRestoreSpeed;
         public Stat Luck;
