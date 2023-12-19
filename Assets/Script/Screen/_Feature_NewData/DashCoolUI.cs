@@ -7,7 +7,7 @@ using JetBrains.Annotations;
 
 namespace Feature_NewData
 {
-    public class DashCoolUI : MonoBehaviour, IGlobalGameTimeUpdator
+    public class DashCoolUI : MonoBehaviour, IUpdatable
     {
         public UnityEngine.UI.Image fill;
         public TextMeshProUGUI textMeshPro;
@@ -31,7 +31,7 @@ namespace Feature_NewData
             BaseStackCounts = Timer.BaseStacksCount;
             StackCounts     = Timer.CurrentStacksCount;
 
-            GlobalTimeUpdator.TimerContainer.Add(this);
+            GlobalTimeUpdator.CheckAndAdd(this);
             
             StartCoroutine(DoAndRenderUI(() => {textMeshPro.text = StackCounts.ToString();}));
         }
