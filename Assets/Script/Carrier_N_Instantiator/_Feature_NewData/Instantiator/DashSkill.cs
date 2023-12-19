@@ -9,7 +9,7 @@ using FMODPlus;
 
 namespace Feature_NewData
 {
-    public class DashSkill {
+    public class DashSkill : IGlobalGameTimeUpdator{
         private Rigidbody rigidbodyRef;
         private FMODAudioSource DashSource;
         // private Stat MaxStamina = new Stat(3, E_STAT_USE_TYPE.Natural);
@@ -24,10 +24,21 @@ namespace Feature_NewData
 
         public DashSkill(Rigidbody rb){
             rigidbodyRef = rb;
-            MaxStamina = new Stat(3, E_STAT_USE_TYPE.Natural);
-            StaminaRestoreSpeed = new Stat(1f, E_STAT_USE_TYPE.Ratio);
-            Timer = new CoolTimeManager(3f, MaxStamina)
+            MaxStamina = new Stat(3, E_STAT_USE_TYPE.Natural, OnMaxStaminaUpdated);
+            StaminaRestoreSpeed = new Stat(1f, E_STAT_USE_TYPE.Ratio, OnStaminaRestoreSpeedUpdated);
+            Timer = new CoolTimeManager(3f, MaxStamina.GetValueByNature(), true)
                 .SetAcceleratrion(StaminaRestoreSpeed);
+            
+            GameObject.FindObjectOfType<DashCoolUI>().SetTimer(Timer);
+            GlobalTimeUpdator.TimerContainer.Add(this);
+        }
+
+        private void OnMaxStaminaUpdated() {
+            Timer.SetMaxStackCounts(this.MaxStamina.GetValueByNature());
+        }
+
+        private void OnStaminaRestoreSpeedUpdated() {
+            Timer.SetAcceleratrion(this.StaminaRestoreSpeed.GetValueByNature());
         }
 
         public bool GetCanUseDash() {
@@ -36,23 +47,32 @@ namespace Feature_NewData
 
         public void SetAudioSource(FMODAudioSource source) { DashSource = source; }
 
-        public void UpdateTick(){ Timer.Tick(); }
-
-        public void PhysicsTick() {
-            if(rigidbodyRef.velocity.magnitude > PlayerDataManager.GetEntityData().MoveSpeed) { IsDash = true;}
-            else {IsDash = false;}
-        }
-
         public void UseDashSkill(Vector3 moveVec, float moveSpeed) {
-            if(!IsDash) return;
+            if(IsDash) return;
             DashSource.Play();
             Vector3 dashPower = SetDashPower(moveVec, moveSpeed);
-            this.rigidbodyRef.AddForce(dashPower, ForceMode.VelocityChange);
+            Timer.ActionStart( () => {
+                this.rigidbodyRef.AddForce(dashPower, ForceMode.VelocityChange);
+            });
         }
 
         private Vector3 SetDashPower(Vector3 moveVec, float moveSpeed) {
             Vector3 temp = moveVec * -Mathf.Log(1 / this.rigidbodyRef.drag);
             return temp.normalized * PlayerDataManager.GetEntityData().MoveSpeed * 10;
+        }
+
+        public void LateTick() {return;}
+
+        public void FrameTick()
+        {
+            Timer.Tick();
+            return;
+        }
+
+        public void PhysicsTick() {
+            if(rigidbodyRef.velocity.magnitude > PlayerDataManager.GetEntityData().MoveSpeed) { IsDash = true;}
+            else {IsDash = false;}
+            return;
         }
     }
 }
