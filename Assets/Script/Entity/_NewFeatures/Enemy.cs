@@ -4,7 +4,9 @@ using UnityEngine.Events;
 
 namespace Feature_NewData
 {
-    public abstract class Enemy : MonoBehaviour, IDamagable, IDieable, IStatAccessable, IModelAccessable {
+    public abstract class Enemy : MonoBehaviour, IDamagable, IDieable, 
+    // IStatAccessable, 
+    IModelAccessable {
 
         public EntityStatManager entityStatManager;
         public ModelManger modelManger;
@@ -26,11 +28,5 @@ namespace Feature_NewData
         public void ChangeSkin(Material skin) { modelManger.ChangeSkin(skin); }
         public void RevertSkin() { modelManger.RevertSkin(); }
         public Animator GetAnimator() { return modelManger.GetAnimator(); }
-
-        public IStatAccessable GetStat()
-        {
-            return this;
-        }
-
     }    
 }
