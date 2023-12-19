@@ -45,9 +45,6 @@ namespace Feature_NewData
             Vector3 temp = moveVec * -Mathf.Log(1 / this.rigidbodyRef.drag);
             return temp.normalized * PlayerDataManager.GetEntityData().MoveSpeed * 10;
         }
-
-        public DashChecker() {
-            
-        }
+        
     }
 }
