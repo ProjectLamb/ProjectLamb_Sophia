@@ -81,7 +81,7 @@ namespace Feature_NewData
         public void AddCalculator(StatCalculator StatCalculator)
         {
             statCalculatorList.Add(StatCalculator);
-            // statCalculatorList.OrderBy(calc => calc.Order);
+            statCalculatorList.OrderBy(calc => calc.Order);
             isDirty = true;
         }
 

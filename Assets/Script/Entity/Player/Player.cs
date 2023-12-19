@@ -24,17 +24,6 @@ public class Player : Entity {
     public ScriptableObjPlayerData ScriptablePD;
     //고유성을 가지고 있다는것이 특징이라서 Static하면 안되지 않을까?    
 
-    /*
-    [SerializeField] private int mCurrentStamina;
-    public  int CurrentStamina {
-        get {return mCurrentStamina;}
-        set {
-            mCurrentStamina = value;
-            if(mCurrentStamina < 0) {mCurrentStamina = 0;}
-        }
-    }
-    */
-
     public DashSkill DashSkillAbility;
     
     [SerializeField] private int mBarrierAmount;
@@ -107,7 +96,6 @@ public class Player : Entity {
 
     private void Start() {
         CurrentHealth = PlayerDataManager.GetEntityData().MaxHP;//FinalPlayerData.PlayerEntityData.MaxHP;
-        // CurrentStamina = PlayerDataManager.GetPlayerData().MaxStamina;//FinalPlayerData.PlayerEntityData.MaxHP;
         
         DashSkillAbility = new DashSkill(entityRigidbody);
         DashSkillAbility.SetAudioSource(DashSource);
@@ -158,8 +146,11 @@ public class Player : Entity {
             _angle *= Mathf.Deg2Rad;
             return new Vector3(Mathf.Sin(_angle), 0, Mathf.Cos(_angle));
         }
+
+        float moveSpeed = PlayerDataManager.GetEntityData().MoveSpeed;
         
-        if (this.entityRigidbody.velocity.magnitude > PlayerDataManager.GetEntityData().MoveSpeed) return; 
+        if(DashSkillAbility.GetIsDashState(moveSpeed)) { return; }
+         
         anim.SetFloat("Move", entityRigidbody.velocity.magnitude);
 
         mMoveVec = AngleToVector(Camera.main.transform.eulerAngles.y + 90f) * inputVec.x + AngleToVector(Camera.main.transform.eulerAngles.y) * inputVec.y; // vaxis : inputvec.y , haxis : inputvec.x
@@ -169,7 +160,7 @@ public class Player : Entity {
         
         if (!IsBorder() && !isAttack) // 벽으로 막혀있지 않고 공격중이 아닐때만 이동 가능
         {
-            Vector3 rbVel = mMoveVec * PlayerDataManager.GetEntityData().MoveSpeed;
+            Vector3 rbVel = mMoveVec * moveSpeed;
             this.entityRigidbody.velocity = rbVel;
             if(mMoveVec != Vector3.zero){
                 mRotate = Quaternion.LookRotation(mMoveVec);
@@ -188,38 +179,7 @@ public class Player : Entity {
     
     public void Dash()
     {
-        if(DashSkillAbility.GetCanUseDash()){
-            DashSkillAbility.UseDashSkill(mMoveVec, PlayerDataManager.GetEntityData().MoveSpeed);
-        }
-        /*
-        IEnumerator CoWaitDash()
-        {
-            float recoveryTime = 3f - (3f * (PlayerDataManager.GetPlayerData().StaminaRestoreRatio / 100));
-            mIsDashed = true;
-            while (CurrentStamina < PlayerDataManager.GetPlayerData().MaxStamina)
-            {
-                yield return YieldInstructionCache.WaitForSeconds(recoveryTime);
-                CurrentStamina++;
-            }
-            mIsDashed = false;
-        }
-
-        // 스테미나 false면 그냥 스킵
-        if (CurrentStamina <= 0) return;
-
-        Vector3 dashPower = mMoveVec * -Mathf.Log(1 / this.entityRigidbody.drag);
-        this.entityRigidbody.AddForce(dashPower.normalized * PlayerDataManager.GetEntityData().MoveSpeed * 10, ForceMode.VelocityChange);
-        
-        DashSource.Play();
-
-        if (CurrentStamina > 0) { CurrentStamina--; }
-
-        if (!mIsDashed)
-        {
-            mCoWaitDash = CoWaitDash();
-            StartCoroutine(mCoWaitDash);
-        }
-        */
+        DashSkillAbility.UseDashSkill(mMoveVec, PlayerDataManager.GetEntityData().MoveSpeed);
     }
 
     public void Attack()
