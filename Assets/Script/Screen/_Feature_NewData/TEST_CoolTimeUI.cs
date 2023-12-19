@@ -4,7 +4,7 @@ using System.Collections;
 using UnityEngine.Events;
 namespace Feature_NewData
 {
-    public class CoolTimeUI : MonoBehaviour
+    public class TEST_CoolTimeUI : MonoBehaviour
     {
         public UnityEngine.UI.Image fill;
         public TextMeshProUGUI textMeshPro;

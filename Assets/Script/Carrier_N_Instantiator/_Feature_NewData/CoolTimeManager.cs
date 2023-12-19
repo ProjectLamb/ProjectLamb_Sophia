@@ -15,7 +15,7 @@ namespace Feature_NewData
         CurrentPassedTime : Getable
 
 
-        baseStacksCount : / 최대 사용 가능 사이즈 (Staking)
+        BaseStacksCount : / 최대 사용 가능 사이즈 (Staking)
         CurrentStacksCount : Getable / 현재 사용 가능 개수 
 
         accelerationAmount : /가속도
@@ -43,18 +43,14 @@ namespace Feature_NewData
         private readonly float baseCoolTime;
         public float CurrentPassedTime {get; private set;}
 
-        private int baseStacksCount;
+        public int BaseStacksCount {get; private set;}
         private int mCurrentStacksCount;
+
         public int CurrentStacksCount {
-            get {
-                if(mCurrentStacksCount > baseStacksCount) {
-                    mCurrentStacksCount = baseStacksCount;
-                }
-                return mCurrentStacksCount;
-            }
+            get { return mCurrentStacksCount; }
             private set {
-                if(value > baseStacksCount) {
-                    mCurrentStacksCount = baseStacksCount; return;
+                if(value > BaseStacksCount) {
+                    mCurrentStacksCount = BaseStacksCount; return;
                 }
                 if(value < 0) {mCurrentStacksCount = 0; return;}
                 mCurrentStacksCount = value;
@@ -69,17 +65,18 @@ namespace Feature_NewData
 
         public CoolTimeManager(float baseCoolTime, int stackAmount, bool debugState) {
             this.CurrentPassedTime = this.baseCoolTime = baseCoolTime;
-            this.CurrentStacksCount = this.baseStacksCount = stackAmount;
+            this.CurrentStacksCount = this.BaseStacksCount = stackAmount;
             this.IsDebug = debugState;
             if(IsDebug) {
                 OnStartCooldown ??= () => {Debug.Log("Started");};
                 OnUseAction ??= () => { Debug.Log($"Use ... {CurrentStacksCount }"); };
                 OnTicking ??= (float val) =>
                 {
-                    float res = (float)Math.Round(val, 1);
+                    float res = (float)Math.Round(val, 0);
                     Debug.Log($"Ticking ... {res}");
                 };
-                OnFinished ??= () => {Debug.Log("Finished");};
+                OnFinished      ??= () => {Debug.Log("Finished");};
+                OnInitialized   ??= () => {Debug.Log($"Initialized \n CurStack :{CurrentStacksCount}, BaseStack : {BaseStacksCount}");};
             }
         }
 
@@ -91,7 +88,7 @@ namespace Feature_NewData
 #region Gettter 
         
         public bool GetIsInitialized() {
-            if(CurrentPassedTime >= baseCoolTime - 0.001f && baseStacksCount == CurrentStacksCount) {return true;}
+            if(CurrentPassedTime >= baseCoolTime - 0.001f && BaseStacksCount == CurrentStacksCount) {return true;}
             return false;
         }
 
@@ -104,7 +101,7 @@ namespace Feature_NewData
              
 #region Setter
         public CoolTimeManager SetMaxStackCounts(int counts) {
-            baseStacksCount = counts;
+            BaseStacksCount = counts;
             CurrentStacksCount = counts;
             return this;
         }
@@ -208,14 +205,14 @@ namespace Feature_NewData
         }
 
         public void Tick() {
-            if(CurrentStacksCount == baseStacksCount) {return;}
+            if(CurrentStacksCount == BaseStacksCount) {return;}
             if(CurrentPassedTime < baseCoolTime -0.001f) {
                 CurrentPassedTime += Time.deltaTime * accelerationAmount;
                 OnTicking.Invoke(CurrentPassedTime);
             }
             else {
-                if(CurrentStacksCount++ < baseStacksCount){
-                    if(CurrentStacksCount == baseStacksCount) {
+                if(CurrentStacksCount++ < BaseStacksCount){
+                    if(CurrentStacksCount == BaseStacksCount) {
                         CurrentPassedTime = baseCoolTime;
                         OnFinished.Invoke();
                         OnInitialized.Invoke();
