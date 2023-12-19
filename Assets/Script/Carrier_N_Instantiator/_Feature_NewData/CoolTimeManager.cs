@@ -67,17 +67,12 @@ namespace Feature_NewData
             this.CurrentPassedTime = this.baseCoolTime = baseCoolTime;
             this.CurrentStacksCount = this.BaseStacksCount = stackAmount;
             this.IsDebug = debugState;
-            if(IsDebug) {
-                OnStartCooldown ??= () => {Debug.Log("Started");};
-                OnUseAction ??= () => { Debug.Log($"Use ... {CurrentStacksCount }"); };
-                OnTicking ??= (float val) =>
-                {
-                    float res = (float)Math.Round(val, 0);
-                    Debug.Log($"Ticking ... {res}");
-                };
-                OnFinished      ??= () => {Debug.Log("Finished");};
-                OnInitialized   ??= () => {Debug.Log($"Initialized \n CurStack :{CurrentStacksCount}, BaseStack : {BaseStacksCount}");};
-            }
+
+            OnInitialized       ??= (this.IsDebug) ? () => {Debug.Log("Initialized");}                   :  () => {};
+            OnFinished          ??= (this.IsDebug) ? () => {Debug.Log("Started");}                       :  () => {};
+            OnUseAction         ??= (this.IsDebug) ? () => {Debug.Log($"Use ... {CurrentStacksCount}");} :  () => {};
+            OnTicking           ??= (this.IsDebug) ? (float val) => {Debug.Log($"Ticking ... {val}");}   :  (float val) => {};
+            OnStartCooldown     ??= (this.IsDebug) ? () => {Debug.Log("Finished");}                      :  () => {};
         }
 
         public CoolTimeManager(float baseCoolTime, int stackAmount) : this (baseCoolTime, stackAmount, false){}
@@ -168,11 +163,11 @@ namespace Feature_NewData
             OnTicking = null; 
             OnFinished = null; 
                  
-            OnInitialized     ??= (this.IsDebug) ? () => {Debug.Log("Initialized");}                        :  () => {};
-            OnFinished          ??= (this.IsDebug) ? () => {Debug.Log("Started");}                         :  () => {};
-            OnUseAction         ??= (this.IsDebug) ?() => {Debug.Log($"Use ... {CurrentStacksCount}");}     :  () => {};
-            OnTicking           ??= (this.IsDebug) ? (float val) => {Debug.Log($"Ticking ... {val}");}     :  (float val) => {};
-            OnStartCooldown     ??= (this.IsDebug) ? () => {Debug.Log("Finished");}                        :  () => {};
+            OnInitialized       ??= (this.IsDebug) ? () => {Debug.Log("Initialized");}                   :  () => {};
+            OnFinished          ??= (this.IsDebug) ? () => {Debug.Log("Started");}                       :  () => {};
+            OnUseAction         ??= (this.IsDebug) ? () => {Debug.Log($"Use ... {CurrentStacksCount}");} :  () => {};
+            OnTicking           ??= (this.IsDebug) ? (float val) => {Debug.Log($"Ticking ... {val}");}   :  (float val) => {};
+            OnStartCooldown     ??= (this.IsDebug) ? () => {Debug.Log("Finished");}                      :  () => {};
         }
 
 #endregion

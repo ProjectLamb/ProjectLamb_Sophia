@@ -5,14 +5,14 @@ using UnityEngine;
 namespace Feature_NewData
 {
     public class GlobalTimeUpdator : MonoBehaviour {
-        public static HashSet<IGlobalGameTimeUpdator> TimerContainer = new();
+        public static HashSet<IUpdatable> TimerContainer = new();
 
-        public static void CheckAndAdd(IGlobalGameTimeUpdator addingTimer){
-            if(TimerContainer.TryGetValue(addingTimer, out IGlobalGameTimeUpdator finedTimer)) {return;}
+        public static void CheckAndAdd(IUpdatable addingTimer){
+            if(TimerContainer.TryGetValue(addingTimer, out IUpdatable finedTimer)) {return;}
             TimerContainer.Add(addingTimer);
         }
 
-        public static void CheckAndRemove(IGlobalGameTimeUpdator removeingTimer) {
+        public static void CheckAndRemove(IUpdatable removeingTimer) {
             TimerContainer.Remove(removeingTimer);
         }
 
@@ -27,7 +27,7 @@ namespace Feature_NewData
             }
         }
 
-        private void PhysicsTick() {
+        private void FixedUpdate() {
             foreach(var timer in TimerContainer) {
                 timer.PhysicsTick();
             }
