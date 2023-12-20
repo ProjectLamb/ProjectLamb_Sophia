@@ -26,8 +26,6 @@ namespace Feature_NewData
     }
 
     public interface IPlayerStatAccessable : IStatAccessable {
-        public Stat GetMaxStamina();
-        public Stat GetStaminaRestoreSpeed();
         public Stat GetLuck();
     }
 
