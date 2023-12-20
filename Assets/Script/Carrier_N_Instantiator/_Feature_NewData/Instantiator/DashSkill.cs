@@ -1,12 +1,5 @@
 using UnityEngine;
-using Cysharp.Threading.Tasks;
-using System.Threading;
-using UnityEditor.Rendering.Universal;
-using UnityEditor.Searcher;
-using UnityEditor.MPE;
-using Newtonsoft.Json.Converters;
 using FMODPlus;
-using System.Linq.Expressions;
 
 namespace Feature_NewData
 {
@@ -20,24 +13,30 @@ namespace Feature_NewData
         public Stat MaxStamina {get; private set;}
         public Stat StaminaRestoreSpeed {get; private set;}
         public CoolTimeManager Timer {get; private set;}
+        public DashCoolUI DashUI;
 
         public DashSkill(Rigidbody rb){
             rigidbodyRef = rb;
             MaxStamina = new Stat(3, E_STAT_USE_TYPE.Natural, OnMaxStaminaUpdated);
             StaminaRestoreSpeed = new Stat(1f, E_STAT_USE_TYPE.Ratio, OnStaminaRestoreSpeedUpdated);
+            
             Timer = new CoolTimeManager(3f, MaxStamina.GetValueByNature())
                 .SetAcceleratrion(StaminaRestoreSpeed);
             
-            GameObject.FindObjectOfType<DashCoolUI>().SetTimer(Timer);
+            DashUI = GameObject.FindObjectOfType<DashCoolUI>();
+            DashUI.SetTimer(Timer);
+            
             GlobalTimeUpdator.CheckAndAdd(this);
         }
 
         private void OnMaxStaminaUpdated() {
             Timer.SetMaxStackCounts(this.MaxStamina.GetValueByNature());
+            DashUI.ResetUI();
         }
 
         private void OnStaminaRestoreSpeedUpdated() {
             Timer.SetAcceleratrion(this.StaminaRestoreSpeed.GetValueByNature());
+            DashUI.ResetUI();
         }
 
         public void SetAudioSource(FMODAudioSource source) { DashSource = source; }
