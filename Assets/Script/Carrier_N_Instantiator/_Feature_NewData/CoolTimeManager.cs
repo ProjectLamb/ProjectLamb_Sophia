@@ -8,7 +8,8 @@ using UnityEngine.Events;
 using UnityEngine.PlayerLoop;
 
 namespace Feature_NewData
-{    /*********************************************************************************
+{    
+    /*********************************************************************************
     * 쿨타임 매니저
     * 멤버
         baseCoolTime
@@ -26,15 +27,19 @@ namespace Feature_NewData
         현재 쿨타임이 돌아가고 있는지
         현재 사용할 수 있는지
         현재 진생 상황
+
     * Setter : 체이닝 방식 가농.
         가속도
         현재 진행상황 비례 가속
         고정 시간 가속
         현재 진행상황 대입
+
     * EventSetter : 체이닝 방식 가능
-        OnStart : 쿨타임 시작시
-        Ticking : 틱당 실행할 함수
-        OnFinished : 종료될때 함수
+        OnStartCooldown     : 쿨타임 시작시
+        OnTicking           : 틱당 실행할 함수
+        OnUseAction         : 사용할떄 작동하는 액션
+        OnFinished          : 종료될때 함수
+        OnInitialized       : 원 상태로 초기화 되었을떄
     *********************************************************************************/
     public class CoolTimeManager {
 
@@ -172,7 +177,6 @@ namespace Feature_NewData
         }
 
 #endregion
-
 
         public void ActionStart(UnityAction action) {
             if(!GetIsReadyToUse()) return;
