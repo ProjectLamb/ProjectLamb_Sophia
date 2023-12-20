@@ -104,6 +104,7 @@ namespace Feature_NewData
             value = BaseValue;
             float Adder = 0;
             float Multiplier = 1.0f;
+
             statCalculatorList.ForEach((calc) => {
                 switch(calc.ClacType) {
                     case E_STAT_CALC_TYPE.Add:  {
@@ -120,9 +121,9 @@ namespace Feature_NewData
 
             if(value <= 1.001f) {value = 1;}
             else {value = (float) Math.Round(value, 3);}
+            isDirty = false;
 
             OnStatChanged.Invoke();
-            isDirty = false;
         }
     }
 }

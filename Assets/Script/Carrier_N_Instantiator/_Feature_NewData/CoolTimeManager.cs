@@ -95,6 +95,7 @@ namespace Feature_NewData
 #endregion
              
 #region Setter
+
         public CoolTimeManager SetMaxStackCounts(int counts) {
             BaseStacksCount = counts;
             CurrentStacksCount = counts;
@@ -203,7 +204,7 @@ namespace Feature_NewData
             if(CurrentStacksCount == BaseStacksCount) {return;}
             if(CurrentPassedTime < baseCoolTime -0.001f) {
                 CurrentPassedTime += Time.deltaTime * accelerationAmount;
-                OnTicking.Invoke(CurrentPassedTime);
+                OnTicking.Invoke(GetProgressAmount());
             }
             else {
                 if(CurrentStacksCount++ < BaseStacksCount){
