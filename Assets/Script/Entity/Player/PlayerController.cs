@@ -27,7 +27,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update() {
         player.AimAssist();
-        player.CheckAttack();
+        //player.CheckAttack();
         
         if(IsMoveAllow){ 
             player.Move();
