@@ -13,12 +13,13 @@ namespace Feature_NewData
         private Stat Power;        
         private Stat MoveSpeed;
         private Stat Tenacity;
-        public Stat MaxStamina;
-        private int CurrentStamina;
-        public Stat StaminaRestoreSpeed;
         public Stat Luck;
         public Wealths PlayerWealth;
+        
         public ModelManger modelManger;
+        
+        public DashSkill DashSkillAbility;
+
         public MeleeWeapon meleeWeapon;
 
         public Stat GetMaxHP() { return MaxHp; }
@@ -26,8 +27,6 @@ namespace Feature_NewData
         public Stat GetPower() { return Power; }
         public Stat GetMoveSpeed() { return MoveSpeed; }
         public Stat GetTenacity() { return Tenacity; }
-        public Stat GetMaxStamina() {return MaxStamina;}
-        public Stat GetStaminaRestoreSpeed() {return StaminaRestoreSpeed;}
         public Stat GetLuck() {return Luck;}
         public Stat GetWeaponRatioDamage() { return meleeWeapon.GetWeaponRatioDamage();  }
         public Stat GetAttackSpeed() { return meleeWeapon.GetAttackSpeed();  }
@@ -45,9 +44,9 @@ namespace Feature_NewData
             Power = new Stat(10, E_STAT_USE_TYPE.Natural);          // 0~inf
             MoveSpeed = new Stat(10, E_STAT_USE_TYPE.Natural);      // 초당 1칸을 음직이는 단위? 어떤 수치를 가지고, 
             Tenacity = new Stat(-1, E_STAT_USE_TYPE.Ratio);
-            MaxStamina = new Stat(3, E_STAT_USE_TYPE.Natural);
-            StaminaRestoreSpeed = new Stat(-1, E_STAT_USE_TYPE.Ratio);
-            Luck = new Stat(0, E_STAT_USE_TYPE.Natural);
+            // MaxStamina = new Stat(3, E_STAT_USE_TYPE.Natural);
+            // StaminaRestoreSpeed = new Stat(-1, E_STAT_USE_TYPE.Ratio);
+            Luck = new Stat(0, E_STAT_USE_TYPE.Natural); 
         }
 
         public void Die()
@@ -72,8 +71,6 @@ namespace Feature_NewData
         }
 
         public void Dash() {
-            if(CurrentStamina <= 0) return;
-            CurrentStamina--;
         }
 
         public void Attack() {}
