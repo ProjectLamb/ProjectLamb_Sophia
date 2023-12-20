@@ -4,12 +4,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using Feature_NewData;
+using UnityEditor.Rendering;
 
 [System.Serializable]
 public struct MasterData
 {
+    
     [SerializeField] public PlayerData playerData;
     [SerializeField] public WeaponData weaponData;
+    
+    public static Stat MaxStaminaReferer {get; private set;}
+    public static void MaxStaminaInject(Stat referPointer) {
+        MaxStaminaReferer = referPointer;
+    }
 
     public static MasterData operator +(MasterData x, MasterData y){
         MasterData res = new MasterData();
