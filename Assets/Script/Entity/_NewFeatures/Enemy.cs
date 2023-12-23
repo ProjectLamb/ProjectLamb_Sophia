@@ -23,10 +23,12 @@ namespace Feature_NewData
             currentHealth -= damage;
             if(currentHealth <= 0) {Die();}
         }
+        public void GetDamaged(int damage, VFXObject vfx) {}
         public void Die() {}
 
         public void ChangeSkin(Material skin) { modelManger.ChangeSkin(skin); }
         public void RevertSkin() { modelManger.RevertSkin(); }
         public Animator GetAnimator() { return modelManger.GetAnimator(); }
+
     }    
 }
