@@ -33,7 +33,7 @@ namespace Feature_NewData
             get {return mCurrentHealth;}
             protected set {
                 if(value > MaxHp) {
-                    mCurrentHealth = MaxHp; return;
+                    mCurrentHealth = (float)MaxHp; return;
                 }
                 if(value < 0) {mCurrentHealth = 0; return;}
                 mCurrentHealth = value;

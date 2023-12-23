@@ -58,12 +58,12 @@ namespace Feature_NewData
         protected sealed override void OnDefenceUpdated() { return; }
 
         public override void GetHeal(float amount) {
-            CurrentHealth += amount;
+            CurrentHealth += (int)amount;
         }
         
         public override void GetDamaged(float damage) {
             OnDamaged.Invoke(damage);
-            CurrentHealth -= damage;
+            CurrentHealth -= (int)damage;
             if (CurrentHealth <= 0) { this.Die(); }
         }
 
