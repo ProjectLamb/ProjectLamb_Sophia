@@ -56,35 +56,12 @@ namespace Feature_NewData
         }
         public override void GetDamaged(float damage)
         {
-            OnDamaged.Invoke(ref damage);
+            OnDamaged.Invoke(damage);
             damage = (int)(damage * 100/(100+PlayerDataManager.GetEntityData().Defence));
-            if(CurrentBarrierAmount >= 0.001f) {
-                if(CurrentBarrierAmount - damage >= 0) {damage = 0; CurrentBarrierAmount -= damage;}
-                else {
-                    damage = damage - CurrentBarrierAmount; 
-                    CurrentBarrierAmount = 0;
-                }
-            }
             CurrentHealth -= damage;
             if(CurrentHealth <= 0.001f) {Die();}
         }
-
-        public override void GetDamaged(float damage, VFXObject vfx)
-        {
-            OnDamaged.Invoke(ref damage);
-            damage = (int)(damage * 100/(100+Defence));
-            if(CurrentBarrierAmount >= 0.001f) {
-                if(CurrentBarrierAmount - damage >= 0) {damage = 0; CurrentBarrierAmount -= damage;}
-                else {
-                    damage = damage - CurrentBarrierAmount; 
-                    CurrentBarrierAmount = 0;
-                }
-            }
-            CurrentHealth -= damage;
-            if(CurrentHealth <= 0.001f) {Die();}
-            // VFX;
-        }
-
+        
         protected override void OnDefenceUpdated()
         {
             throw new System.NotImplementedException();

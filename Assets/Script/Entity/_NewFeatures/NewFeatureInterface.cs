@@ -4,6 +4,7 @@ namespace Feature_NewData
 {
     public interface IDamagable {
         public void GetDamaged(int damage);
+        public void GetDamaged(int damage, VFXObject vfx);
     }
     public interface IDieable {
         public void Die();

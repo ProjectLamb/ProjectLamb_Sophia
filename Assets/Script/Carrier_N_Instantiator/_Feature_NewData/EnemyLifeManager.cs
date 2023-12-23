@@ -1,4 +1,6 @@
+using System;
 using System.Runtime.InteropServices;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -49,28 +51,26 @@ namespace Feature_NewData
 
 #endregion
 
-        protected override void OnMaxHpUpdated() {
-
+        protected sealed override void OnMaxHpUpdated() { 
+            throw new NotImplementedException();
         }
-        protected override void OnDefenceUpdated() {
 
-        }
+        protected sealed override void OnDefenceUpdated() { return; }
 
         public override void GetHeal(float amount) {
             CurrentHealth += amount;
         }
         
         public override void GetDamaged(float damage) {
-
+            OnDamaged.Invoke(damage);
+            CurrentHealth -= damage;
+            if (CurrentHealth <= 0) { this.Die(); }
         }
-        public override void GetDamaged(float damage, VFXObject vfx) {
 
-        }
-        
-//      public bool IsDie {get; protected set;}
-
-        public override void Die() {
-
+        public override void Die() { 
+            OnEnterDie.Invoke();
+            IsDie = true; 
+            OnExitDie.Invoke();
         }
     }
 }
