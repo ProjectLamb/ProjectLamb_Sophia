@@ -34,7 +34,7 @@ public class DefenceState :  EntityAffector{
     }
 
     IEnumerator VisualActivate(){
-        this.targetEntity.visualModulator.InteractByVFX(ownerEntity,vfx);
+        this.targetEntity.visualModulator.InteractByVFX(vfx);
         yield return YieldInstructionCache.WaitForSeconds(VisualDurationTime);
         this.targetEntity.visualModulator.RevertByVFX(this.affectorPackage.affectorType);
     }
