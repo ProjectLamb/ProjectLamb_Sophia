@@ -861,7 +861,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 60}
+  m_AnchoredPosition: {x: 0, y: 30}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &195036117
@@ -4813,10 +4813,11 @@ GameObject:
   - component: {fileID: 1043907849}
   - component: {fileID: 1043907848}
   - component: {fileID: 1043907847}
+  - component: {fileID: 1043907852}
   - component: {fileID: 1043907851}
   m_Layer: 0
   m_Name: Cylinder
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4832,7 +4833,7 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.5000001
-  m_Height: 2
+  m_Height: 3
   m_Direction: 1
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
 --- !u!23 &1043907848
@@ -4893,7 +4894,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1043907846}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 9.17, z: 0}
   m_LocalScale: {x: 10, y: 10, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4915,6 +4916,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   visualModulator: {fileID: 0}
   TextInstantiator: {fileID: 195036117}
+--- !u!54 &1043907852
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1043907846}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 10
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 116
+  m_CollisionDetection: 0
 --- !u!1001 &1045025110
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5615,7 +5632,7 @@ PrefabInstance:
     - target: {fileID: 6010878358661589267, guid: 0854eb25531ab0047b2cfd966170a735,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6010878358661589270, guid: 0854eb25531ab0047b2cfd966170a735,
         type: 3}
@@ -9707,12 +9724,12 @@ PrefabInstance:
     - target: {fileID: 5024086212075482102, guid: c0b5cbadc1b0848d8a2ce1782ea1bb95,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 16.00003
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 5024086214026073620, guid: c0b5cbadc1b0848d8a2ce1782ea1bb95,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -3.9999695
+      value: -4
       objectReference: {fileID: 0}
     - target: {fileID: 8313483127584197366, guid: c0b5cbadc1b0848d8a2ce1782ea1bb95,
         type: 3}
