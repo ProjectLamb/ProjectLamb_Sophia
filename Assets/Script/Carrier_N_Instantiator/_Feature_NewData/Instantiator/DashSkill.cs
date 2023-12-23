@@ -68,7 +68,8 @@ namespace Feature_NewData
         }
 
         public void UseDashSkill(Vector3 moveVec, float moveSpeed) {
-            if( !GetIsDashState(moveSpeed) && Timer.GetIsReadyToUse() ){
+            Debug.Log(moveSpeed);
+            if( !GetIsDashState(moveSpeed) && rigidbodyRef.velocity.magnitude > 0.001f &&Timer.GetIsReadyToUse() ){
                 DashSource.Play();
                 Vector3 dashPower = SetDashPower(moveVec, moveSpeed);
                 Timer.ActionStart( () => {

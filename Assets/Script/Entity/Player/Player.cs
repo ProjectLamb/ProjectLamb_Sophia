@@ -10,6 +10,7 @@ using FMODPlus;
 
 using Component = UnityEngine.Component;
 using Random = UnityEngine.Random;
+using Feature_NewData;
 
 public class Player : Entity {
 
@@ -22,14 +23,8 @@ public class Player : Entity {
     [SerializeField]
     public ScriptableObjPlayerData ScriptablePD;
     //고유성을 가지고 있다는것이 특징이라서 Static하면 안되지 않을까?    
-    [SerializeField] private int mCurrentStamina;
-    public  int CurrentStamina {
-        get {return mCurrentStamina;}
-        set {
-            mCurrentStamina = value;
-            if(mCurrentStamina < 0) {mCurrentStamina = 0;}
-        }
-    }
+
+    public DashSkill DashSkillAbility;
     
     [SerializeField] private int mBarrierAmount;
     public  int BarrierAmount {
@@ -101,9 +96,13 @@ public class Player : Entity {
 
     private void Start() {
         CurrentHealth = PlayerDataManager.GetEntityData().MaxHP;//FinalPlayerData.PlayerEntityData.MaxHP;
-        CurrentStamina = PlayerDataManager.GetPlayerData().MaxStamina;//FinalPlayerData.PlayerEntityData.MaxHP;
+    
         isAttack = false;
         isThrAttack = false;
+
+        DashSkillAbility = new DashSkill(entityRigidbody);
+        DashSkillAbility.SetAudioSource(DashSource);
+        MasterData.MaxStaminaInject(DashSkillAbility.MaxStamina);
     }
     
     public override void GetDamaged(int _amount){
@@ -148,8 +147,11 @@ public class Player : Entity {
             _angle *= Mathf.Deg2Rad;
             return new Vector3(Mathf.Sin(_angle), 0, Mathf.Cos(_angle));
         }
+
+        float moveSpeed = PlayerDataManager.GetEntityData().MoveSpeed;
         
-        if (this.entityRigidbody.velocity.magnitude > PlayerDataManager.GetEntityData().MoveSpeed) return; 
+        if(DashSkillAbility.GetIsDashState(moveSpeed)) { return; }
+         
         anim.SetFloat("Move", entityRigidbody.velocity.magnitude);
 
         mMoveVec = AngleToVector(Camera.main.transform.eulerAngles.y + 90f) * inputVec.x + AngleToVector(Camera.main.transform.eulerAngles.y) * inputVec.y; // vaxis : inputvec.y , haxis : inputvec.x
@@ -159,7 +161,7 @@ public class Player : Entity {
         
         if (!IsBorder() && !isAttack) // 벽으로 막혀있지 않고 공격중이 아닐때만 이동 가능
         {
-            Vector3 rbVel = mMoveVec * PlayerDataManager.GetEntityData().MoveSpeed;
+            Vector3 rbVel = mMoveVec * moveSpeed;
             this.entityRigidbody.velocity = rbVel;
             if(mMoveVec != Vector3.zero){
                 mRotate = Quaternion.LookRotation(mMoveVec);
@@ -170,35 +172,17 @@ public class Player : Entity {
         }
     } 
     public FMODAudioSource DashSource;
+
+    [ContextMenu("TEST_MOD_DASHSTATS")]
+    public void TEST_MOD_DASHSTATS() {
+        // 앞으로 아이템을 먹었을때 실행되는 연산이랑 동일하다.
+        DashSkillAbility.MaxStamina.AddCalculator(new StatCalculator(1, E_STAT_CALC_TYPE.Add));
+        DashSkillAbility.MaxStamina.RecalculateStat();
+    }
+    
     public void Dash()
     {
-        IEnumerator CoWaitDash()
-        {
-            float recoveryTime = 3f - (3f * (PlayerDataManager.GetPlayerData().StaminaRestoreRatio / 100));
-            mIsDashed = true;
-            while (CurrentStamina < PlayerDataManager.GetPlayerData().MaxStamina)
-            {
-                yield return YieldInstructionCache.WaitForSeconds(recoveryTime);
-                CurrentStamina++;
-            }
-            mIsDashed = false;
-        }
-
-        // 스테미나 false면 그냥 스킵
-        if (CurrentStamina <= 0) return;
-
-        Vector3 dashPower = mMoveVec * -Mathf.Log(1 / this.entityRigidbody.drag);
-        this.entityRigidbody.AddForce(dashPower.normalized * PlayerDataManager.GetEntityData().MoveSpeed * 10, ForceMode.VelocityChange);
-        
-        DashSource.Play();
-
-        if (CurrentStamina > 0) { CurrentStamina--; }
-
-        if (!mIsDashed)
-        {
-            mCoWaitDash = CoWaitDash();
-            StartCoroutine(mCoWaitDash);
-        }
+        DashSkillAbility.UseDashSkill(mMoveVec, PlayerDataManager.GetEntityData().MoveSpeed);
     }
 
     public void Attack()
@@ -280,7 +264,7 @@ public class Player : Entity {
                 }
             }
     }
-
+    
     public void CheckAttack()
     {
         isAttack = AttackAnim.isAttack;
