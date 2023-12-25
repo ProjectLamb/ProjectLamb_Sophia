@@ -5,7 +5,8 @@ using Feature_NewData;
 
 public class TEST_LifeManagerStub : MonoBehaviour, IDamagable, IDieable
 {
-    private EnemyLifeManager life;
+    private LifeManager life;
+    [SerializeField] public  HealthBarUI HealthUI;
 
     [SerializeField] public VisualModulator visualModulator;
 
@@ -13,7 +14,8 @@ public class TEST_LifeManagerStub : MonoBehaviour, IDamagable, IDieable
 
     private void Awake()
     {
-        life = new EnemyLifeManager(100);
+        life = new LifeManager(100);
+        HealthUI.SetLifeManager(life);
         //이걸 실행하면 Monobehaviour가 실행되는건지, 아니면 LifeManager에서 실행되는건가?
     }
 
@@ -48,7 +50,7 @@ public class TEST_LifeManagerStub : MonoBehaviour, IDamagable, IDieable
     {
         if (life.IsDie) { return; }
         life.GetDamaged(damage);
-        visualModulator.InteractByVFX(vfx);
+        //visualModulator.InteractByVFX(vfx);
     }
     public void DestroySelf()
     {
