@@ -103,7 +103,6 @@ namespace Feature_NewData
         public void ActivatedTextUI() {
             _rigid.velocity = Vector3.up * AnimationSpeed;
             CurrentDestroyCoroutine = StartCoroutine(CoDestroy());
-            Destroy(this.gameObject, DestroyTimer);
         }
 
         public void ReactivateTextUI(int amount) {

@@ -121,6 +121,7 @@ namespace Feature_NewData
         public void AccelerateFixedCoolTime (ref float second) {
             CurrentPassedTime += second;
         }
+        
         public void SetCooldownFixedTime(ref float value){
             if( baseCoolTime < value ) {CurrentPassedTime = baseCoolTime;}
             else if(value <= 0.001f) {CurrentPassedTime = 0.1f;}
