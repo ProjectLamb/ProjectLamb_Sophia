@@ -1,3 +1,5 @@
+using System;
+
 namespace Feature_NewData.Numerics
 {
     public class EntityStatReferer : IStatAccessable
@@ -44,6 +46,9 @@ namespace Feature_NewData.Numerics
                 case E_NUMERIC_STAT_TYPE.DurateLifeTime :   { this.DurateLifeTime = statRef;    return; }
                 case E_NUMERIC_STAT_TYPE.Size :             { this.Size = statRef;              return; }
                 case E_NUMERIC_STAT_TYPE.ForwardingSpeed :  { this.ForwardingSpeed = statRef;   return; }
+                case E_NUMERIC_STAT_TYPE.None : {
+                    throw new System.Exception($"참조 스텟이 초기화되지 않음");
+                }
                 default : {
                     throw new System.Exception($"이 Entity 멤버에는 {statRef.NumericType.ToString()} 없음");
                 }
@@ -70,6 +75,37 @@ namespace Feature_NewData.Numerics
             }
             if(res == null) {
                 throw new System.Exception($"참조하려는 {numericType.ToString()} 멤버가 초기화되지 않음");
+            }
+            return res;
+        }
+
+        protected virtual float GetStatByValues(E_NUMERIC_STAT_TYPE numericType)
+        {
+            switch (numericType)
+            {
+                case E_NUMERIC_STAT_TYPE.MaxHp:             { return this.MaxHp == null ? -1 : this.MaxHp.GetValueForce(); }
+                case E_NUMERIC_STAT_TYPE.Defence:           { return this.Defence == null ? -1 : this.Defence.GetValueForce(); }
+                case E_NUMERIC_STAT_TYPE.MoveSpeed:         { return this.MoveSpeed == null ? -1 : this.MoveSpeed.GetValueForce(); }
+                case E_NUMERIC_STAT_TYPE.Accecerate:        { return this.Accecerate == null ? -1 : this.Accecerate.GetValueForce(); }
+                case E_NUMERIC_STAT_TYPE.Tenacity:          { return this.Tenacity == null ? -1 : this.Tenacity.GetValueForce(); }
+                case E_NUMERIC_STAT_TYPE.Power:             { return this.Power == null ? -1 : this.Power.GetValueForce(); }
+                case E_NUMERIC_STAT_TYPE.DurateLifeTime:    { return this.DurateLifeTime == null ? -1 : this.DurateLifeTime.GetValueForce(); }
+                case E_NUMERIC_STAT_TYPE.Size:              { return this.Size == null ? -1 : this.Size.GetValueForce(); }
+                case E_NUMERIC_STAT_TYPE.ForwardingSpeed:   { return this.ForwardingSpeed == null ? -1 : this.ForwardingSpeed.GetValueForce(); }
+                default: {
+                    return -1;
+                }
+            }
+        }
+
+        public virtual string GetStatsInfo()
+        {
+            string res = "";
+            foreach(E_NUMERIC_STAT_TYPE Enum in Enum.GetValues(typeof(E_NUMERIC_STAT_TYPE)))
+            {
+                float val = this.GetStatByValues(Enum);
+                if(val < 0 ) {continue;}
+                res += $"{Enum.ToString()} : {val} \n";
             }
             return res;
         }
@@ -162,6 +198,9 @@ namespace Feature_NewData.Numerics
                 case E_NUMERIC_STAT_TYPE.TechRatio              : {this.TechRatio = statRef;return;}
                 case E_NUMERIC_STAT_TYPE.EfficienceMultiplyer   : {this.EfficienceMultiplyer = statRef;return;}
                 case E_NUMERIC_STAT_TYPE.Luck                   : {this.Luck = statRef;return;}
+                case E_NUMERIC_STAT_TYPE.None : {
+                    throw new System.Exception($"참조 스텟이 초기화되지 않음");
+                }
                 default : {
                     throw new System.Exception($"이 Entity 멤버에는 {statRef.NumericType.ToString()} 없음");
                 }

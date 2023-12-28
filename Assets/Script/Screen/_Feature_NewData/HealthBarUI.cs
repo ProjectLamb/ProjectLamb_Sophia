@@ -52,7 +52,7 @@ public class HealthBarUI : MonoBehaviour
 
     private void UpdateFillAmount(float currentHp)
     {
-        Debug.Log(currentHp);
+        // Debug.Log(currentHp);
         StartCoroutine(DoAndRenderUI(() =>
         {
             slider.value = currentHp;
