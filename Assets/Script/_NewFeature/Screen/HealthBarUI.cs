@@ -7,30 +7,30 @@ using Feature_NewData;
 
 public class HealthBarUI : MonoBehaviour
 {
-    public LifeManager lifeManagerRef;
+    public LifeComposite LifeCompositeRef;
     public Slider slider;
     public Image fill;
     public Gradient gradient;
 
     private void Start()
     {
-        lifeManagerRef ??= GetComponentInParent<ILifeAccessable>().GetLifeManager();
-        int intValue = lifeManagerRef.MaxHp;
+        LifeCompositeRef ??= GetComponentInParent<ILifeAccessable>().GetLifeComposite();
+        int intValue = LifeCompositeRef.MaxHp;
         slider.maxValue = (float)intValue;
 
-        lifeManagerRef.AddOnUpdateEvent(UpdateFillAmount)
+        LifeCompositeRef.AddOnUpdateEvent(UpdateFillAmount)
                         .AddOnEnterDieEvent(TurnOffUI);
 
         StartCoroutine(DoAndRenderUI(() => { fill.color = gradient.Evaluate(1f); }));
     }
 
-    public void SetLifeManager(LifeManager lifeManager)
+    public void SetLifeComposite(LifeComposite LifeComposite)
     {
-        int intValue = lifeManager.MaxHp;
+        int intValue = LifeComposite.MaxHp;
         slider.maxValue = (float)intValue;
 
-        lifeManagerRef = lifeManager;
-        lifeManagerRef.AddOnUpdateEvent(UpdateFillAmount)
+        LifeCompositeRef = LifeComposite;
+        LifeCompositeRef.AddOnUpdateEvent(UpdateFillAmount)
                         .AddOnEnterDieEvent(TurnOffUI);
 
         StartCoroutine(DoAndRenderUI(() => { fill.color = gradient.Evaluate(1f); }));
@@ -40,7 +40,7 @@ public class HealthBarUI : MonoBehaviour
     {
         StartCoroutine(DoAndRenderUI(() =>
         {
-            slider.value = lifeManagerRef.CurrentHealth;
+            slider.value = LifeCompositeRef.CurrentHealth;
             fill.color = gradient.Evaluate(slider.normalizedValue);
         }));
     }

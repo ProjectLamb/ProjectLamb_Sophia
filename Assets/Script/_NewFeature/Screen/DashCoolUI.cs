@@ -10,10 +10,10 @@ namespace Feature_NewData
         public UnityEngine.UI.Image fill;
         public TextMeshProUGUI textMeshPro;
         
-        private CoolTimeManager TimerRef;
+        private CoolTimeComposite TimerRef;
 
-        public void SetTimer(CoolTimeManager coolTimeManager) {
-            TimerRef = coolTimeManager;
+        public void SetTimer(CoolTimeComposite CoolTimeComposite) {
+            TimerRef = CoolTimeComposite;
 
             TimerRef.AddOnTickingEvent(UpdateFillAmount)
                     .AddOnUseEvent(UseStack)

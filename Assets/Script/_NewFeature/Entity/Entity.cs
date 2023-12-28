@@ -4,7 +4,7 @@ namespace Feature_NewData
 {
     public abstract class Entity : MonoBehaviour, ILifeAccessable
     {
-        public LifeManager Life;
+        public LifeComposite Life;
         
 
 #region Life Accessable
@@ -12,7 +12,7 @@ namespace Feature_NewData
         public abstract void GetDamaged(int damage);
         public abstract void GetDamaged(int damage, VFXObject vfx);
         public abstract void Die();
-        public LifeManager GetLifeManager()
+        public LifeComposite GetLifeComposite()
         {
             return this.Life;
         }

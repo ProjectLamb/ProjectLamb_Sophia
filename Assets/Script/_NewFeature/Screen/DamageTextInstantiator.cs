@@ -21,7 +21,7 @@ public enum DamageInstant_Type
 
 public class DamageTextInstantiator : MonoBehaviour
 {
-    public LifeManager lifeManagerRef;
+    public LifeComposite LifeCompositeRef;
     [SerializeField]
     private DamageTextUI textUI;
 
@@ -29,8 +29,8 @@ public class DamageTextInstantiator : MonoBehaviour
     private List<DamageTextUI> LayerdTextList;
 
     private void Start() {
-        lifeManagerRef ??= GetComponentInParent<ILifeAccessable>().GetLifeManager();
-        lifeManagerRef.AddOnDamageEvent(Generate);
+        LifeCompositeRef ??= GetComponentInParent<ILifeAccessable>().GetLifeComposite();
+        LifeCompositeRef.AddOnDamageEvent(Generate);
     }
 
     public void Generate(float _damageAmount)
