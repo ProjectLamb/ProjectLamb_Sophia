@@ -1,4 +1,8 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
+using Cysharp.Threading.Tasks;
 
 namespace Feature_NewData
 {    
@@ -17,18 +21,44 @@ namespace Feature_NewData
     *********************************************************************************/
     
     public class ModelManger : MonoBehaviour {
-        [SerializeField] private GameObject Model;
+        private GameObject model;
+        private Animator modelAnimator;
         
         [Tooltip("SkinMaterial 스킨을 입힐 대상들이다.")]
-        private SkinnedMeshRenderer[] skinnedMeshRenderers;
-        private Animator modelAnimator;
+        [SerializeField]private List<Renderer> _renderers = new List<Renderer>();
+        [SerializeField] private List<Material> _materials = new List<Material>();
+        public Material TransMaterial;
 
         private void Awake() {
+            model = this.gameObject;
             
+            model.TryGetComponent<Animator>(out modelAnimator);
+            foreach(Transform skinTransform in transform.Find("skins")) {
+                _renderers.Add(skinTransform.GetComponent<Renderer>());
+            }
+            if(_materials.Count == 0) throw new System.Exception("Skin리스트가 없어서 설정하고싶은 스킨이 없음");
         }
 
-        public void ChangeSkin(Material skin) {}
-        public void RevertSkin() {}
+        public async void ChangeSkin(Material skin) {
+            _materials[1] = skin;
+            await UniTask.WaitForEndOfFrame(this);
+            foreach (Renderer renderer in _renderers) {
+                renderer.sharedMaterials = _materials.ToArray();
+            }
+        }
+
+        public async void RevertSkin() {
+            _materials[1] = TransMaterial;
+            await UniTask.WaitForEndOfFrame(this);
+            foreach (Renderer renderer in _renderers) {
+                renderer.sharedMaterials = _materials.ToArray();
+            }
+        }
+
+        IEnumerator DoAndRenderModel(UnityAction action){
+            action.Invoke(); yield return new WaitForEndOfFrame();
+        }
+        
         public Animator GetAnimator() {return this.modelAnimator;}
     }
 }

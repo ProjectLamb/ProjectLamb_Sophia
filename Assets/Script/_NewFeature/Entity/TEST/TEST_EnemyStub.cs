@@ -12,7 +12,8 @@ public class TEST_EnemyStub : MonoBehaviour, Feature_NewData.ILifeAccessable, IS
     public LifeComposite Life {get; private set;}
     public EntityStatReferer StatReferer {get; private set;}
 
-    [SerializeField] public VisualModulator visualModulator;
+    [SerializeField] private ModelManger  modelManger;
+    [SerializeField] private VisualFXManager  visualFXManager;
 
 #region Life Accessable
     public LifeComposite GetLifeComposite() => this.Life;
@@ -29,6 +30,7 @@ public class TEST_EnemyStub : MonoBehaviour, Feature_NewData.ILifeAccessable, IS
         if (Life.IsDie) { return; }
         Life.Damaged(damage);
         if(Life.IsDie) {Die();}
+        visualFXManager.VFXInstantiator(vfx);
     }
     
     public void Die() => Destroy(gameObject, 0.5f);
