@@ -31,12 +31,12 @@ public class ItemHeart : Carrier
     private void OnTriggerEnter(Collider other)
     {
         if (!other.TryGetComponent<Player>(out Player player)) { return; }
-        if (player.CurrentHealth >= player.GetFinalData().MaxHP)
+        if (player.Life.CurrentHealth >= player.GetFinalData().MaxHP)
             return;
         if(transform.TryGetComponent(out PurchaseComponent pc)) {
             if(!pc.Purchase()) {return;}
         }
-        GameManager.Instance.PlayerGameObject.GetComponent<Player>().CurrentHealth += recoveryValue;
+        GameManager.Instance.PlayerGameObject.GetComponent<Player>().Life.Healed(recoveryValue);
         DestroySelf();
     }
 }

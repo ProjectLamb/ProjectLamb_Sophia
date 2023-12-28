@@ -19,8 +19,16 @@ namespace Feature_NewData
 
         public DashSkill(Rigidbody rb){
             rigidbodyRef = rb;
-            MaxStamina = new Stat(3, E_STAT_USE_TYPE.Natural, OnMaxStaminaUpdated);
-            StaminaRestoreSpeed = new Stat(1f, E_STAT_USE_TYPE.Ratio, OnStaminaRestoreSpeedUpdated);
+            MaxStamina = new Stat(3,
+                E_NUMERIC_STAT_TYPE.MaxStamina, 
+                E_STAT_USE_TYPE.Natural, 
+                OnMaxStaminaUpdated
+            );
+            StaminaRestoreSpeed = new Stat(1f,
+                E_NUMERIC_STAT_TYPE.StaminaRestoreSpeed, 
+                E_STAT_USE_TYPE.Ratio, 
+                OnStaminaRestoreSpeedUpdated
+            );
             
             Timer = new CoolTimeManager(3f, MaxStamina.GetValueByNature())
                 .SetAcceleratrion(StaminaRestoreSpeed);

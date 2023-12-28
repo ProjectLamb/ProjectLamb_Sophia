@@ -33,11 +33,11 @@ namespace Feature_NewData
 
         public Vector3     positionBeforeR;
 
-        private Stat SkillEffectMultiplyer;
-        public Stat GetSkillEffectMultiplyer() { return this.SkillEffectMultiplyer;}
+        private Stat SkillEfficienceMultiplyer;
+        public Stat GetEfficienceMultiplyer() { return this.SkillEfficienceMultiplyer;}
 
         private void Awake() {
-            SkillEffectMultiplyer = new Stat(1, E_STAT_USE_TYPE.Ratio);
+            SkillEfficienceMultiplyer = new Stat(1,E_NUMERIC_STAT_TYPE.EfficienceMultiplyer, E_STAT_USE_TYPE.Ratio);
             ProjectilePoolQ = new List<IObjectPool<Projectile>>(creatableProjectileQ.Count);
         }
 
@@ -106,7 +106,7 @@ namespace Feature_NewData
                 case SKILL_KEY.E: {resByKey = DamageRatioEByRank[(int)rank]; break;}
                 case SKILL_KEY.R: {resByKey = DamageRatioRByRank[(int)rank]; break;}
             }
-            resByKey *= playerRef.GetPower() * playerRef.GetWeaponRatioDamage();
+            resByKey *= playerRef.GetStat(E_NUMERIC_STAT_TYPE.Power) * playerRef.GetStat(E_NUMERIC_STAT_TYPE.MeleeRatio);
             return (int)resByKey;
         }
 

@@ -8,6 +8,7 @@ using UnityEngine.Events;
 
 using Component = UnityEngine.Component;
 using Random = UnityEngine.Random;
+using Feature_NewData;
 
 public abstract class Entity : MonoBehaviour, IDamagable, IDieable, IAffectable, IEntityDataAddressable
 {
@@ -17,19 +18,8 @@ public abstract class Entity : MonoBehaviour, IDamagable, IDieable, IAffectable,
     [SerializeField] public VisualModulator visualModulator;
     [SerializeField] public CarrierBucket carrierBucket;
     [SerializeField] public int mCurrentHealth;
-    public int CurrentHealth
-    {
-        get { return mCurrentHealth; }
-        set
-        {
-            mCurrentHealth = value;
-            if (mCurrentHealth >= GetFinalData().MaxHP)
-            {
-                mCurrentHealth = GetFinalData().MaxHP;
-            }
-            if (mCurrentHealth < 0) { mCurrentHealth = 0; }
-        }
-    }
+
+    public LifeManager Life;
 
     public Dictionary<STATE_TYPE, AffectorPackage> AffectorStacks = new Dictionary<STATE_TYPE, AffectorPackage>();
 

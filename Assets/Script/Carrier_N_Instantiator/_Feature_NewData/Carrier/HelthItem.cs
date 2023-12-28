@@ -12,7 +12,7 @@ namespace Feature_NewData
 
         private void OnTriggerEnter(Collider other) {
             if(other.TryGetComponent<Player>(out Player player)){
-                player.Restore(Health);
+                player.Life.Healed(Health);
             }
         }
     }

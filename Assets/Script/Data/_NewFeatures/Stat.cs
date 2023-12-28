@@ -1,15 +1,25 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using AYellowpaper.SerializedCollections.Editor;
 using UnityEngine.Events;
-using UnityEngine.EventSystems;
 
 namespace Feature_NewData
 {
     public enum E_STAT_USE_TYPE
     {
         Natural, Ratio
+    }
+
+    public enum E_NUMERIC_STAT_TYPE {
+        MaxHp = 0, Defence, Power, AttackSpeed, MoveSpeed, Tenacity, Accecerate,
+
+        MaxStamina = 10, StaminaRestoreSpeed, Luck,
+
+        DurateLifeTime = 20, Size, ForwardingSpeed,
+
+        PoolSize = 30, MeleeRatio, RangerRatio, TechRatio,
+
+        EfficienceMultiplyer = 40, CoolDownSpeed
     }
 
     [System.Serializable]
@@ -22,13 +32,14 @@ namespace Feature_NewData
     {
         public readonly float BaseValue;
         public readonly E_STAT_USE_TYPE UseType;
+        public readonly E_NUMERIC_STAT_TYPE NumericType;
         private float value;
         private bool isDirty = false;
         public readonly UnityEvent OnStatChanged;
 
         private readonly List<StatCalculator> statCalculatorList = new();
 
-        public Stat(float baseValue, E_STAT_USE_TYPE UseType, UnityAction statChangedHandler)
+        public Stat(float baseValue, E_NUMERIC_STAT_TYPE NumericType, E_STAT_USE_TYPE UseType, UnityAction statChangedHandler)
         {
             value = BaseValue = baseValue;
             this.UseType = UseType;
@@ -38,7 +49,7 @@ namespace Feature_NewData
             }
         }
 
-        public Stat(float baseValue, E_STAT_USE_TYPE useType) : this(baseValue, useType, null){}
+        public Stat(float baseValue, E_NUMERIC_STAT_TYPE numericType, E_STAT_USE_TYPE useType) : this(baseValue, numericType,useType, null){}
 
 
         public static implicit operator int(Stat stat)
