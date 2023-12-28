@@ -5,57 +5,67 @@ using TMPro;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
+using Feature_NewData;
 
-namespace Feature_NewData
+/*********************************************************************************
+메이플과 같은 데미지 UI를 띄울것이다.
+
+그냥과 버퍼드 UI
+    AlertUIManager;
+
+*********************************************************************************/
+public enum DamageInstant_Type
 {
-    /*********************************************************************************
-    메이플과 같은 데미지 UI를 띄울것이다.
+    Stacking, Layerd
+}
 
-    그냥과 버퍼드 UI
-        AlertUIManager;
+public class DamageTextInstantiator : MonoBehaviour
+{
+    public LifeManager lifeManagerRef;
+    [SerializeField]
+    private DamageTextUI textUI;
 
-    *********************************************************************************/
-    public enum DamageInstant_Type {
-        Stacking, Layerd
+    private DamageTextUI StakingText;
+    private List<DamageTextUI> LayerdTextList;
+
+    private void Start() {
+        lifeManagerRef ??= GetComponentInParent<ILifeAccessable>().GetLifeManager();
+        lifeManagerRef.AddOnDamageEvent(Generate);
     }
 
-    public class DamageTextInstantiator : MonoBehaviour{
-        
-        [SerializeField] 
-        private DamageTextUI textUI;
+    public void Generate(float _damageAmount)
+    {
+        if (StakingText == null)
+        {
+            StakingText = Instantiate(textUI, transform)
+                                                .SetText(_damageAmount)
+                                                .SetAnimationSpeed(5f)
+                                                .SetDestroyTimer(3f);
 
-        private DamageTextUI StakingText;
-        private List<DamageTextUI> LayerdTextList;
-
-        public void Generate(float _damageAmount){
-            if(StakingText == null) {
-                StakingText = Instantiate(textUI, transform)
-                                                    .SetText(_damageAmount)
-                                                    .SetAnimationSpeed(5f)
-                                                    .SetDestroyTimer(3f);
-
-                StakingText.ActivatedTextUI();
-            }
-            else {
-                StakingText.SetPosition(transform.position)
-                            .ReactivateTextUI((int)_damageAmount);
-            }
-
+            StakingText.ActivatedTextUI();
+        }
+        else
+        {
+            StakingText.SetPosition(transform.position)
+                        .ReactivateTextUI((int)_damageAmount);
         }
 
-        public void Generate(List<float> _damageAmount) {
-            LayerdTextList = new List<DamageTextUI>();
-            Vector3 addingPosition = transform.position;
-            _damageAmount.ForEach((E) => {
-                LayerdTextList.Add(
-                    Instantiate(textUI, transform)
-                        .SetText(E)
-                        .SetAnimationSpeed(5f)
-                        .SetDestroyTimer(3f)
-                );
-                LayerdTextList.Last().SetPosition(addingPosition += textUI.GetNextPosition());
-            });
-            LayerdTextList.ForEach((T)=>{T.ActivatedTextUI();});
-        }
+    }
+
+    public void Generate(List<float> _damageAmount)
+    {
+        LayerdTextList = new List<DamageTextUI>();
+        Vector3 addingPosition = transform.position;
+        _damageAmount.ForEach((E) =>
+        {
+            LayerdTextList.Add(
+                Instantiate(textUI, transform)
+                    .SetText(E)
+                    .SetAnimationSpeed(5f)
+                    .SetDestroyTimer(3f)
+            );
+            LayerdTextList.Last().SetPosition(addingPosition += textUI.GetNextPosition());
+        });
+        LayerdTextList.ForEach((T) => { T.ActivatedTextUI(); });
     }
 }

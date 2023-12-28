@@ -7,11 +7,12 @@ namespace Feature_NewData
 {
     public abstract class ProjectileInstantiator : MonoBehaviour
     {
-        private IObjectPool<Projectile> ProjectilePool;
-        private List<Projectile> creatableProjectile;
+        [SerializeField] private List<Projectile> creatableProjectile;
         private int createIndex = 0;
         public int MaxPoolSize;
         public int bucketSize;
+        
+        private IObjectPool<Projectile> ProjectilePool;
 
         private void OnEnable() {
             ProjectilePool = new ObjectPool<Projectile>(
@@ -23,9 +24,7 @@ namespace Feature_NewData
             );
         }
 
-        public void SetProjectiles(List<Projectile> projectiles) {
-            creatableProjectile = new List<Projectile>(projectiles);
-        }
+#region ObjectPool
 
         private Projectile CreateProjectile() {
             Projectile concreteProjectile = Instantiate(creatableProjectile[createIndex++ % creatableProjectile.Count]);
@@ -48,6 +47,21 @@ namespace Feature_NewData
             Destroy(projectile.gameObject);
         }
 
+#endregion
+
+#region Getter
+#endregion
+
+#region Setter
+        
+        public void SetProjectiles(List<Projectile> projectiles) {
+            creatableProjectile = new List<Projectile>(projectiles);
+        }
+
+#endregion
+
         public abstract int CalculateDamage();
+
+        
     }
 }

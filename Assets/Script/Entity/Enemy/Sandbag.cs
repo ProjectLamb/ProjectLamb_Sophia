@@ -49,11 +49,22 @@ public class Sandbag : Entity
 
         BaseEnemyData = new EntityData(ScriptableED);
         FinalData = BaseEnemyData;
-        CurrentHealth = FinalData.MaxHP;
+        Life = new Feature_NewData.LifeManager(FinalData.MaxHP)
+            .AddOnHitEvent(FinalData.HitStateRef)
+            .AddOnDamageEvent((float val) => {
+                mAnimator.SetTrigger("DoHit");
+                GameManager.Instance.GlobalEvent.OnEnemyHitEvent.ForEach(E => E.Invoke());
+            })
+            .AddOnEnterDieEvent(FinalData.DieState)
+            .AddOnEnterDieEvent(() => {
+                this.entityCollider.enabled = false;
+                mAnimator.SetTrigger("DoDie");
+                visualModulator.InteractByVFX(DieParticle);
+            });
 
         this.ObjectiveTarget = GameManager.Instance.PlayerGameObject.transform;
-        this.ObjectiveTarget = GameManager.Instance.PlayerGameObject.transform;
     }
+
     public void UseProjectile_NormalAttack(){
         this.carrierBucket.CarrierInstantiatorByObjects(this, AttackProjectiles[0], new object[] {FinalData.Power * 1});
     }
@@ -61,36 +72,23 @@ public class Sandbag : Entity
         this.carrierBucket.CarrierInstantiatorByObjects(this, AttackProjectiles[1], new object[] {FinalData.Power * 2});
     }
     private void Start() {
-        this.FinalData.HitStateRef = (ref int amount) => {DamageBarGenerator.GenerateImage(amount);};
+        this.FinalData.HitStateRef = (ref float amount) => {DamageBarGenerator.GenerateImage((int)amount);};
     }
 
     public override void GetDamaged(int _amount){
-        if(IsDie == true) {return;}
-        FinalData.HitStateRef.Invoke(ref _amount);
-        CurrentHealth -= _amount;
-        mAnimator.SetTrigger("DoHit");
-        GameManager.Instance.GlobalEvent.OnEnemyHitEvent.ForEach(E => E.Invoke());
-        GameManager.Instance.GlobalEvent.OnEnemyHitEvent.ForEach(E => E.Invoke());
-        if (CurrentHealth <= 0) {Die();}
+        if(Life.IsDie == true) {return;}
+        Life.Damaged(_amount);
     }
 
     public override void GetDamaged(int _amount, VFXObject _vfx){
-        if(IsDie == true) {return;}
-        FinalData.HitStateRef.Invoke(ref _amount);
-        CurrentHealth -= _amount;
+        if(Life.IsDie == true) {return;}
+        Life.Damaged(_amount);
+
         visualModulator.InteractByVFX( _vfx);
-        mAnimator.SetTrigger("DoHit");
-        GameManager.Instance.GlobalEvent.OnEnemyHitEvent.ForEach(E => E.Invoke());
-        GameManager.Instance.GlobalEvent.OnEnemyHitEvent.ForEach(E => E.Invoke());
-        if (CurrentHealth <= 0) {Die();}
     }
 
     public override void Die(){ 
-        FinalData.DieState.Invoke();
-        IsDie = true;
-        this.entityCollider.enabled = false;
-        mAnimator.SetTrigger("DoDie");
-        visualModulator.InteractByVFX(DieParticle);
+        Life.Died();
     }
 
     public void DestroySelf(){

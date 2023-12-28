@@ -17,17 +17,23 @@ namespace Feature_NewData
         public int MaxPoolSize;
         public int bucketSize;
 
-        private Stat RatioMeleeDamage;
+        private Stat MeleeRatio;
         private Stat AttackSpeed;
 
         private Player playerRef;
 
-        public Stat GetWeaponRatioDamage() { return RatioMeleeDamage;  }
+        public Stat GetWeaponRatioDamage() { return MeleeRatio;  }
         public Stat GetAttackSpeed() { return AttackSpeed;  }        
 
         private void Awake() {
-            RatioMeleeDamage = new Stat(1, E_STAT_USE_TYPE.Ratio);
-            AttackSpeed = new Stat(-1, E_STAT_USE_TYPE.Ratio);     // ?? 어떤 수치를 가지고 공식은 어떻게 되야 하는걸까?
+            MeleeRatio = new Stat(1, 
+                E_NUMERIC_STAT_TYPE.MeleeRatio,
+                E_STAT_USE_TYPE.Ratio
+            );
+            AttackSpeed = new Stat(-1, 
+                E_NUMERIC_STAT_TYPE.AttackSpeed,
+                E_STAT_USE_TYPE.Ratio
+            );     // ?? 어떤 수치를 가지고 공식은 어떻게 되야 하는걸까?
             ProjectilePool = new List<IObjectPool<Projectile>>(creatableProjectile.Count);
         }
 
@@ -72,7 +78,7 @@ namespace Feature_NewData
         }
 
         private int CalculateDamage() {
-            return playerRef.GetPower() * RatioMeleeDamage;
+            return playerRef.GetStat(E_NUMERIC_STAT_TYPE.Power) * MeleeRatio;
         }
     }
 } 

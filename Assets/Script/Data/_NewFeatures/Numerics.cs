@@ -1,108 +1,212 @@
-using System.Collections.Generic;
-using System.Linq;
-
-namespace Feature_NewData
+namespace Feature_NewData.Numerics
 {
-    public enum E_NUMERIC_BASE_STATE_MENEBERS {
-        
-    }
-    
-    // FinalStat = [(Natural + NatureAdd?)] * [(Ratio +* RatioMul)]
-
-    // 기본
-    // 아이템 합 이후 스탯
-    /*
-
-    -------------------------------------------------
-    1000 * 1.2
-    1200 * 0.8
-    960 
-
-    1. 가만히 있는 데이터가 필요하고
-    2. 덧셈 증가 하는 데이터를 두고
-    3. 비율 증가하는 데이터를 
-    -------------------------------------------------
-
-    능력치 변화에 대한 능력치 변화 순서
-
-    BaseStat = [Natural * Ratio] (아이템)
-    AfterEquipmentStat = BaseStat * Ratio (버프에 의해서)
-    AfterWeaponStat
-    
-    FinalStat들이 있겠고
-    
-    FinalFinalStat = FinalStat * (퍼프스텟 적용) 시간에 따라서 변하는 애니깐
-
-    평타 데이지인지 // 스킬 데미지
-    
-    평타 데이지 = AfterEquipmentStat * 무기 데미지 비율
-    스킬 데미지 = AfterEquipmentStat * 무기 데미지 비율 * 스킬 비례댐
-
-    */
-
-    public enum E_NUMERIC_STAT_MEMBERS
+    public class EntityStatReferer : IStatAccessable
     {
-        NaturalMaxHp = 100, NaturalDefence, NaturalPower, NaturalAttackSpeed, NaturalMoveSpeed, NaturalTenacity = 105, 
-        NaturalMaxStamina, NaturalStaminaRestoreSpeed, NaturalLuck = 108,
 
-        RatioMaxHp = 200, RatioDefence, RatioPower, RatioAttackSpeed, RatioMoveSpeed, RatioTenacity, 
-        RatioStaminaRestoreSpeed = 207,
+#region Life 
+        private Stat MaxHp                  = null; // Natural
+        private Stat Defence                = null; //Natural to Function
 
-        NaturalDistance = 110, NaturalMaxDuNaturaln, NaturalSize, NaturalSpeed,
-        RatioMaxDistance = 210, RatioMaxDuration, RatioSize, RatioSpeed,
+#endregion
 
-        NaturalMaxProjectilePoolSize = 120, NaturalRatioRestoreSpeed, NaturalMeleeDamage, NaturalRangeDamage, NaturalTechDamage,
-        RatioMaxProjectilePoolSize = 220, RatioRestoreSpeed, RatioMeleeDamage, RatioRangeDamage, RatioTechDamage,
+#region Move
 
-        RatioEfficienceMultiplyer = 230, RatioAccecerate
+        private Stat MoveSpeed              = null; //Natural
+        private Stat Accecerate             = null; // Ratio 
+
+#endregion
+
+#region Affect
+
+        private Stat Tenacity               = null; // Natural to Fcuntion
+
+#endregion
+
+#region Instantiator
+
+        private Stat Power                  = null; // Natural
+        private Stat DurateLifeTime         = null; // Ratio
+        private Stat Size                   = null; // Ratio
+        private Stat ForwardingSpeed        = null; // Ratio
+
+#endregion
+
+        public virtual void SetRefStat(Stat statRef)
+        {
+            switch(statRef.NumericType) 
+            {
+                case E_NUMERIC_STAT_TYPE.MaxHp :            { this.MaxHp = statRef;             return; }
+                case E_NUMERIC_STAT_TYPE.Defence :          { this.Defence = statRef;           return; }
+                case E_NUMERIC_STAT_TYPE.MoveSpeed :        { this.MoveSpeed = statRef;         return; }
+                case E_NUMERIC_STAT_TYPE.Accecerate :       { this.Accecerate = statRef;        return; }
+                case E_NUMERIC_STAT_TYPE.Tenacity :         { this.Tenacity = statRef;          return; }
+                case E_NUMERIC_STAT_TYPE.Power :            { this.Power = statRef;             return; }
+                case E_NUMERIC_STAT_TYPE.DurateLifeTime :   { this.DurateLifeTime = statRef;    return; }
+                case E_NUMERIC_STAT_TYPE.Size :             { this.Size = statRef;              return; }
+                case E_NUMERIC_STAT_TYPE.ForwardingSpeed :  { this.ForwardingSpeed = statRef;   return; }
+                default : {
+                    throw new System.Exception($"이 Entity 멤버에는 {statRef.NumericType.ToString()} 없음");
+                }
+            }
+        }
+
+        public virtual Stat GetStat(E_NUMERIC_STAT_TYPE numericType)
+        {
+            Stat res = null;
+            switch (numericType)
+            {
+                case E_NUMERIC_STAT_TYPE.MaxHp:             { res = this.MaxHp;             break; }
+                case E_NUMERIC_STAT_TYPE.Defence:           { res = this.Defence;           break; }
+                case E_NUMERIC_STAT_TYPE.MoveSpeed:         { res = this.MoveSpeed;         break; }
+                case E_NUMERIC_STAT_TYPE.Accecerate:        { res = this.Accecerate;        break; }
+                case E_NUMERIC_STAT_TYPE.Tenacity:          { res = this.Tenacity;          break; }
+                case E_NUMERIC_STAT_TYPE.Power:             { res = this.Power;             break; }
+                case E_NUMERIC_STAT_TYPE.DurateLifeTime:    { res = this.DurateLifeTime;    break; }
+                case E_NUMERIC_STAT_TYPE.Size:              { res = this.Size;              break; }
+                case E_NUMERIC_STAT_TYPE.ForwardingSpeed:   { res = this.ForwardingSpeed;   break; }
+                default: {
+                    throw new System.Exception($"이 Entity 멤버에는 {numericType.ToString()} 없음");
+                }
+            }
+            if(res == null) {
+                throw new System.Exception($"참조하려는 {numericType.ToString()} 멤버가 초기화되지 않음");
+            }
+            return res;
+        }
     }
-    public interface INumericAccessable
-    {
-        public Stat GetNumeric(E_NUMERIC_STAT_MEMBERS numericMemberType);
 
-        public void AddCalculator(E_NUMERIC_STAT_MEMBERS numericMemberType, StatCalculator calc);
-        public void RemoveCalculator(E_NUMERIC_STAT_MEMBERS numericMemberType, StatCalculator calc);
-        public void ResetCalculators(E_NUMERIC_STAT_MEMBERS numericMemberType);
+    public class PlayerStatReferer : EntityStatReferer
+    {
+#region Life 
+        private Stat MaxHp                  = null; // Natural
+        private Stat Defence                = null; //Natural to Function
+
+#endregion
+
+#region Move
+
+        private Stat MoveSpeed              = null; //Natural
+        private Stat Accecerate             = null; // Ratio 
+
+#endregion
+
+#region Affect
+
+        private Stat Tenacity               = null; // Natural to Fcuntion
+
+#endregion
+
+#region Dash
+        private Stat MaxStamina             = null;
+        private Stat StaminaRestoreSpeed    = null;
+#endregion
+
+#region CoolTime
+        private Stat CoolDownSpeed          = null;
+#endregion
+
+#region Instantiator
+
+
+/******************************
+* Common
+******************************/
+
+        private Stat Power                  = null; // Natural
+        private Stat DurateLifeTime         = null;
+        private Stat Size                   = null;
+        private Stat ForwardingSpeed        = null;
+
+/******************************
+* Weapon Only
+******************************/
+        private Stat PoolSize               = null;
+        private Stat AttackSpeed            = null; //Ratio, 재생 속도
+        private Stat MeleeRatio             = null;
+        private Stat RangerRatio            = null;
+        private Stat TechRatio              = null;
+
+/******************************
+* Skill Only
+******************************/
+
+        private Stat EfficienceMultiplyer   = null;
+
+#endregion
+
+#region Other
+
+        private Stat Luck                   = null;
+
+        #endregion
+        public override void SetRefStat(Stat statRef)
+        {
+            switch(statRef.NumericType) 
+            {
+                case E_NUMERIC_STAT_TYPE.MaxHp                  : {this.MaxHp = statRef;return;}
+                case E_NUMERIC_STAT_TYPE.Defence                : {this.Defence = statRef;return;}
+                case E_NUMERIC_STAT_TYPE.MoveSpeed              : {this.MoveSpeed = statRef;return;}
+                case E_NUMERIC_STAT_TYPE.Accecerate             : {this.Accecerate = statRef;return;}
+                case E_NUMERIC_STAT_TYPE.Tenacity               : {this.Tenacity = statRef;return;}
+                case E_NUMERIC_STAT_TYPE.MaxStamina             : {this.MaxStamina = statRef;return;}
+                case E_NUMERIC_STAT_TYPE.StaminaRestoreSpeed    : {this.StaminaRestoreSpeed = statRef;return;}
+                case E_NUMERIC_STAT_TYPE.CoolDownSpeed          : {this.CoolDownSpeed = statRef;return;}
+                case E_NUMERIC_STAT_TYPE.Power                  : {this.Power = statRef;return;}
+                case E_NUMERIC_STAT_TYPE.DurateLifeTime         : {this.DurateLifeTime = statRef;return;}
+                case E_NUMERIC_STAT_TYPE.Size                   : {this.Size = statRef;return;}
+                case E_NUMERIC_STAT_TYPE.ForwardingSpeed        : {this.ForwardingSpeed = statRef;return;}
+                case E_NUMERIC_STAT_TYPE.PoolSize               : {this.PoolSize = statRef;return;}
+                case E_NUMERIC_STAT_TYPE.AttackSpeed            : {this.AttackSpeed = statRef;return;}
+                case E_NUMERIC_STAT_TYPE.MeleeRatio             : {this.MeleeRatio = statRef;return;}
+                case E_NUMERIC_STAT_TYPE.RangerRatio            : {this.RangerRatio = statRef;return;}
+                case E_NUMERIC_STAT_TYPE.TechRatio              : {this.TechRatio = statRef;return;}
+                case E_NUMERIC_STAT_TYPE.EfficienceMultiplyer   : {this.EfficienceMultiplyer = statRef;return;}
+                case E_NUMERIC_STAT_TYPE.Luck                   : {this.Luck = statRef;return;}
+                default : {
+                    throw new System.Exception($"이 Entity 멤버에는 {statRef.NumericType.ToString()} 없음");
+                }
+            }
+        }
+
+        public override Stat GetStat(E_NUMERIC_STAT_TYPE numericType)
+        {
+            Stat res = null;
+            switch (numericType)
+            {
+                case E_NUMERIC_STAT_TYPE.MaxHp                  : {res = this.MaxHp; break;}
+                case E_NUMERIC_STAT_TYPE.Defence                : {res = this.Defence; break;}
+                case E_NUMERIC_STAT_TYPE.MoveSpeed              : {res = this.MoveSpeed; break;}
+                case E_NUMERIC_STAT_TYPE.Accecerate             : {res = this.Accecerate; break;}
+                case E_NUMERIC_STAT_TYPE.Tenacity               : {res = this.Tenacity; break;}
+                case E_NUMERIC_STAT_TYPE.MaxStamina             : {res = this.MaxStamina; break;}
+                case E_NUMERIC_STAT_TYPE.StaminaRestoreSpeed    : {res = this.StaminaRestoreSpeed; break;}
+                case E_NUMERIC_STAT_TYPE.CoolDownSpeed          : {res = this.CoolDownSpeed; break;}
+                case E_NUMERIC_STAT_TYPE.Power                  : {res = this.Power; break;}
+                case E_NUMERIC_STAT_TYPE.DurateLifeTime         : {res = this.DurateLifeTime; break;}
+                case E_NUMERIC_STAT_TYPE.Size                   : {res = this.Size; break;}
+                case E_NUMERIC_STAT_TYPE.ForwardingSpeed        : {res = this.ForwardingSpeed; break;}
+                case E_NUMERIC_STAT_TYPE.PoolSize               : {res = this.PoolSize; break;}
+                case E_NUMERIC_STAT_TYPE.AttackSpeed            : {res = this.AttackSpeed; break;}
+                case E_NUMERIC_STAT_TYPE.MeleeRatio             : {res = this.MeleeRatio; break;}
+                case E_NUMERIC_STAT_TYPE.RangerRatio            : {res = this.RangerRatio; break;}
+                case E_NUMERIC_STAT_TYPE.TechRatio              : {res = this.TechRatio; break;}
+                case E_NUMERIC_STAT_TYPE.EfficienceMultiplyer   : {res = this.EfficienceMultiplyer; break;}
+                case E_NUMERIC_STAT_TYPE.Luck                   : {res = this.Luck; break;}
+                default: {
+                    throw new System.Exception($"이 Entity 멤버에는 {numericType.ToString()} 없음");
+                }
+            }
+
+            if(res == null) {
+                throw new System.Exception($"참조하려는 {numericType.ToString()} 멤버가 초기화되지 않음");
+            }
+            return res;
+        }
     }
 
-    public abstract class Numerics : INumericAccessable
+    public struct Wealths
     {
-        protected readonly Dictionary<E_NUMERIC_STAT_MEMBERS, Stat> numerics = new();
-
-        public Stat GetNumeric(E_NUMERIC_STAT_MEMBERS numericMemberType)
-        {
-            return numerics[numericMemberType];
-        }
-        public void AddCalculator(E_NUMERIC_STAT_MEMBERS numericMemberType, StatCalculator calc)
-        {
-            numerics[numericMemberType].AddCalculator(calc);
-        }
-        public void RemoveCalculator(E_NUMERIC_STAT_MEMBERS numericMemberType, StatCalculator calc)
-        {
-            numerics[numericMemberType].RemoveCalculator(calc);
-        }
-        public void ResetCalculators(E_NUMERIC_STAT_MEMBERS numericMemberType)
-        {
-            numerics[numericMemberType].ResetCalculators();
-        }
+        public int Gear;
+        public int Frag;
     }
 }
-
-
-/*********************************************************************************
-Escatrgot 
-
-SetNumeric(
-    E_NUMERIC_STAT_MEMBERS numericMemberType, 
-    float value, 
-    E_STAT_USE_TYPE useType
-);
-
-을 지운 이유.
-
-Numeric의 초기화는 오직 생성자를 통해서 할것이고,
-변동은 무조건 Calculator을 옽해서 진행하게 될것이다.
-
-그래서 SetNumeric은 잘못된것이다.
-
-*********************************************************************************/

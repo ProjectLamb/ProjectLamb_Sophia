@@ -10,20 +10,21 @@ namespace Feature_NewData
         public void Die();
 
     }
+    public interface ILifeAccessable : IDamagable, IDieable{
+        public LifeManager GetLifeManager();
+    }
+
     public interface ICarrierInteractable {
         public IStatAccessable GetStat();
     }
     public interface IStatAccessable {
-        public Stat GetMaxHP();
-        public Stat GetDefence();
-        public Stat GetPower();
-        public Stat GetMoveSpeed();
-        public Stat GetTenacity();
+        public Stat GetStat(E_NUMERIC_STAT_TYPE numericType);
+        public void SetRefStat(Stat statRef);
     }
 
     public interface ISkillStatAccessable
     {
-        public Stat GetSkillEffectMultiplyer();
+        public Stat GetEfficienceMultiplyer();
     }
 
     public interface IPlayerStatAccessable : IStatAccessable {
