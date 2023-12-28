@@ -13,6 +13,24 @@ namespace Feature_NewData
 
         public int Damage;
 
+#region ObjectPool
+
+        private IObjectPool<Projectile> poolRefer {get; set;}
+        public void SetPool(IObjectPool<Projectile> pool) {
+            poolRefer = pool;
+        }
+
+
+        private void OnBecameInvisible() {
+            poolRefer.Release(this);
+            this.transform.localScale = Vector3.one;
+            this.transform.rotation = Quaternion.identity;
+            this.Damage = 0;
+        }
+
+#endregion
+
+#region Setter
         public void SetDamage(int damage) { this.Damage = damage; }
 
         public void SetProjectileSize(int instantiatorBucketSize) {
@@ -22,6 +40,9 @@ namespace Feature_NewData
         public void SetForwardingAngle(Quaternion instantiatorAngle) {
             this.transform.rotation = Quaternion.Euler(instantiatorAngle.eulerAngles + this.transform.eulerAngles);
         }
+
+#endregion
+
         public void OnDisable() {
             OnBecameInvisible();
         }
@@ -36,17 +57,5 @@ namespace Feature_NewData
             transform.Translate(Vector3.forward * ForwardingSpeed * Time.deltaTime);
         }
 
-
-        private IObjectPool<Projectile> poolRefer {get; set;}
-        public void SetPool(IObjectPool<Projectile> pool) {
-            poolRefer = pool;
-        }
-
-        private void OnBecameInvisible() {
-            poolRefer.Release(this);
-            this.transform.localScale = Vector3.one;
-            this.transform.rotation = Quaternion.identity;
-            this.Damage = 0;
-        }
     }
 }
