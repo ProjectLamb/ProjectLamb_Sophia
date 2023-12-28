@@ -41,7 +41,7 @@ namespace Feature_NewData
         OnFinished          : 종료될때 함수
         OnInitialized       : 원 상태로 초기화 되었을떄
     *********************************************************************************/
-    public class CoolTimeManager {
+    public class CoolTimeComposite {
 
 #region Members 
         
@@ -68,7 +68,7 @@ namespace Feature_NewData
 
         public bool IsBlocked {get; private set;}
 
-        public CoolTimeManager(float baseCoolTime, int stackAmount, bool debugState) {
+        public CoolTimeComposite(float baseCoolTime, int stackAmount, bool debugState) {
             this.CurrentPassedTime = this.baseCoolTime = baseCoolTime;
             this.CurrentStacksCount = this.BaseStacksCount = stackAmount;
             this.IsDebug = debugState;
@@ -80,8 +80,8 @@ namespace Feature_NewData
             OnStartCooldown     ??= (this.IsDebug) ? () => {Debug.Log("Finished");}                      :  () => {};
         }
 
-        public CoolTimeManager(float baseCoolTime, int stackAmount) : this (baseCoolTime, stackAmount, false){}
-        public CoolTimeManager(float baseCoolTime) : this (baseCoolTime, 1, false){}
+        public CoolTimeComposite(float baseCoolTime, int stackAmount) : this (baseCoolTime, stackAmount, false){}
+        public CoolTimeComposite(float baseCoolTime) : this (baseCoolTime, 1, false){}
 
 #endregion
 
@@ -101,13 +101,13 @@ namespace Feature_NewData
              
 #region Setter
 
-        public CoolTimeManager SetMaxStackCounts(int counts) {
+        public CoolTimeComposite SetMaxStackCounts(int counts) {
             BaseStacksCount = counts;
             CurrentStacksCount = counts;
             return this;
         }
 
-        public CoolTimeManager SetAcceleratrion(float amount) { 
+        public CoolTimeComposite SetAcceleratrion(float amount) { 
             if(amount <= 0) {amount = 0;}
             accelerationAmount = amount; 
             return this;
@@ -137,30 +137,30 @@ namespace Feature_NewData
 #region Event Adder
 
         private event UnityAction OnStartCooldown = null;
-        public CoolTimeManager AddOnStartCooldownEvent(UnityAction action) {
+        public CoolTimeComposite AddOnStartCooldownEvent(UnityAction action) {
             OnStartCooldown += action;
             return this;
         }
 
         private event UnityAction OnUseAction = null;
-        public CoolTimeManager AddOnUseEvent(UnityAction action) {
+        public CoolTimeComposite AddOnUseEvent(UnityAction action) {
             OnUseAction += action;
             return this;
         }
         
         private event UnityAction<float> OnTicking = null;
-        public CoolTimeManager AddOnTickingEvent(UnityAction<float> action) {
+        public CoolTimeComposite AddOnTickingEvent(UnityAction<float> action) {
             OnTicking += action;
             return this;
         }
         private event UnityAction OnFinished = null;
-        public CoolTimeManager AddOnFinishedEvent(UnityAction action) {
+        public CoolTimeComposite AddOnFinishedEvent(UnityAction action) {
             OnFinished += action;
             return this;
         }
 
         private event UnityAction OnInitialized = null;
-        public CoolTimeManager AddOnInitialized(UnityAction action) {
+        public CoolTimeComposite AddOnInitialized(UnityAction action) {
             OnInitialized += action;
             return this;
         }

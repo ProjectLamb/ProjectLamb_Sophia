@@ -57,7 +57,7 @@ public class Boss : Entity
 
         BaseEnemyData = new EntityData(ScriptableED);
         FinalData = BaseEnemyData;
-        Life = new Feature_NewData.LifeManager(FinalData.MaxHP);
+        Life = new Feature_NewData.LifeComposite(FinalData.MaxHP);
 
         objectiveTarget = GameManager.Instance?.PlayerGameObject?.transform;
         isDie = false;

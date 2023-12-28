@@ -49,7 +49,7 @@ public class Sandbag : Entity
 
         BaseEnemyData = new EntityData(ScriptableED);
         FinalData = BaseEnemyData;
-        Life = new Feature_NewData.LifeManager(FinalData.MaxHP)
+        Life = new Feature_NewData.LifeComposite(FinalData.MaxHP)
             .AddOnHitEvent(FinalData.HitStateRef)
             .AddOnDamageEvent((float val) => {
                 mAnimator.SetTrigger("DoHit");
