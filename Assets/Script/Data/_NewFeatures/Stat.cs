@@ -7,19 +7,21 @@ namespace Feature_NewData
 {
     public enum E_STAT_USE_TYPE
     {
-        Natural, Ratio
+        None = 0,
+        Natural = 1, Ratio
     }
 
     public enum E_NUMERIC_STAT_TYPE {
-        MaxHp = 0, Defence, Power, AttackSpeed, MoveSpeed, Tenacity, Accecerate,
+        None = 0,
+        MaxHp = 1, Defence, Power, AttackSpeed, MoveSpeed, Tenacity, Accecerate,
 
-        MaxStamina = 10, StaminaRestoreSpeed, Luck,
+        MaxStamina = 11, StaminaRestoreSpeed, Luck,
 
-        DurateLifeTime = 20, Size, ForwardingSpeed,
+        DurateLifeTime = 21, Size, ForwardingSpeed,
 
-        PoolSize = 30, MeleeRatio, RangerRatio, TechRatio,
+        PoolSize = 31, MeleeRatio, RangerRatio, TechRatio,
 
-        EfficienceMultiplyer = 40, CoolDownSpeed
+        EfficienceMultiplyer = 41, CoolDownSpeed
     }
 
     [System.Serializable]
@@ -42,6 +44,7 @@ namespace Feature_NewData
         public Stat(float baseValue, E_NUMERIC_STAT_TYPE NumericType, E_STAT_USE_TYPE UseType, UnityAction statChangedHandler)
         {
             value = BaseValue = baseValue;
+            this.NumericType = NumericType;
             this.UseType = UseType;
             if(statChangedHandler != null) {
                 OnStatChanged = new UnityEvent();
@@ -87,6 +90,11 @@ namespace Feature_NewData
                 return Math.Clamp(value, 0.0f, 100);
             }
             throw new System.Exception("Natural 형식을 Ratio로 리턴 불가.");
+        }
+
+        public float GetValueForce() {
+            RecalculateStat();
+            return value;
         }
 
         public void AddCalculator(StatCalculator StatCalculator)

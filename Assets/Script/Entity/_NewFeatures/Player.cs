@@ -35,15 +35,15 @@ namespace Feature_NewData
         {
             return playerStat.GetStat(numericType);
         }
-
-        public void SetRefStat(Stat statRef)
-        {
-            playerStat.SetRefStat(statRef);
-        }
-
+        
         public LifeManager GetLifeManager()
         {
             return this.Life;
+        }
+
+        public string GetStatsInfo()
+        {
+            throw new System.NotImplementedException();
         }
     }    
 }
