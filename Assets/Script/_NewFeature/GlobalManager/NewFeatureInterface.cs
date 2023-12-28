@@ -10,20 +10,26 @@ namespace Feature_NewData
         public void Die();
 
     }
-//    public interface ILifeAccessable : IDamagable, IDieable{
-//        public LifeComposite GetLifeComposite();
-//    }
 
-    public interface ILifeAccessable {
+    public interface ILifeAccessable : IDamagable, IDieable{
         public LifeComposite GetLifeComposite();
+    }
+
+    public interface IStatAccessable {
+        public Stat GetStat(E_NUMERIC_STAT_TYPE numericType);
+        public string GetStatsInfo();
+    }
+
+    public interface IUpdatable
+    {
+        public void LateTick();
+        public void FrameTick();
+        public void PhysicsTick();
+    
     }
 
     public interface ICarrierInteractable {
         public IStatAccessable GetStat();
-    }
-    public interface IStatAccessable {
-        public Stat GetStat(E_NUMERIC_STAT_TYPE numericType);
-        public string GetStatsInfo();
     }
 
     public interface ISkillStatAccessable
@@ -56,12 +62,5 @@ namespace Feature_NewData
 
     public interface IUseMonobehaviourConstructor {
         public void Initialize(object data);
-    }
-    public interface IUpdatable
-    {
-        public void LateTick();
-        public void FrameTick();
-        public void PhysicsTick();
-    
     }
 }
