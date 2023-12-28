@@ -10,7 +10,11 @@ namespace Feature_NewData
         public void Die();
 
     }
-    public interface ILifeAccessable : IDamagable, IDieable{
+//    public interface ILifeAccessable : IDamagable, IDieable{
+//        public LifeManager GetLifeManager();
+//    }
+
+    public interface ILifeAccessable {
         public LifeManager GetLifeManager();
     }
 
@@ -19,16 +23,12 @@ namespace Feature_NewData
     }
     public interface IStatAccessable {
         public Stat GetStat(E_NUMERIC_STAT_TYPE numericType);
-        public void SetRefStat(Stat statRef);
+        public string GetStatsInfo();
     }
 
     public interface ISkillStatAccessable
     {
         public Stat GetEfficienceMultiplyer();
-    }
-
-    public interface IPlayerStatAccessable : IStatAccessable {
-        public Stat GetLuck();
     }
 
     public interface IInstantiatorAccessable {
