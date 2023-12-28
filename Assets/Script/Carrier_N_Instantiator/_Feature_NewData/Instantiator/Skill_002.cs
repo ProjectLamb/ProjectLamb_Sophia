@@ -25,11 +25,11 @@ namespace Feature_NewData
         public readonly List<float> DamageRatioEByRank = new List<float> {0.8f, 1f, 1.5f};
         public readonly List<float> DamageRatioRByRank = new List<float> {1.2f, 1.5f, 2f};
 
-        private Stat SkillEffectMultiplyer;
-        public Stat GetSkillEffectMultiplyer() { return this.SkillEffectMultiplyer;}
+        private Stat EfficienceMultiplyer;
+        public Stat GetEfficienceMultiplyer() { return this.EfficienceMultiplyer;}
 
         private void Awake() {
-            SkillEffectMultiplyer = new Stat(1, E_STAT_USE_TYPE.Ratio);
+            EfficienceMultiplyer = new Stat(1f, E_NUMERIC_STAT_TYPE.EfficienceMultiplyer, E_STAT_USE_TYPE.Ratio);
         }
 
         private void OnEnable() {
@@ -104,7 +104,7 @@ namespace Feature_NewData
                 case SKILL_KEY.E: {resByKey = DamageRatioEByRank[(int)rank]; break;}
                 case SKILL_KEY.R: {resByKey = DamageRatioRByRank[(int)rank]; break;}
             }
-            resByKey *= playerRef.GetPower() * playerRef.GetWeaponRatioDamage();
+            resByKey *= playerRef.GetStat(E_NUMERIC_STAT_TYPE.Power) * playerRef.GetStat(E_NUMERIC_STAT_TYPE.MeleeRatio);
             return (int)resByKey;
         }
 
@@ -115,5 +115,6 @@ namespace Feature_NewData
         private void DestroyProjectile(Projectile projectile) {
             Destroy(projectile.gameObject);
         }
+
     }
 }

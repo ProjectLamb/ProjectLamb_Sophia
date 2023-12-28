@@ -27,13 +27,6 @@ public class Player : Entity {
     public DashSkill DashSkillAbility;
     
     [SerializeField] private int mBarrierAmount;
-    public  int BarrierAmount {
-        get {return mBarrierAmount;}
-        set { 
-            mBarrierAmount = value; 
-            if(mBarrierAmount < 0) mBarrierAmount = 0;
-        }
-    }
     
     public override ref EntityData GetFinalData(){
         return ref PlayerDataManager.GetFinalData().playerData.EntityDatas;
@@ -66,19 +59,14 @@ public class Player : Entity {
 
     private Vector3                 mMoveVec;
     private Quaternion              mRotate;
-    private bool                    mIsBorder;
-    private bool                    mIsDashed;
-    private bool                    mIsDie;
 
     public  bool                    isAttack; // 일반 공격(1,2,3타) 여부
     public  bool                    isThrAttack; // 세번째 공격 여부
     public  bool                    canExitAttack; // 공격 중 탈출가능시점
-    public  bool                    attackProTime; // 공격 이펙트 출현시점
+
     [HideInInspector] Animator anim;
 
     private Vector2 inputVec;
-    private Vector3 moveDirection;
-    private float moveSpeed = 4f;
 
     IEnumerator mCoWaitDash;        // StopCorutine을 사용하기 위해서는 코루틴 변수가 필요하다. 
     public ParticleSystem DieParticle;
@@ -95,7 +83,8 @@ public class Player : Entity {
     }
 
     private void Start() {
-        CurrentHealth = PlayerDataManager.GetEntityData().MaxHP;//FinalPlayerData.PlayerEntityData.MaxHP;
+        Life = new LifeManager(PlayerDataManager.GetEntityData().MaxHP);
+        Life.AddOnHitEvent(PlayerDataManager.GetEntityData().HitStateRef);
     
         isAttack = false;
         isThrAttack = false;
@@ -106,33 +95,15 @@ public class Player : Entity {
     }
     
     public override void GetDamaged(int _amount){
-        DamageCalculatePipeline(ref _amount);
-        CurrentHealth -= _amount;
-        PlayerDataManager.GetEntityData().HitState.Invoke();
-        if(CurrentHealth <= 0) {Die();}
+        if(Life.IsDie) {return;}
+        Life.Damaged(_amount);
     }
 
     public override void GetDamaged(int _amount, VFXObject obj){
-        //_amount의 값이 갑자기 바뀌어야 한다.
-        //맞았을때 
-        DamageCalculatePipeline(ref _amount);
-        CurrentHealth -= _amount;
-        PlayerDataManager.GetEntityData().HitState.Invoke();
-        imageGenerator.GenerateImage(_amount);
+        if(Life.IsDie) {return;}
+        Life.Damaged(_amount);
         visualModulator.InteractByVFX(obj);
     }
-
-    //베리어 가 있다면 베리어를 깎고 값을 리턴 
-    // 없다면 그냥 지나가고
-    private void DamageCalculatePipeline(ref int _amount){
-        PlayerDataManager.GetEntityData().HitStateRef.Invoke(ref _amount);
-        _amount = (int)(_amount * 100/(100+PlayerDataManager.GetEntityData().Defence));
-        if(BarrierAmount > 0){
-            if(BarrierAmount - _amount >= 0){_amount = 0; BarrierAmount -= _amount;}
-            else {_amount = _amount - BarrierAmount; BarrierAmount = 0; }
-        }
-    }
-
 
     public override void Die(){Debug.Log("죽었다는 로직 작성하기");}
 

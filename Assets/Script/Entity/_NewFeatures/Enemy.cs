@@ -8,7 +8,7 @@ namespace Feature_NewData
     // IStatAccessable, 
     IModelAccessable {
 
-        public EntityStatManager entityStatManager;
+        public Numerics.EntityStatReferer entityStat;
         public ModelManger modelManger;
 
         
@@ -16,7 +16,7 @@ namespace Feature_NewData
         private float currentHealth;
 
         private void Awake() {
-            entityStatManager = new EntityStatManager();
+            entityStat = new Numerics.EntityStatReferer();
         }
 
         public void GetDamaged(int damage) {

@@ -29,11 +29,14 @@ public class Boss : Entity
     public ParticleSystem DieParticle;
     public override void GetDamaged(int _amount)
     {
-
+        if(Life.IsDie) {return;}
+        Life.Damaged(_amount);
     }
     public override void GetDamaged(int _amount, VFXObject _vfx)
     {
-
+        if(Life.IsDie) {return;}
+        Life.Damaged(_amount);
+        visualModulator.InteractByVFX(_vfx);
     }
     public override void Die()
     {
@@ -54,7 +57,7 @@ public class Boss : Entity
 
         BaseEnemyData = new EntityData(ScriptableED);
         FinalData = BaseEnemyData;
-        CurrentHealth = FinalData.MaxHP;
+        Life = new Feature_NewData.LifeManager(FinalData.MaxHP);
 
         objectiveTarget = GameManager.Instance?.PlayerGameObject?.transform;
         isDie = false;
