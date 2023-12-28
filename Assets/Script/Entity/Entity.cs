@@ -19,7 +19,7 @@ public abstract class Entity : MonoBehaviour, IDamagable, IDieable, IAffectable,
     [SerializeField] public CarrierBucket carrierBucket;
     [SerializeField] public int mCurrentHealth;
 
-    public LifeManager Life;
+    public LifeComposite Life;
 
     public Dictionary<STATE_TYPE, AffectorPackage> AffectorStacks = new Dictionary<STATE_TYPE, AffectorPackage>();
 

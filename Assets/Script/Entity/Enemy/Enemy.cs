@@ -109,7 +109,7 @@ public class Enemy : Entity
 
         BaseEnemyData = new EntityData(ScriptableED);
         FinalData = BaseEnemyData;
-        Life = new Feature_NewData.LifeManager(FinalData.MaxHP);
+        Life = new Feature_NewData.LifeComposite(FinalData.MaxHP);
 
         isRecog = false;
         objectiveTarget = GameManager.Instance?.PlayerGameObject?.transform;

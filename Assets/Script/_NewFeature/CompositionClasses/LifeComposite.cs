@@ -19,10 +19,10 @@ namespace Feature_NewData
         그리고 IsDie인가 아닌가만 체크를 한다.
 
     * 특수화
-        플레이어 LifeManager에는 피격되었을때 잠시 무적판정이 들어가야한다.
+        플레이어 LifeComposite에는 피격되었을때 잠시 무적판정이 들어가야한다.
 
     *********************************************************************************/
-    public class LifeManager {
+    public class LifeComposite {
 
 #region Members 
         
@@ -60,7 +60,7 @@ namespace Feature_NewData
             }
         }
 
-        public LifeManager(float maxHp, float defence) {
+        public LifeComposite(float maxHp, float defence) {
             MaxHp = new Stat( maxHp,
                 E_NUMERIC_STAT_TYPE.MaxHp, 
                 E_STAT_USE_TYPE.Natural, OnMaxHpUpdated
@@ -86,7 +86,7 @@ namespace Feature_NewData
             OnBreakBarrier   ??= () => {};
         }
 
-        public LifeManager(float maxHp) : this(maxHp, 0){}
+        public LifeComposite(float maxHp) : this(maxHp, 0){}
 
 #endregion
 
@@ -108,55 +108,55 @@ namespace Feature_NewData
 #region Event Adder
 
         protected UnityAction<float> OnHpUpdated = null;
-        public LifeManager AddOnUpdateEvent(UnityAction<float> action) {
+        public LifeComposite AddOnUpdateEvent(UnityAction<float> action) {
             this.OnHpUpdated += action;
             return this;
         }
 
         protected UnityAction<float> OnBarrierUpdated = null;
-        public LifeManager AddOnBarrierUpdateEvent(UnityAction<float> action) {
+        public LifeComposite AddOnBarrierUpdateEvent(UnityAction<float> action) {
             this.OnBarrierUpdated += action;
             return this;
         }
         
         protected UnityAction<float> OnDamaged = null;
-        public LifeManager AddOnDamageEvent(UnityAction<float> action) {
+        public LifeComposite AddOnDamageEvent(UnityAction<float> action) {
             this.OnDamaged += action;
             return this;
         }         
         
         protected UnityAction<float> OnHeal = null;
-        public LifeManager AddOnHealEvent(UnityAction<float> action) {
+        public LifeComposite AddOnHealEvent(UnityAction<float> action) {
             this.OnHeal += action;
             return this;
         } 
         
         protected UnityAction OnEnterDie = null;
-        public LifeManager AddOnEnterDieEvent(UnityAction action) {
+        public LifeComposite AddOnEnterDieEvent(UnityAction action) {
             this.OnEnterDie += action;
             return this;
         } 
 
         protected UnityAction OnExitDie = null;
-        public LifeManager AddOnExitDieEvent(UnityAction action) {
+        public LifeComposite AddOnExitDieEvent(UnityAction action) {
             this.OnExitDie += action;
             return this;
         } 
 
         protected UnityAction<float> OnBarrier = null;
-        public LifeManager AddOnBarrierEvent(UnityAction<float> action) {
+        public LifeComposite AddOnBarrierEvent(UnityAction<float> action) {
             this.OnBarrier += action;
             return this;
         } 
 
         protected UnityAction OnBreakBarrier = null;
-        public LifeManager AddOnBreakBarrierEvent(UnityAction action) {
+        public LifeComposite AddOnBreakBarrierEvent(UnityAction action) {
             this.OnBreakBarrier += action;
             return this;
         } 
 
         protected UnityActionRef<float> OnHit = null;
-        public LifeManager AddOnHitEvent(UnityActionRef<float> actionRef) {
+        public LifeComposite AddOnHitEvent(UnityActionRef<float> actionRef) {
             this.OnHit += actionRef;
             return this;
         }

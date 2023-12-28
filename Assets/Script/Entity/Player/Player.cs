@@ -83,7 +83,7 @@ public class Player : Entity {
     }
 
     private void Start() {
-        Life = new LifeManager(PlayerDataManager.GetEntityData().MaxHP);
+        Life = new LifeComposite(PlayerDataManager.GetEntityData().MaxHP);
         Life.AddOnHitEvent(PlayerDataManager.GetEntityData().HitStateRef);
     
         isAttack = false;
