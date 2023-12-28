@@ -9,13 +9,13 @@ public class TEST_EnemyStub : MonoBehaviour, Feature_NewData.ILifeAccessable, IS
     [HideInInspector] public Collider entityCollider;
     [HideInInspector] public Rigidbody entityRigidbody;
 
-    public LifeManager Life {get; private set;}
+    public LifeComposite Life {get; private set;}
     public EntityStatReferer StatReferer {get; private set;}
 
     [SerializeField] public VisualModulator visualModulator;
 
 #region Life Accessable
-    public LifeManager GetLifeManager() => this.Life;
+    public LifeComposite GetLifeComposite() => this.Life;
 
     public void GetDamaged(int damage)
     {
@@ -53,11 +53,11 @@ public class TEST_EnemyStub : MonoBehaviour, Feature_NewData.ILifeAccessable, IS
         TryGetComponent<Collider>(out entityCollider);
         TryGetComponent<Rigidbody>(out entityRigidbody);
 
-        Life = new LifeManager(100);
+        Life = new LifeComposite(100);
         StatReferer = new EntityStatReferer();
         StatReferer.SetRefStat(Life.MaxHp);
         StatReferer.SetRefStat(Life.Defence);
-        //이걸 실행하면 Monobehaviour가 실행되는건지, 아니면 LifeManager에서 실행되는건가?
+        //이걸 실행하면 Monobehaviour가 실행되는건지, 아니면 LifeComposite에서 실행되는건가?
     }
 
 }

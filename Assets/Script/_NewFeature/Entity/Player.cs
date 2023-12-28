@@ -9,7 +9,7 @@ namespace Feature_NewData
         
         public Numerics.PlayerStatReferer playerStat {get; private set;}
         public Numerics.Wealths PlayerWealth;
-        public LifeManager Life {get; private set;}
+        public LifeComposite Life {get; private set;}
         public DashSkill DashSkillAbility {get; private set;}
       
         public ModelManger modelManger;
@@ -36,7 +36,7 @@ namespace Feature_NewData
             return playerStat.GetStat(numericType);
         }
         
-        public LifeManager GetLifeManager()
+        public LifeComposite GetLifeComposite()
         {
             return this.Life;
         }

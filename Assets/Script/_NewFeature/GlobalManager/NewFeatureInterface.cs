@@ -11,11 +11,11 @@ namespace Feature_NewData
 
     }
 //    public interface ILifeAccessable : IDamagable, IDieable{
-//        public LifeManager GetLifeManager();
+//        public LifeComposite GetLifeComposite();
 //    }
 
     public interface ILifeAccessable {
-        public LifeManager GetLifeManager();
+        public LifeComposite GetLifeComposite();
     }
 
     public interface ICarrierInteractable {

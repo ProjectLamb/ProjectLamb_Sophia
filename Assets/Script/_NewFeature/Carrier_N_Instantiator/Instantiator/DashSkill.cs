@@ -14,7 +14,7 @@ namespace Feature_NewData
         
         public Stat MaxStamina {get; private set;}
         public Stat StaminaRestoreSpeed {get; private set;}
-        public CoolTimeManager Timer {get; private set;}
+        public CoolTimeComposite Timer {get; private set;}
         public DashCoolUI DashUI {get; private set;}
 
         public DashSkill(Rigidbody rb){
@@ -30,7 +30,7 @@ namespace Feature_NewData
                 OnStaminaRestoreSpeedUpdated
             );
             
-            Timer = new CoolTimeManager(3f, MaxStamina.GetValueByNature())
+            Timer = new CoolTimeComposite(3f, MaxStamina.GetValueByNature())
                 .SetAcceleratrion(StaminaRestoreSpeed);
             
             DashUI = GameObject.FindObjectOfType<DashCoolUI>();
