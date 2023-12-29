@@ -34,10 +34,6 @@ public interface IModifier
 /*
 데이터 변환이 이루어 진다.
 */
-public interface IAffectable
-{
-    public void AffectHandler(AffectorPackage affectorPackage);
-}
 
 public interface IEntityDataAddressable
 {
