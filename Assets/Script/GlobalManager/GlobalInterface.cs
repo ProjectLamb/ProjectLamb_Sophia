@@ -48,6 +48,12 @@ public interface ITimeAffectable
     public void Play();
 }
 
+public interface IAffectable{
+    public void AffectHandler(AffectorPackage _affectorPackage);
+
+}
+
+
 public interface IPurchase {
     
 }
