@@ -91,6 +91,7 @@ namespace Feature_NewData
 #endregion
 
 #region Getter
+
         public bool IsDie {get; protected set;}
 
         public bool IsHit {get; protected set;}

@@ -23,7 +23,7 @@ namespace Feature_NewData
             currentHealth -= damage;
             if(currentHealth <= 0) {Die();}
         }
-        public void GetDamaged(int damage, VFXObject vfx) {}
+        public void GetDamaged(int damage, VisualFXObject vfx) {}
         public void Die() {}
 
         public void ChangeSkin(Material skin) { modelManger.ChangeSkin(skin); }
