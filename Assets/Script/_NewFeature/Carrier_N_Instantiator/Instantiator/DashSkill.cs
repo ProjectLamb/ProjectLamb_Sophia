@@ -3,7 +3,7 @@ using FMODPlus;
 
 namespace Feature_NewData
 {
-    public class DashSkill : IUpdatable {
+    public class DashSkill : IUpdatorBindable {
 
 #region Members 
         private Rigidbody rigidbodyRef;
@@ -36,7 +36,7 @@ namespace Feature_NewData
             DashUI = GameObject.FindObjectOfType<DashCoolUI>();
             DashUI.SetTimer(Timer);
             
-            GlobalTimeUpdator.CheckAndAdd(this);
+            AddToUpator();
         }
 
 # endregion
@@ -86,7 +86,7 @@ namespace Feature_NewData
             }
         }
 
-#region  Implements
+#region  Updator Implements
 
         public void LateTick() {return;}
 
@@ -96,7 +96,19 @@ namespace Feature_NewData
 
         public void PhysicsTick() { return; }
 
-#endregion
+        bool IsUpdatorBinded = false;
+        public bool GetUpdatorBind() => IsUpdatorBinded;
+
+        public void AddToUpator() {
+            GlobalTimeUpdator.CheckAndAdd(this);
+            IsUpdatorBinded = true;
+        }
+        public void RemoveFromUpdator() {
+            GlobalTimeUpdator.CheckAndRemove(this);
+            IsUpdatorBinded = false;
+        }
+    
+        #endregion
 
     }
 }

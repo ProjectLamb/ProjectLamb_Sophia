@@ -79,7 +79,12 @@ namespace Sophia_Carriers {
         private void OnParticleCollision(GameObject _other) {}
 
 #region Clone By Prefeb Instantiate
-        public override Carrier Clone(){}
+        public override Carrier Clone(){
+            if(this.IsCloned == true) throw new SystemException("복제본이 복제본을 만들 수 는 없다.");
+            Carrier res = Instantiate(this).DisableSelf();
+            res = IsCloned = true;
+            return res;
+        }
         public virtual Projectile CloneProjectile(){}
         public virtual ParticleProjectile CloneParticleProjectile() {}
 #endregion
@@ -92,7 +97,15 @@ namespace Sophia_Carriers {
 
 #region setter
 
-        public abstract void Init(Entity _ownerEntity);
+        public abstract void Init(Entity _ownerEntity) {
+            if(IsCloned == false)       
+            if(_ownerEntity == null)    
+            ownerEntity = _ownerEntity;
+            particleModule.startLifetime    = DestroyTime;
+            particleModule.duration         = DestroyTime;
+            transform.tag = _ownerEntity.GetFinalData().EntityTag + "Projectile";
+            IsInitialized = true;
+        }
         public abstract void InitByObject(Entity _ownerEntity, object[] _objects);
         public virtual void SetScale();
 

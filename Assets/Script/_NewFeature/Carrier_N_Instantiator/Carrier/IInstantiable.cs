@@ -8,23 +8,27 @@ namespace Feature_NewData
 
     public interface IInstantiable<T, U> {
 
-        public T    Clone();
-
         public U    GetOwner();
+        public bool GetIsInitialized();
 
         public T    Init(U owner);
         public T    InitByObject(U owner, object[] objects);
-        public T    SetPositionAndForwarding(Transform transform, Quaternion instantiatorAngle);
         public T    SetScale(float sizeRatio);
         public T    SetDurateTime(float time);
 
+        public void Get();
         public void Activate();
         public void DeActivate();
         public void Release();
 
-        public bool CheckIsCloned();
         public bool CheckIsSameOwner(U owner);
-    
+    }
+
+    public interface IRepositionable<Instantable> {
+        public void ActivateInstantable(MonoBehaviour entity, Instantable _carrier);
+        public Quaternion   GetForwardingAngle(Quaternion instantiatorQuaternion);
+        public Transform    GetTransformParent(Transform parent);
+
     }
     /*********************************************************************************
 
