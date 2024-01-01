@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Feature_NewData
 {
-    public enum E_AFFACT_TYPE {
+    public enum E_AFFECT_TYPE {
         None = 0,
 
         // 화상, 독, 출혈, 수축, 냉기, 혼란, 공포, 스턴, 속박, 처형
@@ -15,7 +15,7 @@ namespace Feature_NewData
         Buff = 200,
         MoveSpeedUp, Accelerated, PowerUp, Barrier, Resist, Invisible, Invincible, Defence, ProjectileGenerate, Dodgeing, 
     }
-    public class AffactorManager : MonoBehaviour {
+    public class AffectorManager : MonoBehaviour {
         
     }
 }
