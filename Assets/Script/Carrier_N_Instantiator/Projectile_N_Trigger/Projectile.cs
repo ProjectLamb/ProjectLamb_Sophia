@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Sophia_Carriers;
+using System.Collections;
 
 /// <summary>
 /// Instantiate().Initialize(int amount, Entity owner)를 꼭 설정해야함 <br/>
@@ -22,7 +23,7 @@ namespace Sophia_Carriers {
         //               public     Entity          ownerEntity;
         //               public     CollisionDelegator collisionDelegator;
 
-        [SerializeField] public     VFXObject       HitEffect = null;
+        [SerializeField] public     Feature_NewData.VisualFXObject       HitEffect = null;
         [SerializeField] public     ParticleSystem  ProjectileParticle = null;
         [SerializeField] public     float           ProjecttileDamage;
         [SerializeField] public     float           DestroyTime = 0.5f;
@@ -125,10 +126,19 @@ namespace Sophia_Carriers {
         protected void HitTarget(Collider _other) {
             if(ProjecttileDamage == 0) {return;}
             if(transform.CompareTag(_other.transform.tag)) {return;}
-            IDamagable target = _other.GetComponent<IDamagable>();
-            if(_other.TryGetComponent<IDamagable>(out IDamagable damagableTarget)){
-                damagableTarget.GetDamaged((int)ProjecttileDamage, this.HitEffect); 
+            Feature_NewData.ILifeAccessable target = _other.GetComponent<Feature_NewData.ILifeAccessable>();
+            if(_other.TryGetComponent<Feature_NewData.ILifeAccessable>(out Feature_NewData.ILifeAccessable damagableTarget)){
+                damagableTarget.GetDamaged((int)ProjecttileDamage, HitEffect);
+                //StartCoroutine(TEST_CoHitFiveTime(damagableTarget));
             }
+        }
+
+        IEnumerator TEST_CoHitFiveTime(Feature_NewData.ILifeAccessable damagableTarget) {
+            for(int i = 0; i < 5; i++){
+                damagableTarget.GetDamaged((int)ProjecttileDamage, HitEffect);
+                yield return YieldInstructionCache.WaitForSeconds(0.05f);
+            }
+            yield break;
         }
 
         protected void ConveyAffectorToTarget(Collider _other){

@@ -25,7 +25,7 @@ namespace Feature_NewData
         private void Awake() {}
         public void Die() {}
         public void GetDamaged(int damage) {}
-        public void GetDamaged(int damage, VFXObject _obj) {}
+        public void GetDamaged(int damage, VisualFXObject _obj) {}
         public void Dash() {}
         public void Attack() {}
         public void Skill() {}
