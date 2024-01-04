@@ -1,4 +1,6 @@
 using UnityEngine;
+using Cysharp.Threading.Tasks;
+using System.Threading.Tasks;
 
 namespace Feature_NewData
 {
@@ -22,6 +24,15 @@ namespace Feature_NewData
 
     public interface IVisualAccessable {
         
+    }
+
+    /*********************************************************************************
+    * Command Pattern
+    *********************************************************************************/
+
+    public interface IAffectorCommand {
+        public void Modifiy();
+        public void Revert();
     }
 
     /*********************************************************************************
