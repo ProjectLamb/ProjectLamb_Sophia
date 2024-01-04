@@ -6,6 +6,7 @@ using System;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.PlayerLoop;
+using UnityEngine.Android;
 
 namespace Feature_NewData
 {    
@@ -47,6 +48,7 @@ namespace Feature_NewData
         
         private readonly float baseCoolTime;
         public float CurrentPassedTime {get; private set;}
+        public float IntervalTime {get; private set;}
 
         public int BaseStacksCount {get; private set;}
         private int mCurrentStacksCount;
@@ -64,6 +66,7 @@ namespace Feature_NewData
         
         private const float baseAccelerationAmount = 1f;
         private float accelerationAmount = 1f; // Ratio;
+        
         private readonly bool IsDebug = false;
 
         public bool IsBlocked {get; private set;}
@@ -72,10 +75,12 @@ namespace Feature_NewData
             this.CurrentPassedTime = this.baseCoolTime = baseCoolTime;
             this.CurrentStacksCount = this.BaseStacksCount = stackAmount;
             this.IsDebug = debugState;
+            this.IntervalTime = -1f;
 
             OnInitialized       ??= (this.IsDebug) ? () => {Debug.Log("Initialized");}                   :  () => {};
             OnFinished          ??= (this.IsDebug) ? () => {Debug.Log("Started");}                       :  () => {};
             OnUseAction         ??= (this.IsDebug) ? () => {Debug.Log($"Use ... {CurrentStacksCount}");} :  () => {};
+            OnInterval          ??= (this.IsDebug) ? () => {Debug.Log($"Interval");} :  () => {};
             OnTicking           ??= (this.IsDebug) ? (float val) => {Debug.Log($"Ticking ... {val}");}   :  (float val) => {};
             OnStartCooldown     ??= (this.IsDebug) ? () => {Debug.Log("Finished");}                      :  () => {};
         }
@@ -112,6 +117,13 @@ namespace Feature_NewData
             accelerationAmount = amount; 
             return this;
         }
+
+        public CoolTimeComposite SetIntervalTime(float amount) {
+            if(amount <= 0) {amount = -1f;}
+            IntervalTime = amount;
+            return this;
+
+        }
         
         public void AccelerateRemainByCurrentCoolTime(float dimRatio) {
             CurrentPassedTime += CurrentPassedTime * dimRatio;
@@ -131,6 +143,12 @@ namespace Feature_NewData
         public void SetBlock() {IsBlocked = true;}
 
         public void SetRelease() {IsBlocked = false;}
+
+        public void SetCoolDownInitialize() {
+            CurrentStacksCount = BaseStacksCount;
+            CurrentPassedTime = baseCoolTime;
+            OnInitialized.Invoke();
+        }
 
 #endregion
 
@@ -153,6 +171,12 @@ namespace Feature_NewData
             OnTicking += action;
             return this;
         }
+        private event UnityAction OnInterval = null;
+        public CoolTimeComposite AddOnIntervalEvent(UnityAction action) {
+            OnInterval += action;
+            return this;
+        }
+
         private event UnityAction OnFinished = null;
         public CoolTimeComposite AddOnFinishedEvent(UnityAction action) {
             OnFinished += action;
@@ -166,13 +190,17 @@ namespace Feature_NewData
         }
 
         public void ClearEvents() {
-            OnStartCooldown = null; 
-            OnTicking = null; 
-            OnFinished = null; 
+            OnInitialized = null;
+            OnFinished = null;
+            OnUseAction = null;
+            OnInterval = null;
+            OnTicking = null;
+            OnStartCooldown = null;
                  
             OnInitialized       ??= (this.IsDebug) ? () => {Debug.Log("Initialized");}                   :  () => {};
             OnFinished          ??= (this.IsDebug) ? () => {Debug.Log("Started");}                       :  () => {};
             OnUseAction         ??= (this.IsDebug) ? () => {Debug.Log($"Use ... {CurrentStacksCount}");} :  () => {};
+            OnInterval          ??= (this.IsDebug) ? () => {Debug.Log("Interval");}                      :  () => {};
             OnTicking           ??= (this.IsDebug) ? (float val) => {Debug.Log($"Ticking ... {val}");}   :  (float val) => {};
             OnStartCooldown     ??= (this.IsDebug) ? () => {Debug.Log("Finished");}                      :  () => {};
         }
@@ -205,11 +233,17 @@ namespace Feature_NewData
             }
         }
 
+        private bool IntervalChecker(float passedTime) {
+            if(IntervalTime <= 0f) {return false;}
+            return passedTime % IntervalTime <= 0.001f;
+        }
+
         public void Tick() {
             if(CurrentStacksCount == BaseStacksCount) {return;}
             if(CurrentPassedTime < baseCoolTime -0.001f) {
                 CurrentPassedTime += Time.deltaTime * accelerationAmount;
                 OnTicking.Invoke(GetProgressAmount());
+                if(IntervalChecker(CurrentPassedTime)) OnInterval.Invoke();
             }
             else {
                 if(CurrentStacksCount++ < BaseStacksCount){
