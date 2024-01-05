@@ -11,10 +11,9 @@ namespace Feature_NewData
         // private Stat MaxStamina = new Stat(3, E_STAT_USE_TYPE.Natural);
         // private Stat StaminaRestoreSpeed = new Stat(1, E_STAT_USE_TYPE.Ratio);
 
-        
         public Stat MaxStamina {get; private set;}
         public Stat StaminaRestoreSpeed {get; private set;}
-        public CoolTimeComposite Timer {get; private set;}
+        public Feature_Composite.CoolTimeComposite Timer {get; private set;}
         public DashCoolUI DashUI {get; private set;}
 
         public DashSkill(Rigidbody rb){
@@ -30,7 +29,7 @@ namespace Feature_NewData
                 OnStaminaRestoreSpeedUpdated
             );
             
-            Timer = new CoolTimeComposite(3f, MaxStamina.GetValueByNature())
+            Timer = new Feature_Composite.CoolTimeComposite(3f, MaxStamina.GetValueByNature())
                 .SetAcceleratrion(StaminaRestoreSpeed);
             
             DashUI = GameObject.FindObjectOfType<DashCoolUI>();
@@ -91,7 +90,7 @@ namespace Feature_NewData
         public void LateTick() {return;}
 
         public void FrameTick() {
-            Timer.Tick(); return;
+            Timer.TickRunning();
         }
 
         public void PhysicsTick() { return; }
