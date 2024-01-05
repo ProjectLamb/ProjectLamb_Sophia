@@ -1,12 +1,5 @@
-using System.Net.Http.Headers;
-using AYellowpaper.SerializedCollections.Editor;
-using UniRx;
-using UnityEditor.Searcher;
-using System;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.PlayerLoop;
-using UnityEngine.Android;
 
 namespace Feature_NewData
 {    
@@ -93,7 +86,7 @@ namespace Feature_NewData
 #region Gettter 
         
         public bool GetIsInitialized() {
-            if(CurrentPassedTime >= baseCoolTime - 0.001f && BaseStacksCount == CurrentStacksCount) {return true;}
+            if(CurrentPassedTime >= baseCoolTime - 0.01f && BaseStacksCount == CurrentStacksCount) {return true;}
             return false;
         }
 
@@ -122,7 +115,6 @@ namespace Feature_NewData
             if(amount <= 0) {amount = -1f;}
             IntervalTime = amount;
             return this;
-
         }
         
         public void AccelerateRemainByCurrentCoolTime(float dimRatio) {
@@ -136,7 +128,7 @@ namespace Feature_NewData
         
         public void SetCooldownFixedTime(ref float value){
             if( baseCoolTime < value ) {CurrentPassedTime = baseCoolTime;}
-            else if(value <= 0.001f) {CurrentPassedTime = 0.1f;}
+            else if(value <= 0.01f) {CurrentPassedTime = 0.1f;}
             else {CurrentPassedTime = value;}
         }
 
@@ -235,12 +227,12 @@ namespace Feature_NewData
 
         private bool IntervalChecker(float passedTime) {
             if(IntervalTime <= 0f) {return false;}
-            return passedTime % IntervalTime <= 0.001f;
+            return passedTime % IntervalTime <= 0.01f;
         }
 
         public void Tick() {
             if(CurrentStacksCount == BaseStacksCount) {return;}
-            if(CurrentPassedTime < baseCoolTime -0.001f) {
+            if(CurrentPassedTime < baseCoolTime -0.01f) {
                 CurrentPassedTime += Time.deltaTime * accelerationAmount;
                 OnTicking.Invoke(GetProgressAmount());
                 if(IntervalChecker(CurrentPassedTime)) OnInterval.Invoke();
