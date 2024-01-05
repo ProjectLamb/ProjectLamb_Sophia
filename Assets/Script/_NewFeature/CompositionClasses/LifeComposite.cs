@@ -47,7 +47,7 @@ namespace Feature_NewData
         public float CurrentBarrier {
             get {return mCurrentBarrier;}
             protected set {
-                if(value <= 0.001f) {
+                if(value <= 0.01f) {
                     IsBarrierCovered = false;
                     mCurrentBarrier = 0; 
                     return;
@@ -218,7 +218,7 @@ namespace Feature_NewData
         public void Damaged(float damage) {
             OnHit.Invoke(ref damage);
             DamageCalculatePipeline(ref damage);
-            if(damage < 0.001f) {return;}
+            if(damage < 0.01f) {return;}
 
             OnDamaged.Invoke(damage);
             CurrentHealth -= damage;

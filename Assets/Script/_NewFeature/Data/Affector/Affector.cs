@@ -20,16 +20,16 @@ namespace Feature_NewData
         MoveSpeedUp, Accelerated, PowerUp, Barrier, Resist, Invisible, Invincible, Defence, ProjectileGenerate, Dodgeing, 
     }
     namespace Affector {
-        public abstract class Affector : IUpdatable{
+        public abstract class Affector {
             public readonly E_AFFECT_TYPE AffectType;
             public float BaseDurateTime;
             public Entity targetEntity;
             public Entity ownerEntity;
+            private CancellationTokenSource cancel = new CancellationTokenSource();
     /*비주얼 데이터*/
             
             public Material material;
             public VisualFXObject visualFx;
-            public CoolTimeComposite timer;
 
             public Affector(E_AFFECT_TYPE affectType) {
                 this.AffectType = affectType;
@@ -49,7 +49,6 @@ namespace Feature_NewData
 
             public Affector SetDurateTime(float time) {
                 this.BaseDurateTime = time;
-                timer = new CoolTimeComposite(BaseDurateTime);
                 return this;
             }
 
@@ -69,19 +68,6 @@ namespace Feature_NewData
 
             public abstract UniTask Revert();
 
-    #region Updatable
-            
-            public void LateTick() {
-                throw new NotImplementedException();
-            }
-
-            public void FrameTick() => this.timer.Tick();
-
-            public void PhysicsTick() {
-                throw new NotImplementedException();
-            }
-
-    #endregion
 
     #region Helper
             public float CalcDurateTime() {
@@ -145,8 +131,8 @@ namespace Feature_NewData
     #endregion
         }
         */
-        public class PoisonedAffect : Affector {
-            private CancellationTokenSource cancel = new CancellationTokenSource();
+        public class PoisonedAffect : Affector, IUpdatable {
+        
             public float IntervalTime;
             public float TickDamageRatio;
             private float TickDamage;
@@ -162,7 +148,6 @@ namespace Feature_NewData
 
             public PoisonedAffect SetIntervalTime(float Interval) {
                 IntervalTime = Interval;
-                timer.SetIntervalTime(IntervalTime);
                 return this;
             }
 
@@ -172,40 +157,38 @@ namespace Feature_NewData
             public override async UniTask Modifiy()
             {
                 await UniTask.Yield(PlayerLoopTiming.LastUpdate);
-                timer
-                    .AddOnStartCooldownEvent(PoisonedVisualOn)
-                    .AddOnIntervalEvent(PoisonedDamage)
-                    .AddOnFinishedEvent(PoisonedVisualOff)
-                    .AddOnFinishedEvent(OnAffectEndHandler);
-                GlobalTimeUpdator.CheckAndAdd(this);
             }
 
             public override async UniTask Revert()
             {
                 await UniTask.Yield(PlayerLoopTiming.LastUpdate);
-                timer.SetCoolDownInitialize();
-                timer.ClearEvents();
-                GlobalTimeUpdator.CheckAndRemove(this);
             }
 
             public void PoisonedDamage() => targetEntity.GetDamaged((int)TickDamage);
             
-            public void PoisonedVisualOn() {
-            }
-            public void PoisonedVisualOff() {
-            }
-
-            public void OnAffectEndHandler() {
-                timer.SetCoolDownInitialize();
-                timer.ClearEvents();
-                GlobalTimeUpdator.CheckAndRemove(this);
-            }
+            public void PoisonedVisualOn() {}
+            public void PoisonedVisualOff() {}
 
     #region Helper
             public float CalcTickDamage() {
                 return TickDamageRatio * this.ownerEntity.StatReferer.GetStat(E_NUMERIC_STAT_TYPE.Power);
             }
-    #endregion
+
+            public void LateTick()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void FrameTick()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void PhysicsTick()
+            {
+                throw new NotImplementedException();
+            }
+            #endregion
 
         }
     }
