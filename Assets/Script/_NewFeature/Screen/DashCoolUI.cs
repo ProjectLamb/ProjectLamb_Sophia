@@ -10,9 +10,9 @@ namespace Feature_NewData
         public UnityEngine.UI.Image fill;
         public TextMeshProUGUI textMeshPro;
         
-        private CoolTimeComposite TimerRef;
+        private Feature_Composite.CoolTimeComposite TimerRef;
 
-        public void SetTimer(CoolTimeComposite CoolTimeComposite) {
+        public void SetTimer(Feature_Composite.CoolTimeComposite CoolTimeComposite) {
             TimerRef = CoolTimeComposite;
 
             TimerRef.AddOnTickingEvent(UpdateFillAmount)
@@ -20,7 +20,7 @@ namespace Feature_NewData
                     .AddOnFinishedEvent(RecoverStack)
                     .AddOnInitialized(ResetUI);
             
-            StartCoroutine(DoAndRenderUI(() => {textMeshPro.text = TimerRef.CurrentStacksCount.ToString();}));
+            StartCoroutine(DoAndRenderUI(() => {textMeshPro.text = TimerRef.stackCounter.CurrentStacksCount.ToString();}));
         }
 
 
@@ -31,11 +31,11 @@ namespace Feature_NewData
             
         public void ResetUI() {
             fill.fillAmount = 0;
-            StartCoroutine(DoAndRenderUI(() => {textMeshPro.text = TimerRef.BaseStacksCount.ToString();}));
+            StartCoroutine(DoAndRenderUI(() => {textMeshPro.text = TimerRef.stackCounter.BaseStacksCount.ToString();}));
         }
 
         public void DrawForce() {
-            StartCoroutine(DoAndRenderUI(() => {textMeshPro.text = TimerRef.BaseStacksCount.ToString();}));
+            StartCoroutine(DoAndRenderUI(() => {textMeshPro.text = TimerRef.stackCounter.BaseStacksCount.ToString();}));
         }
 
         IEnumerator DoAndRenderUI(UnityAction action){
@@ -43,10 +43,10 @@ namespace Feature_NewData
         }
 
         private void UseStack() {
-            StartCoroutine(DoAndRenderUI(() => {textMeshPro.text = TimerRef.CurrentStacksCount.ToString();}));
+            StartCoroutine(DoAndRenderUI(() => {textMeshPro.text = TimerRef.stackCounter.CurrentStacksCount.ToString();}));
         }
         private void RecoverStack() {
-            StartCoroutine(DoAndRenderUI(() => {textMeshPro.text = TimerRef.CurrentStacksCount.ToString();}));
+            StartCoroutine(DoAndRenderUI(() => {textMeshPro.text = TimerRef.stackCounter.CurrentStacksCount.ToString();}));
         }
     }
 }
