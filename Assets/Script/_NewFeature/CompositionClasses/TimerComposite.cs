@@ -1,9 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 using Feature_State;
-using UnityEngine.AI;
-using System.Threading;
-using TMPro;
+using System;
 
 namespace Feature_Composite
 {
@@ -20,14 +18,16 @@ namespace Feature_Composite
             owner.StateType = E_TIMER_STATE.Initialized;
             owner.PassedTime = owner.BaseTime;
             owner.NextInterval = 0f;
+            owner.OnInitialized?.Invoke();
         }
 
         public void Execute(TimerComposite owner)
         {
-            owner.OnInitialized.Invoke();
         }
 
-        public void Exit(TimerComposite owner) { return; }
+        public void Exit(TimerComposite owner) { 
+            owner.PassedTime = 0;
+        }
     }
 
     public class TimerStart : IState<TimerComposite>
@@ -38,13 +38,13 @@ namespace Feature_Composite
         public void Enter(TimerComposite owner)
         {
             owner.StateType = E_TIMER_STATE.Start;
-            owner.PassedTime = 0;
+            owner.OnStart?.Invoke();
         }
 
         public void Execute(TimerComposite owner)
         {
-            owner.OnStart.Invoke();
             owner.ChangeState(TimerRunning.Instance);
+            return;
         }
 
         public void Exit(TimerComposite owner) { return; }
@@ -56,17 +56,16 @@ namespace Feature_Composite
         public static TimerRunning Instance = _instance;
 
         public void Enter(TimerComposite owner) {
-            
             owner.StateType = E_TIMER_STATE.Timer;
         }
 
         public void Execute(TimerComposite owner)
         {
-            if (owner.PassedTime >= owner.BaseTime) { owner.ChangeState(TimerEnd.Instance); } // ChangeState(TimerEnd)
+            if (owner.PassedTime >= owner.BaseTime) { owner.ChangeState(TimerEnd.Instance); return;} // ChangeState(TimerEnd)
             if (owner.IntervalTime > 0.01f && owner.PassedTime >= owner.NextInterval)
             {
                 owner.NextInterval += owner.IntervalTime;
-                owner.OnInterval.Invoke();
+                owner.OnInterval?.Invoke();
             }
             owner.OnTicking.Invoke(owner.GetProgressAmount());
             owner.PassedTime += owner.IsBlocked ? 0f : Time.deltaTime * owner.accelerationAmount;
@@ -83,23 +82,22 @@ namespace Feature_Composite
         public void Enter(TimerComposite owner) {
             owner.PassedTime = owner.BaseTime;
             owner.StateType = E_TIMER_STATE.End;
+            owner.OnFinished?.Invoke();
+            if(owner.WhenLoopable()) {
+                owner.PassedTime = 0;
+                owner.NextInterval = 0f;
+                owner.ChangeState(TimerStart.Instance);
+            }
+            else {
+                owner.ChangeState(TimerInitialize.Instance);
+            }
         }
 
         public void Execute(TimerComposite owner)
         {
-            owner.OnFinished.Invoke();
-            if(owner.IsLoop) {
-                owner.ChangeState(TimerInitialize.Instance);
-            }
-            else {
-                owner.ChangeState(TimerExit.Instance);
-            }
         }
 
-        public void Exit(TimerComposite owner)
-        {
-            throw new System.NotImplementedException();
-        }
+        public void Exit(TimerComposite owner) { return; }
     }
 
     public class TimerExit : IState<TimerComposite>
@@ -145,7 +143,7 @@ namespace Feature_Composite
         public TimerComposite(float baseTime, float intervalTime)
         {
             StateType = E_TIMER_STATE.Initialized;
-            ChangeState(TimerInitialize.Instance);
+            currentState = TimerInitialize.Instance;
             PassedTime = BaseTime = baseTime;
             IntervalTime = intervalTime;
 
@@ -165,6 +163,7 @@ namespace Feature_Composite
         public UnityAction OnInterval = null;
         public UnityAction<float> OnTicking = null;
         public UnityAction OnFinished = null;
+        public Func<bool>  WhenLoopable = null;
 
         public void ClearEvents()
         {
@@ -250,7 +249,7 @@ namespace Feature_Composite
             get { return mCurrentStacksCount; }
             internal set
             {
-                if (value > BaseStacksCount)
+                if (value >= BaseStacksCount)
                 {
                     mCurrentStacksCount = BaseStacksCount; return;
                 }
@@ -304,12 +303,12 @@ namespace Feature_Composite
         public TimerComposite timer { get; private set; }
         public StackCounterComposite stackCounter { get; private set; }
 
-
         public CoolTimeComposite(float baseTime, float intervalTime, int stackAmount)
         {
             timer = new TimerComposite(baseTime, intervalTime);
             stackCounter = new StackCounterComposite(stackAmount);
             timer.OnFinished += RestoreStack;
+            timer.WhenLoopable += GetIsELoopable;
         }
 
         public CoolTimeComposite(float baseTime, int stackAmount) : this(baseTime, -1, stackAmount) { }
@@ -318,12 +317,42 @@ namespace Feature_Composite
         
         public float GetProgressAmount() => timer.GetProgressAmount();
         public bool GetIsReadyToUse() => stackCounter.GetIsReadyToUse();
-        public void SetBlock() => timer.Pause();
-        public void SetRelease() => timer.Continue();
-
+        public bool GetIsELoopable() => stackCounter.CurrentStacksCount < stackCounter.BaseStacksCount;
 
 #endregion
 
+#region Setter 
+        public void SetBlock() => timer.Pause();
+        public void SetRelease() => timer.Continue();
+        
+
+        public CoolTimeComposite SetMaxStackCounts(int counts) {
+            stackCounter.SetMaxStackCounts(counts);
+            stackCounter.CurrentStacksCount = counts;
+            return this;
+        }
+
+        public CoolTimeComposite SetAcceleratrion(float amount) { 
+            if(amount <= 0) {amount = 0;}
+            timer.SetAcceleratrion(amount);
+            return this;
+        }
+        
+        public void AccelerateRemainByCurrentCoolTime(float dimRatio) {
+            timer.AccelerateRemainByCurrentCoolTime(dimRatio);
+        }
+
+        public void AccelerateFixedCoolTime (ref float second) {
+            timer.AccelerateFixedCoolTime(ref second);
+        }
+        
+        public void SetCooldownFixedTime(ref float value){
+            timer.SetCooldownFixedTime(ref value);
+        }
+
+#endregion
+
+#region Event
         public CoolTimeComposite AddOnInitialized(UnityAction action)
         {
             timer.OnInitialized += action;
@@ -360,10 +389,13 @@ namespace Feature_Composite
             return this;
         }
 
+
         public void ClearEvents() {
             timer.ClearEvents();              
             stackCounter.ClearEvents();
         }
+
+#endregion
 
         public void ActionStart(UnityAction action) {
             if(!GetIsReadyToUse()) {return;}
@@ -371,7 +403,6 @@ namespace Feature_Composite
             timer.SetStart();
             timer.Execute();
             stackCounter.UseStack();
-            timer.IsLoop = true;
         }
 
         public void TickRunning() {
@@ -379,12 +410,9 @@ namespace Feature_Composite
         }
 
         public void RestoreStack() {
-            if(stackCounter.CurrentStacksCount == stackCounter.BaseStacksCount) {
-                timer.IsLoop = false;
-                return;
+            if(stackCounter.CurrentStacksCount < stackCounter.BaseStacksCount) {
+                stackCounter.CurrentStacksCount++;
             }
-            stackCounter.CurrentStacksCount++;
         }
     }
 }
-
