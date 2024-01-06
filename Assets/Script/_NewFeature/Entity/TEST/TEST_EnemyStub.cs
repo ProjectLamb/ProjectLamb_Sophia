@@ -30,7 +30,8 @@ public class TEST_EnemyStub : MonoBehaviour, ILifeAccessable, IStatAccessable
         if (Life.IsDie) { return; }
         Life.Damaged(damage);
         if(Life.IsDie) {Die();}
-        VisualFXBucket.ActivateInstantable(this, vfx);
+        /*기존 코드는 Actiavete의 책임이 있었는데 지금은 그냥 객체 리턴을 하므로 엄연히 활성화 단계는 함수 호출부에서 해야 할것이다*/
+        VisualFXBucket.ActivateInstantable(this, vfx)?.Activate();
     }
     
     public void Die() => Destroy(gameObject, 0.5f);
