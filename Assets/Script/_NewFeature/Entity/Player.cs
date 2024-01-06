@@ -15,7 +15,7 @@ namespace Feature_NewData
         public ModelManger modelManger;
         
 
-        public MeleeWeapon meleeWeapon;
+        // public MeleeWeapon meleeWeapon;
         
 
         public void ChangeSkin(Material skin) { modelManger.ChangeSkin(skin); }
