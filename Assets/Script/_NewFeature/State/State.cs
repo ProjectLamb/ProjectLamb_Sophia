@@ -8,8 +8,4 @@ namespace Feature_State
         public void Execute(T owner);
         public void Exit(T owner);
     }
-
-    public class StateMachine<T> {
-
-    }
 }
