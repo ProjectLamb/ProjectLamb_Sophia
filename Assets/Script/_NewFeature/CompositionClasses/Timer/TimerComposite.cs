@@ -107,6 +107,8 @@ namespace Feature_Composite
 
         #endregion
 
+#region State
+
         private IState<TimerComposite> currentState = null;
 
         public void ChangeState(IState<TimerComposite> newState) {
@@ -125,5 +127,7 @@ namespace Feature_Composite
 
         public void Pause() => IsBlocked = true;
         public void Continue() => IsBlocked = false;
+
+#endregion
     }
 }

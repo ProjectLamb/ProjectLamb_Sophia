@@ -8,6 +8,7 @@ using UnityEngine.Pool;
 
 namespace Feature_NewData
 {
+    /*
     public class Skill_002 : MonoBehaviour, ISkillStatAccessable {
         private Player playerRef;
         public int MaxPoolSize;
@@ -117,4 +118,5 @@ namespace Feature_NewData
         }
 
     }
+    */
 }

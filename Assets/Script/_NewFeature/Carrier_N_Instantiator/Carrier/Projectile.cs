@@ -7,6 +7,9 @@ using Microsoft.SqlServer.Server;
 
 namespace Feature_NewData
 {
+    
+    /*변하는 녀석*/
+
     public class Projectile : MonoBehaviour, IInstantiable<Projectile, Entity>
     {
 

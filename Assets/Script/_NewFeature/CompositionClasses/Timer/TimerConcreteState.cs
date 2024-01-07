@@ -11,7 +11,7 @@ namespace Feature_Composite
     public class TimerInitialize : IState<TimerComposite>
     {
         private static TimerInitialize _instance = new TimerInitialize();
-        public static TimerInitialize Instance = _instance;
+        public static TimerInitialize Instance => _instance;
 
         public void Enter(TimerComposite owner)
         {
@@ -32,7 +32,7 @@ namespace Feature_Composite
     public class TimerStart : IState<TimerComposite>
     {
         private static TimerStart _instance = new TimerStart();
-        public static TimerStart Instance = _instance;
+        public static TimerStart Instance => _instance;
 
         public void Enter(TimerComposite owner)
         {
@@ -52,7 +52,7 @@ namespace Feature_Composite
     public class TimerRunning : IState<TimerComposite>
     {
         private static TimerRunning _instance = new TimerRunning();
-        public static TimerRunning Instance = _instance;
+        public static TimerRunning Instance => _instance;
 
         public void Enter(TimerComposite owner)
         {
@@ -77,7 +77,7 @@ namespace Feature_Composite
     public class TimerEnd : IState<TimerComposite>
     {
         private static TimerEnd _instance = new TimerEnd();
-        public static TimerEnd Instance = _instance;
+        public static TimerEnd Instance => _instance;
 
         public void Enter(TimerComposite owner)
         {
@@ -105,7 +105,7 @@ namespace Feature_Composite
     public class TimerExit : IState<TimerComposite>
     {
         private static TimerExit _instance = new TimerExit();
-        public static TimerExit Instance = _instance;
+        public static TimerExit Instance => _instance;
         public void Enter(TimerComposite owner)
         {
             owner.StateType = E_TIMER_STATE.Terminate;
