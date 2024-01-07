@@ -8,6 +8,7 @@ using UnityEngine.Pool;
 
 namespace Feature_NewData
 {
+    /*
     public class Skill_001 : MonoBehaviour, ISkillStatAccessable{
         private Player playerRef;
         
@@ -130,4 +131,5 @@ namespace Feature_NewData
             Destroy(projectile.gameObject);
         }
     }
+    */
 }
