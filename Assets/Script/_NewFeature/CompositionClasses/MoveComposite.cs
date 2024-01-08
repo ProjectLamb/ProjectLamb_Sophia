@@ -32,7 +32,7 @@ namespace Sophia.Composite
         public void OnMoveSpeedUpdated() {
             throw new System.NotImplementedException();
         }
-        public void GetInputVector(Vector2 vector) => mInputVec = vector;
+        public void SetInputVector(Vector2 vector) => mInputVec = vector;
 
         protected UnityAction<Vector3> OnMoveForward = null;
         public MovementComposite AddOnUpdateEvent(UnityAction<Vector3> action) {
@@ -57,6 +57,7 @@ namespace Sophia.Composite
     #endregion
 
         public void Tick(Transform transform) {
+            ForwardingVector = GetForwardingVector();
             this.RbRef.velocity = ForwardingVector * MoveSpeed.GetValueForce();
 
             if(ForwardingVector != Vector3.zero) {
