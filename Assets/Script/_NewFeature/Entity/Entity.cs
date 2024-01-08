@@ -1,52 +1,39 @@
-using Feature_NewData.Numerics;
 using UnityEngine;
+using Sophia.DataSystem;
+using Sophia.DataSystem.Numerics;
+using Sophia.Instantiates;
+using Sophia.Composite;
 
-namespace Feature_NewData
+namespace Sophia.Entitys
 {
-    public class Entity : MonoBehaviour, ILifeAccessable, IStatAccessable
+    public abstract class Entity : MonoBehaviour, ILifeAccessable, IStatAccessable
     {
 #region SerializeMembeer 
-        [SerializeField] private ModelManger  modelManger;
-        [SerializeField] private VisualFXBucket  VisualFXBucket;
+        [SerializeField] protected ModelManger  _modelManger;
+        [SerializeField] protected VisualFXBucket  _visualFXBucket;
 #endregion
 
 #region Members
         [HideInInspector] public Collider entityCollider;
         [HideInInspector] public Rigidbody entityRigidbody;
 
-        public LifeComposite Life {get; private set;}
-        public EntityStatReferer StatReferer {get; private set;}
-
 #endregion
 
 #region Life Accessable
-        public LifeComposite GetLifeComposite() => this.Life;
+        public abstract LifeComposite GetLifeComposite();
 
-        public void GetDamaged(int damage) {
-            if (Life.IsDie) { return; }
-            Life.Damaged(damage);
-            if(Life.IsDie) {Die();}
-        }
-        public void GetDamaged(int damage, VisualFXObject vfx) {
-            if (Life.IsDie) { return; }
-            Life.Damaged(damage);
-            if(Life.IsDie) {Die();}
-        }
-
-        public void Die() => Destroy(gameObject, 0.5f);
+        public abstract void GetDamaged(int damage);
+        public abstract void GetDamaged(int damage, VisualFXObject vfx);
+        public abstract void Die();
 
 #endregion
 
 #region Stat Accessable
 
-        public Stat GetStat(E_NUMERIC_STAT_TYPE numericType) => StatReferer.GetStat(numericType);
+        public abstract Stat GetStat(E_NUMERIC_STAT_TYPE numericType);
 
         [ContextMenu("Get Stats Info")]
-        public string GetStatsInfo()
-        {
-            Debug.Log(this.StatReferer.GetStatsInfo());
-            return this.StatReferer.GetStatsInfo();
-        }
+        public abstract string GetStatsInfo();
 
 #endregion
     }

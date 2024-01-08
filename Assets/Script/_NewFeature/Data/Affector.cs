@@ -4,21 +4,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 
-namespace Feature_NewData
+namespace Sophia.DataSystem
 {
-    public enum E_AFFECT_TYPE {
-        None = 0,
+    using Sophia.Entitys;
+    using Sophia.Instantiates;
 
-        // 화상, 독, 출혈, 수축, 냉기, 혼란, 공포, 스턴, 속박, 처형
-        // 블랙홀
-        Debuff = 100,
-        Burn, Poisoned, Bleed, Contracted, Freeze, Confused, Fear, Stern, Bounded, Execution,
-        BlackHole,
-
-        // 이동속도증가, 고유시간가속, 공격력증가, 보호막상태, CC저항, 은신, 무적, 방어/페링, 투사체생성, 회피,
-        Buff = 200,
-        MoveSpeedUp, Accelerated, PowerUp, Barrier, Resist, Invisible, Invincible, Defence, ProjectileGenerate, Dodgeing, 
-    }
     namespace Affector {
         public abstract class Affector {
             public readonly E_AFFECT_TYPE AffectType;
@@ -71,7 +61,7 @@ namespace Feature_NewData
 
     #region Helper
             public float CalcDurateTime() {
-                return BaseDurateTime * (1-this.targetEntity.StatReferer.GetStat(E_NUMERIC_STAT_TYPE.Tenacity));
+                return BaseDurateTime * (1-this.targetEntity.GetStat(E_NUMERIC_STAT_TYPE.Tenacity));
             }
 
     #endregion
@@ -171,7 +161,7 @@ namespace Feature_NewData
 
     #region Helper
             public float CalcTickDamage() {
-                return TickDamageRatio * this.ownerEntity.StatReferer.GetStat(E_NUMERIC_STAT_TYPE.Power);
+                return TickDamageRatio * this.ownerEntity.GetStat(E_NUMERIC_STAT_TYPE.Power);
             }
 
             public void LateTick()

@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-using Feature_NewData;
+
 
 public class HealthBarUI : MonoBehaviour
 {
-    public LifeComposite LifeCompositeRef;
+    public Sophia.Composite.LifeComposite LifeCompositeRef;
     public Slider slider;
     public Image fill;
     public Gradient gradient;
 
     private void Start()
     {
-        LifeCompositeRef ??= GetComponentInParent<ILifeAccessable>().GetLifeComposite();
+        LifeCompositeRef ??= GetComponentInParent<Sophia.ILifeAccessable>().GetLifeComposite();
         int intValue = LifeCompositeRef.MaxHp;
         slider.maxValue = (float)intValue;
 
@@ -24,7 +24,7 @@ public class HealthBarUI : MonoBehaviour
         StartCoroutine(DoAndRenderUI(() => { fill.color = gradient.Evaluate(1f); }));
     }
 
-    public void SetLifeComposite(LifeComposite LifeComposite)
+    public void SetLifeComposite(Sophia.Composite.LifeComposite LifeComposite)
     {
         int intValue = LifeComposite.MaxHp;
         slider.maxValue = (float)intValue;

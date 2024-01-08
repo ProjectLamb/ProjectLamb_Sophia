@@ -1,7 +1,63 @@
 using System;
+using UnityEngine;
 
-namespace Feature_NewData.Numerics
+namespace Sophia.DataSystem.Numerics
 {
+    [System.Serializable]
+    public struct SerialBaseEntityData{
+    
+    [Header("Life ")]
+        public float MaxHp;
+        public float Defence;
+    
+    [Header("Move")]
+        public float MoveSpeed;
+        public float Accecerate;
+    
+    [Header("Affect")]
+        public float Tenacity;
+    
+    [Header("Instantiator")]
+        public float Power;
+        public float DurateLifeTime;
+        public float Size;
+        public float ForwardingSpeed;
+    }
+    
+    [System.Serializable]
+    public struct SerialBasePlayerData{
+        [Header("Life ")]
+        public float MaxHp;
+        public float Defence;
+        [Header("Move")]
+        public float MoveSpeed;
+        public float Accecerate;
+        [Header("Affect")]
+        public float Tenacity;
+
+        [Header("Dash")]
+        public float MaxStamina;
+        public float StaminaRestoreSpeed;
+
+        [Header("Instantiator/Comman")]
+        public float Power;
+        public float DurateLifeTime;
+        public float Size;
+        public float ForwardingSpeed;
+        [Header("Instantiator/Weapon")]
+        public float PoolSize;
+        public float AttackSpeed;
+        public float MeleeRatio;
+        public float RangerRatio;
+        public float TechRatio;
+        [Header("Instantiator/Skill")]
+        public float EfficienceMultiplyer;
+        public float CoolDownSpeed;
+
+        [Header("Ohter")]
+        public float Luck;
+    }
+
     public class EntityStatReferer : IStatAccessable
     {
 

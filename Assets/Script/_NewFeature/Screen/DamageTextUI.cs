@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine.Pool;
 using System.Collections;
 using DG.Tweening;
-using Feature_NewData;
+
 
 /*********************************************************************************
 

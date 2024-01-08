@@ -5,8 +5,9 @@ using System.Collections;
 using System.Linq;
 using System.Collections.Generic;
 using Feature_State;
+using Sophia.Entitys;
 
-namespace Feature_NewData {
+namespace Sophia.Instantiates {
 
     public enum E_WEAPONE_USE_STATE {
         None, Normal, OnHit, Charge

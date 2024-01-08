@@ -10,7 +10,7 @@ using FMODPlus;
 
 using Component = UnityEngine.Component;
 using Random = UnityEngine.Random;
-using Feature_NewData;
+
 
 public class Player : Entity {
 
@@ -20,13 +20,15 @@ public class Player : Entity {
     //VisualModulator visualModulator;
     //GameObject model;
 
-    [SerializeField]
-    public ScriptableObjPlayerData ScriptablePD;
+#region SerializeMembeer
+    [SerializeField] public ScriptableObjPlayerData ScriptablePD;
+    [SerializeField] private int mBarrierAmount;
+
+#endregion
+
     //고유성을 가지고 있다는것이 특징이라서 Static하면 안되지 않을까?    
 
-    public DashSkill DashSkillAbility;
-    
-    [SerializeField] private int mBarrierAmount;
+    public Sophia.Composite.DashSkill DashSkillAbility;
     
     public override ref EntityData GetFinalData(){
         return ref PlayerDataManager.GetFinalData().playerData.EntityDatas;
@@ -57,16 +59,11 @@ public class Player : Entity {
 // 대쉬를 했는지 
 // 대쉬를 했는지 
 
-    private Vector3                 mMoveVec;
-    private Quaternion              mRotate;
-
     public  bool                    isAttack; // 일반 공격(1,2,3타) 여부
     public  bool                    isThrAttack; // 세번째 공격 여부
     public  bool                    canExitAttack; // 공격 중 탈출가능시점
 
     [HideInInspector] Animator anim;
-
-    private Vector2 inputVec;
 
     IEnumerator mCoWaitDash;        // StopCorutine을 사용하기 위해서는 코루틴 변수가 필요하다. 
     public ParticleSystem DieParticle;
@@ -83,17 +80,18 @@ public class Player : Entity {
     }
 
     private void Start() {
-        Life = new LifeComposite(PlayerDataManager.GetEntityData().MaxHP);
+        Life = new Sophia.Composite.LifeComposite(PlayerDataManager.GetEntityData().MaxHP);
         Life.AddOnHitEvent(PlayerDataManager.GetEntityData().HitStateRef);
     
         isAttack = false;
         isThrAttack = false;
 
-        DashSkillAbility = new DashSkill(entityRigidbody);
+        DashSkillAbility = new Sophia.Composite.DashSkill(entityRigidbody);
         DashSkillAbility.SetAudioSource(DashSource);
         MasterData.MaxStaminaInject(DashSkillAbility.MaxStamina);
     }
-    
+
+#region 
     public override void GetDamaged(int _amount){
         if(Life.IsDie) {return;}
         Life.Damaged(_amount);
@@ -107,6 +105,15 @@ public class Player : Entity {
 
     public override void Die(){Debug.Log("죽었다는 로직 작성하기");}
 
+#endregion
+
+
+#region Move
+
+    private Vector2     inputVec;
+    private Vector3     mMoveVec; /*m*/
+    private Quaternion  mRotate; /*m*/
+
     public void OnMove(InputValue value) // new input system 사용
     {
         inputVec = value.Get<Vector2>();
@@ -119,42 +126,79 @@ public class Player : Entity {
             return new Vector3(Mathf.Sin(_angle), 0, Mathf.Cos(_angle));
         }
 
-        float moveSpeed = PlayerDataManager.GetEntityData().MoveSpeed;
+        int moveSpeed = (int)PlayerDataManager.GetEntityData().MoveSpeed; /*StatSpeed*/
         
         if(DashSkillAbility.GetIsDashState(moveSpeed)) { return; }
          
         anim.SetFloat("Move", entityRigidbody.velocity.magnitude);
 
         mMoveVec = AngleToVector(Camera.main.transform.eulerAngles.y + 90f) * inputVec.x + AngleToVector(Camera.main.transform.eulerAngles.y) * inputVec.y; // vaxis : inputvec.y , haxis : inputvec.x
-        mMoveVec = mMoveVec.normalized;
+        mMoveVec = mMoveVec.normalized;/*m*/
 
-        bool IsBorder(){return Physics.Raycast(transform.position, mMoveVec.normalized, 2, LayerMask.GetMask("Wall"));}
+        bool IsBorder(){return Physics.Raycast(transform.position, mMoveVec.normalized, 2, LayerMask.GetMask("Wall"));}/*m*/
         
         if (!IsBorder() && !isAttack) // 벽으로 막혀있지 않고 공격중이 아닐때만 이동 가능
         {
-            Vector3 rbVel = mMoveVec * moveSpeed;
+            Vector3 rbVel = mMoveVec * moveSpeed;/*m*/
             this.entityRigidbody.velocity = rbVel;
-            if(mMoveVec != Vector3.zero){
-                mRotate = Quaternion.LookRotation(mMoveVec);
-                transform.rotation = Quaternion.Slerp(transform.rotation,mRotate, 0.6f);
-                
+            
+            if(mMoveVec != Vector3.zero){ /*m*/
+                mRotate = Quaternion.LookRotation(mMoveVec); /*m*/
+                transform.rotation = Quaternion.Slerp(transform.rotation,mRotate, 0.6f); /*m*/
             }
+
             PlayerDataManager.GetEntityData().MoveState.Invoke();
         }
     } 
-    public FMODAudioSource DashSource;
 
+#endregion
+
+#region Rotation
+
+    void Turning(UnityAction _turningCallback)
+    {
+        //100으로 해서 바닥을 인식 못했었다. 더 길게 하는게 좋다.
+        float camRayLength = 500f;          // 씬으로 보내는 카메라의 Ray 길이
+        // 마우스 커서에서 씬을 향해 발사되는 Ray 생성
+        Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        // 레이캐스트 시작
+        if (Physics.Raycast(camRay, out RaycastHit groundHit, camRayLength, groundMask)) // 공격 도중에는 방향 전환 금지
+        {
+            StartCoroutine(AsyncTurning(groundHit, _turningCallback));
+        }
+    }
+
+    IEnumerator AsyncTurning(RaycastHit _groundHit, UnityAction _action){
+        yield return new WaitForEndOfFrame();
+        Vector3 playerToMouse = _groundHit.point - transform.position;
+        playerToMouse.y = 0f;
+        Quaternion newRotatation = Quaternion.LookRotation(playerToMouse);
+        // 플레이어가 바라보는 방향 설정
+        this.entityRigidbody.MoveRotation(newRotatation);
+        yield return new WaitForEndOfFrame();
+        _action.Invoke();
+        yield return new WaitForEndOfFrame();
+    }
+
+#endregion
+
+#region Dash
+    public FMODAudioSource DashSource;
+    
     [ContextMenu("TEST_MOD_DASHSTATS")]
     public void TEST_MOD_DASHSTATS() {
         // 앞으로 아이템을 먹었을때 실행되는 연산이랑 동일하다.
-        DashSkillAbility.MaxStamina.AddCalculator(new StatCalculator(1, E_STAT_CALC_TYPE.Add));
+        DashSkillAbility.MaxStamina.AddCalculator(new Sophia.DataSystem.StatCalculator(1, Sophia.E_STAT_CALC_TYPE.Add));
         DashSkillAbility.MaxStamina.RecalculateStat();
     }
     
     public void Dash()
     {
-        DashSkillAbility.UseDashSkill(mMoveVec, PlayerDataManager.GetEntityData().MoveSpeed);
+        DashSkillAbility.UseDashSkill(mMoveVec, (int)PlayerDataManager.GetEntityData().MoveSpeed);/*m*/ /*StatSpeed*/
     }
+
+#endregion
 
     public void Attack()
     {
@@ -192,32 +236,6 @@ public class Player : Entity {
                 break;
         }
         Turning(TurnningCallback);
-    }
-
-    void Turning(UnityAction _turningCallback)
-    {
-        //100으로 해서 바닥을 인식 못했었다. 더 길게 하는게 좋다.
-        float camRayLength = 500f;          // 씬으로 보내는 카메라의 Ray 길이
-        // 마우스 커서에서 씬을 향해 발사되는 Ray 생성
-        Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-        // 레이캐스트 시작
-        if (Physics.Raycast(camRay, out RaycastHit groundHit, camRayLength, groundMask)) // 공격 도중에는 방향 전환 금지
-        {
-            StartCoroutine(AsyncTurning(groundHit, _turningCallback));
-        }
-    }
-
-    IEnumerator AsyncTurning(RaycastHit _groundHit, UnityAction _action){
-        yield return new WaitForEndOfFrame();
-        Vector3 playerToMouse = _groundHit.point - transform.position;
-        playerToMouse.y = 0f;
-        Quaternion newRotatation = Quaternion.LookRotation(playerToMouse);
-        // 플레이어가 바라보는 방향 설정
-        this.entityRigidbody.MoveRotation(newRotatation);
-        yield return new WaitForEndOfFrame();
-        _action.Invoke();
-        yield return new WaitForEndOfFrame();
     }
 
     public void AimAssist()

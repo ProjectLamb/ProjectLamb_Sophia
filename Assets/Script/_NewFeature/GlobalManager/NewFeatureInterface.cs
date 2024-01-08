@@ -2,37 +2,11 @@ using UnityEngine;
 using Cysharp.Threading.Tasks;
 using System.Threading.Tasks;
 
-namespace Feature_NewData
+namespace Sophia
 {
-    public interface IDamagable {
-        public void GetDamaged(int damage);
-        public void GetDamaged(int damage, VisualFXObject vfx);
-    }
-    public interface IDieable {
-        public void Die();
-
-    }
-
-    public interface ILifeAccessable : IDamagable, IDieable{
-        public LifeComposite GetLifeComposite();
-    }
-
-    public interface IStatAccessable {
-        public Stat GetStat(E_NUMERIC_STAT_TYPE numericType);
-        public string GetStatsInfo();
-    }
 
     public interface IVisualAccessable {
         
-    }
-
-    /*********************************************************************************
-    * Command Pattern
-    *********************************************************************************/
-
-    public interface IAffectorCommand {
-        public void Modifiy();
-        public void Revert();
     }
 
     /*********************************************************************************
@@ -57,31 +31,27 @@ namespace Feature_NewData
     
     }
 
-    public interface ICarrierInteractable {
-        public IStatAccessable GetStat();
-    }
+//    public interface ICarrierInteractable {
+//        public IStatAccessable GetStat();
+//    }
 
-    public interface ISkillStatAccessable
-    {
-        public Stat GetEfficienceMultiplyer();
-    }
+//     public interface ISkillStatAccessable
+//     {
+//         public Stat GetEfficienceMultiplyer();
+//     }
 
     public interface IInstantiatorAccessable {
 
     }
 
-    public interface IWeaponStatAccessable {
-        public Stat GetWeaponRatioDamage();
-        public Stat GetAttackSpeed();
-    }
+//     public interface IWeaponStatAccessable {
+//         public Stat GetWeaponRatioDamage();
+//         public Stat GetAttackSpeed();
+//     }
 
-    public interface ICarrierInstantiator {
-        public void InstanceCarrier();
-    }
-
-    public interface IRestoreable {
-        public void Restore(int amount);
-    }
+//    public interface IRestoreable {
+//        public void Restore(int amount);
+//    }
 
     public interface IModelAccessable {
         public void ChangeSkin(Material skin);
@@ -89,7 +59,7 @@ namespace Feature_NewData
         public Animator GetAnimator();
     }
 
-    public interface IUseMonobehaviourConstructor {
-        public void Initialize(object data);
-    }
+//     public interface IUseMonobehaviourConstructor {
+//         public void Initialize(object data);
+//     }
 }

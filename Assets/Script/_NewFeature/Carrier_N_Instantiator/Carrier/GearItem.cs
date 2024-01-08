@@ -1,7 +1,8 @@
 using UnityEngine;
 
-namespace Feature_NewData 
+namespace Sophia.Instantiates 
 {
+    using Sophia.Entitys;
     public class GearItem : MonoBehaviour {
         public int Gear;
 

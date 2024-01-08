@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 
-namespace Feature_NewData
+namespace Sophia.Instantiates
 {
     public class VisualFXBucket : MonoBehaviour, IRepositionable<VisualFXObject>
     {

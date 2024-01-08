@@ -1,7 +1,7 @@
 
 using UnityEngine;
 
-namespace Feature_NewData 
+namespace Sophia.Instantiates 
 {
     public class HealthItem : MonoBehaviour {
         public int Health;

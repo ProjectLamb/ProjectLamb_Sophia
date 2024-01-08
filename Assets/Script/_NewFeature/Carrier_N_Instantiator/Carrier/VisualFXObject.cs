@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Pool;
 using UnityEngine.Events;
 
-namespace Feature_NewData
+namespace Sophia.Instantiates
 {
     public class VisualFXObject : MonoBehaviour, IInstantiable<VisualFXObject, Entity>
     {
