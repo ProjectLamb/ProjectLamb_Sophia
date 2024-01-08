@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Feature_Composite
+namespace Sophia.Composite.Stacks
 {
     public class StackCounterComposite
     {

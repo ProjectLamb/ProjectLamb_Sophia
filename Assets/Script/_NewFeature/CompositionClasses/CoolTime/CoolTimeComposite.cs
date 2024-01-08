@@ -1,8 +1,13 @@
 using UnityEngine;
 using UnityEngine.Events;
+using System.Collections;
+using System.Collections.Generic;
 
-namespace Feature_Composite
+namespace Sophia.Composite
 {
+    using Timer;
+    using Stacks;
+
     public class CoolTimeComposite
     {
         #region Members
@@ -137,7 +142,7 @@ namespace Feature_Composite
     }
 }
 
-namespace Feature_NewData
+namespace Sophia.Legacy
 {
     /*********************************************************************************
     * 쿨타임 매니저

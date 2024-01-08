@@ -3,27 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.Events;
 
-namespace Feature_NewData
+namespace Sophia.DataSystem
 {
-    public enum E_STAT_USE_TYPE
-    {
-        None = 0,
-        Natural = 1, Ratio
-    }
-
-    public enum E_NUMERIC_STAT_TYPE {
-        None = 0,
-        MaxHp = 1, Defence, Power, AttackSpeed, MoveSpeed, Tenacity, Accecerate,
-
-        MaxStamina = 11, StaminaRestoreSpeed, Luck,
-
-        DurateLifeTime = 21, Size, ForwardingSpeed,
-
-        PoolSize = 31, MeleeRatio, RangerRatio, TechRatio,
-
-        EfficienceMultiplyer = 41, CoolDownSpeed
-    }
-
+    using Numerics;
     [System.Serializable]
     public struct StatData {
         public float BaseValue;

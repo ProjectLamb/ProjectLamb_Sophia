@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Feature_NewData
+namespace Sophia.Instantiates
 {
     // T : 캐리어 이거나, 프로젝타일 이거나, VFXObject
     // U : Entity이거나 Carrier이거나 

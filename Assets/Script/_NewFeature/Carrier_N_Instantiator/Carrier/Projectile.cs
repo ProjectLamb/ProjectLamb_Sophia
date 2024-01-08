@@ -5,7 +5,7 @@ using UnityEngine.Pool;
 using Sophia_Carriers;
 using Microsoft.SqlServer.Server;
 
-namespace Feature_NewData
+namespace Sophia.Instantiates
 {
     
     /*변하는 녀석*/

@@ -3,30 +3,9 @@ using UnityEngine;
 using UnityEditor.ShaderGraph;
 using UnityEngine.Events;
 
-namespace Feature_NewData
+namespace Sophia.DataSystem.Functional
 {
-    public enum E_FUNCTIONAL_ACTION_MEMBERS
-    {
-        Move = 0, Damaged, Attack, Affected, Dead, Standing, PhyiscTriggered, Skill,
-
-        Created = 10, Triggerd, Released, Forwarding,
-        WeaponUse = 20, ProjectileRestore,
-        SkillUse = 30, SkillRefilled
-    }
-
-    // Move UnityAction
-    // Damaged UnityActionRef(ref T)
-    // Attack UnityAction
-    // Affected ?
-    // Dead UnityAction
-    // Standing UnityAcion
-    // PhyiscTriggered UnityActionRef(ref T)
-    // Skill UnityAction
-    // Triggerd : UnityActionRef(ref T)
-
-    /*
-    평행 State머신을 사용해야하나?
-    */
+    using Sophia.Entitys;
 
     public interface IFunctionalAccessable
     {

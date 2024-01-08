@@ -8,7 +8,7 @@ using UnityEngine.Events;
 
 using Component = UnityEngine.Component;
 using Random = UnityEngine.Random;
-using Feature_NewData;
+
 
 public abstract class Entity : MonoBehaviour, IDamagable, IDieable, IAffectable, IEntityDataAddressable
 {
@@ -19,7 +19,7 @@ public abstract class Entity : MonoBehaviour, IDamagable, IDieable, IAffectable,
     [SerializeField] public CarrierBucket carrierBucket;
     [SerializeField] public int mCurrentHealth;
 
-    public LifeComposite Life;
+    public Sophia.Composite.LifeComposite Life;
 
     public Dictionary<STATE_TYPE, AffectorPackage> AffectorStacks = new Dictionary<STATE_TYPE, AffectorPackage>();
 
