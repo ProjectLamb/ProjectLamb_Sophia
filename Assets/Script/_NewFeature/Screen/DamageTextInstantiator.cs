@@ -1,11 +1,8 @@
-using System.Runtime.InteropServices;
 using UnityEngine;
-using UnityEngine.Events;
-using TMPro;
-using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
-using Feature_NewData;
+using Sophia;
+using Sophia.Composite;
 
 /*********************************************************************************
 메이플과 같은 데미지 UI를 띄울것이다.

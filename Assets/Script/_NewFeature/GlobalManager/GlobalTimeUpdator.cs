@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace Feature_NewData
+namespace Sophia
 {
     public class GlobalTimeUpdator : MonoBehaviour {
         public static HashSet<IUpdatable> TimerContainer = new();

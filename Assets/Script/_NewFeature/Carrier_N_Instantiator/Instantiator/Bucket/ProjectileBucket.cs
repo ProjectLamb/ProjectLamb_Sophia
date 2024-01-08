@@ -2,8 +2,9 @@ using UnityEngine;
 using UnityEngine.Events;
 using System;
 using System.Collections.Generic;
+using Sophia.DataSystem;
 
-namespace Feature_NewData
+namespace Sophia.Instantiates
 {
     public class ProjectileBucket : MonoBehaviour, IRepositionable<Projectile>
     {        

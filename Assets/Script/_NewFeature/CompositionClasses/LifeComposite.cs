@@ -1,11 +1,7 @@
-using System.Data.Common;
-using System.Runtime.InteropServices;
-using System.Runtime.Remoting.Proxies;
-using UnityEditor.Searcher;
-using UnityEngine;
 using UnityEngine.Events;
+using Sophia.DataSystem;
 
-namespace Feature_NewData
+namespace Sophia.Composite
 {
     /*********************************************************************************
     *
@@ -186,7 +182,6 @@ namespace Feature_NewData
 
 #endregion
 
-        // DasSkill과 연관시키기
         protected void OnMaxHpUpdated() { 
             throw new System.NotImplementedException();
         }
@@ -228,7 +223,7 @@ namespace Feature_NewData
         }
 
         private void DamageCalculatePipeline(ref float _amount){
-            _amount = _amount * 100 / (100+Defence);
+            _amount = _amount * 100 / (100 + Defence);
             if(IsBarrierCovered && CurrentBarrier > 0){
                 if(CurrentBarrier - _amount >= 0){
                     _amount = 0; CurrentBarrier -= _amount;

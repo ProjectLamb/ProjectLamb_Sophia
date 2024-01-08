@@ -2,8 +2,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
 
-namespace Feature_NewData
+namespace Sophia
 {    
+    using Instantiates;
+    
     public class VisualFXObjectPool : MonoBehaviour {
         
         private static VisualFXObjectPool _instance;

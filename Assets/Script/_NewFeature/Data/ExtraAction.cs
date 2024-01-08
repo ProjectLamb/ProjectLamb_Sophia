@@ -4,8 +4,9 @@ using System;
 using UnityEngine.Events;
 using UnityEngine;
 
-namespace Feature_NewData
+namespace Sophia.DataSystem
 {   
+    using Functional;
     public enum E_EXTRA_PERFORM_TYPE {
         Start, Tick, Exit
     }

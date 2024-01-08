@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using Cysharp.Threading.Tasks;
 
-namespace Feature_NewData
+namespace Sophia.Composite
 {    
 
     /*********************************************************************************
@@ -21,8 +21,8 @@ namespace Feature_NewData
     *********************************************************************************/
     
     public class ModelManger : MonoBehaviour {
-        private GameObject model;
-        private Animator modelAnimator;
+        [SerializeField] private GameObject model;
+        [SerializeField] private Animator modelAnimator;
         
         [Tooltip("SkinMaterial 스킨을 입힐 대상들이다.")]
         [SerializeField]private List<Renderer> _renderers = new List<Renderer>();
