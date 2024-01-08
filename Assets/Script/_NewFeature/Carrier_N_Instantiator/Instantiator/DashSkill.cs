@@ -1,7 +1,8 @@
 using UnityEngine;
 using FMODPlus;
+using Sophia.DataSystem;
 
-namespace Feature_NewData
+namespace Sophia.Composite
 {
     public class DashSkill : IUpdatorBindable {
 
@@ -13,7 +14,7 @@ namespace Feature_NewData
 
         public Stat MaxStamina {get; private set;}
         public Stat StaminaRestoreSpeed {get; private set;}
-        public Feature_Composite.CoolTimeComposite Timer {get; private set;}
+        public Sophia.Composite.CoolTimeComposite Timer {get; private set;}
         public DashCoolUI DashUI {get; private set;}
 
         public DashSkill(Rigidbody rb){
@@ -29,7 +30,7 @@ namespace Feature_NewData
                 OnStaminaRestoreSpeedUpdated
             );
             
-            Timer = new Feature_Composite.CoolTimeComposite(3f, MaxStamina.GetValueByNature())
+            Timer = new Sophia.Composite.CoolTimeComposite(3f, MaxStamina.GetValueByNature())
                 .SetAcceleratrion(StaminaRestoreSpeed);
             
             DashUI = GameObject.FindObjectOfType<DashCoolUI>();
@@ -42,7 +43,7 @@ namespace Feature_NewData
 
 #region Getter
         
-        public bool GetIsDashState(float moveSpeed) {
+        public bool GetIsDashState(int moveSpeed) {
             return (rigidbodyRef.velocity.magnitude - 0.05f * moveSpeed) > moveSpeed;
         }
 
@@ -52,9 +53,9 @@ namespace Feature_NewData
 
         public void SetAudioSource(FMODAudioSource source) { DashSource = source; }
         
-        private Vector3 SetDashPower(Vector3 moveVec, float moveSpeed) {
+        private Vector3 SetDashPower(Vector3 moveVec, int moveSpeed) {
             Vector3 temp = moveVec * -Mathf.Log(1 / this.rigidbodyRef.drag);
-            return temp.normalized * PlayerDataManager.GetEntityData().MoveSpeed * 10;
+            return temp.normalized * moveSpeed * 10;
         }
 
         public void SetDashCoolUIRefer(DashCoolUI UIRef) {
@@ -74,7 +75,7 @@ namespace Feature_NewData
             DashUI.ResetUI();
         }
 
-        public void UseDashSkill(Vector3 moveVec, float moveSpeed) {
+        public void UseDashSkill(Vector3 moveVec, int moveSpeed) {
             Debug.Log(moveSpeed);
             if( !GetIsDashState(moveSpeed) && rigidbodyRef.velocity.magnitude > 0.01f &&Timer.GetIsReadyToUse() ){
                 DashSource.Play();

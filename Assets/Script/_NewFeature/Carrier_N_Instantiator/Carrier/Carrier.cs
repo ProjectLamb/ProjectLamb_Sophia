@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Feature_NewData
+namespace Sophia.Instantiates
 {
     public abstract class Carrier : MonoBehaviour
     {

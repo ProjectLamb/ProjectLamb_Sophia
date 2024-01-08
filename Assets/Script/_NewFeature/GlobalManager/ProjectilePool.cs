@@ -2,8 +2,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
 
-namespace Feature_NewData
-{   
+namespace Sophia
+{
+    using Instantiates;
+    
     public class ProjectilePool : MonoBehaviour {
         private static ProjectilePool _instance;
 

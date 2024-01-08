@@ -1,6 +1,7 @@
+/*
 using UnityEngine;
 
-namespace Feature_NewData 
+namespace Sophia.Instantiates 
 {
     public class EquipmentItem : MonoBehaviour {
         private Equipment equipmentRef;
@@ -15,3 +16,4 @@ namespace Feature_NewData
         }
     }
 }
+*/

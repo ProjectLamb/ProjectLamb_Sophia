@@ -3,13 +3,8 @@ using UnityEngine.Events;
 using System.Linq;
 using UnityEngine.Analytics;
 
-namespace Feature_NewData
+namespace Sophia.DataSystem
 {
-    public enum E_STAT_CALC_TYPE
-    {
-        Add, Mul
-    }
-
     public class StatCalculator
     {
         public readonly float Value;

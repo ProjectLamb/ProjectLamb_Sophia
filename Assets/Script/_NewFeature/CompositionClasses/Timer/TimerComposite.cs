@@ -3,7 +3,7 @@ using UnityEngine.Events;
 using Feature_State;
 using System;
 
-namespace Feature_Composite
+namespace Sophia.Composite.Timer
 {
     public class TimerComposite
     {

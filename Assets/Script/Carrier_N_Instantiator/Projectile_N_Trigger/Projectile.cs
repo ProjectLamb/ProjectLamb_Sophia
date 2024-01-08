@@ -23,7 +23,7 @@ namespace Sophia_Carriers {
         //               public     Entity          ownerEntity;
         //               public     CollisionDelegator collisionDelegator;
 
-        [SerializeField] public     Feature_NewData.VisualFXObject       HitEffect = null;
+        [SerializeField] public     Sophia.Instantiates.VisualFXObject       HitEffect = null;
         [SerializeField] public     ParticleSystem  ProjectileParticle = null;
         [SerializeField] public     float           ProjecttileDamage;
         [SerializeField] public     float           DestroyTime = 0.5f;
@@ -126,14 +126,14 @@ namespace Sophia_Carriers {
         protected void HitTarget(Collider _other) {
             if(ProjecttileDamage == 0) {return;}
             if(transform.CompareTag(_other.transform.tag)) {return;}
-            Feature_NewData.ILifeAccessable target = _other.GetComponent<Feature_NewData.ILifeAccessable>();
-            if(_other.TryGetComponent<Feature_NewData.ILifeAccessable>(out Feature_NewData.ILifeAccessable damagableTarget)){
+            Sophia.ILifeAccessable target = _other.GetComponent<Sophia.ILifeAccessable>();
+            if(_other.TryGetComponent<Sophia.ILifeAccessable>(out Sophia.ILifeAccessable damagableTarget)){
                 damagableTarget.GetDamaged((int)ProjecttileDamage, HitEffect);
                 //StartCoroutine(TEST_CoHitFiveTime(damagableTarget));
             }
         }
 
-        IEnumerator TEST_CoHitFiveTime(Feature_NewData.ILifeAccessable damagableTarget) {
+        IEnumerator TEST_CoHitFiveTime(Sophia.ILifeAccessable damagableTarget) {
             for(int i = 0; i < 5; i++){
                 damagableTarget.GetDamaged((int)ProjecttileDamage, HitEffect);
                 yield return YieldInstructionCache.WaitForSeconds(0.05f);

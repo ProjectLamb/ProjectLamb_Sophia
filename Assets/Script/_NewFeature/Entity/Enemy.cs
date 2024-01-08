@@ -1,14 +1,16 @@
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Events;
 
-namespace Feature_NewData
-{
+using UnityEngine;
+using Sophia.Composite;
+using Sophia.DataSystem.Numerics;
+using Sophia.Instantiates;
+
+namespace Sophia.Entitys{
     public abstract class Enemy : MonoBehaviour, IDamagable, IDieable, 
     // IStatAccessable, 
     IModelAccessable {
 
-        public Numerics.EntityStatReferer entityStat;
+        public EntityStatReferer entityStat;
         public ModelManger modelManger;
 
         
@@ -16,7 +18,7 @@ namespace Feature_NewData
         private float currentHealth;
 
         private void Awake() {
-            entityStat = new Numerics.EntityStatReferer();
+            entityStat = new EntityStatReferer();
         }
 
         public void GetDamaged(int damage) {

@@ -57,7 +57,7 @@ public class Boss : Entity
 
         BaseEnemyData = new EntityData(ScriptableED);
         FinalData = BaseEnemyData;
-        Life = new Feature_NewData.LifeComposite(FinalData.MaxHP);
+        Life = new Sophia.Composite.LifeComposite(FinalData.MaxHP);
 
         objectiveTarget = GameManager.Instance?.PlayerGameObject?.transform;
         isDie = false;
