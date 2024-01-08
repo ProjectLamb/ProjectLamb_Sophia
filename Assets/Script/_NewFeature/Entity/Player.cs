@@ -1,7 +1,5 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.InputSystem;
 using FMODPlus;
 using Cysharp.Threading.Tasks;
 
@@ -12,6 +10,7 @@ using Sophia.Instantiates;
 
 namespace Sophia.Entitys
 {
+    using UnityEngine.InputSystem;
     public class Player : Entity, IModelAccessable {
 
 #region SerializeMembeer 
@@ -80,12 +79,10 @@ namespace Sophia.Entitys
 #region Movement
 
         public MovementComposite GetMovementComposite() => this.Movement;
-
-        public void OnMove(InputAction.CallbackContext context)
+        public void OnMove(InputValue _value)
         {
-           Vector2 input = context.ReadValue<Vector2>();
-           Debug.Log(input);
-           Movement.GetInputVector(input);
+            Vector2 move = _value.Get<Vector2>();
+            Movement.SetInputVector(move);
         }
 
         public void MoveTick() 
