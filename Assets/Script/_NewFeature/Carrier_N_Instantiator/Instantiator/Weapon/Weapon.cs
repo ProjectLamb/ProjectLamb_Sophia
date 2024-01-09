@@ -8,6 +8,8 @@ using Feature_State;
 using Sophia.Entitys;
 
 namespace Sophia.Instantiates {
+    using Sophia.Entitys;
+    using Sophia.Composite;
 
     public enum E_WEAPONE_USE_STATE {
         None, Normal, OnHit, Charge
@@ -57,16 +59,27 @@ namespace Sophia.Instantiates {
     }
     /*변하는 녀석*/
 
-    public class Weapon 
+    public class Weapon : MonoBehaviour
     {
-        public readonly List<Projectile> projectiles = new();
-        public readonly ProjectileBucket InstantiatorRef;
-        public readonly Entity OwnerRef;
-        public readonly List<Animation> performAnimation = new ();
 
-        private const int _basePoolSize = 3;
-        private const float _baseRatioAttackSpeed = 1f;
-        private const float _baseRatioDamage = 1f;
+#region Serialize Member
+
+        [SerializeField] protected ModelManger  _modelManger;
+        [SerializeField] protected List<VisualFXBucket>  _visualFXBucket;
+
+        [SerializeField] private List<Projectile> _projectiles;
+        [SerializeField] private List<Animation> _performAnimation;
+        [SerializeField] private int    _basePoolSize = 3;
+        [SerializeField] private float  _baseRatioAttackSpeed = 1f;
+        [SerializeField] private float  _baseRatioDamage = 1f;
+
+#endregion
+
+#region Member
+
+        private ProjectileBucket mInstantiatorRef;
+        private Queue<Projectile> NormalQueue = new Queue<Projectile>();
+        private Queue<Projectile> OnHitQueue = new Queue<Projectile>();
 
         private int mCurrentPoolSize;
         public int CurrentPoolSize {
@@ -98,12 +111,8 @@ namespace Sophia.Instantiates {
                 mCurrentRatioDamage = value;
             }
         }
-
-        public Weapon(Entity owner, ProjectileBucket bucket) {
-            OwnerRef = owner;
-            InstantiatorRef = bucket;
-            StateType = E_WEAPONE_USE_STATE.Normal;
-        }
+        
+#endregion
 
 #region State
         
@@ -122,7 +131,7 @@ namespace Sophia.Instantiates {
 
 #endregion
         /*UI에 데이터가 내장되어 있다. 그걸 받아서 사용하는식으로*/
-        public void InitByWeaponUI() {}
+        public void InitByWeaponUI() {throw new System.NotImplementedException();}
 
 #region Getter
 
@@ -130,29 +139,53 @@ namespace Sophia.Instantiates {
 
 #region Setter
 
-        private void ResetSettings() {
+        public bool IsInitialized = false;
+        public void WeaponConstructor(ProjectileBucket bucket, int poolSize, float ratioAttackSpeed, float ratioDamage) {
+            if(IsInitialized) throw new System.Exception("이미 생성자로 초기화 됨");
+            mInstantiatorRef = bucket;
+            StateType = E_WEAPONE_USE_STATE.Normal;
+            _projectiles.ForEach(E => NormalQueue.Enqueue(E));
+
+            CurrentPoolSize         = _basePoolSize;
+            CurrentRatioAttackSpeed = ratioAttackSpeed * _baseRatioAttackSpeed;
+            CurrentRatioDamage      = ratioDamage * _baseRatioDamage;
+
+            IsInitialized = true;
+        }
+
+        public void ResetSettings() {
             CurrentPoolSize = _basePoolSize;
             CurrentRatioAttackSpeed = _baseRatioAttackSpeed;
             CurrentRatioDamage = _baseRatioDamage;
+            NormalQueue.Clear();
+            _projectiles.ForEach(E => NormalQueue.Enqueue(E));
+        }
+
+        public void WeaponDistructor() {
+            mInstantiatorRef = null;
+            StateType = E_WEAPONE_USE_STATE.None;
+            CurrentPoolSize = _basePoolSize;
+            CurrentRatioAttackSpeed = _baseRatioAttackSpeed;
+            CurrentRatioDamage = _baseRatioDamage;
+            NormalQueue.Clear();
+            IsInitialized = false;
         }
 
 #endregion
 
-        public void Use(int _amount) {
-            switch (StateType)
-            {
-                case E_WEAPONE_USE_STATE.Normal :
-                {
-
-                    break;
-                }
-                case E_WEAPONE_USE_STATE.OnHit :
-                {
-
-                    break;
-                }
+        public void Use(Player player) {
+            if(NormalQueue.Count == 0) {
+                _projectiles.ForEach(E => NormalQueue.Enqueue(E));
             }
+            Projectile useProjectile = mInstantiatorRef.ActivateInstantable(player,NormalQueue.Dequeue());
+            int useDamage = CalculateDamage(player);
+            useProjectile.SetProjectileDamage(useDamage)?.Activate();
         }
 
+        private int CalculateDamage(Player player) {
+            int res = player.GetStat(E_NUMERIC_STAT_TYPE.Power);
+            res = (int)(res * CurrentRatioDamage);
+            return res;
+        }
     }
 }

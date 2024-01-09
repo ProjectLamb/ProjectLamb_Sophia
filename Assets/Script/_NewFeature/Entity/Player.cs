@@ -1,22 +1,24 @@
 using UnityEngine;
 using UnityEngine.Events;
 using FMODPlus;
+using UnityEngine.InputSystem;
 using Cysharp.Threading.Tasks;
-
-using Sophia.Composite;
-using Sophia.DataSystem;
-using Sophia.DataSystem.Numerics;
-using Sophia.Instantiates;
 
 namespace Sophia.Entitys
 {
-    using UnityEngine.InputSystem;
+    using Sophia.Composite;
+    using Sophia.DataSystem;
+    using Sophia.DataSystem.Numerics;
+    using Sophia.Instantiates;
     public class Player : Entity, IModelAccessable {
 
 #region SerializeMembeer 
         [SerializeField] private SerialBasePlayerData _basePlayerData;
 //      [SerializeField] private ModelManger  _modelManger;
 //      [SerializeField] private VisualFXBucket  _visualFXBucket;
+        [SerializeField] private WeaponManager        _weaponManager;
+        [SerializeField] private ProjectileBucket     _projectileBucket;
+        [SerializeField] public Wealths               _PlayerWealth;
 
 #endregion
 
@@ -28,7 +30,7 @@ namespace Sophia.Entitys
         public LifeComposite        Life                {get; private set;}
         public MovementComposite    Movement            {get; private set;}
         public DashSkill            DashSkillAbility    {get; private set;}
-        public Wealths PlayerWealth;
+        public Stat                 Power               {get; private set;}
         
 #endregion
 
@@ -114,6 +116,10 @@ namespace Sophia.Entitys
 
 #endregion
 
+#region Weaponmanager
+        public WeaponManager GetWeaponManager() => this._weaponManager;
+
+#endregion
         private void Awake() {
             TryGetComponent<Collider>(out entityCollider);
             TryGetComponent<Rigidbody>(out entityRigidbody);
@@ -122,7 +128,14 @@ namespace Sophia.Entitys
             Life                = new LifeComposite(_basePlayerData.MaxHp, _basePlayerData.Defence);
             Movement            = new MovementComposite(entityRigidbody, _basePlayerData.MoveSpeed);
             DashSkillAbility    = new DashSkill(this.entityRigidbody);
+            Power               = new Stat(_basePlayerData.Power,
+                                            E_NUMERIC_STAT_TYPE.Power,
+                                            E_STAT_USE_TYPE.Natural,
+                                            OnPowerUpdated
+                                        );
         }
+
+        public void OnPowerUpdated() {throw new System.NotImplementedException();}
 
         private void Start(){
            StatReferer.SetRefStat(Life.MaxHp);
@@ -131,10 +144,22 @@ namespace Sophia.Entitys
            StatReferer.SetRefStat(DashSkillAbility.MaxStamina);
            StatReferer.SetRefStat(DashSkillAbility.StaminaRestoreSpeed);
 
+           StatReferer.SetRefStat(Power);
+           
+           StatReferer.SetRefStat(_weaponManager.PoolSize);
+           StatReferer.SetRefStat(_weaponManager.AttackSpeed);
+           StatReferer.SetRefStat(_weaponManager.MeleeRatio);
+           StatReferer.SetRefStat(_projectileBucket.InstantiableDurateLifeTimeMultiplyRatio);
+           StatReferer.SetRefStat(_projectileBucket.InstantiableSizeMultiplyRatio);
+           StatReferer.SetRefStat(_projectileBucket.InstantiableForwardingSpeedMultiplyRatio);
+
+
            DashSkillAbility.SetAudioSource(DashSource);
         }
 
-        public void Attack() {}
-        public void Skill() {}
+        public void Attack() {
+            _weaponManager.GetCurrentWeapon().Use(this);
+        }
+        public void Skill() {throw new System.NotImplementedException();}
     }    
 }
