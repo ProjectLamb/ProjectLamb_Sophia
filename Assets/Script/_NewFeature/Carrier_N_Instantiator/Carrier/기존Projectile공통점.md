@@ -73,7 +73,7 @@ namespace Sophia_Carriers {
             projectileAffector = new List<EntityAffector>();
         }
 
-        private void OnEnable() {}
+        private void OnEnable() {throw new System.NotImplementedException();}
 
         protected virtual void OnTriggerEnter(Collider _other) {}
         private void OnParticleCollision(GameObject _other) {}
@@ -86,7 +86,7 @@ namespace Sophia_Carriers {
             return res;
         }
         public virtual Projectile CloneProjectile(){}
-        public virtual ParticleProjectile CloneParticleProjectile() {}
+        public virtual ParticleProjectile CloneParticleProjectile() {throw new System.NotImplementedException();}
 #endregion
 
 #region getter
@@ -191,9 +191,9 @@ namespace Sophia_Carriers {
             projectileAffector = new List<EntityAffector>();
         }
 
-        private void OnEnable() {}
-        private void OnDisable() {}
-        private void OnDestroy() {}
+        private void OnEnable() {throw new System.NotImplementedException();}
+        private void OnDisable() {throw new System.NotImplementedException();}
+        private void OnDestroy() {throw new System.NotImplementedException();}
 
         protected virtual void OnTriggerEnter(Collider _other) {}
         private void OnParticleCollision(GameObject _other) {}
@@ -202,7 +202,7 @@ namespace Sophia_Carriers {
 
         public override Carrier Clone(){}
         public virtual Projectile CloneProjectile(){}
-        public virtual ParticleProjectile CloneParticleProjectile() {}
+        public virtual ParticleProjectile CloneParticleProjectile() {throw new System.NotImplementedException();}
 
 #endregion
 
