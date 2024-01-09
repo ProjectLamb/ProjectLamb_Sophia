@@ -19,9 +19,10 @@ namespace Sophia.DataSystem.Numerics
     
     [Header("Instantiator")]
         public float Power;
-        public float DurateLifeTime;
-        public float Size;
-        public float ForwardingSpeed;
+
+        public float InstantiableDurateLifeTimeMultiplyRatio;
+        public float InstantiableSizeMultiplyRatio;
+        public float InstantiableForwardingSpeedMultiplyRatio;
     }
     
     [System.Serializable]
@@ -39,23 +40,43 @@ namespace Sophia.DataSystem.Numerics
         public float MaxStamina;
         public float StaminaRestoreSpeed;
 
-        [Header("Instantiator/Comman")]
+        [Header("Ohter")]
+        public float Luck;
+
+        [Header("Instantiator")]
         public float Power;
-        public float DurateLifeTime;
-        public float Size;
-        public float ForwardingSpeed;
+    }
+    
+    [System.Serializable]
+    public struct SerialBaseInstantiatorData {
+        [Header("Instantiator/Comman")]
+        public float InstantiableDurateLifeTimeMultiplyRatio;
+        public float InstantiableSizeMultiplyRatio;
+        public float InstantiableForwardingSpeedMultiplyRatio;
+    }
+    
+    [System.Serializable]
+    public struct SerialBaseWeaponData {
         [Header("Instantiator/Weapon")]
         public float PoolSize;
         public float AttackSpeed;
         public float MeleeRatio;
         public float RangerRatio;
         public float TechRatio;
+    }
+    
+    [System.Serializable]
+    public struct SerialBaseSkillData {
         [Header("Instantiator/Skill")]
         public float EfficienceMultiplyer;
         public float CoolDownSpeed;
+    }
 
-        [Header("Ohter")]
-        public float Luck;
+    [System.Serializable]
+    public struct Wealths
+    {
+        public int Gear;
+        public int Frag;
     }
 
     public class EntityStatReferer : IStatAccessable
@@ -83,9 +104,9 @@ namespace Sophia.DataSystem.Numerics
 #region Instantiator
 
         private Stat Power                  = null; // Natural
-        private Stat DurateLifeTime         = null; // Ratio
-        private Stat Size                   = null; // Ratio
-        private Stat ForwardingSpeed        = null; // Ratio
+        private Stat InstantiableDurateLifeTimeMultiplyRatio         = null; // Ratio
+        private Stat InstantiableSizeMultiplyRatio                   = null; // Ratio
+        private Stat InstantiableForwardingSpeedMultiplyRatio        = null; // Ratio
 
 #endregion
 
@@ -99,9 +120,9 @@ namespace Sophia.DataSystem.Numerics
                 case E_NUMERIC_STAT_TYPE.Accecerate :       { this.Accecerate = statRef;        return; }
                 case E_NUMERIC_STAT_TYPE.Tenacity :         { this.Tenacity = statRef;          return; }
                 case E_NUMERIC_STAT_TYPE.Power :            { this.Power = statRef;             return; }
-                case E_NUMERIC_STAT_TYPE.DurateLifeTime :   { this.DurateLifeTime = statRef;    return; }
-                case E_NUMERIC_STAT_TYPE.Size :             { this.Size = statRef;              return; }
-                case E_NUMERIC_STAT_TYPE.ForwardingSpeed :  { this.ForwardingSpeed = statRef;   return; }
+                case E_NUMERIC_STAT_TYPE.InstantiableDurateLifeTimeMultiplyRatio :   { this.InstantiableDurateLifeTimeMultiplyRatio = statRef;    return; }
+                case E_NUMERIC_STAT_TYPE.InstantiableSizeMultiplyRatio :             { this.InstantiableSizeMultiplyRatio = statRef;              return; }
+                case E_NUMERIC_STAT_TYPE.InstantiableForwardingSpeedMultiplyRatio :  { this.InstantiableForwardingSpeedMultiplyRatio = statRef;   return; }
                 case E_NUMERIC_STAT_TYPE.None : {
                     throw new System.Exception($"참조 스텟이 초기화되지 않음");
                 }
@@ -122,9 +143,9 @@ namespace Sophia.DataSystem.Numerics
                 case E_NUMERIC_STAT_TYPE.Accecerate:        { res = this.Accecerate;        break; }
                 case E_NUMERIC_STAT_TYPE.Tenacity:          { res = this.Tenacity;          break; }
                 case E_NUMERIC_STAT_TYPE.Power:             { res = this.Power;             break; }
-                case E_NUMERIC_STAT_TYPE.DurateLifeTime:    { res = this.DurateLifeTime;    break; }
-                case E_NUMERIC_STAT_TYPE.Size:              { res = this.Size;              break; }
-                case E_NUMERIC_STAT_TYPE.ForwardingSpeed:   { res = this.ForwardingSpeed;   break; }
+                case E_NUMERIC_STAT_TYPE.InstantiableDurateLifeTimeMultiplyRatio:    { res = this.InstantiableDurateLifeTimeMultiplyRatio;    break; }
+                case E_NUMERIC_STAT_TYPE.InstantiableSizeMultiplyRatio:              { res = this.InstantiableSizeMultiplyRatio;              break; }
+                case E_NUMERIC_STAT_TYPE.InstantiableForwardingSpeedMultiplyRatio:   { res = this.InstantiableForwardingSpeedMultiplyRatio;   break; }
                 default: {
                     throw new System.Exception($"이 Entity 멤버에는 {numericType.ToString()} 없음");
                 }
@@ -145,9 +166,9 @@ namespace Sophia.DataSystem.Numerics
                 case E_NUMERIC_STAT_TYPE.Accecerate:        { return this.Accecerate == null ? -1 : this.Accecerate.GetValueForce(); }
                 case E_NUMERIC_STAT_TYPE.Tenacity:          { return this.Tenacity == null ? -1 : this.Tenacity.GetValueForce(); }
                 case E_NUMERIC_STAT_TYPE.Power:             { return this.Power == null ? -1 : this.Power.GetValueForce(); }
-                case E_NUMERIC_STAT_TYPE.DurateLifeTime:    { return this.DurateLifeTime == null ? -1 : this.DurateLifeTime.GetValueForce(); }
-                case E_NUMERIC_STAT_TYPE.Size:              { return this.Size == null ? -1 : this.Size.GetValueForce(); }
-                case E_NUMERIC_STAT_TYPE.ForwardingSpeed:   { return this.ForwardingSpeed == null ? -1 : this.ForwardingSpeed.GetValueForce(); }
+                case E_NUMERIC_STAT_TYPE.InstantiableDurateLifeTimeMultiplyRatio:    { return this.InstantiableDurateLifeTimeMultiplyRatio == null ? -1 : this.InstantiableDurateLifeTimeMultiplyRatio.GetValueForce(); }
+                case E_NUMERIC_STAT_TYPE.InstantiableSizeMultiplyRatio:              { return this.InstantiableSizeMultiplyRatio == null ? -1 : this.InstantiableSizeMultiplyRatio.GetValueForce(); }
+                case E_NUMERIC_STAT_TYPE.InstantiableForwardingSpeedMultiplyRatio:   { return this.InstantiableForwardingSpeedMultiplyRatio == null ? -1 : this.InstantiableForwardingSpeedMultiplyRatio.GetValueForce(); }
                 default: {
                     return -1;
                 }
@@ -205,9 +226,9 @@ namespace Sophia.DataSystem.Numerics
 ******************************/
 
         private Stat Power                  = null; // Natural
-        private Stat DurateLifeTime         = null;
-        private Stat Size                   = null;
-        private Stat ForwardingSpeed        = null;
+        private Stat InstantiableDurateLifeTimeMultiplyRatio         = null;
+        private Stat InstantiableSizeMultiplyRatio                   = null;
+        private Stat InstantiableForwardingSpeedMultiplyRatio        = null;
 
 /******************************
 * Weapon Only
@@ -244,9 +265,9 @@ namespace Sophia.DataSystem.Numerics
                 case E_NUMERIC_STAT_TYPE.StaminaRestoreSpeed    : {this.StaminaRestoreSpeed = statRef;return;}
                 case E_NUMERIC_STAT_TYPE.CoolDownSpeed          : {this.CoolDownSpeed = statRef;return;}
                 case E_NUMERIC_STAT_TYPE.Power                  : {this.Power = statRef;return;}
-                case E_NUMERIC_STAT_TYPE.DurateLifeTime         : {this.DurateLifeTime = statRef;return;}
-                case E_NUMERIC_STAT_TYPE.Size                   : {this.Size = statRef;return;}
-                case E_NUMERIC_STAT_TYPE.ForwardingSpeed        : {this.ForwardingSpeed = statRef;return;}
+                case E_NUMERIC_STAT_TYPE.InstantiableDurateLifeTimeMultiplyRatio         : {this.InstantiableDurateLifeTimeMultiplyRatio = statRef;return;}
+                case E_NUMERIC_STAT_TYPE.InstantiableSizeMultiplyRatio                   : {this.InstantiableSizeMultiplyRatio = statRef;return;}
+                case E_NUMERIC_STAT_TYPE.InstantiableForwardingSpeedMultiplyRatio        : {this.InstantiableForwardingSpeedMultiplyRatio = statRef;return;}
                 case E_NUMERIC_STAT_TYPE.PoolSize               : {this.PoolSize = statRef;return;}
                 case E_NUMERIC_STAT_TYPE.AttackSpeed            : {this.AttackSpeed = statRef;return;}
                 case E_NUMERIC_STAT_TYPE.MeleeRatio             : {this.MeleeRatio = statRef;return;}
@@ -277,9 +298,9 @@ namespace Sophia.DataSystem.Numerics
                 case E_NUMERIC_STAT_TYPE.StaminaRestoreSpeed    : {res = this.StaminaRestoreSpeed; break;}
                 case E_NUMERIC_STAT_TYPE.CoolDownSpeed          : {res = this.CoolDownSpeed; break;}
                 case E_NUMERIC_STAT_TYPE.Power                  : {res = this.Power; break;}
-                case E_NUMERIC_STAT_TYPE.DurateLifeTime         : {res = this.DurateLifeTime; break;}
-                case E_NUMERIC_STAT_TYPE.Size                   : {res = this.Size; break;}
-                case E_NUMERIC_STAT_TYPE.ForwardingSpeed        : {res = this.ForwardingSpeed; break;}
+                case E_NUMERIC_STAT_TYPE.InstantiableDurateLifeTimeMultiplyRatio         : {res = this.InstantiableDurateLifeTimeMultiplyRatio; break;}
+                case E_NUMERIC_STAT_TYPE.InstantiableSizeMultiplyRatio                   : {res = this.InstantiableSizeMultiplyRatio; break;}
+                case E_NUMERIC_STAT_TYPE.InstantiableForwardingSpeedMultiplyRatio        : {res = this.InstantiableForwardingSpeedMultiplyRatio; break;}
                 case E_NUMERIC_STAT_TYPE.PoolSize               : {res = this.PoolSize; break;}
                 case E_NUMERIC_STAT_TYPE.AttackSpeed            : {res = this.AttackSpeed; break;}
                 case E_NUMERIC_STAT_TYPE.MeleeRatio             : {res = this.MeleeRatio; break;}
@@ -297,11 +318,5 @@ namespace Sophia.DataSystem.Numerics
             }
             return res;
         }
-    }
-
-    public struct Wealths
-    {
-        public int Gear;
-        public int Frag;
     }
 }

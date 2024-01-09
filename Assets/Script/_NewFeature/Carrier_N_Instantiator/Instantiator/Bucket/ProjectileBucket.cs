@@ -2,29 +2,27 @@ using UnityEngine;
 using UnityEngine.Events;
 using System;
 using System.Collections.Generic;
-using Sophia.DataSystem;
 
 namespace Sophia.Instantiates
 {
-    public class ProjectileBucket : MonoBehaviour, IRepositionable<Projectile>
+    using Sophia.Entitys;
+    using Sophia.DataSystem;
+    using Sophia.DataSystem.Numerics;
+    public class ProjectileBucket : MonoBehaviour, IInstantiator<Projectile>
     {        
 
 #region Serialize
-
-        [SerializeField] private float BucketScale = 1f;
-        [SerializeField] private float MultiplyDurateLifeTime = 1f;
-        [SerializeField] private float MultiplyRatioSize = 1f;
-        [SerializeField] private float MultiplyForwardingSpeed = 1f;
-        [SerializeField] public Entity ownerEntity;
+        [SerializeField] private SerialBaseInstantiatorData _baseInstantiatorData;
+        [SerializeField] private Entity _ownerRef;
+        [SerializeField] private float _bucketScale = 1f;
 
 #endregion
 
-        public Stat RatioDurateLifeTime {get; protected set;}
-        public Stat RatioSize {get; protected set;}
-        public Stat RatioForwardingSpeed {get; protected set;}
+        public Stat InstantiableDurateLifeTimeMultiplyRatio {get; protected set;}
+        public Stat InstantiableSizeMultiplyRatio {get; protected set;}
+        public Stat InstantiableForwardingSpeedMultiplyRatio {get; protected set;}
 
-
-        #region Event
+#region Event
         /*
         당연히 Functional로 관리를 해야 하지만 Projectil이 엄연히 다음 이벤트를 가지고 있는것은 사실이니.
         이벤트 주입을 하자.
@@ -46,16 +44,16 @@ namespace Sophia.Instantiates
         }
 
         private void Awake() {
-            RatioDurateLifeTime = new Stat(MultiplyDurateLifeTime,
-                E_NUMERIC_STAT_TYPE.DurateLifeTime,
+            InstantiableDurateLifeTimeMultiplyRatio = new Stat(_baseInstantiatorData.InstantiableDurateLifeTimeMultiplyRatio,
+                E_NUMERIC_STAT_TYPE.InstantiableDurateLifeTimeMultiplyRatio,
                 E_STAT_USE_TYPE.Ratio, OnDurateLifeTime
             );
-            RatioSize = new Stat(MultiplyRatioSize,
-                E_NUMERIC_STAT_TYPE.Size,
+            InstantiableSizeMultiplyRatio = new Stat(_baseInstantiatorData.InstantiableSizeMultiplyRatio,
+                E_NUMERIC_STAT_TYPE.InstantiableSizeMultiplyRatio,
                 E_STAT_USE_TYPE.Ratio, OnRatioSize
             );
-            RatioForwardingSpeed = new Stat(MultiplyForwardingSpeed,
-                E_NUMERIC_STAT_TYPE.ForwardingSpeed,
+            InstantiableForwardingSpeedMultiplyRatio = new Stat(_baseInstantiatorData.InstantiableForwardingSpeedMultiplyRatio,
+                E_NUMERIC_STAT_TYPE.InstantiableForwardingSpeedMultiplyRatio,
                 E_STAT_USE_TYPE.Ratio, OnForwardingSpeed
             );
 
@@ -63,16 +61,14 @@ namespace Sophia.Instantiates
             OnTriggerd      ??= () => {};
             OnReleased      ??= () => {};
             OnForwarding    ??= () => {};
-
-            if(ownerEntity == null) new System.Exception("프로젝타일 버킷의 주인, 현재 엔티티가 지정되지 않음");
         }
+        
+#endregion
 
-        #endregion
-
-        public Projectile ActivateInstantable(MonoBehaviour entity, Projectile _instantiatable)
+        public Projectile ActivateInstantable(Entity entityRef, Projectile _instantiatable)
         {
             Projectile instantiatedProjectile = ProjectilePool.Instance.ProPool[_instantiatable.gameObject.name].Get();
-            instantiatedProjectile.Init(ownerEntity);
+            instantiatedProjectile.Init(entityRef);
             
             Vector3     offset       = instantiatedProjectile.transform.position;
             Vector3     position     = transform.position;
@@ -107,9 +103,9 @@ namespace Sophia.Instantiates
             }
             
             instantiatedProjectile.transform.position += offset * transform.localScale.z;
-            instantiatedProjectile.SetDurateTimeByRatio(RatioDurateLifeTime)
-                                .SetScaleByRatio(RatioSize)
-                                .SetForwardingSpeedByRatio(RatioForwardingSpeed)
+            instantiatedProjectile.SetDurateTimeByRatio(InstantiableDurateLifeTimeMultiplyRatio.GetValueForce())
+                                .SetScaleByRatio(InstantiableSizeMultiplyRatio.GetValueForce())
+                                .SetForwardingSpeedByRatio(InstantiableForwardingSpeedMultiplyRatio.GetValueForce())
                                 .SetOnProjectileCreatedEvent(OnCreated)
                                 .SetOnProjectileForwardingEvent(OnTriggerd)
                                 .SetOnProjectileReleasedEvent(OnReleased)

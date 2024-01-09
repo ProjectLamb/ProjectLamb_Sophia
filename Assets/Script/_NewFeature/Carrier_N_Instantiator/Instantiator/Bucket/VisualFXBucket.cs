@@ -6,12 +6,15 @@ using TMPro;
 
 namespace Sophia.Instantiates
 {
-    public class VisualFXBucket : MonoBehaviour, IRepositionable<VisualFXObject>
+    using Sophia.Entitys;
+
+    public class VisualFXBucket : MonoBehaviour, IInstantiator<VisualFXObject>
     {
+        [SerializeField]  private float _bucketScale = 1f;
+
         private Dictionary<E_AFFECT_TYPE, VisualFXObject>   VisualStacks = new Dictionary<E_AFFECT_TYPE, VisualFXObject>();
         private UnityAction<E_AFFECT_TYPE>                  OnDestroyHandler;
         
-        [SerializeField]  private float BucketScale = 1f;
 
         private void Awake() {
             
@@ -19,7 +22,7 @@ namespace Sophia.Instantiates
             OnDestroyHandler = (E_AFFECT_TYPE type) => VisualStacks[type] = null;
         }
         /*기존 코드는 Actiavete의 책임이 있었는데 지금은 그냥 객체 리턴을 하므로 엄연히 활성화 단계는 함수 호출부에서 해야 할것이다*/
-        public VisualFXObject ActivateInstantable(MonoBehaviour entity, VisualFXObject _instantiable)
+        public VisualFXObject ActivateInstantable(Entity entity, VisualFXObject _instantiable)
         {
             VisualFXObject instantiatedVFX = VisualFXObjectPool.Instance.VFXPool[_instantiable.gameObject.name].Get();
             instantiatedVFX.Init(null);
@@ -62,7 +65,7 @@ namespace Sophia.Instantiates
             }
             
             instantiatedVFX.transform.position += offset * transform.localScale.z;
-            instantiatedVFX.SetScaleByRatio(BucketScale);
+            instantiatedVFX.SetScaleByRatio(_bucketScale);
             return instantiatedVFX;
         }
 

@@ -7,7 +7,7 @@ using Microsoft.SqlServer.Server;
 
 namespace Sophia.Instantiates
 {
-    
+    using Sophia.Entitys;   
     /*변하는 녀석*/
 
     public class Projectile : MonoBehaviour, IInstantiable<Projectile, Entity>
@@ -119,7 +119,7 @@ namespace Sophia.Instantiates
             OwnerRef = owner;
 
             ClearEvents();
-            transform.tag = "Projectile";
+            transform.tag = owner.transform.tag + "Projectile";
             IsInitialized = true;
             return this;
         }
@@ -263,6 +263,7 @@ namespace Sophia.Instantiates
 
         public void Get()
         {
+            Debug.Log("Get");
             this.ProjectileParticle.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             gameObject.SetActive(false);
         }
@@ -295,14 +296,11 @@ namespace Sophia.Instantiates
 #endregion
         private void Awake()
         {
-            if (TryGetComponent<ParticleSystem>(out ProjectileParticle))
-            {
-                ProjectileMainModule    = ProjectileParticle.main;
-                ParticleEmissionModule  = ProjectileParticle.emission;
-                ParticleTriggerModule   = ProjectileParticle.trigger;
-                ParticleColliderModule  = ProjectileParticle.collision;
-            }
-
+            ProjectileMainModule    = ProjectileParticle.main;
+            ParticleEmissionModule  = ProjectileParticle.emission;
+            ParticleTriggerModule   = ProjectileParticle.trigger;
+            ParticleColliderModule  = ProjectileParticle.collision;
+            
             AffectType = _affectType;
             StackingType = _stackingType;
             PositioningType = _positioningType;
@@ -331,8 +329,10 @@ namespace Sophia.Instantiates
 
         private void Update()
         {
-            transform.Translate(Vector3.forward * CurrentForwardingSpeed * Time.deltaTime);
-            OnProjectileForwarding.Invoke();
+            if(CurrentForwardingSpeed != 0) {
+                transform.Translate(Vector3.forward * CurrentForwardingSpeed * Time.deltaTime);
+            }
+            OnProjectileForwarding?.Invoke();
         }
 
 

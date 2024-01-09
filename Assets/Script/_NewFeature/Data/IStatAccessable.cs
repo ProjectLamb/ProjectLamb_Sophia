@@ -19,7 +19,7 @@ namespace Sophia
 
         MaxStamina = 11, StaminaRestoreSpeed, Luck,
 
-        DurateLifeTime = 21, Size, ForwardingSpeed,
+        InstantiableDurateLifeTimeMultiplyRatio = 21, InstantiableSizeMultiplyRatio, InstantiableForwardingSpeedMultiplyRatio,
 
         PoolSize = 31, MeleeRatio, RangerRatio, TechRatio,
 

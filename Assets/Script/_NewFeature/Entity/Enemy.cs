@@ -26,7 +26,7 @@ namespace Sophia.Entitys{
             if(currentHealth <= 0) {Die();}
         }
         public void GetDamaged(int damage, VisualFXObject vfx) {}
-        public void Die() {}
+        public void Die() {throw new System.NotImplementedException();}
 
         public void ChangeSkin(Material skin) { modelManger.ChangeSkin(skin); }
         public void RevertSkin() { modelManger.RevertSkin(); }

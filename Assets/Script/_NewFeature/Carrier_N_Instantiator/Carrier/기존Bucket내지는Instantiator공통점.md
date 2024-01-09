@@ -242,7 +242,7 @@ public class VFXBucket : MonoBehaviour {
     public float BucketScale = 1;
     public float BucketScale = 1f;
     
-    private void Awake() {}
+    private void Awake() {throw new System.NotImplementedException();}
     
     private void RemoveStateByType(STATE_TYPE _type){}
     public void RevertVFX(STATE_TYPE _stateType){}
