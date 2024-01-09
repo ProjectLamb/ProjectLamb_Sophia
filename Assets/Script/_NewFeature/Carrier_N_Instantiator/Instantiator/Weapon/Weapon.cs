@@ -10,6 +10,7 @@ using Sophia.Entitys;
 namespace Sophia.Instantiates {
     using Sophia.Entitys;
     using Sophia.Composite;
+    using System.Drawing.Printing;
 
     public enum E_WEAPONE_USE_STATE {
         None, Normal, OnHit, Charge
@@ -72,6 +73,7 @@ namespace Sophia.Instantiates {
         [SerializeField] private int    _basePoolSize = 3;
         [SerializeField] private float  _baseRatioAttackSpeed = 1f;
         [SerializeField] private float  _baseRatioDamage = 1f;
+        [SerializeField] private Vector3 _instantiateOffsetPosition;
 
 #endregion
 
