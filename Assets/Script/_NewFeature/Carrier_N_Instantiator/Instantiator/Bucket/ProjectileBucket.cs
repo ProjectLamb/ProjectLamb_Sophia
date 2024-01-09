@@ -65,12 +65,67 @@ namespace Sophia.Instantiates
         
 #endregion
 
+#region Getter
+        public float GetBucketSize() => _bucketScale * transform.lossyScale.z;
+#endregion
+
+        public Projectile ActivateInstantable(Entity entityRef, Projectile _instantiatable, Vector3 _offset)
+        {
+            Projectile instantiatedProjectile = ProjectilePool.Instance.ProPool[_instantiatable.gameObject.name].Get();
+            instantiatedProjectile.Init(entityRef);
+            
+            Vector3     offset       = _offset;
+            Vector3     position     = transform.position;
+            Quaternion  forwardAngle = GetForwardingAngle(instantiatedProjectile.transform.rotation);
+            instantiatedProjectile.transform.position = position;
+            instantiatedProjectile.transform.rotation = forwardAngle;
+
+            
+            switch (instantiatedProjectile.PositioningType)
+            {
+                case E_INSTANTIATE_POSITION_TYPE.Inner   :
+                {
+                    instantiatedProjectile.transform.SetParent(transform);
+                    instantiatedProjectile.SetScaleOverrideByRatio(transform.localScale.z);
+                    break;
+                }
+                case E_INSTANTIATE_POSITION_TYPE.Outer  :
+                {
+                    break;
+                }
+            }
+
+            switch (instantiatedProjectile.StackingType)
+            {
+                case E_INSTANTIATE_STACKING_TYPE.NonStack : 
+                {
+                    break;
+                }
+                case E_INSTANTIATE_STACKING_TYPE.Stack : 
+                {
+                    break;
+                }
+            }
+            
+            instantiatedProjectile.transform.position += offset * GetBucketSize();
+            instantiatedProjectile.SetDurateTimeByRatio(InstantiableDurateLifeTimeMultiplyRatio.GetValueForce())
+                                .SetScaleMultiplyByRatio(GetBucketSize())
+                                .SetScaleMultiplyByRatio(InstantiableSizeMultiplyRatio.GetValueForce())
+                                .SetForwardingSpeedByRatio(InstantiableForwardingSpeedMultiplyRatio.GetValueForce())
+                                .SetOnProjectileCreatedEvent(OnCreated)
+                                .SetOnProjectileForwardingEvent(OnTriggerd)
+                                .SetOnProjectileReleasedEvent(OnReleased)
+                                .SetOnProjectileTriggerdEvent(OnForwarding);
+            
+            return instantiatedProjectile;
+        }
+
         public Projectile ActivateInstantable(Entity entityRef, Projectile _instantiatable)
         {
             Projectile instantiatedProjectile = ProjectilePool.Instance.ProPool[_instantiatable.gameObject.name].Get();
             instantiatedProjectile.Init(entityRef);
             
-            Vector3     offset       = instantiatedProjectile.transform.position;
+            Vector3     offset       = _instantiatable.transform.position;
             Vector3     position     = transform.position;
             Quaternion  forwardAngle = GetForwardingAngle(instantiatedProjectile.transform.rotation);
             instantiatedProjectile.transform.position = position;
@@ -102,9 +157,10 @@ namespace Sophia.Instantiates
                 }
             }
             
-            instantiatedProjectile.transform.position += offset * transform.localScale.z;
+            instantiatedProjectile.transform.position += offset * this.GetBucketSize();
             instantiatedProjectile.SetDurateTimeByRatio(InstantiableDurateLifeTimeMultiplyRatio.GetValueForce())
-                                .SetScaleByRatio(InstantiableSizeMultiplyRatio.GetValueForce())
+                                .SetScaleOverrideByRatio(this.GetBucketSize())
+                                .SetScaleMultiplyByRatio(InstantiableSizeMultiplyRatio.GetValueForce())
                                 .SetForwardingSpeedByRatio(InstantiableForwardingSpeedMultiplyRatio.GetValueForce())
                                 .SetOnProjectileCreatedEvent(OnCreated)
                                 .SetOnProjectileForwardingEvent(OnTriggerd)
@@ -113,6 +169,7 @@ namespace Sophia.Instantiates
             
             return instantiatedProjectile;
         }
+
 
         public Quaternion GetForwardingAngle(Quaternion instantiatorQuaternion)
         {

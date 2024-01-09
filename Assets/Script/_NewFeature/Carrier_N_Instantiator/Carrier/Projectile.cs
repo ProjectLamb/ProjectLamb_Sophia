@@ -52,6 +52,7 @@ namespace Sophia.Instantiates
                     return;
                 }
                 mCurrentDurateTime = value;
+                ProjectileMainModule.duration = mCurrentDurateTime;
             }
         }
 
@@ -135,9 +136,14 @@ namespace Sophia.Instantiates
             return this;
         }
         
-        public Projectile SetScaleByRatio(float sizeRatio)
+        public Projectile SetScaleOverrideByRatio(float sizeRatio)
         {
             CurrentSize = _baseSize * sizeRatio;
+            return this;
+        }
+        public Projectile SetScaleMultiplyByRatio(float sizeMulRatio)
+        {
+            CurrentSize *= sizeMulRatio;
             return this;
         }
 

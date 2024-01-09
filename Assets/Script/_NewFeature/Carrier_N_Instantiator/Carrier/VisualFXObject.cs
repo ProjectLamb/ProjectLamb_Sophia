@@ -121,9 +121,15 @@ namespace Sophia.Instantiates
             throw new NotImplementedException();
         }
 
-        public VisualFXObject SetScaleByRatio(float sizeRatio)
+        public VisualFXObject SetScaleOverrideByRatio(float sizeRatio)
         {
             CurrentSize = _baseSize * sizeRatio;
+            return this;
+        }
+
+        public VisualFXObject SetScaleMultiplyByRatio(float sizeMulRatio)
+        {
+            CurrentSize *= sizeMulRatio;
             return this;
         }
 
@@ -235,8 +241,7 @@ namespace Sophia.Instantiates
         {
             return OwnerRef.Equals(owner);
         }
-
-#endregion
+        #endregion
 
     }
 }
