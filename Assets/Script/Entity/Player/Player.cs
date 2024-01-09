@@ -8,6 +8,8 @@ using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using FMODPlus;
 
+using Schema;
+
 using Component = UnityEngine.Component;
 using Random = UnityEngine.Random;
 
@@ -78,6 +80,7 @@ public class Player : Entity {
     public  bool                    isAttack; // 일반 공격(1,2,3타) 여부
     public  bool                    isThrAttack; // 세번째 공격 여부
     public  bool                    canExitAttack; // 공격 중 탈출가능시점
+    public  bool                    attackTrigger;
     public  bool                    attackProTime; // 공격 이펙트 출현시점
     [HideInInspector] Animator anim;
 
@@ -283,8 +286,8 @@ public class Player : Entity {
     public void CheckAttack()
     {
         isAttack = AttackAnim.isAttack;
-        isThrAttack = AttackAnim.isThrAttack;
         canExitAttack = AttackAnim.canExitAttack;
+        attackTrigger = AttackAnim.attackTrigger;
 
         // 공격중이라면
         if(isAttack){
@@ -294,10 +297,10 @@ public class Player : Entity {
             anim.SetBool("isAttack",false);
         }
 
-        // 세번째 공격이 이루어졌다면
-        if(isThrAttack)
+        //공격 애니메이션 종료
+        if(attackTrigger)
         { 
-            // DoAttack 트리거 무시
+            // DoAttack trigger reset
             anim.ResetTrigger("DoAttack");
         }
         
@@ -311,5 +314,4 @@ public class Player : Entity {
             anim.SetBool("canExitAttack",false);
         }
     }
-
 }
