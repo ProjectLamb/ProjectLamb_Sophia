@@ -156,8 +156,8 @@ namespace Sophia.DataSystem
 
             public void PoisonedDamage() => targetEntity.GetDamaged((int)TickDamage);
             
-            public void PoisonedVisualOn() {}
-            public void PoisonedVisualOff() {}
+            public void PoisonedVisualOn() {throw new System.NotImplementedException();}
+            public void PoisonedVisualOff() {throw new System.NotImplementedException();}
 
     #region Helper
             public float CalcTickDamage() {

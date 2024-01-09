@@ -12,7 +12,7 @@ namespace Sophia.Instantiates
 
         private void OnTriggerEnter(Collider other) {
             if(other.TryGetComponent<Player>(out Player player)){
-                player.PlayerWealth.Gear += Gear;
+                player._PlayerWealth.Gear += Gear;
             }
         }
     }
