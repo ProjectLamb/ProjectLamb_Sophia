@@ -23,11 +23,6 @@ namespace Sophia.Instantiates
         public void ReleaseByPool();
     }
 
-    public interface IInstantiable {
-        public void Activate();
-        public void DeActivate();
-    }
-
     public interface IColliderTriggerable {
         public void ColliderTriggerHandle(Collider target);
     }

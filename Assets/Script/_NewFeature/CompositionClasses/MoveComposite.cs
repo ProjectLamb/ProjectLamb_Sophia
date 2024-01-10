@@ -30,7 +30,8 @@ namespace Sophia.Composite
     #region Event
 
         public void OnMoveSpeedUpdated() {
-            throw new System.NotImplementedException();
+            Debug.Log("이동속도 변경됨!");
+            // throw new System.NotImplementedException();
         }
         public void SetInputVector(Vector2 vector) => mInputVec = vector;
 
