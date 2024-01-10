@@ -56,8 +56,8 @@ public class AttackAnim : MonoBehaviour
         attackTrigger = true;
         attackProTime = false;
     }
-    
-    void resetAttack()
+
+    void ResetAttack()
     {
         attackTrigger = false;
     }
