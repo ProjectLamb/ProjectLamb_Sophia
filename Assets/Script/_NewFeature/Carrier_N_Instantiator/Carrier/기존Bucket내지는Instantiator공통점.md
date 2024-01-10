@@ -265,8 +265,8 @@ public class VFXBucket : MonoBehaviour {
 ```
 
 ```cs
-Projectile onHitProjectile = _projectile.CloneProjectile();
-Projectile onHitProjectile = _projectile.CloneProjectile();
+ProjectileObject onHitProjectile = _projectile.CloneProjectile();
+ProjectileObject onHitProjectile = _projectile.CloneProjectile();
 useProjectile = E.CloneProjectile();
 useProjectile = ProjectileE.CloneProjectile();
 useProjectile = ProjectileE.CloneProjectile();
@@ -275,11 +275,11 @@ useProjectile = moveProjectileShort.CloneProjectile();
 TriggerExplosion useTrigger = TriggerE.CloneTriggerExplosion();
 TriggerExplosion useTrigger = TriggerQ.CloneTriggerExplosion();
 TriggerExplosion useTrigger = TriggerE.CloneTriggerExplosion();
-Projectile useProjectile = AttackProjectiles[currentProjectileIndex++].CloneProjectile();
-Projectile useProjectile = AttackProjectiles[0].CloneProjectile();
+ProjectileObject useProjectile = AttackProjectiles[currentProjectileIndex++].CloneProjectile();
+ProjectileObject useProjectile = AttackProjectiles[0].CloneProjectile();
 carrier = carrier.Clone();
 
-Projectile useProjectile = OnHitProjectiles.Dequeue();
+ProjectileObject useProjectile = OnHitProjectiles.Dequeue();
 
 useTrigger.Init(player);
 useProjectile.Init(player);
@@ -336,11 +336,11 @@ carrierBucket.CarrierTransformPositionning(gameObject, carrier);
 Cloner와 Instantiator
 */
 
-Projectile.Clone();
-Projectile.Init();
+ProjectileObject.Clone();
+ProjectileObject.Init();
 
-Projectile.Setter;
-Projectile.AffecterSetter
+ProjectileObject.Setter;
+ProjectileObject.AffecterSetter
 
-Projectile.CarrierTransformPositionning();
+ProjectileObject.CarrierTransformPositionning();
 ``````

@@ -1804,7 +1804,7 @@ PrefabInstance:
     - target: {fileID: 319690770, guid: 7bee3eb4cc7f94383817b081c3d313d5, type: 3}
       propertyPath: _currentWeapon
       value: 
-      objectReference: {fileID: 6786713491012878488, guid: 4240fae3d669a4cf39cabc0045bed293,
+      objectReference: {fileID: 6786713491012878488, guid: 78e04a51bb43f4adaaa1757454735a08,
         type: 3}
     - target: {fileID: 5908688010613020486, guid: 7bee3eb4cc7f94383817b081c3d313d5,
         type: 3}
@@ -4959,8 +4959,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be6c5e3b2bfc74b9b9c37b88ec815b7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  model: {fileID: 963538102}
-  modelAnimator: {fileID: 0}
+  _model: {fileID: 0}
+  _modelHands: {fileID: 0}
+  _modelAnimator: {fileID: 0}
   _renderers:
   - {fileID: 1321301414}
   _materials:
