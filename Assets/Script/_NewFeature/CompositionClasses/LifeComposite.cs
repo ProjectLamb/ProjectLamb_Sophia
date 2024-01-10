@@ -1,3 +1,4 @@
+using UnityEngine;
 using UnityEngine.Events;
 using Sophia.DataSystem;
 
@@ -183,15 +184,18 @@ namespace Sophia.Composite
 #endregion
 
         protected void OnMaxHpUpdated() { 
-            throw new System.NotImplementedException();
+            Debug.Log("최대체력 변경됨!");
+            // throw new System.NotImplementedException();
         }
 
         protected void OnDefenceUpdated() { 
-            throw new System.NotImplementedException();
+            Debug.Log("방어력 변경됨!");
+            // throw new System.NotImplementedException();
         }
         
         protected void OnBarrierRatioUpdated() { 
-            throw new System.NotImplementedException();
+            Debug.Log("배리어 변경됨!");
+            // throw new System.NotImplementedException();
         }
 
         public void Healed(float amount) {
