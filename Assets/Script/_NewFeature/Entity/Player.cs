@@ -18,7 +18,7 @@ namespace Sophia.Entitys
 //      [SerializeField] private VisualFXBucket  _visualFXBucket;
         [SerializeField] private WeaponManager        _weaponManager;
         [SerializeField] private ProjectileBucket     _projectileBucket;
-        [SerializeField] public Wealths               _PlayerWealth;
+        [SerializeField] public  Wealths              _PlayerWealth;
 
 #endregion
 
@@ -72,8 +72,8 @@ namespace Sophia.Entitys
 
 #region Model Accessable
 
-        public void ChangeSkin(Material skin) { _modelManger.ChangeSkin(skin); }
-        public void RevertSkin() { _modelManger.RevertSkin(); }
+        public void ChangeSkin(Material skin) { _modelManger.ChangeSkin(skin).Forget(); }
+        public void RevertSkin() { _modelManger.RevertSkin().Forget(); }
         public Animator GetAnimator() { return _modelManger.GetAnimator(); }
 
 #endregion
@@ -134,9 +134,7 @@ namespace Sophia.Entitys
                                             OnPowerUpdated
                                         );
         }
-
         public void OnPowerUpdated() {throw new System.NotImplementedException();}
-
         private void Start(){
            StatReferer.SetRefStat(Life.MaxHp);
            StatReferer.SetRefStat(Life.Defence);
@@ -145,21 +143,18 @@ namespace Sophia.Entitys
            StatReferer.SetRefStat(DashSkillAbility.StaminaRestoreSpeed);
 
            StatReferer.SetRefStat(Power);
-           
-           StatReferer.SetRefStat(_weaponManager.PoolSize);
-           StatReferer.SetRefStat(_weaponManager.AttackSpeed);
-           StatReferer.SetRefStat(_weaponManager.MeleeRatio);
+                      
            StatReferer.SetRefStat(_projectileBucket.InstantiableDurateLifeTimeMultiplyRatio);
            StatReferer.SetRefStat(_projectileBucket.InstantiableSizeMultiplyRatio);
            StatReferer.SetRefStat(_projectileBucket.InstantiableForwardingSpeedMultiplyRatio);
 
+           StatReferer.SetRefStat(_weaponManager.PoolSize);
+           StatReferer.SetRefStat(_weaponManager.AttackSpeed);
+           StatReferer.SetRefStat(_weaponManager.MeleeRatio);
 
            DashSkillAbility.SetAudioSource(DashSource);
         }
-
-        public void Attack() {
-            _weaponManager.GetCurrentWeapon().Use(this);
-        }
+        public void Attack() { _weaponManager.GetCurrentWeapon().Use(this); }
         public void Skill() {throw new System.NotImplementedException();}
     }    
 }

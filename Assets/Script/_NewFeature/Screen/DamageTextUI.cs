@@ -81,8 +81,8 @@ public class DamageTextUI : MonoBehaviour
         return this;
     }
 
-    //      private IObjectPool<Projectile> poolRefer {get; set;}
-    //      public void SetPool(IObjectPool<Projectile> pool) {
+    //      private IObjectPool<ProjectileObject> poolRefer {get; set;}
+    //      public void SetPool(IObjectPool<ProjectileObject> pool) {
     //          poolRefer = pool;
     //      }
 

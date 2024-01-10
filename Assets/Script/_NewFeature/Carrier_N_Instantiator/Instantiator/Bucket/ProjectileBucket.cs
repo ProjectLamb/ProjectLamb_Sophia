@@ -8,7 +8,7 @@ namespace Sophia.Instantiates
     using Sophia.Entitys;
     using Sophia.DataSystem;
     using Sophia.DataSystem.Numerics;
-    public class ProjectileBucket : MonoBehaviour, IInstantiator<Projectile>
+    public class ProjectileBucket : MonoBehaviour
     {        
 
 #region Serialize
@@ -69,10 +69,10 @@ namespace Sophia.Instantiates
         public float GetBucketSize() => _bucketScale * transform.lossyScale.z;
 #endregion
 
-        public Projectile ActivateInstantable(Entity entityRef, Projectile _instantiatable, Vector3 _offset)
+        public ProjectileObject ActivateInstantable(ProjectileObject _instantiatable, Vector3 _offset)
         {
-            Projectile instantiatedProjectile = ProjectilePool.Instance.ProPool[_instantiatable.gameObject.name].Get();
-            instantiatedProjectile.Init(entityRef);
+            ProjectileObject instantiatedProjectile = ProjectilePool.Instance.ProPool[_instantiatable.gameObject.name].Get();
+            instantiatedProjectile.Init(_ownerRef);
             
             Vector3     offset       = _offset;
             Vector3     position     = transform.position;
@@ -120,10 +120,10 @@ namespace Sophia.Instantiates
             return instantiatedProjectile;
         }
 
-        public Projectile ActivateInstantable(Entity entityRef, Projectile _instantiatable)
+        public ProjectileObject ActivateInstantable(ProjectileObject _instantiatable)
         {
-            Projectile instantiatedProjectile = ProjectilePool.Instance.ProPool[_instantiatable.gameObject.name].Get();
-            instantiatedProjectile.Init(entityRef);
+            ProjectileObject instantiatedProjectile = ProjectilePool.Instance.ProPool[_instantiatable.gameObject.name].Get();
+            instantiatedProjectile.Init(_ownerRef);
             
             Vector3     offset       = _instantiatable.transform.position;
             Vector3     position     = transform.position;

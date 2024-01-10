@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using Cysharp.Threading.Tasks;
 
-namespace Sophia.Composite
+namespace Sophia.Composite.RenderModels
 {    
 
     /*********************************************************************************
@@ -21,8 +21,9 @@ namespace Sophia.Composite
     *********************************************************************************/
     
     public class ModelManger : MonoBehaviour {
-        [SerializeField] private GameObject model;
-        [SerializeField] private Animator modelAnimator;
+        [SerializeField] private GameObject _model;
+        [SerializeField] private ModelHands _modelHands;
+        [SerializeField] private Animator _modelAnimator;
         
         [Tooltip("SkinMaterial 스킨을 입힐 대상들이다.")]
         [SerializeField]private List<Renderer> _renderers = new List<Renderer>();
@@ -30,16 +31,16 @@ namespace Sophia.Composite
         public Material TransMaterial;
 
         private void Awake() {
-            model = this.gameObject;
+            _model = this.gameObject;
             
-            model.TryGetComponent<Animator>(out modelAnimator);
+            _model.TryGetComponent<Animator>(out _modelAnimator);
             foreach(Transform skinTransform in transform.Find("skins")) {
                 _renderers.Add(skinTransform.GetComponent<Renderer>());
             }
             if(_materials.Count == 0) throw new System.Exception("Skin리스트가 없어서 설정하고싶은 스킨이 없음");
         }
 
-        public async void ChangeSkin(Material skin) {
+        public async UniTask ChangeSkin(Material skin) {
             _materials[1] = skin;
             await UniTask.WaitForEndOfFrame(this);
             foreach (Renderer renderer in _renderers) {
@@ -47,7 +48,7 @@ namespace Sophia.Composite
             }
         }
 
-        public async void RevertSkin() {
+        public async UniTask RevertSkin() {
             _materials[1] = TransMaterial;
             await UniTask.WaitForEndOfFrame(this);
             foreach (Renderer renderer in _renderers) {
@@ -55,10 +56,13 @@ namespace Sophia.Composite
             }
         }
 
+        public void HoldObject(GameObject go, E_MODEL_HAND handPos) => _modelHands.HoldObject(go, handPos);
+        public void DropObject(E_MODEL_HAND handPos) => _modelHands.DropObject(handPos);
+
         IEnumerator DoAndRenderModel(UnityAction action){
             action.Invoke(); yield return new WaitForEndOfFrame();
         }
         
-        public Animator GetAnimator() {return this.modelAnimator;}
+        public Animator GetAnimator() {return this._modelAnimator;}
     }
 }

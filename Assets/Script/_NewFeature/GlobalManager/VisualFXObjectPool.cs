@@ -28,6 +28,9 @@ namespace Sophia
         private void Awake() {
             VFXPool = new Dictionary<string, IObjectPool<VisualFXObject>>();
         }
+        
+        /*⚠️ Instantiate(E)라면.. 같이 달린 컴포넌트도 같이 생성되나? 이거 버그 조심할것*/
+
         private void Start() {
             _creatableVisualFXObjects.ForEach((E) => {
                 VFXPool.Add(E.gameObject.name, null);
@@ -35,7 +38,7 @@ namespace Sophia
                 VFXPool[E.gameObject.name] = new ObjectPool<VisualFXObject>(
                     createFunc: () => {
                         VisualFXObject concrete = Instantiate(E);
-                        concrete.SetPool(this.VFXPool[E.gameObject.name]);
+                        concrete.SetByPool(this.VFXPool[E.gameObject.name]);
                         return concrete;
                     },
                     actionOnGet: OnGetObject,
@@ -50,11 +53,11 @@ namespace Sophia
 
         private void OnGetObject(VisualFXObject vfxObject) {
             vfxObject.transform.parent = null;
-            vfxObject.Get();
+            vfxObject.GetByPool();
         }
 
         private void OnReleaseObject(VisualFXObject vfxObject) {
-            vfxObject.Release();
+            vfxObject.ReleaseByPool();
             vfxObject.transform.SetParent(transform);
         }
 
