@@ -1,11 +1,12 @@
 using UnityEngine;
-using Sophia.DataSystem;
-using Sophia.DataSystem.Numerics;
-using Sophia.Instantiates;
-using Sophia.Composite;
 
 namespace Sophia.Entitys
 {
+    using Sophia.DataSystem.Numerics;
+    using Sophia.DataSystem;
+    using Sophia.Composite.RenderModels;
+    using Sophia.Instantiates;
+    using Sophia.Composite;
     public abstract class Entity : MonoBehaviour, ILifeAccessable, IStatAccessable
     {
 #region SerializeMembeer 

@@ -10,7 +10,7 @@ namespace Sophia.Instantiates
     using Sophia.Entitys;   
     /*변하는 녀석*/
 
-    public class Projectile : MonoBehaviour, IInstantiable<Projectile, Entity>
+    public class ProjectileObject : MonoBehaviour, IPoolAccesable<ProjectileObject>, IColliderTriggerable
     {
 
 #region Serialize
@@ -94,10 +94,25 @@ namespace Sophia.Instantiates
 
 #region ObjectPool
 
-        private IObjectPool<Projectile> poolRefer { get; set; }
-        public void SetPool(IObjectPool<Projectile> pool)
+        private IObjectPool<ProjectileObject> poolRefer { get; set; }
+        public void SetByPool(IObjectPool<ProjectileObject> pool)
         {
             poolRefer = pool;
+        }
+
+        public void GetByPool()
+        {
+            this.ProjectileParticle.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            gameObject.SetActive(false);
+        }
+
+        public void ReleaseByPool()
+        {
+            IsActivated = false;
+            OnRelease?.Invoke();
+            ResetSettings();
+            gameObject.SetActive(false);
+            return;
         }
 
 #endregion
@@ -105,14 +120,15 @@ namespace Sophia.Instantiates
 #region Getter
 
         public Entity GetOwner() => OwnerRef;
-        public bool GetIsInitialized() => IsInitialized;
+        public bool GetIsInitialized() => IsInitialized;        
+        public Collider GetOwnerCollider() => OwnerRef.entityCollider;
 
 #endregion
 
 #region Setter
 
         /* 생성자를 통해서 하자 */
-        public Projectile Init(Entity owner)
+        public ProjectileObject Init(Entity owner)
         {
             if (GetIsInitialized() == true) { throw new System.Exception("이미 초기화가 됨."); }
             if(owner == null) throw new System.Exception("투사체 생성 엔티티가 NULL임");
@@ -125,29 +141,29 @@ namespace Sophia.Instantiates
             return this;
         }
 
-        public Projectile InitByObject(Entity owner, object[] objects)
+        public ProjectileObject InitByObject(Entity owner, object[] objects)
         {
             throw new System.NotImplementedException();
         }
         
-        public Projectile SetDurateTimeByRatio(float muls)
+        public ProjectileObject SetDurateTimeByRatio(float muls)
         {
             CurrentDurateTime = _baseDurateTime * muls;
             return this;
         }
         
-        public Projectile SetScaleOverrideByRatio(float sizeRatio)
+        public ProjectileObject SetScaleOverrideByRatio(float sizeRatio)
         {
             CurrentSize = _baseSize * sizeRatio;
             return this;
         }
-        public Projectile SetScaleMultiplyByRatio(float sizeMulRatio)
+        public ProjectileObject SetScaleMultiplyByRatio(float sizeMulRatio)
         {
             CurrentSize *= sizeMulRatio;
             return this;
         }
 
-        public Projectile SetForwardingSpeedByRatio(float speedRatio) 
+        public ProjectileObject SetForwardingSpeedByRatio(float speedRatio) 
         {
             CurrentForwardingSpeed = _baseForwardingSpeed * speedRatio;
             return this;
@@ -156,12 +172,12 @@ namespace Sophia.Instantiates
         /*
         이거 같은 경우는 플레이어가 자체 프로젝타일 사용 안할 수 도 있기 떄문임
         */
-        public Projectile SetProjectileDamage(int damage) {
+        public ProjectileObject SetProjectileDamage(int damage) {
             CurrentProjectileDamage = damage;
             return this;
         }
 
-        public Projectile SetAffectType(E_AFFECT_TYPE affectType)
+        public ProjectileObject SetAffectType(E_AFFECT_TYPE affectType)
         {
             AffectType = affectType;
             return this;
@@ -194,47 +210,47 @@ namespace Sophia.Instantiates
 #region Event
         
         private UnityAction OnActivated;
-        public Projectile AddOnActivatedEvent(UnityAction action)
+        public ProjectileObject AddOnActivatedEvent(UnityAction action)
         {
             OnActivated += action;
             return this;
         }
         private UnityAction OnDeActivated;
-        public Projectile AddOnDeActivatedEvent(UnityAction action)
+        public ProjectileObject AddOnDeActivatedEvent(UnityAction action)
         {
             OnDeActivated += action;
             return this;
         }
         private UnityAction OnRelease;
-        public Projectile AddOnReleaseEvent(UnityAction action)
+        public ProjectileObject AddOnReleaseEvent(UnityAction action)
         {
             OnRelease += action;
             return this;
         }
 
         public event UnityAction OnProjectileCreated = null;
-        public Projectile SetOnProjectileCreatedEvent(UnityAction action)
+        public ProjectileObject SetOnProjectileCreatedEvent(UnityAction action)
         {
             OnProjectileCreated = action;
             return this;
         }
 
         public event UnityAction OnProjectileTriggerd = null;
-        public Projectile SetOnProjectileTriggerdEvent(UnityAction action)
+        public ProjectileObject SetOnProjectileTriggerdEvent(UnityAction action)
         {
             OnProjectileTriggerd = action;
             return this;
         }
 
         public event UnityAction OnProjectileReleased = null;
-        public Projectile SetOnProjectileReleasedEvent(UnityAction action)
+        public ProjectileObject SetOnProjectileReleasedEvent(UnityAction action)
         {
             OnProjectileReleased = action;
             return this;
         }
 
         public event UnityAction OnProjectileForwarding = null;
-        public Projectile SetOnProjectileForwardingEvent(UnityAction action)
+        public ProjectileObject SetOnProjectileForwardingEvent(UnityAction action)
         {
             OnProjectileForwarding = action;
             return this;
@@ -267,13 +283,6 @@ namespace Sophia.Instantiates
 
 #region Bindings
 
-        public void Get()
-        {
-            Debug.Log("Get");
-            this.ProjectileParticle.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-            gameObject.SetActive(false);
-        }
-
         public void Activate()
         {
             gameObject.SetActive(true);
@@ -286,15 +295,6 @@ namespace Sophia.Instantiates
         {
             IsActivated = false;
             OnDeActivated?.Invoke();
-            gameObject.SetActive(false);
-            return;
-        }
-
-        public void Release()
-        {
-            IsActivated = false;
-            OnRelease?.Invoke();
-            ResetSettings();
             gameObject.SetActive(false);
             return;
         }
@@ -323,10 +323,14 @@ namespace Sophia.Instantiates
             poolRefer.Release(this);
         }
 
-        private void OnTriggerEnter(Collider other)
+        private void OnTriggerEnter(Collider other) {
+            ColliderTriggerHandle(other);
+        }
+
+        public void ColliderTriggerHandle(Collider target)
         {
-            if(CheckIsOwnerCollider(other)) {return;}
-            if (other.TryGetComponent<IDamagable>(out IDamagable damagables))
+            if(CheckIsOwnerCollider(target)) {return;}
+            if (target.TryGetComponent<IDamagable>(out IDamagable damagables))
             {
                 damagables.GetDamaged(CurrentProjectileDamage, _hitEffect);
                 OnProjectileTriggerd.Invoke();
@@ -353,7 +357,7 @@ namespace Sophia.Instantiates
             return OwnerRef.entityCollider.Equals(target);
         }
 
-#endregion
+        #endregion
 
     }
 }

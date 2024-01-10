@@ -20,21 +20,24 @@ namespace Sophia
             private set {}
         }
 
-        [SerializeField] private List<Projectile> _creatableProjectiles;
-        public Dictionary<string, IObjectPool<Projectile>> ProPool {get; private set;}
+        [SerializeField] private List<ProjectileObject> _creatableProjectiles;
+        public Dictionary<string, IObjectPool<ProjectileObject>> ProPool {get; private set;}
         public int MaxPoolSize;
 
         private void Awake() {
-            ProPool = new Dictionary<string, IObjectPool<Projectile>>();
+            ProPool = new Dictionary<string, IObjectPool<ProjectileObject>>();
         }
+        
+        /*⚠️ Instantiate(E)라면.. 같이 달린 컴포넌트도 같이 생성되나? 이거 버그 조심할것*/
+
         private void Start() {
             _creatableProjectiles.ForEach((E) => {
                 ProPool.Add(E.gameObject.name, null);
 
-                ProPool[E.gameObject.name] = new ObjectPool<Projectile>(
+                ProPool[E.gameObject.name] = new ObjectPool<ProjectileObject>(
                     createFunc: () => {
-                        Projectile concrete = Instantiate(E);
-                        concrete.SetPool(this.ProPool[E.gameObject.name]);
+                        ProjectileObject concrete = Instantiate(E);
+                        concrete.SetByPool(this.ProPool[E.gameObject.name]);
                         return concrete;
                     },
                     actionOnGet: OnGetObject,
@@ -47,17 +50,17 @@ namespace Sophia
 
 #region ObjectPool
 
-        private void OnGetObject(Projectile projectile) {
-            projectile.transform.parent = null;
-            projectile.Get();
+        private void OnGetObject(ProjectileObject projectile) {
+            transform.parent = null;
+            projectile.GetByPool();
         }
 
-        private void OnReleaseObject(Projectile projectile) {
-            projectile.Release();
+        private void OnReleaseObject(ProjectileObject projectile) {
+            projectile.ReleaseByPool();
             projectile.transform.SetParent(transform);
         }
 
-        private void OnDestroyObject(Projectile projectile) {
+        private void OnDestroyObject(ProjectileObject projectile) {
             Destroy(projectile.gameObject);
         }
 

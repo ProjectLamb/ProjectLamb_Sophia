@@ -9,8 +9,7 @@ using Sophia.Entitys;
 
 namespace Sophia.Instantiates {
     using Sophia.Entitys;
-    using Sophia.Composite;
-    using System.Drawing.Printing;
+    using Sophia.Composite.RenderModels;
 
     public enum E_WEAPONE_USE_STATE {
         None, Normal, OnHit, Charge
@@ -41,7 +40,7 @@ namespace Sophia.Instantiates {
         private static WeaponUseOnHit _instnace = new WeaponUseOnHit();
         public static WeaponUseOnHit Instance => _instnace;
 
-        public Queue<Projectile>  OnHitProjectiles = new Queue<Projectile>();
+        public Queue<ProjectileObject>  OnHitProjectiles = new Queue<ProjectileObject>();
 
         public void Enter(Weapon weapon)
         {
@@ -68,7 +67,7 @@ namespace Sophia.Instantiates {
         [SerializeField] protected ModelManger  _modelManger;
         [SerializeField] protected List<VisualFXBucket>  _visualFXBucket;
 
-        [SerializeField] private List<Projectile> _projectiles;
+        [SerializeField] private List<ProjectileObject> _projectiles;
         [SerializeField] private List<Animation> _performAnimation;
         [SerializeField] private int    _basePoolSize = 3;
         [SerializeField] private float  _baseRatioAttackSpeed = 1f;
@@ -79,9 +78,9 @@ namespace Sophia.Instantiates {
 
 #region Member
 
-        private ProjectileBucket mInstantiatorRef;
-        private Queue<Projectile> NormalQueue = new Queue<Projectile>();
-        private Queue<Projectile> OnHitQueue = new Queue<Projectile>();
+        private ProjectileBucket        mInstantiatorRef;
+        private Queue<ProjectileObject> NormalQueue = new Queue<ProjectileObject>();
+        private Queue<ProjectileObject> OnHitQueue = new Queue<ProjectileObject>();
 
         private int mCurrentPoolSize;
         public int CurrentPoolSize {
@@ -179,7 +178,7 @@ namespace Sophia.Instantiates {
             if(NormalQueue.Count == 0) {
                 _projectiles.ForEach(E => NormalQueue.Enqueue(E));
             }
-            Projectile useProjectile = mInstantiatorRef.ActivateInstantable(player,NormalQueue.Dequeue());
+            ProjectileObject useProjectile = mInstantiatorRef.ActivateInstantable(NormalQueue.Dequeue());
             int useDamage = CalculateDamage(player);
             useProjectile.SetProjectileDamage(useDamage)?.Activate();
         }

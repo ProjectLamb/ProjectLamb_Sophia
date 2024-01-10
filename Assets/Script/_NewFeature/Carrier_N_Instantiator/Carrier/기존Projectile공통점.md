@@ -29,7 +29,7 @@ namespace Sophia_Carriers{
 ```
 ```cs
 namespace Sophia_Carriers {
-    public class Projectile : Carrier
+    public class ProjectileObject : Carrier
     {
         public      CARRIER_TYPE                    CarrierType;
         public      BUCKET_POSITION                 BucketPosition;
@@ -85,7 +85,7 @@ namespace Sophia_Carriers {
             res = IsCloned = true;
             return res;
         }
-        public virtual Projectile CloneProjectile(){}
+        public virtual ProjectileObject CloneProjectile(){}
         public virtual ParticleProjectile CloneParticleProjectile() {throw new System.NotImplementedException();}
 #endregion
 
@@ -103,7 +103,7 @@ namespace Sophia_Carriers {
             ownerEntity = _ownerEntity;
             particleModule.startLifetime    = DestroyTime;
             particleModule.duration         = DestroyTime;
-            transform.tag = _ownerEntity.GetFinalData().EntityTag + "Projectile";
+            transform.tag = _ownerEntity.GetFinalData().EntityTag + "ProjectileObject";
             IsInitialized = true;
         }
         public abstract void InitByObject(Entity _ownerEntity, object[] _objects);
@@ -138,9 +138,9 @@ namespace Sophia_Carriers {
 namespace Sophia_Carriers {
     /*********************************************************************************
     * Carrier 
-    * Projectile 방법도 있고, MeshRender방법도 있다.
+    * ProjectileObject 방법도 있고, MeshRender방법도 있다.
     *********************************************************************************/
-    public class Projectile : Carrier
+    public class ProjectileObject : Carrier
     {
         public      CARRIER_TYPE                    CarrierType;
         public      BUCKET_POSITION                 BucketPosition;
@@ -201,7 +201,7 @@ namespace Sophia_Carriers {
 #region Clone By Prefeb Instantiate
 
         public override Carrier Clone(){}
-        public virtual Projectile CloneProjectile(){}
+        public virtual ProjectileObject CloneProjectile(){}
         public virtual ParticleProjectile CloneParticleProjectile() {throw new System.NotImplementedException();}
 
 #endregion

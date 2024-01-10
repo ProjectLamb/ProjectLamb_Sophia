@@ -98,7 +98,7 @@ namespace Feature_NewData
     //        public WeaponNumerics() : base()
     //        {
     //            numerics.Add(E_NUMERIC_STAT_MEMBERS.RatioMaxProjectilePoolSize, new Stat(1f, E_STAT_USE_TYPE.Ratio));        // 근접 3단 공격이면 3개, 총알이면 30개
-    //            numerics.Add(E_NUMERIC_STAT_MEMBERS.RatioRestoreSpeed, new Stat(1f, E_STAT_USE_TYPE.Ratio));                 // Projectile 회수딜레이
+    //            numerics.Add(E_NUMERIC_STAT_MEMBERS.RatioRestoreSpeed, new Stat(1f, E_STAT_USE_TYPE.Ratio));                 // ProjectileObject 회수딜레이
     //            numerics.Add(E_NUMERIC_STAT_MEMBERS.RatioMeleeDamage, new Stat(1f, E_STAT_USE_TYPE.Ratio));                  // 근접공격 비례댐
     //            numerics.Add(E_NUMERIC_STAT_MEMBERS.RatioRangeDamage, new Stat(1f, E_STAT_USE_TYPE.Ratio));                  // 원거리 공격 비례댐
     //            numerics.Add(E_NUMERIC_STAT_MEMBERS.RatioTechDamage, new Stat(1f, E_STAT_USE_TYPE.Ratio));                   // 해킹/테크 공격 비례댐

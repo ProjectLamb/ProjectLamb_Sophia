@@ -6,7 +6,8 @@ using UnityEngine.Events;
 
 namespace Sophia.Instantiates
 {
-    public class VisualFXObject : MonoBehaviour, IInstantiable<VisualFXObject, Entity>
+    using Sophia.Entitys;
+    public class VisualFXObject : MonoBehaviour, IPoolAccesable<VisualFXObject>
     {
 
 #region Serialize
@@ -69,9 +70,24 @@ namespace Sophia.Instantiates
 #region ObjectPool
 
         private IObjectPool<VisualFXObject> poolRefer { get; set; }
-        public void SetPool(IObjectPool<VisualFXObject> pool)
+        public void SetByPool(IObjectPool<VisualFXObject> pool)
         {
             poolRefer = pool;
+        }
+        
+        public void GetByPool()
+        {
+            this.Particle.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            gameObject.SetActive(false);
+        }
+
+        public void ReleaseByPool()
+        {
+            IsActivated = false;
+            OnRelease?.Invoke();
+            ResetSettings();
+            gameObject.SetActive(false);
+            return;
         }
 
 #endregion
@@ -114,11 +130,6 @@ namespace Sophia.Instantiates
 
             IsInitialized = true;
             return this;
-        }
-
-        public VisualFXObject InitByObject(Entity owner, object[] objects)
-        {
-            throw new NotImplementedException();
         }
 
         public VisualFXObject SetScaleOverrideByRatio(float sizeRatio)
@@ -202,12 +213,6 @@ namespace Sophia.Instantiates
 
 #region Bindings
 
-        public void Get()
-        {
-            this.Particle.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-            gameObject.SetActive(false);
-        }
-
         public void Activate()
         {
             gameObject.SetActive(true);
@@ -224,14 +229,6 @@ namespace Sophia.Instantiates
             return;
         }
 
-        public void Release()
-        {
-            IsActivated = false;
-            OnRelease?.Invoke();
-            ResetSettings();
-            gameObject.SetActive(false);
-            return;
-        }
 
 #endregion
 
