@@ -3,12 +3,12 @@ using UnityEngine;
 
 namespace Sophia.Instantiates 
 {
+    using Sophia.Entitys;
+    
     public class HealthItem : MonoBehaviour {
-        public int Health;
+        [SerializeField] public int Health;
 
-        public void SetHelth(int data) {
-            Health = data;
-        }
+        public void SetHelth(int data) => Health = data;
 
         private void OnTriggerEnter(Collider other) {
             if(other.TryGetComponent<Player>(out Player player)){

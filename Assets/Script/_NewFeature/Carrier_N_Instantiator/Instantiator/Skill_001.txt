@@ -6,13 +6,13 @@ public class Skill_001 : MonoBehaviour, ISkillStatAccessable{
     public int bucketSize;
     public SKILL_RANK skillRank;
 
-    private List<IObjectPool<Projectile>> ProjectilePoolQ;
-    private IObjectPool<Projectile> ProjectilePoolE;
-    private IObjectPool<Projectile> ProjectilePoolR;
+    private List<IObjectPool<ProjectileObject>> ProjectilePoolQ;
+    private IObjectPool<ProjectileObject> ProjectilePoolE;
+    private IObjectPool<ProjectileObject> ProjectilePoolR;
 
-    private List<Projectile>     creatableProjectileQ;
-    private Projectile           creatableProjectileE;
-    private Projectile           creatableProjectileR;
+    private List<ProjectileObject>     creatableProjectileQ;
+    private ProjectileObject           creatableProjectileE;
+    private ProjectileObject           creatableProjectileR;
 
     private int createQIndex = 0;
     private int currentProjectileIndex = 0;
@@ -29,18 +29,18 @@ public class Skill_001 : MonoBehaviour, ISkillStatAccessable{
 
     private void Awake() {
         SkillEfficienceMultiplyer = new Stat(1,E_NUMERIC_STAT_TYPE.EfficienceMultiplyer, E_STAT_USE_TYPE.Ratio);
-        ProjectilePoolQ = new List<IObjectPool<Projectile>>(creatableProjectileQ.Count);
+        ProjectilePoolQ = new List<IObjectPool<ProjectileObject>>(creatableProjectileQ.Count);
     }
 
     private void OnEnable() {
         while(createQIndex < creatableProjectileQ.Count) {
-            ProjectilePoolQ[createQIndex] = new ObjectPool<Projectile> (
+            ProjectilePoolQ[createQIndex] = new ObjectPool<ProjectileObject> (
                 () =>  {
-                    Projectile concreteProjectile = Instantiate(creatableProjectileQ[createQIndex]);
+                    ProjectileObject concreteProjectile = Instantiate(creatableProjectileQ[createQIndex]);
                     concreteProjectile.SetPool(ProjectilePoolQ[createQIndex]);
                     return concreteProjectile;
                 },
-                (Projectile projectile) => {
+                (ProjectileObject projectile) => {
                     projectile.SetProjectileSize(bucketSize);
                     projectile.SetForwardingAngle(this.transform.rotation);
                     projectile.SetDamage(CalculateDamage(SKILL_KEY.Q, skillRank));
@@ -53,13 +53,13 @@ public class Skill_001 : MonoBehaviour, ISkillStatAccessable{
             createQIndex++;
         }
 
-        ProjectilePoolE = new ObjectPool<Projectile>(
+        ProjectilePoolE = new ObjectPool<ProjectileObject>(
             () => {
-                Projectile concreteProjectile = Instantiate(creatableProjectileE);
+                ProjectileObject concreteProjectile = Instantiate(creatableProjectileE);
                 concreteProjectile.SetPool(ProjectilePoolE);
                 return concreteProjectile;
             },
-            (Projectile projectile) => {
+            (ProjectileObject projectile) => {
                 projectile.SetProjectileSize(bucketSize);
                 projectile.SetForwardingAngle(this.transform.rotation);
                 projectile.SetDamage(CalculateDamage(SKILL_KEY.E, skillRank));
@@ -70,13 +70,13 @@ public class Skill_001 : MonoBehaviour, ISkillStatAccessable{
             maxSize:MaxPoolSize
         );
 
-        ProjectilePoolR = new ObjectPool<Projectile>(
+        ProjectilePoolR = new ObjectPool<ProjectileObject>(
             () => {
-                Projectile concreteProjectile = Instantiate(creatableProjectileR);
+                ProjectileObject concreteProjectile = Instantiate(creatableProjectileR);
                 concreteProjectile.SetPool(ProjectilePoolR);
                 return concreteProjectile;
             },
-            (Projectile projectile) => {
+            (ProjectileObject projectile) => {
                 projectile.SetProjectileSize(bucketSize);
                 projectile.SetForwardingAngle(this.transform.rotation);
                 projectile.SetDamage(CalculateDamage(SKILL_KEY.R, skillRank));
@@ -113,11 +113,11 @@ public class Skill_001 : MonoBehaviour, ISkillStatAccessable{
         var projectile = ProjectilePoolR.Get();
     }
 
-    private void ReleaseProjectile(Projectile projectile) {
+    private void ReleaseProjectile(ProjectileObject projectile) {
         projectile.gameObject.SetActive(false);   
     }
 
-    private void DestroyProjectile(Projectile projectile) {
+    private void DestroyProjectile(ProjectileObject projectile) {
         Destroy(projectile.gameObject);
     }
 }

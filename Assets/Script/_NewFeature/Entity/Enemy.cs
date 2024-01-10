@@ -1,18 +1,17 @@
 using System.Collections.Generic;
 
 using UnityEngine;
-using Sophia.Composite;
-using Sophia.DataSystem.Numerics;
-using Sophia.Instantiates;
 
 namespace Sophia.Entitys{
-    public abstract class Enemy : MonoBehaviour, IDamagable, IDieable, 
-    // IStatAccessable, 
-    IModelAccessable {
+    using Cysharp.Threading.Tasks;
+    using Sophia.Composite;
+    using Sophia.DataSystem;
+    using Sophia.DataSystem.Numerics;
+    using Sophia.Instantiates;
+
+    public abstract class Enemy : Entity, IModelAccessable {
 
         public EntityStatReferer entityStat;
-        public ModelManger modelManger;
-
         
         [SerializeField]
         private float currentHealth;
@@ -21,16 +20,22 @@ namespace Sophia.Entitys{
             entityStat = new EntityStatReferer();
         }
 
-        public void GetDamaged(int damage) {
+        public override void GetDamaged(int damage) {
             currentHealth -= damage;
             if(currentHealth <= 0) {Die();}
         }
-        public void GetDamaged(int damage, VisualFXObject vfx) {}
-        public void Die() {throw new System.NotImplementedException();}
+        public override void GetDamaged(int damage, VisualFXObject vfx) {}
+        public override void Die() {throw new System.NotImplementedException();}
 
-        public void ChangeSkin(Material skin) { modelManger.ChangeSkin(skin); }
-        public void RevertSkin() { modelManger.RevertSkin(); }
-        public Animator GetAnimator() { return modelManger.GetAnimator(); }
+        public void ChangeSkin(Material skin) { _modelManger.ChangeSkin(skin).Forget(); }
+        public void RevertSkin() { _modelManger.RevertSkin().Forget(); }
+        public Animator GetAnimator() { return _modelManger.GetAnimator(); }
 
+        public override Stat GetStat(E_NUMERIC_STAT_TYPE numericType){
+            return entityStat.GetStat(numericType);
+        }
+
+        [ContextMenu("Get Stats Info")]
+        public override string GetStatsInfo() => entityStat.GetStatsInfo();
     }    
 }

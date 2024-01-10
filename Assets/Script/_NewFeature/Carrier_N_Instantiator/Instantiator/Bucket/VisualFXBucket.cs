@@ -8,7 +8,7 @@ namespace Sophia.Instantiates
 {
     using Sophia.Entitys;
 
-    public class VisualFXBucket : MonoBehaviour, IInstantiator<VisualFXObject>
+    public class VisualFXBucket : MonoBehaviour
     {
         [SerializeField]  private float _bucketScale = 1f;
 
@@ -23,12 +23,12 @@ namespace Sophia.Instantiates
             OnDestroyHandler = (E_AFFECT_TYPE type) => VisualStacks[type] = null;
         }
         /*기존 코드는 Actiavete의 책임이 있었는데 지금은 그냥 객체 리턴을 하므로 엄연히 활성화 단계는 함수 호출부에서 해야 할것이다*/
-        public VisualFXObject ActivateInstantable(Entity entity, VisualFXObject _instantiable, Vector3 _offset)
+        public VisualFXObject ActivateInstantable(Entity owner, VisualFXObject _instantiable, Vector3 _offset)
         {
             throw new System.NotImplementedException();
         }
 
-        public VisualFXObject ActivateInstantable(Entity entity, VisualFXObject _instantiable)
+        public VisualFXObject ActivateInstantable(Entity owner, VisualFXObject _instantiable)
         {
             VisualFXObject instantiatedVFX = VisualFXObjectPool.Instance.VFXPool[_instantiable.gameObject.name].Get();
             instantiatedVFX.Init(null);
