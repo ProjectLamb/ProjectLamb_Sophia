@@ -1,0 +1,31 @@
+1.0.6
+Assembly 분리
+
+23/5/12
+UI Editor : USS 추가, Editor Inspector 경로로 변경, 자동화 처리 추가
+
+23/5/11
+Custom PP : Post Process (URP) Shader -> Image Effect Shader (URP)로 이름 변경
+
+23/5/10
+UI Editor : 네임스페이스 호환 추가
+
+1.0.5
+UI Editor 묘듈 추가
+
+1.0.4
+클래스 명을 CreateAssetByTemplate으로 변경
+커스텀 포프 템플릿 추가
+
+1.0.3
+포그 셰이딩 셰이더 그래프 Fog를 참고하여 수정
+
+1.0.2
+URP Unlit 포그 기능 디테일하게 추가
+파일 Get GUID 카피 기능 추가
+
+1.0.1
+빌드 에러 사전 예방
+
+1.0.0
+Init

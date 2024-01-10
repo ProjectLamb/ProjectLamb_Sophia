@@ -102,13 +102,6 @@ namespace Sophia.Entitys
 #region Dash
     public FMODAudioSource DashSource;
     
-    [ContextMenu("TEST_MOD_DASHSTATS")]
-    public void TEST_MOD_DASHSTATS() {
-        // 앞으로 아이템을 먹었을때 실행되는 연산이랑 동일하다.
-        DashSkillAbility.MaxStamina.AddCalculator(new StatCalculator(1, E_STAT_CALC_TYPE.Add));
-        DashSkillAbility.MaxStamina.RecalculateStat();
-    }
-    
     public void Dash()
     {
         DashSkillAbility.UseDashSkill(Movement.ForwardingVector, GetStat(E_NUMERIC_STAT_TYPE.MoveSpeed));/*m*/

@@ -78,6 +78,35 @@ namespace Sophia.DataSystem.Numerics
         public int Gear;
         public int Frag;
     }
+    [System.Serializable]
+    public struct SerialModifireDats {
+        public float amount;
+        public E_STAT_CALC_TYPE calType;
+    }
+    
+    [System.Serializable]
+    public struct SerialCalculateDatas
+    {
+        [SerializeField] public SerialModifireDats MaxHp;
+        [SerializeField] public SerialModifireDats Defence;
+        [SerializeField] public SerialModifireDats MoveSpeed;
+        [SerializeField] public SerialModifireDats Accecerate;
+        [SerializeField] public SerialModifireDats Tenacity;
+        [SerializeField] public SerialModifireDats MaxStamina;
+        [SerializeField] public SerialModifireDats StaminaRestoreSpeed;
+        [SerializeField] public SerialModifireDats Luck;
+        [SerializeField] public SerialModifireDats Power;
+        [SerializeField] public SerialModifireDats InstantiableDurateLifeTimeMultiplyRatio;
+        [SerializeField] public SerialModifireDats InstantiableSizeMultiplyRatio;
+        [SerializeField] public SerialModifireDats InstantiableForwardingSpeedMultiplyRatio;
+        [SerializeField] public SerialModifireDats PoolSize;
+        [SerializeField] public SerialModifireDats AttackSpeed;
+        [SerializeField] public SerialModifireDats MeleeRatio;
+        [SerializeField] public SerialModifireDats RangerRatio;
+        [SerializeField] public SerialModifireDats TechRatio;
+        [SerializeField] public SerialModifireDats EfficienceMultiplyer;
+        [SerializeField] public SerialModifireDats CoolDownSpeed;
+    }
 
     public class EntityStatReferer : IStatAccessable
     {

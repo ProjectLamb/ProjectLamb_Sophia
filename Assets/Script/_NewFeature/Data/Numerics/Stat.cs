@@ -6,6 +6,7 @@ using UnityEngine.Events;
 namespace Sophia.DataSystem
 {
     using Numerics;
+    using Modifires;
     [System.Serializable]
     public struct StatData {
         public float BaseValue;
@@ -107,24 +108,38 @@ namespace Sophia.DataSystem
             float Multiplier = 1.0f;
 
             statCalculatorList.ForEach((calc) => {
-                switch(calc.ClacType) {
-                    case E_STAT_CALC_TYPE.Add:  {
-                        Adder += calc.Value;
-                        break;
-                    }
-                    case E_STAT_CALC_TYPE.Mul:  {
-                        Multiplier *= calc.Value;
-                        break;
-                    }
-                }
-                value = (value + Adder) * Multiplier;
+                if(!calc.StatType.Equals(this.NumericType)) throw new System.Exception($"칼큘레이터 타겟 타입과 현재 타겟 타입이 다르다! {calc.StatType.ToString()} != {this.NumericType.ToString()}");
+                CalculateWithUseAndCalcType(this.UseType, calc, ref Adder, ref Multiplier);
             });
+            if(Multiplier <= 0) {Multiplier = 0;}
+            value = value + Adder;
+            value = value * Multiplier;
 
-            if(value <= 1.001f) {value = 1;}
+            if(value <= 0) {value = 0;}
             else {value = (float) Math.Round(value, 3);}
             isDirty = false;
 
             OnStatChanged.Invoke();
+        }
+
+        public void CalculateWithUseAndCalcType(E_STAT_USE_TYPE useType, StatCalculator calc, ref float adder, ref float multiplier) {
+                switch(useType) {
+                    case E_STAT_USE_TYPE.Natural:  {
+                        if(calc.CalcType == E_STAT_CALC_TYPE.Add)        {adder += calc.Value; return;}
+                        else if(calc.CalcType == E_STAT_CALC_TYPE.Mul)   {multiplier += calc.Value; return;}
+                        break;
+                    }
+                    case E_STAT_USE_TYPE.Ratio:  {
+                        if(calc.CalcType == E_STAT_CALC_TYPE.Add)        {adder += calc.Value; return;}
+                        else if(calc.CalcType == E_STAT_CALC_TYPE.Mul)   {multiplier += calc.Value; return;}
+                        break;
+                    }
+                    case E_STAT_USE_TYPE.Percentage:  {
+                        if(calc.CalcType == E_STAT_CALC_TYPE.Add)        {adder += calc.Value; return;}
+                        else if(calc.CalcType == E_STAT_CALC_TYPE.Mul)   {multiplier += calc.Value; return;}
+                        break;
+                    }
+                }
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Sophia.Instantiates
     using Sophia.Entitys;   
     /*변하는 녀석*/
 
-    public class ProjectileObject : MonoBehaviour, IPoolAccesable<ProjectileObject>, IColliderTriggerable
+    public class ProjectileObject : MonoBehaviour, IPoolAccesable<ProjectileObject>
     {
 
 #region Serialize
@@ -52,7 +52,7 @@ namespace Sophia.Instantiates
                     return;
                 }
                 mCurrentDurateTime = value;
-                ProjectileMainModule.duration = mCurrentDurateTime;
+                //ProjectileMainModule.duration = mCurrentDurateTime;
             }
         }
 

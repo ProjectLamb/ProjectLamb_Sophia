@@ -5,11 +5,11 @@ namespace Sophia
     public enum E_STAT_USE_TYPE
     {
         None = 0,
-        Natural = 1, Ratio
+        Natural = 1, Ratio, Percentage
     }
     public enum E_STAT_CALC_TYPE
     {
-        Add, Mul
+        None, Add, Mul
     }
 
 
