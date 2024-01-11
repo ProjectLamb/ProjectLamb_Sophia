@@ -203,7 +203,8 @@ public class Player : Entity {
 
     public void Attack()
     {
-        anim.SetTrigger("DoAttack");
+        if(!anim.GetBool("isFinalAttack"))
+            anim.SetTrigger("DoAttack");
         //Turning(() => weaponManager.weapon.Use(PlayerDataManager.GetEntityData().Power));
     }
     
@@ -246,7 +247,7 @@ public class Player : Entity {
         Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
 
         // 레이캐스트 시작
-        if (Physics.Raycast(camRay, out RaycastHit groundHit, camRayLength, groundMask) && !isAttack) // 공격 도중에는 방향 전환 금지
+        if (Physics.Raycast(camRay, out RaycastHit groundHit, camRayLength, groundMask)) // 공격 도중에는 방향 전환 금지
         {
             StartCoroutine(AsyncTurning(groundHit, _turningCallback));
         }
