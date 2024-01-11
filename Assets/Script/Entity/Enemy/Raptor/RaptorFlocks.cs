@@ -2,9 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RaptorFlocks : MonoBehaviour
+public class RaptorFlocks : Enemy
 {
-    public Stage stage;
     public GameObject smallRaptor;
     public int smallAmount;
     private int index;
@@ -50,8 +49,9 @@ public class RaptorFlocks : MonoBehaviour
 
     public GameObject[] RaptorArray;
     // Start is called before the first frame update
-    void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         smallAmount = Random.Range(1, 6);
         mCurrentAmount = 1;
         HowlCount = mCurrentAmount;
@@ -65,15 +65,6 @@ public class RaptorFlocks : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
-    {
-
-    }
-
-    void DestroySelf()
-    {
-        Destroy(gameObject);
-    }
 
     public void InstantiateSmallRaptor()
     {
