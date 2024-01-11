@@ -33,5 +33,10 @@ public abstract class Node
         child.parentNode = this;
     }
 
+    public void ResetState()
+    {
+        state = NodeState.Failure;
+    }
+
     public abstract NodeState Evaluate();
 }
