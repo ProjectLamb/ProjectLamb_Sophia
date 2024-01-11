@@ -19,7 +19,10 @@ public class BTT_DistanceToTarget : Node
     {
         float dist = Vector3.Distance(transform.position, target.position);
         if (dist <= distance)
+        {
+            transform.GetComponent<Enemy>().nav.enabled = false;
             return NodeState.Success;
+        }
         else
             return NodeState.Failure;
     }
