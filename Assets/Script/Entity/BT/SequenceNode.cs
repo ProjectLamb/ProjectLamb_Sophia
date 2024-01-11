@@ -9,7 +9,11 @@ public class SequenceNode : Node
 
     public override NodeState Evaluate()
     {
-        bool IsNowRunning = false;
+        if (childNode.Count == 0)
+            return state = NodeState.Failure;
+
+        int successCount = 0;
+        //bool IsNowRunning = false;
         foreach(Node n in childNode)
         {
             switch(n.Evaluate())
@@ -17,15 +21,26 @@ public class SequenceNode : Node
                 case NodeState.Failure:
                     return state = NodeState.Failure;
                 case NodeState.Success:
+                    successCount++;
                     continue;
                 case NodeState.Running:
-                    IsNowRunning = true;
-                    continue;
+                    return state = NodeState.Running;
+                    /*IsNowRunning = true;
+                    continue;*/
                 default:
                     continue;
             }
         }
 
-        return state = IsNowRunning ? NodeState.Running : NodeState.Success;
+        if (successCount == childNode.Count)
+        {
+            foreach (Node n in childNode)
+            {
+                n.ResetState();
+            }
+            return state = NodeState.Success;
+        }
+        return state = NodeState.Running;
+        //return state = IsNowRunning ? NodeState.Running : NodeState.Success;
     }
 }

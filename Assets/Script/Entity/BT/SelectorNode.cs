@@ -9,6 +9,9 @@ public class SelectorNode : Node
 
     public override NodeState Evaluate()
     {
+        if (childNode.Count == 0)
+            return state = NodeState.Failure;
+
         foreach(Node n in childNode)
         {
             switch(n.Evaluate())

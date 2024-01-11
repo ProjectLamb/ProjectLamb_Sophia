@@ -12,6 +12,7 @@ public class BTT_EO_Idle : Node
 
     public override NodeState Evaluate()
     {
+        t.GetComponent<ElderOne>().IsLook = false;
         int random = Random.Range(0, 2);
         if (random == 0)
         {
