@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.Events;
+
 public class PlayerDataManager : MonoBehaviour
 {
     [SerializeField] private Player player; 
@@ -14,7 +15,7 @@ public class PlayerDataManager : MonoBehaviour
     private static  MasterData BaseData;
     private static  MasterData FinalData;
 
-    [SerializeField]private EquipmentManager equipmentManager;
+    [SerializeField] private EquipmentManager equipmentManager;
     private void Awake()
     {
         if (player == null) { throw new System.Exception("Player가 null임 인스펙터 확인 ㄱㄱ"); }
