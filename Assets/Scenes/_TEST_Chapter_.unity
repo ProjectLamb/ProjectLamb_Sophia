@@ -2591,6 +2591,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 565647126}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &566887197 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3582862257934125185, guid: a3a30fcae9b7f9c41a5f0b5b5d18c0db,
+    type: 3}
+  m_PrefabInstance: {fileID: 1064337565}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b654df9ac80224ff7bccacd1b632abf9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &612249812
 GameObject:
   m_ObjectHideFlags: 0
@@ -4820,7 +4832,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!136 &1043907847
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -4899,7 +4911,7 @@ Transform:
   m_Children:
   - {fileID: 1239871709}
   m_Father: {fileID: 0}
-  m_RootOrder: 28
+  m_RootOrder: 29
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1043907851
 MonoBehaviour:
@@ -5057,6 +5069,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8014783328490692261, guid: a3a30fcae9b7f9c41a5f0b5b5d18c0db,
+        type: 3}
+      propertyPath: vfxModulator
+      value: 
+      objectReference: {fileID: 566887197}
     - target: {fileID: 8014783329153371274, guid: a3a30fcae9b7f9c41a5f0b5b5d18c0db,
         type: 3}
       propertyPath: m_Name
@@ -5769,7 +5786,7 @@ PrefabInstance:
     - target: {fileID: 6010878358661589267, guid: 0854eb25531ab0047b2cfd966170a735,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6010878358661589270, guid: 0854eb25531ab0047b2cfd966170a735,
         type: 3}
@@ -6914,7 +6931,7 @@ Transform:
   - {fileID: 1088798503}
   - {fileID: 1357871842}
   m_Father: {fileID: 0}
-  m_RootOrder: 27
+  m_RootOrder: 28
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1533964929
 GameObject:
