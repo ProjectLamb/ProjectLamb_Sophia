@@ -55,7 +55,7 @@ public class MoveFasterState : EntityAffector {
 
     IEnumerator VisualActivate(){
         this.targetEntity.visualModulator.InteractByMaterial(skin);
-        this.targetEntity.visualModulator.InteractByVFX(ownerEntity,vfx);
+        this.targetEntity.visualModulator.InteractByVFX(vfx);
         yield return YieldInstructionCache.WaitForSeconds(DurationTime);
         this.targetEntity.visualModulator.RevertByMaterial(this.affectorPackage.affectorType);
         this.targetEntity.visualModulator.RevertByVFX(this.affectorPackage.affectorType);

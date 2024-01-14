@@ -25,7 +25,7 @@ public class VFXBucket : MonoBehaviour {
     
     private void RemoveStateByType(STATE_TYPE _type){ VisualStacks[_type] = null; }
     
-    public void VFXInstantiator(Entity _owner, VFXObject _vfx){
+    public void VFXInstantiator(VFXObject _vfx){
         switch(_vfx.BucketStaking){
             case BUCKET_STACKING_TYPE.NONE_STACK : 
             {
@@ -51,7 +51,7 @@ public class VFXBucket : MonoBehaviour {
             }
         }
     }
-    public GameObject VFXGameObjectInstantiator(Entity _owner, GameObject _obj){
+    public GameObject VFXGameObjectInstantiator(GameObject _obj){
         //재작성하기
         return null;
     }
