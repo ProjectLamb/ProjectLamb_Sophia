@@ -35,6 +35,7 @@ public class BTT_EO_Attack : Node
                     break;
             }
             //Debug.Log(transform.GetComponent<BehaviorTree>().blackBoard.intDict["AttackCount"]);
+            transform.GetComponent<BehaviorTree>().blackBoard.intDict["AttackCount"] += 1;
             state = NodeState.Running;
         }
         
@@ -42,7 +43,6 @@ public class BTT_EO_Attack : Node
             return state = NodeState.Running;
         else
         {
-            transform.GetComponent<BehaviorTree>().blackBoard.intDict["AttackCount"] += 1;
             return state = NodeState.Success;
         }
     }
