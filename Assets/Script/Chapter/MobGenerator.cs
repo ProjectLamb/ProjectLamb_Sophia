@@ -38,7 +38,16 @@ public class MobGenerator : MonoBehaviour
             instance = Instantiate(Mobs[randomValue], new Vector3(stage.stageGenerator.tileGameObjectArray[i, j].transform.position.x, Mobs[randomValue].transform.localScale.y, stage.stageGenerator.tileGameObjectArray[i, j].transform.position.z), Quaternion.identity);
             mobArray.Add(instance);
             instance.transform.parent = transform.GetChild(4);
-            instance.GetComponent<Enemy>().stage = stage;
+
+            switch (randomValue)
+            {
+                case (int)Enemy_TYPE.Enemy_Template:
+                    instance.GetComponent<Enemy>().stage = stage;
+                    break;
+                case (int)Enemy_TYPE.Raptor:
+                    instance.GetComponent<RaptorFlocks>().stage = stage;
+                    break;
+            }
             amount--;
         }
     }
