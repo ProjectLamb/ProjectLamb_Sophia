@@ -41,7 +41,8 @@ public class Weapon : MonoBehaviour
         }
     }
     
-    private void UseNormal(int _amount){
+    private void UseNormal(int _amount)
+    {
         if (isInitialized == false) { throw new System.Exception("무기가 초기화 되지 않음 WeaponManager에서 weapon.Initialize(Entity _owner); 했는지 확인"); }
         if (!IsReady) return;
         PlayerDataManager.GetEntityData().AttackState.Invoke();
