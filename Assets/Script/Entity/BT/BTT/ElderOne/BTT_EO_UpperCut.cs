@@ -17,8 +17,8 @@ public class BTT_EO_UpperCut : Node
         transform.GetComponent<Enemy>().animator.ResetTrigger("DoAttackRight");
         transform.GetComponent<Enemy>().animator.ResetTrigger("DoAttackBoth");
 
-        transform.GetComponent<BehaviorTree>().blackBoard.intDict["AttackCount"] = 0;
         transform.GetComponent<Enemy>().animator.SetTrigger("DoAttackUpperCut");
+        transform.GetComponent<BehaviorTree>().blackBoard.intDict["AttackCount"] = 0;
         return state = NodeState.Success;
     }
 }

@@ -16,13 +16,13 @@ public class BTT_EO_Idle : Node
         int random = Random.Range(0, 2);
         if (random == 0)
         {
-            t.GetComponent<ElderOne>().animator.SetBool("IsIdle3", false);
-            t.GetComponent<ElderOne>().animator.SetBool("IsIdle2", true);
+            t.GetComponent<ElderOne>().animator.ResetTrigger("DoIdle3");
+            t.GetComponent<ElderOne>().animator.SetTrigger("DoIdle2");
         }
         else
         {
-            t.GetComponent<ElderOne>().animator.SetBool("IsIdle2", false);
-            t.GetComponent<ElderOne>().animator.SetBool("IsIdle3", true);
+            t.GetComponent<ElderOne>().animator.ResetTrigger("DoIdle2");
+            t.GetComponent<ElderOne>().animator.SetTrigger("DoIdle3");
         }
 
         return NodeState.Success;

@@ -14,7 +14,7 @@ public abstract class BehaviorTree : MonoBehaviour
     }
 
     // Update is called once per frame
-    protected void Update()
+    protected void FixedUpdate()
     {
         if (rootNode == null)
             return;

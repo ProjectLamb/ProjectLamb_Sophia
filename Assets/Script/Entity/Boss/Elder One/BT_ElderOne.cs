@@ -17,14 +17,14 @@ public class BT_ElderOne : BehaviorTree
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        base.Update();
+        base.FixedUpdate();
     }
 
     protected override Node SetupBehaviorTree()
     {
-        Node root = new SelectorNode(new List<Node>
+        Node root = new SelectorNode(new List<Node> //Root Selector
         {
             new SequenceNode(new List<Node> //대상이 감지되었는지
             {
@@ -39,12 +39,31 @@ public class BT_ElderOne : BehaviorTree
                             new SequenceNode(new List<Node>
                             {
                                 new BTT_CheckInt(transform, "AttackCount", 3),
-                                new SelectorNode(new List<Node> //스킬 셀렉터
+                                new SelectorNode(new List<Node> //스킬 Selector
                                 {
                                     new SequenceNode(new List<Node>
                                     {
-                                        new BTT_CheckBool(transform, "Phase"),
-                                        //new BTT_AttackPhase2
+                                        new BTT_CheckBool(transform, "Phase"),  //페이즈2
+                                        new SelectorNode(new List<Node>
+                                        {
+/*                                            new SequenceNode(new List<Node>
+                                            {
+                                                new BTT_CheckBool(transform, "PhaseSkill"),
+                                                new BTT_EO_MoveOff(transform),
+                                                new BTT_TurnToTarget(transform, elderOne.objectiveTarget, 1),
+                                                //new BTT_EO_AttackCharge(transform),
+                                            }),*/
+
+                                            new SequenceNode(new List<Node> //내려찍기
+                                            {
+                                                new BTT_EO_AttackWalkCharge(transform),
+                                                new BTT_TurnToTarget(transform, elderOne.objectiveTarget, 0.75f),
+                                                new BTT_EO_MoveTo(transform, elderOne.objectiveTarget),
+                                                new BTT_EO_AttackWalk(transform),
+                                                new BTT_EO_MoveOff(transform),
+                                                new BTT_EO_AttackWalkEnd(transform),
+                                            })
+                                        })
                                     }),
 
 
@@ -62,9 +81,9 @@ public class BT_ElderOne : BehaviorTree
                                 new SequenceNode(new List<Node> //페이즈2 평타
                                 {
                                     new BTT_CheckBool(transform, "Phase"),
-/*                                    new BTT_EO_MoveOff(transform),
-                                    new BTT_TurnToTarget(transform, elderOne.objectiveTarget, 2),
-                                    new BTT_EO_Attack2(),*/
+                                    new BTT_EO_MoveOff(transform),
+                                    new BTT_TurnToTarget(transform, elderOne.objectiveTarget, 0.75f),
+                                    new BTT_EO_Attack2(transform),
                                 }),
 
                                 new SequenceNode(new List<Node> //페이즈1 평타
@@ -79,6 +98,7 @@ public class BT_ElderOne : BehaviorTree
 
                     new SequenceNode(new List<Node> //추격 시퀀스
                     {
+                        new BTT_EO_ResetAnimParam(transform),
                         new BTT_TurnToTarget(transform, elderOne.objectiveTarget, 2),
                         new BTT_MoveTo(transform, elderOne.objectiveTarget),
                     })
@@ -99,7 +119,8 @@ public class BT_ElderOne : BehaviorTree
         BlackBoard bb = new BlackBoard();
         bb.boolDict.Add("HasTarget", false);
         bb.boolDict.Add("Phase", false);
-        bb.floatDict.Add("Distance", elderOne.range);
+        bb.boolDict.Add("PhaseSkill", false);
+        bb.floatDict.Add("Distance", elderOne.attackRange);
         bb.intDict.Add("AttackCount", 0);
 
         return bb;
