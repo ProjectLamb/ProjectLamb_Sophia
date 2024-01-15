@@ -75,12 +75,12 @@ public class Player : Entity {
     private Quaternion              mRotate;
     private bool                    mIsBorder;
     private bool                    mIsDashed;
-    private bool                    mIsDie;
 
+    public bool                    mIsDie;
     public  bool                    isAttack; // 일반 공격(1,2,3타) 여부
     public  bool                    isThrAttack; // 세번째 공격 여부
     public  bool                    canExitAttack; // 공격 중 탈출가능시점
-    public  bool                    attackTrigger;
+    public  bool                    attackTrigger; // idle 상태 시작 시 선입력되어있는 attack 트리거 제거위한 변수
     public  bool                    attackProTime; // 공격 이펙트 출현시점
     [HideInInspector] Animator anim;
 
@@ -113,6 +113,7 @@ public class Player : Entity {
         DamageCalculatePipeline(ref _amount);
         CurrentHealth -= _amount;
         PlayerDataManager.GetEntityData().HitState.Invoke();
+        anim.SetTrigger("GetDamaged");
         if(CurrentHealth <= 0) {Die();}
     }
 
@@ -137,8 +138,11 @@ public class Player : Entity {
         }
     }
 
-
-    public override void Die(){Debug.Log("죽었다는 로직 작성하기");}
+    public override void Die(){
+        Debug.Log("체력 없음!");
+        anim.SetTrigger("Die");
+        mIsDie = true;
+        }
 
     public void OnMove(InputValue value) // new input system 사용
     {
