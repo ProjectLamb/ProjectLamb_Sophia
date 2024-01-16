@@ -8,8 +8,6 @@ using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using FMODPlus;
 
-using Schema;
-
 using Component = UnityEngine.Component;
 using Random = UnityEngine.Random;
 
