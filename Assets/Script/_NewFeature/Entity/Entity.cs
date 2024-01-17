@@ -29,13 +29,24 @@ namespace Sophia.Entitys
 
 #endregion
 
-#region Stat Accessable
+#region Data Accessable
 
         public abstract Stat GetStat(E_NUMERIC_STAT_TYPE numericType);
+        
+        /***
+        이거.. 내가 하면서도 제대로 하는건지 모르겠네
+        제네릭 타입을 런타임에 정해줘서 반환이 가능하다는건가?? 
+        이게 가능하다고? 흠..
+        */
+        public abstract Extras<T> GetExtras<T>(E_FUNCTIONAL_EXTRAS_TYPE functionalType);
 
         [ContextMenu("Get Stats Info")]
         public abstract string GetStatsInfo();
 
+#endregion
+
+#region Affector Accessable
+        public abstract AffectorComposite GetAffectorComposite();
 #endregion
     }
 }

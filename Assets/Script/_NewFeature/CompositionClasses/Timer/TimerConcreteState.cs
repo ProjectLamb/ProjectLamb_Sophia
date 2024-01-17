@@ -38,13 +38,10 @@ namespace Sophia.Composite.Timer
         {
             owner.StateType = E_TIMER_STATE.Start;
             owner.OnStart?.Invoke();
+            owner.ChangeState(TimerRunning.Instance);
         }
 
-        public void Execute(TimerComposite owner)
-        {
-            owner.ChangeState(TimerRunning.Instance);
-            return;
-        }
+        public void Execute(TimerComposite owner) { return; }
 
         public void Exit(TimerComposite owner) {return;}
     }

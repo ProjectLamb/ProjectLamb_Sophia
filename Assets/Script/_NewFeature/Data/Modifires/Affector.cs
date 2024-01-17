@@ -9,33 +9,30 @@ namespace Sophia.DataSystem
     using Sophia.Entitys;
     using Sophia.Instantiates;
 
+    /*
+    이것도 객체 풀을 할 수는 없나?
+    게임 오브젝트 뿐만 아니라 말이자..
+    */
+
     namespace Affector {
         public abstract class Affector {
             public readonly E_AFFECT_TYPE AffectType;
             public float BaseDurateTime;
             public Entity targetEntity;
             public Entity ownerEntity;
-            private CancellationTokenSource cancel = new CancellationTokenSource();
+   
     /*비주얼 데이터*/
             
             public Material material;
             public VisualFXObject visualFx;
 
-            public Affector(E_AFFECT_TYPE affectType) {
+            public Affector(E_AFFECT_TYPE affectType, Entity ownerReceivers, Entity targetReceivers) {
                 this.AffectType = affectType;
+                this.ownerEntity = ownerReceivers;
+                this.targetEntity = targetReceivers;
             }
 
     #region Setter
-
-            public Affector SetOwner(Entity ownerReceivers){
-                this.ownerEntity = ownerReceivers;
-                return this;
-            }
-
-            public Affector SetTarget(Entity targetReceivers){
-                this.targetEntity = targetReceivers;
-                return this;
-            }
 
             public Affector SetDurateTime(float time) {
                 this.BaseDurateTime = time;
@@ -54,10 +51,9 @@ namespace Sophia.DataSystem
 
     #endregion
 
-            public abstract UniTask Modifiy();
-
-            public abstract UniTask Revert();
-
+            public abstract void Modifiy();
+            public abstract void TickRunning();
+            public abstract void Revert();
 
     #region Helper
             public float CalcDurateTime() {
@@ -70,64 +66,67 @@ namespace Sophia.DataSystem
 
     namespace ConcreteAffectors {
         using Affector;
+        using Sophia.Composite.Timer;
+
         /*
-        public class BurnAffect : Affector {
-            private CancellationTokenSource cancel = new CancellationTokenSource();
-            public float TickDamageRatio;
-            public float TickDamage;
-            
-            public BurnAffect() : base(E_AFFECT_TYPE.Burn){
-                TickDamage = CalcTickDamage();
-            }
+public class BurnAffect : Affector {
+private CancellationTokenSource cancel = new CancellationTokenSource();
+public float TickDamageRatio;
+public float TickDamage;
 
-            public BurnAffect SetTickDamageRatio(float Ratio){
-                this.TickDamageRatio = Ratio;
-                return this;
-            }
+public BurnAffect() : base(E_AFFECT_TYPE.Burn){
+TickDamage = CalcTickDamage();
+}
 
-            
-            // Updator로 해결해도 되지 않나?
-            
-            public override async UniTask Modifiy()
-            {
-                await UniTask.Yield(PlayerLoopTiming.LastUpdate);
-                BurnVisualOn();
-                while(!cancel.Token.IsCancellationRequested){
-                    BurnDamage();
-                    await UniTask.Delay(500, cancellationToken : cancel.Token);
-                }
-            }
+public BurnAffect SetTickDamageRatio(float Ratio){
+this.TickDamageRatio = Ratio;
+return this;
+}
 
-            public override async UniTask Revert()
-            {
-                cancel.Cancel();
-                await UniTask.Yield(PlayerLoopTiming.LastUpdate);
-                BurnVisualOff();
-            }
 
-            public void BurnDamage() => targetEntity.GetDamaged((int)TickDamage);
+// Updator로 해결해도 되지 않나?
 
-            public void BurnVisualOn() {
-                // this.targetEntity.Model..
-                //this.targetEntity.visualModulator.InteractByVFX( vfx);
-            }
-            public void BurnVisualOff() {
+public override async UniTask Modifiy()
+{
+await UniTask.Yield(PlayerLoopTiming.LastUpdate);
+BurnVisualOn();
+while(!cancel.Token.IsCancellationRequested){
+BurnDamage();
+await UniTask.Delay(500, cancellationToken : cancel.Token);
+}
+}
 
-            }
-    #region Helper
-            public float CalcTickDamage() {
-                return TickDamageRatio * this.ownerEntity.StatReferer.GetStat(E_NUMERIC_STAT_TYPE.Power);
-            }
-    #endregion
-        }
-        */
-        public class PoisonedAffect : Affector, IUpdatable {
+public override async UniTask Revert()
+{
+cancel.Cancel();
+await UniTask.Yield(PlayerLoopTiming.LastUpdate);
+BurnVisualOff();
+}
+
+public void BurnDamage() => targetEntity.GetDamaged((int)TickDamage);
+
+public void BurnVisualOn() {
+// this.targetEntity.Model..
+//this.targetEntity.visualModulator.InteractByVFX( vfx);
+}
+public void BurnVisualOff() {
+
+}
+#region Helper
+public float CalcTickDamage() {
+return TickDamageRatio * this.ownerEntity.StatReferer.GetStat(E_NUMERIC_STAT_TYPE.Power);
+}
+#endregion
+}
+*/
+        public class PoisonedAffect : Affector {
         
             public float IntervalTime;
             public float TickDamageRatio;
             private float TickDamage;
+            public TimerComposite Timer;
             
-            public PoisonedAffect() : base(E_AFFECT_TYPE.Poisoned){
+            public PoisonedAffect(Entity ownerReceivers , Entity targetReceivers)  : base(E_AFFECT_TYPE.Poisoned, ownerReceivers, targetReceivers){
                 TickDamage = CalcTickDamage();
             }
 
@@ -135,27 +134,42 @@ namespace Sophia.DataSystem
                 this.TickDamageRatio = Ratio;
                 return this;
             }
+            public PoisonedAffect SetTickDamage(float damage){
+                this.TickDamage = damage;
+                return this;
+            }
 
             public PoisonedAffect SetIntervalTime(float Interval) {
                 IntervalTime = Interval;
                 return this;
             }
-
+            
             /*
             Updator로 해결해도 되지 않나?
             */
-            public override async UniTask Modifiy()
+            public override void Modifiy()
             {
-                await UniTask.Yield(PlayerLoopTiming.LastUpdate);
+                Timer = new TimerComposite(CalcDurateTime(), IntervalTime);
+//                Timer.OnStart += PoisonedVisualOn;
+//                Timer.OnFinished += PoisonedVisualOff;
+                Timer.OnInterval += PoisonedDamage;
+                Timer.WhenLoopable += () => false;
+
+                Timer.SetStart();
             }
 
-            public override async UniTask Revert()
+            public override void TickRunning() {
+                Timer.Execute();
+            }
+
+            public override void Revert()
             {
-                await UniTask.Yield(PlayerLoopTiming.LastUpdate);
+                Timer.Pause();
+                Timer.ChangeState(TimerEnd.Instance);
+                Timer = null; // 가비지에게 삭제 맡김
             }
 
             public void PoisonedDamage() => targetEntity.GetDamaged((int)TickDamage);
-            
             public void PoisonedVisualOn() {throw new System.NotImplementedException();}
             public void PoisonedVisualOff() {throw new System.NotImplementedException();}
 
@@ -163,26 +177,11 @@ namespace Sophia.DataSystem
             public float CalcTickDamage() {
                 return TickDamageRatio * this.ownerEntity.GetStat(E_NUMERIC_STAT_TYPE.Power);
             }
-
-            public void LateTick()
-            {
-                throw new NotImplementedException();
-            }
-
-            public void FrameTick()
-            {
-                throw new NotImplementedException();
-            }
-
-            public void PhysicsTick()
-            {
-                throw new NotImplementedException();
-            }
             #endregion
 
         }
     }
-
+    /*
     namespace AffectInvoker {
         using Affector;
 
@@ -205,4 +204,5 @@ namespace Sophia.DataSystem
             }
         }
     }
+    */
 }

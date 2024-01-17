@@ -25,7 +25,7 @@ using UnityEngine;
             }
         }
 
-        private void OnTriggerEnter(Collider other) {
+        protected virtual void OnTriggerEnter(Collider other) {
             if(other.TryGetComponent<Sophia.Entitys.Player>(out Sophia.Entitys.Player player)) {
                 foreach(var modifires in calculators) {
                     Stat stetRef = player.GetStat(modifires.Key);
@@ -35,7 +35,6 @@ using UnityEngine;
                 }
                 Destroy(this.gameObject);
             }
-
         }
 
         public SerialModifireDats GetValueByNumericType(E_NUMERIC_STAT_TYPE numericType)

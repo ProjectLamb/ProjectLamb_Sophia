@@ -3,15 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.Events;
 
+
 namespace Sophia.DataSystem
 {
     using Numerics;
     using Modifires;
-    [System.Serializable]
-    public struct StatData {
-        public float BaseValue;
-        public E_STAT_USE_TYPE UseType;
-    }
 
     public class Stat
     {
@@ -37,6 +33,7 @@ namespace Sophia.DataSystem
 
         public Stat(float baseValue, E_NUMERIC_STAT_TYPE numericType, E_STAT_USE_TYPE useType) : this(baseValue, numericType,useType, null){}
 
+#region Getter
 
         public static implicit operator int(Stat stat)
         {
@@ -79,6 +76,8 @@ namespace Sophia.DataSystem
             RecalculateStat();
             return value;
         }
+
+#endregion
 
         public void AddCalculator(StatCalculator StatCalculator)
         {
