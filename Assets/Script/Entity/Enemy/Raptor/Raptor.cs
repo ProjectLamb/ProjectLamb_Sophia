@@ -20,6 +20,7 @@ public class Raptor : Enemy
     // protected EntityData FinalData;
 
     public Projectile[] AttackProjectiles;
+    public AudioClip[] audioClips;
     public bool IsSmallRaptor;
     Collider collider;
 
@@ -66,6 +67,7 @@ public class Raptor : Enemy
     }
     public override void Die()
     {
+        //Die.AudioClip.Play
         animator.SetTrigger("DoDie");
         transform.parent.GetComponent<RaptorFlocks>().CurrentAmount--;
         base.Die();
@@ -87,6 +89,7 @@ public class Raptor : Enemy
 
     public void DoHowl()
     {
+        //Buff.AudioClip.Play
         animator.SetBool("IsHowl", true);
         if (!IsFirstRecog || transform.parent.GetComponent<RaptorFlocks>().CurrentAmount == 1)
             transform.parent.GetComponent<RaptorFlocks>().InstantiateSmallRaptor();
@@ -98,12 +101,14 @@ public class Raptor : Enemy
 
     public void DoDamage()
     {
+        //Attack.AudioClip.Play
         //캐리어 소환하는 방식으로 딜하기
         GameManager.Instance.PlayerGameObject.GetComponent<Player>().GetDamaged(FinalData.Power);
     }
 
     void DoWandering()
     {
+        //StandBy.AudioClip.Play
         float range = GetComponent<FieldOfView>().viewRadius;
         Vector3 randomDirection = UnityEngine.Random.insideUnitSphere * range;
 
@@ -223,8 +228,9 @@ public class Raptor : Enemy
                 isRecog = true;
                 IsWandering = false;
                 IsWalk = false;
-                if (!IsFirstRecog)
+                if (!IsFirstRecog)  //once
                 {
+                    //Contact.AudioClip.Play
                     CancelInvoke();
                     Freeze();
                     nav.enabled = false;
@@ -254,6 +260,7 @@ public class Raptor : Enemy
                 if (currentTimer >= wanderingTime)
                 {
                     Invoke("DoWandering", Random.Range(3, 6));
+                    animator.SetBool("IsWalk", false);
                     IsWandering = false;
                 }
             }
