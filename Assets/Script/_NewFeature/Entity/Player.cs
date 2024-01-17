@@ -9,6 +9,7 @@ namespace Sophia.Entitys
     using Sophia.Composite;
     using Sophia.DataSystem;
     using Sophia.DataSystem.Numerics;
+    using Sophia.DataSystem.Functional;
     using Sophia.Instantiates;
     public class Player : Entity, IModelAccessable {
 
@@ -27,8 +28,10 @@ namespace Sophia.Entitys
 //      [HideInInspector] public Rigidbody entityRigidbody;
 
         public PlayerStatReferer    StatReferer         {get; private set;}
+        public PlayerExtrasReferer  ExtrasReferer         {get; private set;}
         public LifeComposite        Life                {get; private set;}
         public MovementComposite    Movement            {get; private set;}
+        public AffectorComposite    AffectHandler            {get; private set;}
         public DashSkill            DashSkillAbility    {get; private set;}
         public Stat                 Power               {get; private set;}
         
@@ -57,7 +60,7 @@ namespace Sophia.Entitys
 
 #endregion
 
-#region Stat Accessable
+#region Data Accessable
 
         public override Stat GetStat(E_NUMERIC_STAT_TYPE numericType) => StatReferer.GetStat(numericType);
 
@@ -67,6 +70,13 @@ namespace Sophia.Entitys
             Debug.Log(this.StatReferer.GetStatsInfo());
             return this.StatReferer.GetStatsInfo();
         }
+        
+         /***
+        이거.. 내가 하면서도 제대로 하는건지 모르겠네
+        제네릭 타입을 런타임에 정해줘서 반환이 가능하다는건가?? 
+        이게 가능하다고? 흠..
+        */
+        public override Extras<T> GetExtras<T>(E_FUNCTIONAL_EXTRAS_TYPE functionalType) => ExtrasReferer.GetExtras<T>(functionalType);
 
 #endregion
 
@@ -118,6 +128,7 @@ namespace Sophia.Entitys
             TryGetComponent<Rigidbody>(out entityRigidbody);
         
             StatReferer         = new PlayerStatReferer();
+            ExtrasReferer       = new PlayerExtrasReferer();
             Life                = new LifeComposite(_basePlayerData.MaxHp, _basePlayerData.Defence);
             Movement            = new MovementComposite(entityRigidbody, _basePlayerData.MoveSpeed);
             DashSkillAbility    = new DashSkill(this.entityRigidbody);
@@ -126,6 +137,7 @@ namespace Sophia.Entitys
                                             E_STAT_USE_TYPE.Natural,
                                             OnPowerUpdated
                                         );
+
         }
         public void OnPowerUpdated() {throw new System.NotImplementedException();}
         private void Start(){
@@ -146,8 +158,12 @@ namespace Sophia.Entitys
            StatReferer.SetRefStat(_weaponManager.MeleeRatio);
 
            DashSkillAbility.SetAudioSource(DashSource);
+        
+           ExtrasReferer.OnAffected = new Extras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.Affected, ()=>{Debug.Log("Affect Extras Changed");});
         }
         public void Attack() { _weaponManager.GetCurrentWeapon().Use(this); }
         public void Skill() {throw new System.NotImplementedException();}
+
+        public override AffectorComposite GetAffectorComposite() => this.AffectHandler;
     }    
 }

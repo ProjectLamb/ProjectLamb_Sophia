@@ -7,6 +7,7 @@ namespace Sophia
         None = 0,
         Natural = 1, Ratio, Percentage
     }
+
     public enum E_STAT_CALC_TYPE
     {
         None, Add, Mul
@@ -24,14 +25,6 @@ namespace Sophia
         PoolSize = 31, MeleeRatio, RangerRatio, TechRatio,
 
         EfficienceMultiplyer = 41, CoolDownSpeed
-    }
-    public enum E_FUNCTIONAL_ACTION_MEMBERS
-    {
-        Move = 0, Damaged, Attack, Affected, Dead, Standing, PhyiscTriggered, Skill,
-
-        Created = 10, Triggerd, Released, Forwarding,
-        WeaponUse = 20, ProjectileRestore,
-        SkillUse = 30, SkillRefilled
     }
 
     public interface IStatAccessable {
