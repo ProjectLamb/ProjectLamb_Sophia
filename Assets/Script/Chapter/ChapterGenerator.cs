@@ -465,7 +465,7 @@ public class ChapterGenerator : MonoBehaviour
             if (LoadingStage >= stageAmount)
             {
                 loadingTimer += Time.deltaTime;
-                Debug.Log("챕터 로딩 완료");
+                //Debug.Log("챕터 로딩 완료");
                 if (loadingTimer >= waitingTime)
                 {
                     IsLoading = true;
