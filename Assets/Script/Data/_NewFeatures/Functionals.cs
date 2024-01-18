@@ -1,7 +1,4 @@
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor.ShaderGraph;
-using UnityEngine.Events;
 
 namespace Feature_NewData
 {
