@@ -33,7 +33,8 @@ public class FieldOfView : MonoBehaviour
 
     void FindVisibleTargets()
     {
-        visibleTargets.Clear();
+        //visibleTargets.Clear();
+        IsRecog = false;
         // viewRadius를 반지름으로 한 원 영역 내 targetMask 레이어인 콜라이더를 모두 가져옴
         Collider[] targetsInViewRadius = Physics.OverlapSphere(transform.position, viewRadius, targetMask);
 
@@ -52,7 +53,7 @@ public class FieldOfView : MonoBehaviour
                 {
                     //visibleTargets.Add(target);
                     IsRecog = true;
-                }
+                }                   
             }
         }
     }
