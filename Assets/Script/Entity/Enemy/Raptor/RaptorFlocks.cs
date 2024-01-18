@@ -37,9 +37,9 @@ public class RaptorFlocks : MonoBehaviour
         set
         {
             mAttackCount = value;
-            if(mAttackCount == HowlCount)
+            if (mAttackCount == HowlCount)
             {
-                if(RaptorArray[0] != null)
+                if (RaptorArray[0] != null)
                 {
                     RaptorArray[0].GetComponent<Raptor>().DoHowl();
                 }
