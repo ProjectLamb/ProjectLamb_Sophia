@@ -168,7 +168,7 @@ public class Player : Entity {
                 transform.rotation = Quaternion.Slerp(transform.rotation,mRotate, 0.6f);
                 
             }
-            PlayerDataManager.GetEntityData().MoveState.Invoke();
+            PlayerDataManager.GetEntityData().MoveState?.Invoke();
         }
     } 
     public FMODAudioSource DashSource;

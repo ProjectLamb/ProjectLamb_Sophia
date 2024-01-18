@@ -5632,7 +5632,7 @@ PrefabInstance:
     - target: {fileID: 6010878358661589267, guid: 0854eb25531ab0047b2cfd966170a735,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6010878358661589270, guid: 0854eb25531ab0047b2cfd966170a735,
         type: 3}
@@ -9357,6 +9357,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -31.270056
       objectReference: {fileID: 0}
+    - target: {fileID: 798622062742287787, guid: a3a048346748045c495e2b68987129b9,
+        type: 3}
+      propertyPath: weapon
+      value: 
+      objectReference: {fileID: -4150925659948734363, guid: 84c10858375d44e56be639e7e301bc2d,
+        type: 3}
     - target: {fileID: 798622062752446226, guid: a3a048346748045c495e2b68987129b9,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -9581,6 +9587,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: -59.23251
+      objectReference: {fileID: 0}
+    - target: {fileID: 2335794154668531362, guid: a3a048346748045c495e2b68987129b9,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 2541079617907123575, guid: a3a048346748045c495e2b68987129b9,
         type: 3}
