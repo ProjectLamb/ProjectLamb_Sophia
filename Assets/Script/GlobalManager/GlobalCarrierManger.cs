@@ -9,6 +9,7 @@ public class GlobalCarrierManger : MonoBehaviour
     public List<ItemGear> GearList;
     public List<ItemSkill> SkillList;
     public ItemHeart itemHeart;
+    
     void Awake()
     {
         EquipmentList ??= new List<ItemEquipment>();
