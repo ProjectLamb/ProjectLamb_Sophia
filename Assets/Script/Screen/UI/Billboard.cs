@@ -9,20 +9,13 @@ public class Billboard : MonoBehaviour
     private Canvas canvas;
     
     private void Awake() {
-        if(!TryGetComponent<Canvas>(out canvas)) {
-            throw new System.Exception("캔버스 못찾음 ... 현재 위치에 캔버스가 없으면 그럴 수 있다.");
-        }
+        TryGetComponent<Canvas>(out canvas);
     }
     
     private void Start()
     {
-        if(canvas != null) {
-            mainCam = Camera.main.transform;
-            canvas.worldCamera = Camera.main;
-        }
-        else {
-
-        }
+        if(canvas != null) canvas.worldCamera = Camera.main;
+        mainCam = Camera.main.transform;
     }
 
     private void Update() {
