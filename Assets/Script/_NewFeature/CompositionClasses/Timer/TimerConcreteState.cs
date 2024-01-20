@@ -82,7 +82,7 @@ namespace Sophia.Composite.Timer
             owner.StateType = E_TIMER_STATE.End;
             owner.OnFinished?.Invoke();
             
-            if (owner.WhenLoopable())
+            if (owner.WhenRewindable())
             {
                 owner.PassedTime = 0;
                 owner.NextInterval = 0f;

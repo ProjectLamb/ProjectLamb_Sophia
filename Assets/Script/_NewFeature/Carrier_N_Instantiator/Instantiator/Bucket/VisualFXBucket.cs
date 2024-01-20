@@ -77,12 +77,12 @@ namespace Sophia.Instantiates
         }
 
 
-        public Quaternion GetForwardingAngle(Quaternion instantiatorQuaternion)
+        private Quaternion GetForwardingAngle(Quaternion instantiatorQuaternion)
         {
             return Quaternion.Euler(transform.eulerAngles + instantiatorQuaternion.eulerAngles);
         }
 
-        public Transform GetTransformParent(Transform instantiatorTransform)
+        private Transform GetTransformParent(Transform instantiatorTransform)
         {
             instantiatorTransform.SetParent(this.transform);
             return instantiatorTransform;

@@ -54,7 +54,7 @@ namespace Sophia.Composite.Timer
         public UnityAction OnInterval = null;
         public UnityAction<float> OnTicking = null;
         public UnityAction OnFinished = null;
-        public Func<bool>  WhenLoopable = null;
+        public Func<bool>  WhenRewindable = null;
 
         public void ClearEvents()
         {
@@ -107,7 +107,7 @@ namespace Sophia.Composite.Timer
 
         #endregion
 
-#region State
+        #region State
 
         private IState<TimerComposite> currentState = null;
 
@@ -124,10 +124,17 @@ namespace Sophia.Composite.Timer
 
         public void SetInitialize() => ChangeState(TimerInitialize.Instance);
         public void SetStart() => ChangeState(TimerStart.Instance);
-
         public void Pause() => IsBlocked = true;
         public void Continue() => IsBlocked = false;
 
-#endregion
+        #endregion
     }
 }
+
+/*
+timer.Pause()
+timer.Resume()
+timer.GetTimeRemaining()
+timer.GetRatioComplete()
+timer.isDone
+*/

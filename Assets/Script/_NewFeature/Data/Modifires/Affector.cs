@@ -153,7 +153,7 @@ return TickDamageRatio * this.ownerEntity.StatReferer.GetStat(E_NUMERIC_STAT_TYP
 //                Timer.OnStart += PoisonedVisualOn;
 //                Timer.OnFinished += PoisonedVisualOff;
                 Timer.OnInterval += PoisonedDamage;
-                Timer.WhenLoopable += () => false;
+                Timer.WhenRewindable += () => false;
 
                 Timer.SetStart();
             }
