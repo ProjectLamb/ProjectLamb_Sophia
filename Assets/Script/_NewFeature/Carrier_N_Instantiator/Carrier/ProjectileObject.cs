@@ -18,7 +18,6 @@ namespace Sophia.Instantiates
         [SerializeField] private E_AFFECT_TYPE _affectType = E_AFFECT_TYPE.None;
         [SerializeField] private E_INSTANTIATE_STACKING_TYPE _stackingType = E_INSTANTIATE_STACKING_TYPE.Stack;
         [SerializeField] private E_INSTANTIATE_POSITION_TYPE _positioningType = E_INSTANTIATE_POSITION_TYPE.Outer;
-
         [SerializeField] public int    _baseProjectileDamage = 1;
         [SerializeField] private float _baseDurateTime = 5f; //파티클 기본 지속 시간
         [SerializeField] private float _baseSize = 1f;
@@ -114,6 +113,14 @@ namespace Sophia.Instantiates
             gameObject.SetActive(false);
             return;
         }
+        
+        public void SetPoolEvents(UnityAction activated, UnityAction deActivated, UnityAction release)
+        {
+            OnActivated     = activated;
+            OnDeActivated   = deActivated;
+            OnRelease       = release;
+        }
+
 
 #endregion
 
@@ -209,24 +216,9 @@ namespace Sophia.Instantiates
 
 #region Event
         
-        private UnityAction OnActivated;
-        public ProjectileObject AddOnActivatedEvent(UnityAction action)
-        {
-            OnActivated += action;
-            return this;
-        }
-        private UnityAction OnDeActivated;
-        public ProjectileObject AddOnDeActivatedEvent(UnityAction action)
-        {
-            OnDeActivated += action;
-            return this;
-        }
-        private UnityAction OnRelease;
-        public ProjectileObject AddOnReleaseEvent(UnityAction action)
-        {
-            OnRelease += action;
-            return this;
-        }
+        public event UnityAction OnActivated;
+        public event UnityAction OnDeActivated;
+        public event UnityAction OnRelease;
 
         public event UnityAction OnProjectileCreated = null;
         public ProjectileObject SetOnProjectileCreatedEvent(UnityAction action)

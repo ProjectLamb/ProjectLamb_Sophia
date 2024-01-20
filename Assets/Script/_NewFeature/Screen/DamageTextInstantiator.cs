@@ -27,7 +27,7 @@ public class DamageTextInstantiator : MonoBehaviour
 
     private void Start() {
         LifeCompositeRef ??= GetComponentInParent<ILifeAccessable>().GetLifeComposite();
-        LifeCompositeRef.AddOnDamageEvent(Generate);
+        LifeCompositeRef.OnDamaged += Generate;
     }
 
     public void Generate(float _damageAmount)
