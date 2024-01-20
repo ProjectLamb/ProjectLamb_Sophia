@@ -10,6 +10,6 @@ public class PlayerUI : MonoBehaviour {
         player.ScriptablePD.HitState += ChangeHPUI;
     }
     public void ChangeHPUI(){
-        hpBar.value = ((float)player.CurrentHealth / (float)player.GetFinalData().MaxHP * hpBar.maxValue);
+//        hpBar.value = ((float)player.CurrentHealth / (float)player.GetFinalData().MaxHP * hpBar.maxValue);
     }
 }
