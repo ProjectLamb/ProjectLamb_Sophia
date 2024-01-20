@@ -18,7 +18,7 @@ public class Equipment_009 : AbstractEquipment { //, IPlayerDataApplicant{
     //public UnityAction UpdateState;
     //public bool mIsInitialized = false;
 
-    private UnityActionRef<int> HitState;
+    private UnityActionRef<float> HitState;
     public DodgeState dodgeState;
     public Player player;
     private void Awake() {
@@ -26,7 +26,7 @@ public class Equipment_009 : AbstractEquipment { //, IPlayerDataApplicant{
     }
     public override void InitEquipment( int _selectIndex)
     {
-        HitState += (ref int _amount) => {Dodged(ref _amount);};
+        HitState += (ref float _amount) => {Dodged(ref _amount);};
         equipmentName = "조명탄";
         if(_selectIndex == 0) {
             this.AddingData.playerData.EntityDatas.HitStateRef += HitState;
@@ -34,9 +34,9 @@ public class Equipment_009 : AbstractEquipment { //, IPlayerDataApplicant{
         this.mIsInitialized = true;
     }
 
-    //디버프를 얘가 만든다면?
+    //디버프를 얘가 만든다면?f
 
-    public void Dodged(ref int amount) {
+    public void Dodged(ref float amount) {
         int Luck = 5 + PlayerDataManager.GetPlayerData().Luck + PlayerDataManager.GetPlayerData().Luck;
         if(Luck >= (int)Random.Range(0, 100)){ 
             dodgeState.Dodge(ref amount);

@@ -31,7 +31,7 @@ public class DodgeState : EntityAffector{
         return Instance;
     }
 
-    public void Dodge(ref int _amount){
+    public void Dodge(ref float _amount){
         _amount = 0;
     }
     

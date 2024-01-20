@@ -1,9 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Feature_NewData;
+
 using UnityEngine;
 using UnityEngine.Events;
+using Sophia.DataSystem.Modifires;
 
 public class Equipment_018 : AbstractEquipment {
     //public string equipmentName;
@@ -22,7 +23,7 @@ public class Equipment_018 : AbstractEquipment {
         equipmentName = "만화책";
 
         if(_selectIndex == 0) {
-            MasterData.MaxStaminaReferer.AddCalculator(new StatCalculator(1, E_STAT_CALC_TYPE.Add));
+            MasterData.MaxStaminaReferer.AddCalculator(new StatCalculator(1, Sophia.E_STAT_CALC_TYPE.Add, Sophia.E_NUMERIC_STAT_TYPE.MaxStamina));
             MasterData.MaxStaminaReferer.RecalculateStat();
         }
         this.mIsInitialized = true;
