@@ -24,9 +24,9 @@ public struct EntityData
     public float        AttackSpeed;
     public UnityAction  MoveState;
     public UnityAction  AttackState;
-    public UnityActionRef<int> AttackStateRef;
+    public UnityActionRef<float> AttackStateRef;
     public UnityAction  HitState;
-    public UnityActionRef<int> HitStateRef;
+    public UnityActionRef<float> HitStateRef;
     public UnityAction<Entity, Entity> ProjectileShootState;
     public UnityAction  PhyiscTriggerState;
     public UnityAction  DieState;

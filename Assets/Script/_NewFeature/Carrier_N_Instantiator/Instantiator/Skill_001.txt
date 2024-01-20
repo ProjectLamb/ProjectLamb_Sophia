@@ -1,0 +1,123 @@
+
+public class Skill_001 : MonoBehaviour, ISkillStatAccessable{
+    private Player playerRef;
+    
+    public int MaxPoolSize;
+    public int bucketSize;
+    public SKILL_RANK skillRank;
+
+    private List<IObjectPool<ProjectileObject>> ProjectilePoolQ;
+    private IObjectPool<ProjectileObject> ProjectilePoolE;
+    private IObjectPool<ProjectileObject> ProjectilePoolR;
+
+    private List<ProjectileObject>     creatableProjectileQ;
+    private ProjectileObject           creatableProjectileE;
+    private ProjectileObject           creatableProjectileR;
+
+    private int createQIndex = 0;
+    private int currentProjectileIndex = 0;
+
+
+    public readonly List<float> DamageRatioQByRank = new List<float>{1.0f, 1.5f, 2.0f};
+    public readonly List<float> DamageRatioEByRank = new List<float>{0.8f ,1.0f ,1.5f};
+    public readonly List<float> DamageRatioRByRank = new List<float>{1.0f, 1.5f, 2.0f};
+
+    public Vector3     positionBeforeR;
+
+    private Stat SkillEfficienceMultiplyer;
+    public Stat GetEfficienceMultiplyer() { return this.SkillEfficienceMultiplyer;}
+
+    private void Awake() {
+        SkillEfficienceMultiplyer = new Stat(1,E_NUMERIC_STAT_TYPE.EfficienceMultiplyer, E_STAT_USE_TYPE.Ratio);
+        ProjectilePoolQ = new List<IObjectPool<ProjectileObject>>(creatableProjectileQ.Count);
+    }
+
+    private void OnEnable() {
+        while(createQIndex < creatableProjectileQ.Count) {
+            ProjectilePoolQ[createQIndex] = new ObjectPool<ProjectileObject> (
+                () =>  {
+                    ProjectileObject concreteProjectile = Instantiate(creatableProjectileQ[createQIndex]);
+                    concreteProjectile.SetPool(ProjectilePoolQ[createQIndex]);
+                    return concreteProjectile;
+                },
+                (ProjectileObject projectile) => {
+                    projectile.SetProjectileSize(bucketSize);
+                    projectile.SetForwardingAngle(this.transform.rotation);
+                    projectile.SetDamage(CalculateDamage(SKILL_KEY.Q, skillRank));
+                    projectile.gameObject.SetActive(true); 
+                },
+                ReleaseProjectile,
+                DestroyProjectile,
+                maxSize:MaxPoolSize
+            );
+            createQIndex++;
+        }
+
+        ProjectilePoolE = new ObjectPool<ProjectileObject>(
+            () => {
+                ProjectileObject concreteProjectile = Instantiate(creatableProjectileE);
+                concreteProjectile.SetPool(ProjectilePoolE);
+                return concreteProjectile;
+            },
+            (ProjectileObject projectile) => {
+                projectile.SetProjectileSize(bucketSize);
+                projectile.SetForwardingAngle(this.transform.rotation);
+                projectile.SetDamage(CalculateDamage(SKILL_KEY.E, skillRank));
+                projectile.gameObject.SetActive(true); 
+            },
+            ReleaseProjectile,
+            DestroyProjectile,
+            maxSize:MaxPoolSize
+        );
+
+        ProjectilePoolR = new ObjectPool<ProjectileObject>(
+            () => {
+                ProjectileObject concreteProjectile = Instantiate(creatableProjectileR);
+                concreteProjectile.SetPool(ProjectilePoolR);
+                return concreteProjectile;
+            },
+            (ProjectileObject projectile) => {
+                projectile.SetProjectileSize(bucketSize);
+                projectile.SetForwardingAngle(this.transform.rotation);
+                projectile.SetDamage(CalculateDamage(SKILL_KEY.R, skillRank));
+                projectile.gameObject.SetActive(true); 
+            },
+            ReleaseProjectile,
+            DestroyProjectile,
+            maxSize:MaxPoolSize
+        );
+    }
+
+    private int CalculateDamage(SKILL_KEY key ,SKILL_RANK rank)
+    {
+        float resByKey = -1;
+        switch (key)
+        {
+            case SKILL_KEY.Q: {resByKey = DamageRatioQByRank[(int)rank]; break;}
+            case SKILL_KEY.E: {resByKey = DamageRatioEByRank[(int)rank]; break;}
+            case SKILL_KEY.R: {resByKey = DamageRatioRByRank[(int)rank]; break;}
+        }
+        resByKey *= playerRef.GetStat(E_NUMERIC_STAT_TYPE.Power) * playerRef.GetStat(E_NUMERIC_STAT_TYPE.MeleeRatio);
+        return (int)resByKey;
+    }
+
+    public void SetPlayer(Player player) { playerRef = player; }
+    
+    public void UseQ(){
+        var projectile = ProjectilePoolQ[currentProjectileIndex++ % createQIndex].Get();
+    }
+    public void UseE(){
+        var projectile = ProjectilePoolE.Get();
+    }
+    public void UseR(){
+        var projectile = ProjectilePoolR.Get();
+    }
+
+    private void ReleaseProjectile(ProjectileObject projectile) {
+        projectile.gameObject.SetActive(false);   
+    }
+
+    private void DestroyProjectile(ProjectileObject projectile) {
+        Destroy(projectile.gameObject);
+    }
+}

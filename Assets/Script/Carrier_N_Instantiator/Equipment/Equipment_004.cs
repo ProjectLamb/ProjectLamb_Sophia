@@ -18,12 +18,12 @@ public class Equipment_004 : AbstractEquipment { //, IPlayerDataApplicant{
     //public bool mIsInitialized = false;
     public  DefenceState defenceState;
 
-    private UnityActionRef<int> HitStateRef;
+    private UnityActionRef<float> HitStateRef;
     private UnityAction<Entity, Entity> Projectile;
     public override void InitEquipment( int _selectIndex)
     {
         equipmentName = "디지털 파편 조각";
-        HitStateRef += (ref int i) => {Defence(ref i);};
+        HitStateRef += (ref float i) => {Defence(ref i);};
         Projectile += (Entity _owner, Entity _target) => {Defence(_owner, _target);};
 
         if(_selectIndex == 0) {
@@ -34,7 +34,7 @@ public class Equipment_004 : AbstractEquipment { //, IPlayerDataApplicant{
         this.mIsInitialized = true;
     }
 
-    public void Defence(ref int _amount) {
+    public void Defence(ref float _amount) {
         defenceState.Defence(ref _amount);
     }
 
