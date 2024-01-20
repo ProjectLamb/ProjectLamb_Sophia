@@ -86,10 +86,12 @@ public class Player : Entity {
         isAttack = false;
         isThrAttack = false;
 
-        DashSkillAbility = new Sophia.Composite.DashSkill(entityRigidbody);
+        DashSkillAbility = new Sophia.Composite.DashSkill(entityRigidbody, DashDataSender);
         DashSkillAbility.SetAudioSource(DashSource);
         MasterData.MaxStaminaInject(DashSkillAbility.MaxStamina);
     }
+
+
 
 #region 
     public override void GetDamaged(int _amount){
@@ -187,8 +189,10 @@ public class Player : Entity {
     
     public void Dash()
     {
-        DashSkillAbility.UseDashSkill(mMoveVec, (int)PlayerDataManager.GetEntityData().MoveSpeed);/*m*/ /*StatSpeed*/
+        DashSkillAbility.Use();/*m*/ /*StatSpeed*/
     }
+
+    public (Vector3, int) DashDataSender() => (mMoveVec, (int)PlayerDataManager.GetEntityData().MoveSpeed);
 
 #endregion
 
