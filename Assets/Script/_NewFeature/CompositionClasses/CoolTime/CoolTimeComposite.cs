@@ -7,6 +7,7 @@ namespace Sophia.Composite
 {
     using Timer;
     using Stacks;
+    using System;
 
     public class CoolTimeComposite
     {
@@ -20,8 +21,9 @@ namespace Sophia.Composite
         {
             timer = new TimerComposite(baseTime, intervalTime);
             stackCounter = new StackCounterComposite(stackAmount);
-            timer.OnFinished += RestoreStack;
-            timer.WhenRewindable += GetIsELoopable;
+            
+            timer.OnFinished += stackCounter.RestoreStack;
+            timer.WhenRewindable += GetIsRewind;
         }
 
         public CoolTimeComposite(float baseTime, int stackAmount) : this(baseTime, -1, stackAmount) { }
@@ -32,7 +34,7 @@ namespace Sophia.Composite
 
         public float GetProgressAmount() => timer.GetProgressAmount();
         public bool GetIsReadyToUse() => stackCounter.GetIsReadyToUse();
-        public bool GetIsELoopable() => stackCounter.CurrentStacksCount < stackCounter.BaseStacksCount;
+        public bool GetIsRewind() => stackCounter.GetIsUsedOnce();
 
         #endregion
 
@@ -73,6 +75,10 @@ namespace Sophia.Composite
         #endregion
 
         #region Event
+        public CoolTimeComposite AddBindingAction(UnityAction action) {
+            stackCounter.OnUseAction += action;
+            return this;
+        }
         public CoolTimeComposite AddOnInitialized(UnityAction action)
         {
             timer.OnInitialized += action;
@@ -118,26 +124,17 @@ namespace Sophia.Composite
 
         #endregion
 
-        public void ActionStart(UnityAction action)
+        public void ActionStart()
         {
             if (!GetIsReadyToUse()) { return; }
-            action?.Invoke();
+            stackCounter.UseStack();
             timer.SetStart();
             timer.Execute();
-            stackCounter.UseStack();
         }
 
         public void TickRunning()
         {
             timer.Execute();
-        }
-
-        public void RestoreStack()
-        {
-            if (stackCounter.CurrentStacksCount < stackCounter.BaseStacksCount)
-            {
-                stackCounter.CurrentStacksCount++;
-            }
         }
     }
 }

@@ -56,13 +56,23 @@ namespace Sophia.Composite.Stacks
 
         #endregion
 
-        public bool GetIsReadyToUse() { return (CurrentStacksCount <= 0) ? false : true; }
+        public bool GetIsReadyToUse() => (CurrentStacksCount == 0) ? false : true;
+        public bool GetIsUsedOnce() => (CurrentStacksCount < BaseStacksCount) ? true : false;
         public void ResetStacks() => CurrentStacksCount = BaseStacksCount;
 
         public void UseStack()
         {
-            CurrentStacksCount--;
-            OnUseAction.Invoke();
+            if (GetIsReadyToUse()){
+                CurrentStacksCount--;
+                OnUseAction.Invoke();
+            }
+        }
+        public void RestoreStack()
+        {
+            if (GetIsUsedOnce())
+            {
+                CurrentStacksCount++;
+            }
         }
     }
 }
