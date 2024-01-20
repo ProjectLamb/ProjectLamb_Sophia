@@ -58,23 +58,15 @@ public class Enemy : Entity
 
     public override void GetDamaged(int _amount)
     {
-        if (isDie == true) { return; }
-        GameManager.Instance.GlobalEvent.OnEnemyHitEvent.ForEach(E => E.Invoke());
-        FinalData.HitStateRef.Invoke(ref _amount);
-        imageGenerator.GenerateImage(_amount);
-        CurrentHealth -= _amount;
-        if (CurrentHealth <= 0) { this.Die(); }
+        if (Life.IsDie == true) { return; }
+        Life.Damaged(_amount);
     }
 
     public override void GetDamaged(int _amount, VFXObject _vfx)
     {
-        if (isDie == true) { return; }
-        GameManager.Instance.GlobalEvent.OnEnemyHitEvent.ForEach(E => E.Invoke());
-        FinalData.HitStateRef.Invoke(ref _amount);
-        imageGenerator.GenerateImage(_amount);
-        CurrentHealth -= _amount;
+        if (Life.IsDie == true) { return; }
+        Life.Damaged(_amount);
         visualModulator.InteractByVFX(_vfx);
-        if (CurrentHealth <= 0) { this.Die(); }
     }
 
     public void DestroySelf()
@@ -117,7 +109,7 @@ public class Enemy : Entity
 
         BaseEnemyData = new EntityData(ScriptableED);
         FinalData = BaseEnemyData;
-        CurrentHealth = FinalData.MaxHP;
+        Life = new Sophia.Composite.LifeComposite(FinalData.MaxHP);
 
         isRecog = false;
         objectiveTarget = GameManager.Instance?.PlayerGameObject?.transform;
