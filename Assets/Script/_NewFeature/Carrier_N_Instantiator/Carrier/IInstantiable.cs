@@ -5,6 +5,8 @@ using UnityEngine.Pool;
 namespace Sophia.Instantiates
 {
     using Sophia.Entitys;
+    using UnityEngine.Events;
+
     // T : 캐리어 이거나, 프로젝타일 이거나, VFXObject
     // U : Entity이거나 Carrier이거나 
     public enum E_INSTANTIATE_STACKING_TYPE
@@ -21,6 +23,7 @@ namespace Sophia.Instantiates
         public void SetByPool(IObjectPool<T> pool);
         public void GetByPool();
         public void ReleaseByPool();
+        public void SetPoolEvents(UnityAction activated, UnityAction deActivated, UnityAction release);
     }
 
     public interface IColliderTriggerable {

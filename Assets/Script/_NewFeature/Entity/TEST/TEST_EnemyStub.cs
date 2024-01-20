@@ -25,12 +25,6 @@ namespace Sophia.Entitys
         public LifeComposite Life { get; private set; }
         public EntityStatReferer StatReferer { get; private set; }
         public EntityExtrasReferer ExtrasReferer { get; private set; }
-
-        public override Extras<T> GetExtras<T>(E_FUNCTIONAL_EXTRAS_TYPE functionalType)
-        {
-            return ExtrasReferer.GetExtras<T>(functionalType);
-        }
-        
         public AffectorComposite affectorComposite {get; private set;}
 
         public override AffectorComposite GetAffectorComposite() => this.affectorComposite;
@@ -72,6 +66,11 @@ namespace Sophia.Entitys
             Debug.Log(this.StatReferer.GetStatsInfo());
             return this.StatReferer.GetStatsInfo();
         }
+
+
+        public override EntityStatReferer GetStatReferer() => StatReferer;
+
+        public override EntityExtrasReferer GetExtrasReferer() => ExtrasReferer;
 
         #endregion
 

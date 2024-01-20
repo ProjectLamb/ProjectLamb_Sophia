@@ -61,7 +61,7 @@ namespace Sophia.Entitys
 #endregion
 
 #region Data Accessable
-
+        public override EntityStatReferer GetStatReferer() => StatReferer;
         public override Stat GetStat(E_NUMERIC_STAT_TYPE numericType) => StatReferer.GetStat(numericType);
 
         [ContextMenu("Get Stats Info")]
@@ -70,14 +70,8 @@ namespace Sophia.Entitys
             Debug.Log(this.StatReferer.GetStatsInfo());
             return this.StatReferer.GetStatsInfo();
         }
-        
-         /***
-        이거.. 내가 하면서도 제대로 하는건지 모르겠네
-        제네릭 타입을 런타임에 정해줘서 반환이 가능하다는건가?? 
-        이게 가능하다고? 흠..
-        */
-        public override Extras<T> GetExtras<T>(E_FUNCTIONAL_EXTRAS_TYPE functionalType) => ExtrasReferer.GetExtras<T>(functionalType);
 
+        public override EntityExtrasReferer GetExtrasReferer() => ExtrasReferer;
 #endregion
 
 #region Model Accessable
@@ -128,7 +122,7 @@ namespace Sophia.Entitys
             ExtrasReferer       = new PlayerExtrasReferer();
             Life                = new LifeComposite(_basePlayerData.MaxHp, _basePlayerData.Defence);
             Movement            = new MovementComposite(entityRigidbody, _basePlayerData.MoveSpeed);
-            DashSkillAbility    = new DashSkill(this.entityRigidbody, Movement. GetMovemenCompositetData);
+            DashSkillAbility    = new DashSkill(this.entityRigidbody, Movement.GetMovemenCompositetData);
             Power               = new Stat(_basePlayerData.Power,
                                             E_NUMERIC_STAT_TYPE.Power,
                                             E_STAT_USE_TYPE.Natural,
@@ -162,5 +156,6 @@ namespace Sophia.Entitys
         public void Skill() {throw new System.NotImplementedException();}
 
         public override AffectorComposite GetAffectorComposite() => this.AffectHandler;
+
     }    
 }

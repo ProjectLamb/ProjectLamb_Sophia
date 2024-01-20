@@ -22,8 +22,9 @@ namespace Sophia.Composite
             timer = new TimerComposite(baseTime, intervalTime);
             stackCounter = new StackCounterComposite(stackAmount);
             
-            timer.OnFinished += stackCounter.RestoreStack;
             timer.WhenRewindable += GetIsRewind;
+            timer.OnFinished += stackCounter.RestoreStack;
+            
         }
 
         public CoolTimeComposite(float baseTime, int stackAmount) : this(baseTime, -1, stackAmount) { }
@@ -297,46 +298,12 @@ namespace Sophia.Legacy
 
         #region Event
 
-        private event UnityAction OnStartCooldown = null;
-        public CoolTimeComposite AddOnStartCooldownEvent(UnityAction action)
-        {
-            OnStartCooldown += action;
-            return this;
-        }
-
-        private event UnityAction OnUseAction = null;
-        public CoolTimeComposite AddOnUseEvent(UnityAction action)
-        {
-            OnUseAction += action;
-            return this;
-        }
-
-        private event UnityAction<float> OnTicking = null;
-        public CoolTimeComposite AddOnTickingEvent(UnityAction<float> action)
-        {
-            OnTicking += action;
-            return this;
-        }
-        private event UnityAction OnInterval = null;
-        public CoolTimeComposite AddOnIntervalEvent(UnityAction action)
-        {
-            OnInterval += action;
-            return this;
-        }
-
-        private event UnityAction OnFinished = null;
-        public CoolTimeComposite AddOnFinishedEvent(UnityAction action)
-        {
-            OnFinished += action;
-            return this;
-        }
-
-        private event UnityAction OnInitialized = null;
-        public CoolTimeComposite AddOnInitialized(UnityAction action)
-        {
-            OnInitialized += action;
-            return this;
-        }
+        public event UnityAction OnStartCooldown = null;
+        public event UnityAction OnUseAction = null;
+        public event UnityAction<float> OnTicking = null;
+        public event UnityAction OnInterval = null;
+        public event UnityAction OnFinished = null;
+        public event UnityAction OnInitialized = null;
 
         public void ClearEvents()
         {
