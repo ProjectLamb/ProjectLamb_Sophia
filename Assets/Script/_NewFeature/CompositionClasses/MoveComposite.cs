@@ -54,6 +54,8 @@ namespace Sophia.Composite
         public bool IsBorder(Transform transform) {
             return Physics.Raycast(transform.position, ForwardingVector.normalized, 2, WallMask);
         }
+
+        public (Vector3, int) GetMovemenCompositetData() => (GetForwardingVector(), MoveSpeed);
     
     #endregion
 

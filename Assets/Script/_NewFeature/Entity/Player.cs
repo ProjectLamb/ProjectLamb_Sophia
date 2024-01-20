@@ -112,10 +112,7 @@ namespace Sophia.Entitys
 #region Dash
     public FMODAudioSource DashSource;
     
-    public void Dash()
-    {
-        DashSkillAbility.UseDashSkill(Movement.ForwardingVector, GetStat(E_NUMERIC_STAT_TYPE.MoveSpeed));/*m*/
-    }
+    public void Dash() => DashSkillAbility.Use();/*m*/
 
 #endregion
 
@@ -131,7 +128,7 @@ namespace Sophia.Entitys
             ExtrasReferer       = new PlayerExtrasReferer();
             Life                = new LifeComposite(_basePlayerData.MaxHp, _basePlayerData.Defence);
             Movement            = new MovementComposite(entityRigidbody, _basePlayerData.MoveSpeed);
-            DashSkillAbility    = new DashSkill(this.entityRigidbody);
+            DashSkillAbility    = new DashSkill(this.entityRigidbody, Movement. GetMovemenCompositetData);
             Power               = new Stat(_basePlayerData.Power,
                                             E_NUMERIC_STAT_TYPE.Power,
                                             E_STAT_USE_TYPE.Natural,
