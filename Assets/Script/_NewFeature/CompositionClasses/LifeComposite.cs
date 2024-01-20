@@ -101,63 +101,16 @@ namespace Sophia.Composite
 
 #region Setter 
         
-#endregion
 
-#region Event Adder
-
-        protected UnityAction<float> OnHpUpdated = null;
-        public LifeComposite AddOnUpdateEvent(UnityAction<float> action) {
-            this.OnHpUpdated += action;
-            return this;
-        }
-
-        protected UnityAction<float> OnBarrierUpdated = null;
-        public LifeComposite AddOnBarrierUpdateEvent(UnityAction<float> action) {
-            this.OnBarrierUpdated += action;
-            return this;
-        }
-        
-        protected UnityAction<float> OnDamaged = null;
-        public LifeComposite AddOnDamageEvent(UnityAction<float> action) {
-            this.OnDamaged += action;
-            return this;
-        }         
-        
-        protected UnityAction<float> OnHeal = null;
-        public LifeComposite AddOnHealEvent(UnityAction<float> action) {
-            this.OnHeal += action;
-            return this;
-        } 
-        
-        protected UnityAction OnEnterDie = null;
-        public LifeComposite AddOnEnterDieEvent(UnityAction action) {
-            this.OnEnterDie += action;
-            return this;
-        } 
-
-        protected UnityAction OnExitDie = null;
-        public LifeComposite AddOnExitDieEvent(UnityAction action) {
-            this.OnExitDie += action;
-            return this;
-        } 
-
-        protected UnityAction<float> OnBarrier = null;
-        public LifeComposite AddOnBarrierEvent(UnityAction<float> action) {
-            this.OnBarrier += action;
-            return this;
-        } 
-
-        protected UnityAction OnBreakBarrier = null;
-        public LifeComposite AddOnBreakBarrierEvent(UnityAction action) {
-            this.OnBreakBarrier += action;
-            return this;
-        } 
-
-        protected UnityActionRef<float> OnHit = null;
-        public LifeComposite AddOnHitEvent(UnityActionRef<float> actionRef) {
-            this.OnHit += actionRef;
-            return this;
-        }
+        public event UnityAction<float>     OnHpUpdated = null;
+        public event UnityAction<float>     OnBarrierUpdated = null;
+        public event UnityAction<float>     OnDamaged = null;
+        public event UnityAction<float>     OnHeal = null;
+        public event UnityAction            OnEnterDie = null;
+        public event UnityAction            OnExitDie = null;
+        public event UnityAction<float>     OnBarrier = null;
+        public event UnityAction            OnBreakBarrier = null;
+        public event UnityActionRef<float>  OnHit = null;
 
         public void ClearEvents() {
             OnHpUpdated     = null;

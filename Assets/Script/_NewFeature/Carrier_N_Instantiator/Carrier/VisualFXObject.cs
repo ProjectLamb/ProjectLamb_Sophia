@@ -90,6 +90,13 @@ namespace Sophia.Instantiates
             return;
         }
 
+        public void SetPoolEvents(UnityAction activated, UnityAction deActivated, UnityAction release)
+        {
+            OnActivated     = activated;
+            OnDeActivated   = deActivated;
+            OnRelease       = release;
+        }
+
 #endregion
 
         private void Awake()
@@ -179,24 +186,9 @@ namespace Sophia.Instantiates
 
 #region Event Adder
 
-        private UnityAction OnActivated;
-        public VisualFXObject AddOnActivatedEvent(UnityAction action)
-        {
-            OnActivated += action;
-            return this;
-        }
-        private UnityAction OnDeActivated;
-        public VisualFXObject AddOnDeActivatedEvent(UnityAction action)
-        {
-            OnDeActivated += action;
-            return this;
-        }
-        private UnityAction OnRelease;
-        public VisualFXObject AddOnReleaseEvent(UnityAction action)
-        {
-            OnRelease += action;
-            return this;
-        }
+        public event UnityAction OnActivated;
+        public event UnityAction OnDeActivated;
+        public event UnityAction OnRelease;
 
         public void ClearEvents()
         {

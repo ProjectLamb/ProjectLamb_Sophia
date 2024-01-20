@@ -13,18 +13,18 @@ namespace Sophia.Composite.Timer
         private static TimerInitialize _instance = new TimerInitialize();
         public static TimerInitialize Instance => _instance;
 
-        public void Enter(TimerComposite owner)
+        public void Enter(TimerComposite timer)
         {
-            owner.StateType = E_TIMER_STATE.Initialized;
-            owner.PassedTime = owner.BaseTime;
-            owner.NextInterval = 0f;
-            owner.OnInitialized?.Invoke();
+            timer.StateType = E_TIMER_STATE.Initialized;
+            timer.PassedTime = timer.BaseTime;
+            timer.NextInterval = 0f;
+            timer.InvoekInitializedAction();
         }
 
-        public void Execute(TimerComposite owner) {return;}
+        public void Execute(TimerComposite timer) {return;}
 
-        public void Exit(TimerComposite owner) { 
-            owner.PassedTime = 0;
+        public void Exit(TimerComposite timer) { 
+            timer.PassedTime = 0;
             return; 
         }
     }
@@ -34,16 +34,16 @@ namespace Sophia.Composite.Timer
         private static TimerStart _instance = new TimerStart();
         public static TimerStart Instance => _instance;
 
-        public void Enter(TimerComposite owner)
+        public void Enter(TimerComposite timer)
         {
-            owner.StateType = E_TIMER_STATE.Start;
-            owner.OnStart?.Invoke();
-            owner.ChangeState(TimerRunning.Instance);
+            timer.StateType = E_TIMER_STATE.Start;
+            timer.InvokeStartAction();
+            timer.ChangeState(TimerRunning.Instance);
         }
 
-        public void Execute(TimerComposite owner) { return; }
+        public void Execute(TimerComposite timer) { return; }
 
-        public void Exit(TimerComposite owner) {return;}
+        public void Exit(TimerComposite timer) {return;}
     }
 
     public class TimerRunning : IState<TimerComposite>
@@ -51,24 +51,24 @@ namespace Sophia.Composite.Timer
         private static TimerRunning _instance = new TimerRunning();
         public static TimerRunning Instance => _instance;
 
-        public void Enter(TimerComposite owner)
+        public void Enter(TimerComposite timer)
         {
-            owner.StateType = E_TIMER_STATE.Timer;
+            timer.StateType = E_TIMER_STATE.Timer;
         }
 
-        public void Execute(TimerComposite owner)
+        public void Execute(TimerComposite timer)
         {
-            if (owner.PassedTime >= owner.BaseTime) { owner.ChangeState(TimerEnd.Instance); return; } // ChangeState(TimerEnd)
-            if (owner.IntervalTime > 0.01f && owner.PassedTime >= owner.NextInterval)
+            if (timer.PassedTime >= timer.BaseTime) { timer.ChangeState(TimerEnd.Instance); return; } // ChangeState(TimerEnd)
+            if (timer.IntervalTime > 0.01f && timer.PassedTime >= timer.NextInterval)
             {
-                owner.NextInterval += owner.IntervalTime;
-                owner.OnInterval?.Invoke();
+                timer.NextInterval += timer.IntervalTime;
+                timer.InvokeIntervalAction();
             }
-            owner.OnTicking.Invoke(owner.GetProgressAmount());
-            owner.PassedTime += owner.IsBlocked ? 0f : Time.deltaTime * owner.accelerationAmount;
+            timer.InvokeTickingAction(timer.GetProgressAmount());
+            timer.PassedTime += timer.IsBlocked ? 0f : Time.deltaTime * timer.accelerationAmount;
         }
 
-        public void Exit(TimerComposite owner) { return; }
+        public void Exit(TimerComposite timer) { return; }
     }
 
     public class TimerEnd : IState<TimerComposite>
@@ -76,40 +76,40 @@ namespace Sophia.Composite.Timer
         private static TimerEnd _instance = new TimerEnd();
         public static TimerEnd Instance => _instance;
 
-        public void Enter(TimerComposite owner)
+        public void Enter(TimerComposite timer)
         {
-            owner.PassedTime = owner.BaseTime;
-            owner.StateType = E_TIMER_STATE.End;
-            owner.OnFinished?.Invoke();
+            timer.PassedTime = timer.BaseTime;
+            timer.StateType = E_TIMER_STATE.End;
+            timer.InvokeFinishedAction();
             
-            if (owner.WhenRewindable())
+            if (timer.GetIsRewindable())
             {
-                owner.PassedTime = 0;
-                owner.NextInterval = 0f;
-                owner.ChangeState(TimerStart.Instance);
+                timer.PassedTime = 0;
+                timer.NextInterval = 0f;
+                timer.ChangeState(TimerStart.Instance);
             }
             else
             {
-                owner.ChangeState(TimerInitialize.Instance);
+                timer.ChangeState(TimerInitialize.Instance);
             }
         }
 
-        public void Execute(TimerComposite owner) { return; }
+        public void Execute(TimerComposite timer) { return; }
 
-        public void Exit(TimerComposite owner) { return; }
+        public void Exit(TimerComposite timer) { return; }
     }
 
     public class TimerExit : IState<TimerComposite>
     {
         private static TimerExit _instance = new TimerExit();
         public static TimerExit Instance => _instance;
-        public void Enter(TimerComposite owner)
+        public void Enter(TimerComposite timer)
         {
-            owner.StateType = E_TIMER_STATE.Terminate;
+            timer.StateType = E_TIMER_STATE.Terminate;
         }
 
-        public void Execute(TimerComposite owner) { return; }
+        public void Execute(TimerComposite timer) { return; }
 
-        public void Exit(TimerComposite owner) { return; }
+        public void Exit(TimerComposite timer) { return; }
     }
 }
