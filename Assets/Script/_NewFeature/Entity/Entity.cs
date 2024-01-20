@@ -22,7 +22,6 @@ namespace Sophia.Entitys
 
 #region Life Accessable
         public abstract LifeComposite GetLifeComposite();
-
         public abstract void GetDamaged(int damage);
         public abstract void GetDamaged(int damage, VisualFXObject vfx);
         public abstract void Die();
