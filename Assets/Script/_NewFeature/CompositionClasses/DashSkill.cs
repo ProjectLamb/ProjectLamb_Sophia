@@ -1,6 +1,10 @@
 using UnityEngine;
 using FMODPlus;
 using Sophia.DataSystem;
+using System.Numerics;
+using System;
+
+using Vector3 = UnityEngine.Vector3;
 
 namespace Sophia.Composite
 {
@@ -16,8 +20,9 @@ namespace Sophia.Composite
         public Stat StaminaRestoreSpeed {get; private set;}
         public Sophia.Composite.CoolTimeComposite Timer {get; private set;}
         public DashCoolUI DashUI {get; private set;}
+        public Func<(Vector3, int)> BindMovementData;
 
-        public DashSkill(Rigidbody rb){
+        public DashSkill(Rigidbody rb, Func<(Vector3, int)> movementDataSender){
             rigidbodyRef = rb;
             MaxStamina = new Stat(3,
                 E_NUMERIC_STAT_TYPE.MaxStamina, 
@@ -29,9 +34,12 @@ namespace Sophia.Composite
                 E_STAT_USE_TYPE.Ratio, 
                 OnStaminaRestoreSpeedUpdated
             );
+
+            BindMovementData = movementDataSender;
             
             Timer = new Sophia.Composite.CoolTimeComposite(3f, MaxStamina.GetValueByNature())
-                .SetAcceleratrion(StaminaRestoreSpeed);
+                .SetAcceleratrion(StaminaRestoreSpeed)
+                .AddBindingAction(Dash);
             
             DashUI = GameObject.FindObjectOfType<DashCoolUI>();
             DashUI.SetTimer(Timer);
@@ -75,14 +83,17 @@ namespace Sophia.Composite
             DashUI.ResetUI();
         }
 
-        public void UseDashSkill(Vector3 moveVec, int moveSpeed) {
-            Debug.Log(moveSpeed);
-            if( !GetIsDashState(moveSpeed) && rigidbodyRef.velocity.magnitude > 0.01f &&Timer.GetIsReadyToUse() ){
-                DashSource.Play();
-                Vector3 dashPower = SetDashPower(moveVec, moveSpeed);
-                Timer.ActionStart( () => {
-                    this.rigidbodyRef.AddForce(dashPower, ForceMode.VelocityChange);
-                });
+        private void Dash() {
+            (Vector3 moveVec, int moveSpeed) data = this.BindMovementData.Invoke();
+            Vector3 dashPower = SetDashPower(data.moveVec, data.moveSpeed);
+            this.rigidbodyRef.AddForce(dashPower, ForceMode.VelocityChange);
+            DashSource.Play();
+        }
+
+        public void Use() {
+            (Vector3 moveVec, int moveSpeed) data = this.BindMovementData.Invoke();
+            if(!GetIsDashState(data.moveSpeed) && rigidbodyRef.velocity.magnitude > 0.01f && Timer.GetIsReadyToUse() ){
+                Timer.ActionStart();
             }
         }
 

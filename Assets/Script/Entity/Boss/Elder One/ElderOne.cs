@@ -38,10 +38,10 @@ public class ElderOne : Boss
 
         //Debug.Log(behaviorTree.GetComponent<BT_ElderOne>().blackBoard.intDict["AttackCount"]);
 
-        if (CurrentHealth <= (FinalData.MaxHP / 2) && !IsTrigger)
-        {
-            behaviorTree.GetComponent<BehaviorTree>().blackBoard.boolDict["Phase"] = true;
-            IsTrigger = true;
-        }
+        // if (CurrentHealth <= (FinalData.MaxHP / 2) && !IsTrigger)
+        // {
+        //     behaviorTree.GetComponent<BehaviorTree>().blackBoard.boolDict["Phase"] = true;
+        //     IsTrigger = true;
+        // }
     }
 }
