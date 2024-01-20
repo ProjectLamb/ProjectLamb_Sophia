@@ -21,7 +21,7 @@ namespace Sophia.Composite
             timer = new TimerComposite(baseTime, intervalTime);
             stackCounter = new StackCounterComposite(stackAmount);
             timer.OnFinished += RestoreStack;
-            timer.WhenLoopable += GetIsELoopable;
+            timer.WhenRewindable += GetIsELoopable;
         }
 
         public CoolTimeComposite(float baseTime, int stackAmount) : this(baseTime, -1, stackAmount) { }
