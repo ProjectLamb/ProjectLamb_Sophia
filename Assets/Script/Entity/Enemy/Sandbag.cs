@@ -49,18 +49,18 @@ public class Sandbag : Entity
 
         BaseEnemyData = new EntityData(ScriptableED);
         FinalData = BaseEnemyData;
-        Life = new Sophia.Composite.LifeComposite(FinalData.MaxHP)
-            .AddOnHitEvent(FinalData.HitStateRef)
-            .AddOnDamageEvent((float val) => {
+        Life = new Sophia.Composite.LifeComposite(FinalData.MaxHP);
+        Life.OnHit += FinalData.HitStateRef;
+        Life.OnDamaged += (float val) => {
                 mAnimator.SetTrigger("DoHit");
                 GameManager.Instance.GlobalEvent.OnEnemyHitEvent.ForEach(E => E.Invoke());
-            })
-            .AddOnEnterDieEvent(FinalData.DieState)
-            .AddOnEnterDieEvent(() => {
+            };
+        Life.OnEnterDie += FinalData.DieState;
+        Life.OnEnterDie += () => {
                 this.entityCollider.enabled = false;
                 mAnimator.SetTrigger("DoDie");
                 visualModulator.InteractByVFX(DieParticle);
-            });
+            };
 
         this.ObjectiveTarget = GameManager.Instance.PlayerGameObject.transform;
     }

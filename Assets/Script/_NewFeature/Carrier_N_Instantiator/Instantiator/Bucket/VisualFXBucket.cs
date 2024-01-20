@@ -61,7 +61,7 @@ namespace Sophia.Instantiates
                         //null이 아니라면 더 쌓을 수 없으므로 리턴
                         if(value != null){return null;}
                     }
-                    instantiatedVFX.AddOnReleaseEvent(() => OnDestroyHandler.Invoke(instantiatedVFX.AffectType));
+                    instantiatedVFX.OnRelease += () => OnDestroyHandler.Invoke(instantiatedVFX.AffectType);
                     VisualStacks[stateType] = instantiatedVFX;
                     break;
                 }

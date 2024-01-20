@@ -49,12 +49,18 @@ namespace Sophia.Composite.Timer
 
         #region Events
 
-        public UnityAction OnInitialized = null;
-        public UnityAction OnStart = null;
-        public UnityAction OnInterval = null;
-        public UnityAction<float> OnTicking = null;
-        public UnityAction OnFinished = null;
-        public Func<bool>  WhenRewindable = null;
+        public event UnityAction OnInitialized = null;
+        public event UnityAction OnStart = null;
+        public event UnityAction OnInterval = null;
+        public event UnityAction<float> OnTicking = null;
+        public event UnityAction OnFinished = null;
+        public event Func<bool> WhenRewindable = () => false;
+
+        internal void InvoekInitializedAction() => OnInitialized?.Invoke();
+        internal void InvokeStartAction() => OnStart?.Invoke();
+        internal void InvokeIntervalAction() => OnInterval?.Invoke();
+        internal void InvokeTickingAction(float input) => OnTicking?.Invoke(input);
+        internal void InvokeFinishedAction() => OnFinished?.Invoke();
 
         public void ClearEvents()
         {
@@ -76,6 +82,7 @@ namespace Sophia.Composite.Timer
         #region Getter
 
         public float GetProgressAmount() { return PassedTime / BaseTime; }
+        public bool  GetIsRewindable() {return WhenRewindable.Invoke();}
 
         #endregion
 
@@ -85,6 +92,11 @@ namespace Sophia.Composite.Timer
         {
             if (amount <= 0) { amount = 0; }
             accelerationAmount = amount;
+            return this;
+        }
+
+        public TimerComposite SetRewindCondition(Func<bool> condition){
+            WhenRewindable = condition;
             return this;
         }
 

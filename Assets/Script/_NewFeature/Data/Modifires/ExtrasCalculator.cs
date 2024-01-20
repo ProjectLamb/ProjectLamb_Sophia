@@ -20,6 +20,7 @@ namespace Sophia.DataSystem.Modifires
             this.FunctionalType = functionalType;
             Order = order;
         }
-        public ExtrasCalculator(UnityActionRef<T> functional, E_EXTRAS_PERFORM_TYPE perfType, E_FUNCTIONAL_EXTRAS_TYPE functionalType) : this(functional, perfType, functionalType, 999){} 
+        public ExtrasCalculator(UnityActionRef<T> functional, E_EXTRAS_PERFORM_TYPE perfType, E_FUNCTIONAL_EXTRAS_TYPE functionalType) : this(functional, perfType, functionalType, 999){}
+
     }
 }

@@ -18,8 +18,8 @@ public class HealthBarUI : MonoBehaviour
         int intValue = LifeCompositeRef.MaxHp;
         slider.maxValue = (float)intValue;
 
-        LifeCompositeRef.AddOnUpdateEvent(UpdateFillAmount)
-                        .AddOnEnterDieEvent(TurnOffUI);
+        LifeCompositeRef.OnHpUpdated += UpdateFillAmount;
+        LifeCompositeRef.OnEnterDie += TurnOffUI;
 
         StartCoroutine(DoAndRenderUI(() => { fill.color = gradient.Evaluate(1f); }));
     }
@@ -30,8 +30,8 @@ public class HealthBarUI : MonoBehaviour
         slider.maxValue = (float)intValue;
 
         LifeCompositeRef = LifeComposite;
-        LifeCompositeRef.AddOnUpdateEvent(UpdateFillAmount)
-                        .AddOnEnterDieEvent(TurnOffUI);
+        LifeCompositeRef.OnHpUpdated += UpdateFillAmount;
+        LifeCompositeRef.OnEnterDie += TurnOffUI;
 
         StartCoroutine(DoAndRenderUI(() => { fill.color = gradient.Evaluate(1f); }));
     }
