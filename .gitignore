@@ -79,7 +79,7 @@ Assets/Plugins/*
 Assets/Packages/*
 Assets/Resources/*
 Assets/FmodProject/*
-
+Assets/ARTnGAME/*
 # Ignore Vscode
 .vscode/
 
