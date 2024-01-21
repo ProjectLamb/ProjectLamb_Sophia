@@ -71,6 +71,7 @@ namespace Sophia.Entitys
         public override EntityStatReferer GetStatReferer() => StatReferer;
 
         public override EntityExtrasReferer GetExtrasReferer() => ExtrasReferer;
+        public override Extras<T> GetExtras<T>(E_FUNCTIONAL_EXTRAS_TYPE functionalType) => ExtrasReferer.GetExtras<T>(functionalType);
 
         #endregion
 

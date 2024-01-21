@@ -1,7 +1,9 @@
 namespace Sophia
 {
     using DataSystem;
-    
+    using Sophia.DataSystem.Functional;
+    using Sophia.DataSystem.Numerics;
+
     public enum E_STAT_USE_TYPE
     {
         None = 0,
@@ -30,5 +32,14 @@ namespace Sophia
     public interface IStatAccessable {
         public Stat GetStat(E_NUMERIC_STAT_TYPE numericType);
         public string GetStatsInfo();
+    }
+
+    public interface IExtrasAccessable {
+        public Extras<T> GetExtras<T>(E_FUNCTIONAL_EXTRAS_TYPE functionalType);
+    }
+
+    public interface IDataAccessable : IStatAccessable, IExtrasAccessable {
+        public EntityStatReferer GetStatReferer();
+        public EntityExtrasReferer GetExtrasReferer();
     }
 }

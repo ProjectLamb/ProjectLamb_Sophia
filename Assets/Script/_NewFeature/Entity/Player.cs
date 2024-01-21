@@ -72,6 +72,7 @@ namespace Sophia.Entitys
         }
 
         public override EntityExtrasReferer GetExtrasReferer() => ExtrasReferer;
+        public override Extras<T> GetExtras<T>(E_FUNCTIONAL_EXTRAS_TYPE functionalType) => ExtrasReferer.GetExtras<T>(functionalType);
 #endregion
 
 #region Model Accessable
@@ -150,12 +151,11 @@ namespace Sophia.Entitys
 
            DashSkillAbility.SetAudioSource(DashSource);
         
-           ExtrasReferer.OnAffected = new Extras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.Affected, ()=>{Debug.Log("Affect Extras Changed");});
+           ExtrasReferer.SetRefExtras<Entity>(new Extras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.Affected, ()=>{Debug.Log("Affect Extras Changed");}));
         }
         public void Attack() { _weaponManager.GetCurrentWeapon().Use(this); }
         public void Skill() {throw new System.NotImplementedException();}
 
         public override AffectorComposite GetAffectorComposite() => this.AffectHandler;
-
     }    
 }
