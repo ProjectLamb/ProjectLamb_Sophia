@@ -18,7 +18,7 @@ namespace Sophia.DataSystem
     {
         None = 0,
         ENTITY_TYPE = 10,
-            Move, Hit, Damaged, Attack, Affected, Dead, Standing, PhyiscTriggered,
+            Move, Hit, Damaged, Attack, Affected, Dead, Idle, PhyiscTriggered,
         
         PLAYER_TYPE = 20,
             Dash, skill,

@@ -29,7 +29,7 @@ public class TEST_Equipment_024 : Equipment { //, IPlayerDataApplicant{
     {
         if(other.TryGetComponent<Sophia.Entitys.Player>(out Sophia.Entitys.Player player)){
             OwnerRef = player;
-            Extras<Sophia.Entitys.Entity> extrasRef = OwnerRef.GetExtrasReferer().OnAffected;
+            Extras<Sophia.Entitys.Entity> extrasRef = OwnerRef.GetExtras<Sophia.Entitys.Entity>(E_FUNCTIONAL_EXTRAS_TYPE.Affected);
             extrasRef.AddCalculator(this.extrasCalculator);
             extrasRef.RecalculateExtras();
         }
