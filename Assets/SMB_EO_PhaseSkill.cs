@@ -18,10 +18,7 @@ public class SMB_EO_PhaseSkill : StateMachineBehaviour
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (animator.GetBool("phaseSkill"))
-            animator.SetBool("phaseSkill", false);
-        else
-            animator.SetBool("phaseSkill", true);
+        animator.SetInteger("phaseSkill", animator.GetInteger("phaseSkill") + 1);
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()
