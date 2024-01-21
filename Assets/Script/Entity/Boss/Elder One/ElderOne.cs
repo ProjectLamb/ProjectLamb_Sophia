@@ -4,18 +4,19 @@ using UnityEngine;
 using MonsterLove.StateMachine;
 using DG.Tweening;
 using Feature_NewData;
+using Unity.VisualScripting;
 
 public class ElderOne : Boss
 {
     List<string> animBoolParamList;
     List<string> animTriggerParamList;
+    public CarrierBucket attackCarrierBucket;
 
     [Header("Stats")]
     public int attackRange = 30;
     public int attackCount = 3;
 
     private int turnSpeed = 2;
-    private string currentAnimationName;
     private bool isPhaseChanged = false;
 
 
@@ -26,6 +27,8 @@ public class ElderOne : Boss
         Idle,
         Move,
         Attack,
+        Skill,
+        Invincible,
         Death,
     }
 
@@ -47,7 +50,7 @@ public class ElderOne : Boss
         base.Update();
 
         CheckDeath();
-        if(!isPhaseChanged)
+        if (!isPhaseChanged)
             CheckPhase();
 
         fsm.Driver.Update.Invoke();
@@ -87,17 +90,6 @@ public class ElderOne : Boss
             animator.ResetTrigger(t);
     }
 
-    bool IsAnimationRunning(string s)
-    {
-        bool isRunning = false;
-
-        if (animator.GetCurrentAnimatorStateInfo(0).IsName(s))
-            if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime != 0 && animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f)
-                isRunning = true;
-
-        return isRunning;
-    }
-
     void CheckDeath()
     {
         if (CurrentHealth <= 0)
@@ -106,7 +98,7 @@ public class ElderOne : Boss
 
     void CheckPhase()
     {
-        if(CurrentHealth <= MaxHealth / 2)
+        if (CurrentHealth <= MaxHealth / 2)
         {
             phase = 2;
             isPhaseChanged = true;
@@ -148,22 +140,18 @@ public class ElderOne : Boss
             {
                 case 0:
                     animator.SetTrigger(animTriggerParamList[2]);
-                    currentAnimationName = "EO_Attack_LeftPunch";
                     break;
                 case 1:
                     animator.SetTrigger(animTriggerParamList[3]);
-                    currentAnimationName = "EO_Attack_RightHook";
                     break;
                 case 2:
                     animator.SetTrigger(animTriggerParamList[4]);
-                    currentAnimationName = "EO_Attack_Continual";
                     break;
             }
         }
         else if (phase == 2)
         {
             animator.SetTrigger(animTriggerParamList[5]);
-            currentAnimationName = "EO_Attack_Continual2";
         }
         else
         {
@@ -173,25 +161,22 @@ public class ElderOne : Boss
 
     void DoSkill(int phase)
     {
-        for(int i = 2; i < animTriggerParamList.Count; i++)
+        for (int i = 2; i < animTriggerParamList.Count; i++)
             animator.ResetTrigger(animTriggerParamList[i]);
-        
+
         if (phase == 1)
         {
             animator.SetTrigger(animTriggerParamList[6]);
-            currentAnimationName = "EO_Attack_UpperCut";
         }
         else if (phase == 2)
         {
-            if(animator.GetBool("phaseSkill"))
+            if (animator.GetInteger("phaseSkill") % 2 == 0)
             {
-                animator.SetTrigger(animTriggerParamList[8]);
-                currentAnimationName = "EO_Attack_Phase2";
+                animator.SetTrigger(animTriggerParamList[7]);
             }
             else
             {
-                animator.SetTrigger(animTriggerParamList[7]);
-                currentAnimationName = "EO_Attack_AttackWalkEnd";
+                animator.SetTrigger(animTriggerParamList[8]);
             }
         }
     }
@@ -202,12 +187,22 @@ public class ElderOne : Boss
         //Death animation
     }
 
+    public void UseProjectile_NormalAttack()
+    {
+        this.attackCarrierBucket.CarrierInstantiatorByObjects(this, projectiles[0], new object[] { FinalData.Power * 1 });
+    }
+    public void UseProjectile_JumpAttack()
+    {
+        this.carrierBucket.CarrierInstantiatorByObjects(this, projectiles[1], new object[] { FinalData.Power * 2 });
+    }
+
     ////////////////////////////////////////FSM Functions////////////////////////////////////////
     /** Init State */
     void Init_Enter()
     {
         Debug.Log("Init_Enter");
         //Init Settings
+        attackCarrierBucket.transform.position = new Vector3(0, attackCarrierBucket.GetComponent<CarrierBucket>().BucketScale / 2, attackRange);
         InitAnimParamList();
 
         fsm.ChangeState(States.Idle);
@@ -218,11 +213,11 @@ public class ElderOne : Boss
     {
         Debug.Log("Idle_Enter");
         ResetAnimParam();
+        Freeze();
     }
 
     void Idle_Update()
     {
-        CheckDeath();
         if (!fov.IsRecog)
         {
             PlayRandomIdleAnimation(3);
@@ -261,31 +256,62 @@ public class ElderOne : Boss
         nav.SetDestination(objectiveTarget.position);
     }
 
+    void Move_Exit()
+    {
+        animator.SetBool("IsWalk", false);
+    }
+
     /** Attack State */
     void Attack_Enter()
     {
         Debug.Log("Attack_Enter");
-        Freeze();
-
-        transform.DOLookAt(objectiveTarget.position, turnSpeed / 2);
-
         //Skill
         if (animator.GetInteger("attackCount") == attackCount)
             DoSkill(phase);
         //Normal Attack
         else
             DoAttack(phase);
+
+        Freeze();
+
+        transform.DOLookAt(objectiveTarget.position, turnSpeed / 2);
     }
 
     void Attack_Update()
     {
-        if (!IsAnimationRunning(currentAnimationName))
-            fsm.ChangeState(States.Idle);
+        if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f)
+        {
+            if (animator.GetCurrentAnimatorStateInfo(0).IsTag("skill"))
+                fsm.ChangeState(States.Skill);
+            else
+                fsm.ChangeState(States.Idle);
+        }
     }
 
-    void Attack_Exit()
+    void Skill_Enter()
     {
-        UnFreeze();
+        Debug.Log("Skill_Enter");
+        Freeze();
+    }
+
+    void Skill_FixedUpdate()
+    {
+        if (animator.GetCurrentAnimatorStateInfo(0).IsTag("walk"))
+        {
+            transform.DOLookAt(objectiveTarget.position, turnSpeed);
+            nav.SetDestination(objectiveTarget.position);
+        }
+    }
+
+    void Skill_Update()
+    {
+        if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f)
+        {
+            if (animator.GetCurrentAnimatorStateInfo(0).IsTag("walk"))
+                fsm.ChangeState(States.Skill);
+            else
+                fsm.ChangeState(States.Idle);
+        }
     }
 
     /** Death State */
@@ -299,7 +325,7 @@ public class ElderOne : Boss
     {
         //check animation end
     }
-    
+
     void Death_Exit()
     {
         DestroySelf();
