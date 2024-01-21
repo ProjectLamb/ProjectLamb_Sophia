@@ -9,7 +9,7 @@ namespace Sophia.Entitys
     using Sophia.Composite;
     using Sophia.DataSystem.Functional;
 
-    public abstract class Entity : MonoBehaviour, ILifeAccessable, IStatAccessable
+    public abstract class Entity : MonoBehaviour, ILifeAccessable, IDataAccessable
     {
 #region SerializeMembeer 
         [SerializeField] protected ModelManger  _modelManger;
@@ -37,6 +37,7 @@ namespace Sophia.Entitys
         public abstract string GetStatsInfo();
 
         public abstract EntityExtrasReferer GetExtrasReferer();
+        public abstract Extras<T> GetExtras<T>(E_FUNCTIONAL_EXTRAS_TYPE functionalType);
 
 #endregion
 
