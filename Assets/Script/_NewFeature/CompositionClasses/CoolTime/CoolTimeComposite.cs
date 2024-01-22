@@ -9,25 +9,30 @@ namespace Sophia.Composite
     using Stacks;
     using System;
 
-    public class CoolTimeComposite
+    public class CoolTimeComposite : IDisposable
     {
         #region Members
         
-        public TimerComposite timer { get; private set; }
-        
+        public TimerComposite timer { get; private set; }        
         public StackCounterComposite stackCounter { get; private set; }
 
         public CoolTimeComposite(float baseTime, float intervalTime, int stackAmount)
         {
-            timer = new TimerComposite(baseTime, intervalTime);
+            timer = new TimerComposite(baseTime)
+                        .SetIntervalTime(intervalTime)
+                        .SetRewindCondition(GetIsRewind);
             stackCounter = new StackCounterComposite(stackAmount);
             
-            timer.WhenRewindable += GetIsRewind;
             timer.OnFinished += stackCounter.RestoreStack;
-            
         }
 
         public CoolTimeComposite(float baseTime, int stackAmount) : this(baseTime, -1, stackAmount) { }
+
+        public void Dispose()
+        {
+            timer.ClearRewindCondition();
+            timer.OnFinished -= stackCounter.RestoreStack;
+        }
 
         #endregion
 
@@ -115,7 +120,6 @@ namespace Sophia.Composite
             stackCounter.OnUseAction += action;
             return this;
         }
-
 
         public void ClearEvents()
         {

@@ -61,13 +61,13 @@ namespace Sophia.Composite.Timer
             if (timer.PassedTime >= timer.BaseTime) { timer.ChangeState(TimerEnd.Instance); return; } // ChangeState(TimerEnd)
             if (timer.IntervalTime > 0.01f && timer.PassedTime >= timer.NextInterval)
             {
-                timer.NextInterval += timer.IntervalTime;
+                timer.NextInterval += timer.IntervalTime * timer.accelerationAmount;
                 timer.InvokeIntervalAction();
             }
             timer.InvokeTickingAction(timer.GetProgressAmount());
             timer.PassedTime += timer.IsBlocked ? 0f : Time.deltaTime * timer.accelerationAmount;
         }
-
+        
         public void Exit(TimerComposite timer) { return; }
     }
 

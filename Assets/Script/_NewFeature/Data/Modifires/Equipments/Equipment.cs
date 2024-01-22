@@ -4,7 +4,7 @@ using UnityEngine;
     using System.Collections.Generic;
     using Sophia;
     using Sophia.DataSystem;
-    using Sophia.DataSystem.Modifires;
+    using Sophia.DataSystem.Modifiers;
     using Sophia.DataSystem.Numerics;
     using UnityEngine.UI;
 
@@ -13,7 +13,7 @@ using UnityEngine;
         [SerializeField] public Sprite   _icon;
         [SerializeField] public string  _description;
         [SerializeField] SerialCalculateDatas _calculateDatas;
-        readonly Dictionary<E_NUMERIC_STAT_TYPE, StatCalculator> calculators = new();
+        readonly Dictionary<E_NUMERIC_STAT_TYPE, StatModifier> Modifiers = new();
 
         private void Awake() {
             Debug.Log(_equipmentName);
@@ -21,15 +21,15 @@ using UnityEngine;
                 SerialModifireDats statValue = GetValueByNumericType(statType);
                 if(statValue.calType == E_STAT_CALC_TYPE.None) {continue;}
                 Debug.Log($"{statType.ToString()} : {statValue.amount}");
-                calculators.Add(statType, new StatCalculator( statValue.amount, statValue.calType, statType));
+                Modifiers.Add(statType, new StatModifier( statValue.amount, statValue.calType, statType));
             }
         }
 
         protected virtual void OnTriggerEnter(Collider other) {
             if(other.TryGetComponent<Sophia.Entitys.Player>(out Sophia.Entitys.Player player)) {
-                foreach(var modifires in calculators) {
-                    Stat stetRef = player.GetStat(modifires.Key);
-                    stetRef.AddCalculator(modifires.Value);
+                foreach(var Modifiers in Modifiers) {
+                    Stat stetRef = player.GetStat(Modifiers.Key);
+                    stetRef.AddModifier(Modifiers.Value);
                     stetRef.RecalculateStat();
                     Debug.Log($"{stetRef.NumericType.ToString()} : {stetRef.GetValueForce()}");
                 }

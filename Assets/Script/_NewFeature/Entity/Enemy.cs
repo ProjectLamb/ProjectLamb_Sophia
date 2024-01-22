@@ -9,7 +9,7 @@ namespace Sophia.Entitys{
     using Sophia.DataSystem.Numerics;
     using Sophia.Instantiates;
 
-    public abstract class Enemy : Entity, IModelAccessable {
+    public abstract class Enemy : Entity, IVisualAccessable {
 
         public EntityStatReferer entityStat;
         
@@ -27,8 +27,6 @@ namespace Sophia.Entitys{
         public override void GetDamaged(int damage, VisualFXObject vfx) {}
         public override void Die() {throw new System.NotImplementedException();}
 
-        public void ChangeSkin(Material skin) { _modelManger.ChangeSkin(skin).Forget(); }
-        public void RevertSkin() { _modelManger.RevertSkin().Forget(); }
         public Animator GetAnimator() { return _modelManger.GetAnimator(); }
 
         public override Stat GetStat(E_NUMERIC_STAT_TYPE numericType){

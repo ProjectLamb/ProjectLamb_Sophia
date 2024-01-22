@@ -11,7 +11,9 @@ namespace Sophia.Entitys
     using Sophia.DataSystem.Numerics;
     using Sophia.DataSystem.Functional;
     using Sophia.Instantiates;
-    public class Player : Entity, IModelAccessable {
+    using Sophia.DataSystem.Modifiers.Affector;
+
+    public class Player : Entity {
 
 #region SerializeMembeer 
         [SerializeField] private SerialBasePlayerData _basePlayerData;
@@ -31,7 +33,7 @@ namespace Sophia.Entitys
         public PlayerExtrasReferer  ExtrasReferer         {get; private set;}
         public LifeComposite        Life                {get; private set;}
         public MovementComposite    Movement            {get; private set;}
-        public AffectorComposite    AffectHandler            {get; private set;}
+        public AffectorHandlerComposite    AffectHandler            {get; private set;}
         public DashSkill            DashSkillAbility    {get; private set;}
         public Stat                 Power               {get; private set;}
         
@@ -73,14 +75,6 @@ namespace Sophia.Entitys
 
         public override EntityExtrasReferer GetExtrasReferer() => ExtrasReferer;
         public override Extras<T> GetExtras<T>(E_FUNCTIONAL_EXTRAS_TYPE functionalType) => ExtrasReferer.GetExtras<T>(functionalType);
-#endregion
-
-#region Model Accessable
-
-        public void ChangeSkin(Material skin) { _modelManger.ChangeSkin(skin).Forget(); }
-        public void RevertSkin() { _modelManger.RevertSkin().Forget(); }
-        public Animator GetAnimator() { return _modelManger.GetAnimator(); }
-
 #endregion
 
 #region Movement
@@ -129,7 +123,7 @@ namespace Sophia.Entitys
                                             E_STAT_USE_TYPE.Natural,
                                             OnPowerUpdated
                                         );
-
+            AffectHandler = new AffectorHandlerComposite(_basePlayerData.Tenacity);
         }
         public void OnPowerUpdated() {throw new System.NotImplementedException();}
         private void Start(){
@@ -138,6 +132,7 @@ namespace Sophia.Entitys
            StatReferer.SetRefStat(Movement.MoveSpeed);
            StatReferer.SetRefStat(DashSkillAbility.MaxStamina);
            StatReferer.SetRefStat(DashSkillAbility.StaminaRestoreSpeed);
+           StatReferer.SetRefStat(AffectHandler.Tenacity);
 
            StatReferer.SetRefStat(Power);
                       
@@ -150,12 +145,19 @@ namespace Sophia.Entitys
            StatReferer.SetRefStat(_weaponManager.MeleeRatio);
 
            DashSkillAbility.SetAudioSource(DashSource);
+
         
-           ExtrasReferer.SetRefExtras<Entity>(new Extras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.Affected, ()=>{Debug.Log("Affect Extras Changed");}));
+           ExtrasReferer.SetRefExtras<Entity>(new Extras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.TargetAffected, ()=>{Debug.Log("Affect Extras Changed");}));
         }
         public void Attack() { _weaponManager.GetCurrentWeapon().Use(this); }
         public void Skill() {throw new System.NotImplementedException();}
 
-        public override AffectorComposite GetAffectorComposite() => this.AffectHandler;
+#region Affect Handler
+
+        public override AffectorHandlerComposite GetAffectorHandlerComposite() => this.AffectHandler;
+        public override void ModifiedByAffector(Affector affector) => this.AffectHandler.ModifiyByAffector(affector);
+
+#endregion
+
     }    
 }
