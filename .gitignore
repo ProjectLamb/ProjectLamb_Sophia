@@ -79,6 +79,12 @@ Assets/Plugins/*
 Assets/Packages/*
 Assets/Resources/*
 Assets/FmodProject/*
+Assets/ARTnGAME/*
+Assets/BundleDemos/*
+Assets/Feel/*
+Assets/Pixel\ Crushers/*
+Assets/Editor\ Default\ Resources/*
+Assets/Gizmos/*
 
 # Ignore Vscode
 .vscode/
