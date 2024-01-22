@@ -50,7 +50,7 @@ public class Sandbag : Entity
         BaseEnemyData = new EntityData(ScriptableED);
         FinalData = BaseEnemyData;
         Life = new Sophia.Composite.LifeComposite(FinalData.MaxHP);
-        Life.OnHit += FinalData.HitStateRef;
+        // Life.OnHit += FinalData.HitStateRef;
         Life.OnDamaged += (float val) => {
                 mAnimator.SetTrigger("DoHit");
                 GameManager.Instance.GlobalEvent.OnEnemyHitEvent.ForEach(E => E.Invoke());

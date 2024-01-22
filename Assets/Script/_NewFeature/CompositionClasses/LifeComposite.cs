@@ -71,6 +71,19 @@ namespace Sophia.Composite
                 E_NUMERIC_STAT_TYPE.Defence, 
                 E_STAT_USE_TYPE.Natural, OnDefenceUpdated
             );
+
+            HitExtras = new Extras<float>(
+                E_FUNCTIONAL_EXTRAS_TYPE.Hit, 
+                OnHitExtrasUpdated
+            );
+            DamagedExtras = new Extras<float> (
+                E_FUNCTIONAL_EXTRAS_TYPE.Damaged, 
+                OnDamageExtrasUpdated
+            );
+            DeadExtras = new Extras<object> (
+                E_FUNCTIONAL_EXTRAS_TYPE.Dead, 
+                OnDeadExtrasUpdated
+            );
             
             CurrentHealth = maxHp;
             IsDie = false;
@@ -79,7 +92,7 @@ namespace Sophia.Composite
             //DashSkill을 참고해서 어떻게 의존성을 맺었는지 확인
             OnHpUpdated      ??= (float val) => {};
             OnBarrierUpdated ??= (float val) => {};
-            OnHit            ??= (ref float val) => {};
+            OnHit            ??= (float val) => {};
             OnDamaged        ??= (float val) => {};
             OnHeal           ??= (float val) => {};
             OnBarrier        ??= (float val) => {};
@@ -115,7 +128,7 @@ namespace Sophia.Composite
         public event UnityAction            OnExitDie = null;
         public event UnityAction<float>     OnBarrier = null;
         public event UnityAction            OnBreakBarrier = null;
-        public event UnityActionRef<float>  OnHit = null;
+        public event UnityAction<float>  OnHit = null;
 
         public void ClearEvents() {
             OnHpUpdated     = null;
@@ -130,7 +143,7 @@ namespace Sophia.Composite
 
             OnHpUpdated     ??= (float val) => {};
             OnBarrierUpdated ??= (float val) => {};
-            OnHit           ??= (ref float val) => {};
+            OnHit           ??= (float val) => {};
             OnDamaged       ??= (float val) => {};
             OnHeal          ??= (float val) => {};
             OnEnterDie      ??= () => {};
@@ -156,6 +169,21 @@ namespace Sophia.Composite
             // throw new System.NotImplementedException();
         }
 
+        protected void OnHitExtrasUpdated() { 
+            Debug.Log("닿음 추가 동작 변경됨!");
+            // throw new System.NotImplementedException();
+        }
+
+        protected void OnDamageExtrasUpdated() { 
+            Debug.Log("피격 추가 동작 변경됨!");
+            // throw new System.NotImplementedException();
+        }
+        
+        protected void OnDeadExtrasUpdated() { 
+            Debug.Log("죽음 추가 동작 변경됨!");
+            // throw new System.NotImplementedException();
+        }
+
         public void Healed(float amount) {
             OnHeal.Invoke(amount);
             CurrentHealth += amount;
@@ -173,28 +201,30 @@ namespace Sophia.Composite
         }
         
         public void Damaged(float damage) {
-            OnHit.Invoke(ref damage);
-            DamageCalculatePipeline(ref damage);
+            PerformHit(ref damage);
             if(damage < 0.01f) {return;}
-
-            OnDamaged.Invoke(damage);
-            CurrentHealth -= damage;
-            OnHpUpdated.Invoke(CurrentHealth);
-
+            PerformDamage(damage);
             if (CurrentHealth <= 0) { this.Died(); }
         }
 
+        private void PerformHit(ref float damage) {
+            HitExtras.PerformStartFunctionals(ref damage);
+            DamageCalculatePipeline(ref damage);
+            OnHit.Invoke(damage);
+            HitExtras.PerformExitFunctionals(ref damage);
+        }
+
+        private void PerformDamage(float damage) {
+            // DamageStart
+            OnDamaged.Invoke(damage);
+            CurrentHealth -= damage;
+            DamagedExtras.PerformStartFunctionals(ref damage);
+            OnHpUpdated.Invoke(CurrentHealth);
+            DamagedExtras.PerformExitFunctionals(ref damage);
+        }
+
         private void DamageCalculatePipeline(ref float _amount){
-            _amount = _amount * 100 / (100 + Defence);
-            if(IsBarrierCovered && CurrentBarrier > 0){
-                if(CurrentBarrier - _amount >= 0){
-                    _amount = 0; CurrentBarrier -= _amount;
-                }
-                else {
-                    _amount = _amount - CurrentBarrier; 
-                    BreakBarrier();
-                }
-            }
+
         }
 
         public void BreakBarrier(){
@@ -203,8 +233,11 @@ namespace Sophia.Composite
         }
 
         public void Died() { 
+            object nullObject = null;
+            DeadExtras.PerformStartFunctionals(ref nullObject);
             OnEnterDie.Invoke();
             IsDie = true;
+            DeadExtras.PerformExitFunctionals(ref nullObject);
             OnExitDie.Invoke();
         }
     }

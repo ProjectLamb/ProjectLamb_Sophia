@@ -81,7 +81,7 @@ public class Player : Entity {
 
     private void Start() {
         Life = new Sophia.Composite.LifeComposite(PlayerDataManager.GetEntityData().MaxHP);
-        Life.OnHit += PlayerDataManager.GetEntityData().HitStateRef;
+        //Life.OnHit += PlayerDataManager.GetEntityData().HitStateRef;
     
         isAttack = false;
         isThrAttack = false;
