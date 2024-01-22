@@ -131,30 +131,30 @@ public class Player : Entity {
 
     public void Move() // new input system을 사용한 방식
     {
-        Vector3 AngleToVector(float _angle) {
+      Vector3 AngleToVector(float _angle) {
             _angle *= Mathf.Deg2Rad;
             return new Vector3(Mathf.Sin(_angle), 0, Mathf.Cos(_angle));
         }
 
-        int moveSpeed = (int)PlayerDataManager.GetEntityData().MoveSpeed; /*StatSpeed*/
+        float moveSpeed = PlayerDataManager.GetEntityData().MoveSpeed;
         
-        if(DashSkillAbility.GetIsDashState(moveSpeed)) { return; }
+        if(DashSkillAbility.GetIsDashState((int)moveSpeed)) { return; }
          
         anim.SetFloat("Move", entityRigidbody.velocity.magnitude);
 
         mMoveVec = AngleToVector(Camera.main.transform.eulerAngles.y + 90f) * inputVec.x + AngleToVector(Camera.main.transform.eulerAngles.y) * inputVec.y; // vaxis : inputvec.y , haxis : inputvec.x
-        mMoveVec = mMoveVec.normalized;/*m*/
+        mMoveVec = mMoveVec.normalized;
 
-        bool IsBorder(){return Physics.Raycast(transform.position, mMoveVec.normalized, 2, LayerMask.GetMask("Wall"));}/*m*/
+        bool IsBorder(){return Physics.Raycast(transform.position, mMoveVec.normalized, 2, LayerMask.GetMask("Wall"));}
         
         if (!IsBorder() && !isAttack) // 벽으로 막혀있지 않고 공격중이 아닐때만 이동 가능
         {
-            Vector3 rbVel = mMoveVec * moveSpeed;/*m*/
+            Vector3 rbVel = mMoveVec * moveSpeed;
             this.entityRigidbody.velocity = rbVel;
-            
-            if(mMoveVec != Vector3.zero){ /*m*/
-                mRotate = Quaternion.LookRotation(mMoveVec); /*m*/
-                transform.rotation = Quaternion.Slerp(transform.rotation,mRotate, 0.6f); /*m*/
+            if(mMoveVec != Vector3.zero){
+                mRotate = Quaternion.LookRotation(mMoveVec);
+                transform.rotation = Quaternion.Slerp(transform.rotation,mRotate, 0.6f);
+                
             }
             PlayerDataManager.GetEntityData().MoveState?.Invoke();
         }
@@ -179,6 +179,7 @@ public class Player : Entity {
     }
 
     IEnumerator AsyncTurning(RaycastHit _groundHit, UnityAction _action){
+        
         yield return new WaitForEndOfFrame();
         Vector3 playerToMouse = _groundHit.point - transform.position;
         playerToMouse.y = 0f;
@@ -188,6 +189,7 @@ public class Player : Entity {
         yield return new WaitForEndOfFrame();
         _action.Invoke();
         yield return new WaitForEndOfFrame();
+
     }
 
 #endregion
@@ -262,7 +264,7 @@ public class Player : Entity {
     {
         isAttack = AttackAnim.isAttack;
         canExitAttack = AttackAnim.canExitAttack;
-        // attackTrigger = AttackAnim.attackTrigger;
+        attackTrigger = AttackAnim.attackTrigger;
         // 공격중이라면
         if(isAttack){
             anim.SetBool("isAttack",true);
@@ -271,7 +273,7 @@ public class Player : Entity {
             anim.SetBool("isAttack",false);
         }
 
-        // 세번째 공격이 이루어졌다면
+        //공격 애니메이션 종료
         if(attackTrigger)
         { 
             // DoAttack trigger reset
