@@ -4,10 +4,8 @@ using System.Threading.Tasks;
 
 namespace Sophia
 {
-
-    public interface IVisualAccessable {
-        
-    }
+    using Instantiates;
+    using Composite.RenderModels;
 
     /*********************************************************************************
     * IUpdatorBindable & IUpdatable
@@ -57,6 +55,16 @@ namespace Sophia
         public void ChangeSkin(Material skin);
         public void RevertSkin();
         public Animator GetAnimator();
+    }
+
+    public interface IVFXAccessable {
+        public VisualFXObject ActivateInstantable(Entity owner, VisualFXObject _instantiable, Vector3 _offset);
+        public VisualFXObject ActivateInstantable(Entity owner, VisualFXObject _instantiable);
+    }
+
+    public interface IVisualAccessable {
+        public ModelManger GetModelManger();
+        public VisualFXBucket GetVisualFXBucket();
     }
 
 //     public interface IUseMonobehaviourConstructor {

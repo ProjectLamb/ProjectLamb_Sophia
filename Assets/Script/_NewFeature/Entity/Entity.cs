@@ -8,8 +8,9 @@ namespace Sophia.Entitys
     using Sophia.Instantiates;
     using Sophia.Composite;
     using Sophia.DataSystem.Functional;
+    using Sophia.DataSystem.Modifiers.Affector;
 
-    public abstract class Entity : MonoBehaviour, ILifeAccessable, IDataAccessable
+    public abstract class Entity : MonoBehaviour, ILifeAccessable, IDataAccessable, IVisualAccessable
     {
 #region SerializeMembeer 
         [SerializeField] protected ModelManger  _modelManger;
@@ -42,7 +43,13 @@ namespace Sophia.Entitys
 #endregion
 
 #region Affector Accessable
-        public abstract AffectorComposite GetAffectorComposite();
+
+        public abstract AffectorHandlerComposite GetAffectorHandlerComposite();
+        public abstract void ModifiedByAffector(Affector affector);
+
+        public ModelManger GetModelManger() => this._modelManger;
+        public VisualFXBucket GetVisualFXBucket() => this._visualFXBucket;
+        
 #endregion
     }
 }

@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Sophia.DataSystem
 {   
     using Functional;
-    using Modifires;
+    using Modifiers;
     using Sophia.Entitys;
 
     public enum E_EXTRAS_PERFORM_TYPE {
@@ -18,7 +18,7 @@ namespace Sophia.DataSystem
     {
         None = 0,
         ENTITY_TYPE = 10,
-            Move, Hit, Damaged, Attack, Affected, Dead, Idle, PhyiscTriggered,
+            Move, Hit, Damaged, Attack, OwnerAffected, TargetAffected, Dead, Idle, PhyiscTriggered,
         
         PLAYER_TYPE = 20,
             Dash, skill,
@@ -47,17 +47,32 @@ namespace Sophia.DataSystem
             Tick = new List<UnityActionRef<T>>();
             Exit = new List<UnityActionRef<T>>();
         }
+
+        public void InvokeLists(ref T value) {
+            foreach (var item in Start)
+            {
+                item.Invoke(ref value);
+            }
+            foreach (var item in Tick)
+            {
+                item.Invoke(ref value);
+            }
+            foreach (var item in Exit)
+            {
+                item.Invoke(ref value);
+            }
+        }
     }
 
-    public class ExtrasCalculatorPerforms<T> {
-        public List<ExtrasCalculator<T>> Start;
-        public List<ExtrasCalculator<T>> Tick;
-        public List<ExtrasCalculator<T>> Exit;
+    public class ExtrasModifierPerforms<T> {
+        public List<ExtrasModifier<T>> Start;
+        public List<ExtrasModifier<T>> Tick;
+        public List<ExtrasModifier<T>> Exit;
 
-        public ExtrasCalculatorPerforms() {
-            Start = new List<ExtrasCalculator<T>>();
-            Tick = new List<ExtrasCalculator<T>>();
-            Exit = new List<ExtrasCalculator<T>>();
+        public ExtrasModifierPerforms() {
+            Start = new List<ExtrasModifier<T>>();
+            Tick = new List<ExtrasModifier<T>>();
+            Exit = new List<ExtrasModifier<T>>();
         }
     }
 
@@ -66,11 +81,17 @@ namespace Sophia.DataSystem
         public readonly E_FUNCTIONAL_EXTRAS_TYPE FunctionalType;
 
         private readonly FunctionalPerforms<T> FunctionalLists = new FunctionalPerforms<T>();
+
+        public static implicit operator FunctionalPerforms<T> (Extras<T> extras) {
+            extras.RecalculateExtras();
+            return extras.FunctionalLists;
+        }
+
         private bool isDirty = false;
         
         public readonly UnityEvent OnExtrasChanged;
 
-        private ExtrasCalculatorPerforms<T> ExtrasCalculatorList = new ExtrasCalculatorPerforms<T>();
+        private ExtrasModifierPerforms<T> ExtrasModifierList = new ExtrasModifierPerforms<T>();
 
         public Extras(E_FUNCTIONAL_EXTRAS_TYPE FunctionalType, UnityAction extrasChangeHandler)
         {
@@ -84,41 +105,41 @@ namespace Sophia.DataSystem
         
         public void PerformStartFunctionals(ref T input){
             foreach(var action in FunctionalLists.Start) {
-                action.Invoke(ref input);
+                action?.Invoke(ref input);
             }
         }
         
         public void PerformTickFunctionals(ref T input) {
             foreach(var action in FunctionalLists.Tick) {
-                action.Invoke(ref input);
+                action?.Invoke(ref input);
             }
         }
 
         public void PerformExitFunctionals(ref T input) {
             foreach(var action in  FunctionalLists.Exit) {
-                action.Invoke(ref input);
+                action?.Invoke(ref input);
             }
         }
 
-        public void AddCalculator(ExtrasCalculator<T> extrasCalculator) {
+        public void AddModifier(ExtrasModifier<T> extrasModifier) {
 
-            switch(extrasCalculator.PerfType) {
+            switch(extrasModifier.PerfType) {
                 case E_EXTRAS_PERFORM_TYPE.Start : 
                 {
-                    ExtrasCalculatorList.Start.Add(extrasCalculator);
-                    ExtrasCalculatorList.Start.OrderBy(calc => calc.Order);
+                    ExtrasModifierList.Start.Add(extrasModifier);
+                    ExtrasModifierList.Start.OrderBy(calc => calc.Order);
                     break;
                 }
                 case E_EXTRAS_PERFORM_TYPE.Tick : 
                 {
-                    ExtrasCalculatorList.Tick.Add(extrasCalculator);
-                    ExtrasCalculatorList.Tick.OrderBy(calc => calc.Order);
+                    ExtrasModifierList.Tick.Add(extrasModifier);
+                    ExtrasModifierList.Tick.OrderBy(calc => calc.Order);
                     break;
                 }
                 case E_EXTRAS_PERFORM_TYPE.Exit : 
                 {
-                    ExtrasCalculatorList.Exit.Add(extrasCalculator);
-                    ExtrasCalculatorList.Exit.OrderBy(calc => calc.Order);
+                    ExtrasModifierList.Exit.Add(extrasModifier);
+                    ExtrasModifierList.Exit.OrderBy(calc => calc.Order);
                     break;
                 }
                 default : { throw new System.Exception("수행 타입이 None임"); }
@@ -126,22 +147,22 @@ namespace Sophia.DataSystem
             isDirty = true;
         }
 
-        public void RemoveCalculator(ExtrasCalculator<T> extrasCalculator)
+        public void RemoveModifier(ExtrasModifier<T> extrasModifier)
         {
-            switch(extrasCalculator.PerfType) {
+            switch(extrasModifier.PerfType) {
                 case E_EXTRAS_PERFORM_TYPE.Start : 
                 {
-                    ExtrasCalculatorList.Start.Remove(extrasCalculator);
+                    ExtrasModifierList.Start.Remove(extrasModifier);
                     break;
                 }
                 case E_EXTRAS_PERFORM_TYPE.Tick : 
                 {
-                    ExtrasCalculatorList.Tick.Remove(extrasCalculator);
+                    ExtrasModifierList.Tick.Remove(extrasModifier);
                     break;
                 }
                 case E_EXTRAS_PERFORM_TYPE.Exit : 
                 {
-                    ExtrasCalculatorList.Exit.Remove(extrasCalculator);
+                    ExtrasModifierList.Exit.Remove(extrasModifier);
                     break;
                 }
                 default : { throw new System.Exception("수행 타입이 None임"); }
@@ -149,33 +170,32 @@ namespace Sophia.DataSystem
             isDirty = true;
         }
 
-        public void ResetCalculators()
+        public void ResetFunctionals()
         {
-            ExtrasCalculatorList.Start.Clear();
-            ExtrasCalculatorList.Tick.Clear();
-            ExtrasCalculatorList.Exit.Clear();
-            isDirty = true;
+            FunctionalLists.Start.Clear();
+            FunctionalLists.Tick.Clear();
+            FunctionalLists.Exit.Clear();
         }
 
 
         public void RecalculateExtras()
         {
             if(isDirty == false) return;
-            ResetCalculators();
+            ResetFunctionals();
             FunctionalLists.Start.Add(BaseFunctional);
             FunctionalLists.Tick.Add(BaseFunctional);
             FunctionalLists.Exit.Add(BaseFunctional);
 
-            ExtrasCalculatorList.Start.ForEach((calc) => {
-                if(!calc.FunctionalType.Equals(E_EXTRAS_PERFORM_TYPE.Start)) throw new System.Exception($"칼큘레이터 타겟 타입과 현재 타겟 타입이 다르다! {calc.FunctionalType.ToString()} != {this.FunctionalType.ToString()}");
+            ExtrasModifierList.Start.ForEach((calc) => {
+                if(!calc.FunctionalType.Equals(this.FunctionalType)) throw new System.Exception($"칼큘레이터 타겟 타입과 현재 타겟 타입이 다르다! {calc.FunctionalType.ToString()} != {this.FunctionalType.ToString()}");
                 FunctionalLists.Start.Add(calc.Functional);
             });
-            ExtrasCalculatorList.Tick.ForEach((calc) => {
-                if(!calc.FunctionalType.Equals(E_EXTRAS_PERFORM_TYPE.Tick)) throw new System.Exception($"칼큘레이터 타겟 타입과 현재 타겟 타입이 다르다! {calc.FunctionalType.ToString()} != {this.FunctionalType.ToString()}");
+            ExtrasModifierList.Tick.ForEach((calc) => {
+                if(!calc.FunctionalType.Equals(this.FunctionalType)) throw new System.Exception($"칼큘레이터 타겟 타입과 현재 타겟 타입이 다르다! {calc.FunctionalType.ToString()} != {this.FunctionalType.ToString()}");
                 FunctionalLists.Tick.Add(calc.Functional);
             });
-            ExtrasCalculatorList.Exit.ForEach((calc) => {
-                if(!calc.FunctionalType.Equals(E_EXTRAS_PERFORM_TYPE.Exit)) throw new System.Exception($"칼큘레이터 타겟 타입과 현재 타겟 타입이 다르다! {calc.FunctionalType.ToString()} != {this.FunctionalType.ToString()}");
+            ExtrasModifierList.Exit.ForEach((calc) => {
+                if(!calc.FunctionalType.Equals(this.FunctionalType)) throw new System.Exception($"칼큘레이터 타겟 타입과 현재 타겟 타입이 다르다! {calc.FunctionalType.ToString()} != {this.FunctionalType.ToString()}");
                 FunctionalLists.Exit.Add(calc.Functional);
             });
 

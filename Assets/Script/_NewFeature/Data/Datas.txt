@@ -46,19 +46,19 @@ namespace Feature_NewData
     //            return entityNumerics.GetNumeric(numericMemberType);
     //        }
     //
-    //        public void AddCalculator(E_NUMERIC_STAT_MEMBERS numericMemberType, StatCalculator calc)
+    //        public void AddModifier(E_NUMERIC_STAT_MEMBERS numericMemberType, StatModifier calc)
     //        {
-    //            entityNumerics.AddCalculator(numericMemberType, calc);
+    //            entityNumerics.AddModifier(numericMemberType, calc);
     //        }
     //
-    //        public void RemoveCalculator(E_NUMERIC_STAT_MEMBERS numericMemberType, StatCalculator calc)
+    //        public void RemoveModifier(E_NUMERIC_STAT_MEMBERS numericMemberType, StatModifier calc)
     //        {
-    //            entityNumerics.RemoveCalculator(numericMemberType, calc);
+    //            entityNumerics.RemoveModifier(numericMemberType, calc);
     //        }
     //
-    //        public void ResetCalculators(E_NUMERIC_STAT_MEMBERS numericMemberType)
+    //        public void ResetModifiers(E_NUMERIC_STAT_MEMBERS numericMemberType)
     //        {
-    //            entityNumerics.ResetCalculators(numericMemberType);
+    //            entityNumerics.ResetModifiers(numericMemberType);
     //        }
     //
     //    }
@@ -115,19 +115,19 @@ namespace Feature_NewData
     //            return weaponNumerics.GetNumeric(numericMemberType);
     //        }
     //
-    //        public void AddCalculator(E_NUMERIC_STAT_MEMBERS numericMemberType, StatCalculator calc)
+    //        public void AddModifier(E_NUMERIC_STAT_MEMBERS numericMemberType, StatModifier calc)
     //        {
-    //            weaponNumerics.AddCalculator(numericMemberType, calc);
+    //            weaponNumerics.AddModifier(numericMemberType, calc);
     //        }
     //
-    //        public void RemoveCalculator(E_NUMERIC_STAT_MEMBERS numericMemberType, StatCalculator calc)
+    //        public void RemoveModifier(E_NUMERIC_STAT_MEMBERS numericMemberType, StatModifier calc)
     //        {
-    //            weaponNumerics.RemoveCalculator(numericMemberType, calc);
+    //            weaponNumerics.RemoveModifier(numericMemberType, calc);
     //        }
     //
-    //        public void ResetCalculators(E_NUMERIC_STAT_MEMBERS numericMemberType)
+    //        public void ResetModifiers(E_NUMERIC_STAT_MEMBERS numericMemberType)
     //        {
-    //            weaponNumerics.ResetCalculators(numericMemberType);
+    //            weaponNumerics.ResetModifiers(numericMemberType);
     //        }
     //
     //    }
@@ -152,19 +152,19 @@ namespace Feature_NewData
     //            return skillNumerics.GetNumeric(numericMemberType);
     //        }
     //
-    //        public void AddCalculator(E_NUMERIC_STAT_MEMBERS numericMemberType, StatCalculator calc)
+    //        public void AddModifier(E_NUMERIC_STAT_MEMBERS numericMemberType, StatModifier calc)
     //        {
-    //            skillNumerics.AddCalculator(numericMemberType, calc);
+    //            skillNumerics.AddModifier(numericMemberType, calc);
     //        }
     //
-    //        public void RemoveCalculator(E_NUMERIC_STAT_MEMBERS numericMemberType, StatCalculator calc)
+    //        public void RemoveModifier(E_NUMERIC_STAT_MEMBERS numericMemberType, StatModifier calc)
     //        {
-    //            skillNumerics.RemoveCalculator(numericMemberType, calc);
+    //            skillNumerics.RemoveModifier(numericMemberType, calc);
     //        }
     //
-    //        public void ResetCalculators(E_NUMERIC_STAT_MEMBERS numericMemberType)
+    //        public void ResetModifiers(E_NUMERIC_STAT_MEMBERS numericMemberType)
     //        {
-    //            skillNumerics.ResetCalculators(numericMemberType);
+    //            skillNumerics.ResetModifiers(numericMemberType);
     //        }
     //    
     //    }

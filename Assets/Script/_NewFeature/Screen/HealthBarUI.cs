@@ -24,6 +24,11 @@ public class HealthBarUI : MonoBehaviour
         StartCoroutine(DoAndRenderUI(() => { fill.color = gradient.Evaluate(1f); }));
     }
 
+    private void OnDestroy() {
+        LifeCompositeRef.OnHpUpdated -= UpdateFillAmount;
+        LifeCompositeRef.OnEnterDie  -= TurnOffUI;
+    }
+
     public void SetLifeComposite(Sophia.Composite.LifeComposite LifeComposite)
     {
         int intValue = LifeComposite.MaxHp;
