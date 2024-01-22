@@ -2,14 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using Sophia.Composite;
-using Sophia.DataSystem;
-using Sophia.DataSystem.Numerics;
-using Sophia.Instantiates;
-using Sophia.DataSystem.Functional;
-
 namespace Sophia.Entitys
 {
+    using Sophia.Composite;
+    using Sophia.DataSystem;
+    using Sophia.DataSystem.Numerics;
+    using Sophia.Instantiates;
+    using Sophia.DataSystem.Functional;
+    using Sophia.DataSystem.Modifiers.Affector;
+
     public class TEST_EnemyStub : Entity
     {
         #region SerializeMembeer 
@@ -25,9 +26,10 @@ namespace Sophia.Entitys
         public LifeComposite Life { get; private set; }
         public EntityStatReferer StatReferer { get; private set; }
         public EntityExtrasReferer ExtrasReferer { get; private set; }
-        public AffectorComposite affectorComposite {get; private set;}
+        public AffectorHandlerComposite affectorComposite {get; private set;}
 
-        public override AffectorComposite GetAffectorComposite() => this.affectorComposite;
+        public override AffectorHandlerComposite GetAffectorHandlerComposite() => this.affectorComposite;
+        public override void ModifiedByAffector(Affector affector) => this.affectorComposite.ModifiyByAffector(affector);
 
         #endregion
 
@@ -82,13 +84,14 @@ namespace Sophia.Entitys
 
             StatReferer = new EntityStatReferer();
             Life = new LifeComposite(_baseEntityData.MaxHp, _baseEntityData.Defence);
-            affectorComposite = new AffectorComposite();
+            affectorComposite = new AffectorHandlerComposite(_baseEntityData.Tenacity);
         }
 
         private void Start()
         {
             StatReferer.SetRefStat(Life.MaxHp);
             StatReferer.SetRefStat(Life.Defence);
+            StatReferer.SetRefStat(affectorComposite.Tenacity);
         }
     }
 }

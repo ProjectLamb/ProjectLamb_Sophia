@@ -7,6 +7,7 @@ using Microsoft.SqlServer.Server;
 
 namespace Sophia.Instantiates
 {
+    using Sophia.DataSystem;
     using Sophia.Entitys;   
     /*변하는 녀석*/
 
@@ -316,16 +317,22 @@ namespace Sophia.Instantiates
         }
 
         private void OnTriggerEnter(Collider other) {
-            ColliderTriggerHandle(other);
+            if(!CheckIsOwnerCollider(other)) {
+                ColliderTriggerHandle(other);
+            }
         }
 
         public void ColliderTriggerHandle(Collider target)
         {
             if(CheckIsOwnerCollider(target)) {return;}
-            if (target.TryGetComponent<IDamagable>(out IDamagable damagables))
+            if (target.TryGetComponent<Entity>(out Entity targetEntity))
             {
-                damagables.GetDamaged(CurrentProjectileDamage, _hitEffect);
+                targetEntity.GetDamaged(CurrentProjectileDamage, _hitEffect);
                 OnProjectileTriggerd.Invoke();
+                Extras<Entity> targetAffectedExtras = OwnerRef.GetExtras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.TargetAffected);
+                targetAffectedExtras.PerformStartFunctionals(ref targetEntity);
+                targetAffectedExtras.PerformTickFunctionals(ref targetEntity);
+                targetAffectedExtras.PerformExitFunctionals(ref targetEntity);
             }
         }
 

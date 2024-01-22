@@ -7,7 +7,7 @@ using UnityEngine.Events;
 namespace Sophia.DataSystem
 {
     using Numerics;
-    using Modifires;
+    using Modifiers;
 
     public class Stat
     {
@@ -18,7 +18,7 @@ namespace Sophia.DataSystem
         private bool isDirty = false;
         public readonly UnityEvent OnStatChanged;
 
-        private readonly List<StatCalculator> statCalculatorList = new();
+        private readonly List<StatModifier> statModifierList = new();
 
         public Stat(float baseValue, E_NUMERIC_STAT_TYPE NumericType, E_STAT_USE_TYPE UseType, UnityAction statChangedHandler)
         {
@@ -47,7 +47,7 @@ namespace Sophia.DataSystem
 
         public static implicit operator float(Stat stat)
         {
-            if (stat.UseType == E_STAT_USE_TYPE.Ratio)
+            if (stat.UseType != E_STAT_USE_TYPE.Natural )
             {
                 stat.RecalculateStat();
                 return stat.value;
@@ -79,22 +79,22 @@ namespace Sophia.DataSystem
 
 #endregion
 
-        public void AddCalculator(StatCalculator StatCalculator)
+        public void AddModifier(StatModifier StatModifier)
         {
-            statCalculatorList.Add(StatCalculator);
-            statCalculatorList.OrderBy(calc => calc.Order);
+            statModifierList.Add(StatModifier);
+            statModifierList.OrderBy(calc => calc.Order);
             isDirty = true;
         }
 
-        public void RemoveCalculator(StatCalculator StatCalculator)
+        public void RemoveModifier(StatModifier StatModifier)
         {
-            statCalculatorList.Remove(StatCalculator);
+            statModifierList.Remove(StatModifier);
             isDirty = true;
         }
 
-        public void ResetCalculators()
+        public void ResetModifiers()
         {
-            statCalculatorList.Clear();
+            statModifierList.Clear();
             isDirty = true;
         }
 
@@ -106,7 +106,7 @@ namespace Sophia.DataSystem
             float Adder = 0;
             float Multiplier = 1.0f;
 
-            statCalculatorList.ForEach((calc) => {
+            statModifierList.ForEach((calc) => {
                 if(!calc.StatType.Equals(this.NumericType)) throw new System.Exception($"칼큘레이터 타겟 타입과 현재 타겟 타입이 다르다! {calc.StatType.ToString()} != {this.NumericType.ToString()}");
                 CalculateWithUseAndCalcType(this.UseType, calc, ref Adder, ref Multiplier);
             });
@@ -121,7 +121,7 @@ namespace Sophia.DataSystem
             OnStatChanged.Invoke();
         }
 
-        public void CalculateWithUseAndCalcType(E_STAT_USE_TYPE useType, StatCalculator calc, ref float adder, ref float multiplier) {
+        public void CalculateWithUseAndCalcType(E_STAT_USE_TYPE useType, StatModifier calc, ref float adder, ref float multiplier) {
                 switch(useType) {
                     case E_STAT_USE_TYPE.Natural:  {
                         if(calc.CalcType == E_STAT_CALC_TYPE.Add)        {adder += calc.Value; return;}

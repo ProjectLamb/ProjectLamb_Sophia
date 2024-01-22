@@ -30,6 +30,10 @@ public class DamageTextInstantiator : MonoBehaviour
         LifeCompositeRef.OnDamaged += Generate;
     }
 
+    private void OnDestroy() {
+        LifeCompositeRef.OnDamaged -= Generate;
+    }
+
     public void Generate(float _damageAmount)
     {
         if (StakingText == null)

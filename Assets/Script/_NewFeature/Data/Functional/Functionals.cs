@@ -27,7 +27,8 @@ namespace Sophia.DataSystem.Functional
 
 #region Affect
 
-            private Extras<Entity> OnAffected = null;
+            private Extras<Entity> OnOwnerAffected = null;
+            private Extras<Entity> OnTargetAffected = null;
 
 #endregion
 
@@ -54,7 +55,8 @@ namespace Sophia.DataSystem.Functional
                     case E_FUNCTIONAL_EXTRAS_TYPE.Dead :                {this.OnDead = extrasRef as Extras<object>;             return;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Move :                {this.OnMove = extrasRef as Extras<Vector3>;            return;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Idle :                {this.OnIdle = extrasRef as Extras<object>;             return;}
-                    case E_FUNCTIONAL_EXTRAS_TYPE.Affected :            {this.OnAffected = extrasRef as Extras<Entity>;         return;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.OwnerAffected :       {this.OnOwnerAffected = extrasRef as Extras<Entity>;    return;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.TargetAffected :      {this.OnTargetAffected = extrasRef as Extras<Entity>;   return;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.PhyiscTriggered :     {this.OnPhyiscTriggered = extrasRef as Extras<Vector3>; return;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Attack :              {this.OnAttack = extrasRef as Extras<object>;           return;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Created :             {this.OnCreated = extrasRef as Extras<object>;          return;}
@@ -77,7 +79,8 @@ namespace Sophia.DataSystem.Functional
                     case E_FUNCTIONAL_EXTRAS_TYPE.Dead :                {res = this.OnDead as Extras<T>;                break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Move :                {res = this.OnMove as Extras<T>;                break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Idle :                {res = this.OnIdle as Extras<T>;                break;}
-                    case E_FUNCTIONAL_EXTRAS_TYPE.Affected :            {res = this.OnAffected as Extras<T>;            break;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.OwnerAffected :            {res = this.OnOwnerAffected as Extras<T>;            break;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.TargetAffected :            {res = this.OnTargetAffected as Extras<T>;            break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.PhyiscTriggered :     {res = this.OnPhyiscTriggered as Extras<T>;     break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Attack :              {res = this.OnAttack as Extras<T>;              break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Created :             {res = this.OnCreated as Extras<T>;             break;}
@@ -131,7 +134,8 @@ namespace Sophia.DataSystem.Functional
             public virtual Extras<Entity> GetExtrasEntity(E_FUNCTIONAL_EXTRAS_TYPE functionalType) {
                 Extras<Entity> res = null;
                 switch(functionalType) {
-                    case E_FUNCTIONAL_EXTRAS_TYPE.Affected : {res = this.OnAffected; break;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.OwnerAffected : {res = this.OnOwnerAffected; break;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.TargetAffected : {res = this.OnTargetAffected; break;}
                     default: {
                         throw new System.Exception($"이 Entity 멤버에는 {functionalType.ToString()} 없음");
                     }
@@ -175,7 +179,8 @@ namespace Sophia.DataSystem.Functional
 
 #region Affect
 
-            private Extras<Entity> OnAffected = null;
+            private Extras<Entity> OnOwnerAffected = null;
+            private Extras<Entity> OnTargetAffected = null;
 
 #endregion
 
@@ -212,7 +217,8 @@ namespace Sophia.DataSystem.Functional
                     case E_FUNCTIONAL_EXTRAS_TYPE.Dead :                {this.OnDead = extrasRef as Extras<object>;             return;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Move :                {this.OnMove = extrasRef as Extras<Vector3>;            return;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Idle :                {this.OnIdle = extrasRef as Extras<object>;             return;}
-                    case E_FUNCTIONAL_EXTRAS_TYPE.Affected :            {this.OnAffected = extrasRef as Extras<Entity>;         return;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.OwnerAffected :            {this.OnOwnerAffected = extrasRef as Extras<Entity>;         return;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.TargetAffected :            {this.OnTargetAffected = extrasRef as Extras<Entity>;         return;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.PhyiscTriggered :     {this.OnPhyiscTriggered = extrasRef as Extras<Vector3>; return;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Attack :              {this.OnAttack = extrasRef as Extras<object>;           return;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Created :             {this.OnCreated = extrasRef as Extras<object>;          return;}
@@ -242,7 +248,8 @@ namespace Sophia.DataSystem.Functional
                     case E_FUNCTIONAL_EXTRAS_TYPE.Dead :                {res = this.OnDead as Extras<T>;                break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Move :                {res = this.OnMove as Extras<T>;                break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Idle :                {res = this.OnIdle as Extras<T>;                break;}
-                    case E_FUNCTIONAL_EXTRAS_TYPE.Affected :            {res = this.OnAffected as Extras<T>;            break;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.OwnerAffected :            {res = this.OnOwnerAffected as Extras<T>;            break;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.TargetAffected :            {res = this.OnTargetAffected as Extras<T>;            break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.PhyiscTriggered :     {res = this.OnPhyiscTriggered as Extras<T>;     break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Attack :              {res = this.OnAttack as Extras<T>;              break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Created :             {res = this.OnCreated as Extras<T>;             break;}
@@ -308,7 +315,8 @@ namespace Sophia.DataSystem.Functional
             public override Extras<Entity> GetExtrasEntity(E_FUNCTIONAL_EXTRAS_TYPE functionalType) {
                 Extras<Entity> res = null;
                 switch(functionalType) {
-                    case E_FUNCTIONAL_EXTRAS_TYPE.Affected : {res = this.OnAffected; break;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.OwnerAffected : {res = this.OnOwnerAffected; break;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.TargetAffected : {res = this.OnTargetAffected; break;}
                     default: {
                         throw new System.Exception($"이 Entity 멤버에는 {functionalType.ToString()} 없음");
                     }
