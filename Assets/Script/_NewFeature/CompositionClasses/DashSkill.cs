@@ -18,6 +18,9 @@ namespace Sophia.Composite
 
         public Stat MaxStamina {get; private set;}
         public Stat StaminaRestoreSpeed {get; private set;}
+
+        public Extras<object> DashExtras {get; private set;}
+
         public Sophia.Composite.CoolTimeComposite Timer {get; private set;}
         public DashCoolUI DashUI {get; private set;}
         public Func<(Vector3, int)> BindMovementData;
@@ -33,6 +36,11 @@ namespace Sophia.Composite
                 E_NUMERIC_STAT_TYPE.StaminaRestoreSpeed, 
                 E_STAT_USE_TYPE.Ratio, 
                 OnStaminaRestoreSpeedUpdated
+            );
+
+            DashExtras = new Extras<object>(
+                E_FUNCTIONAL_EXTRAS_TYPE.Dash,
+                OnDashExtrasUpdated
             );
 
             BindMovementData = movementDataSender;
@@ -81,6 +89,9 @@ namespace Sophia.Composite
         private void OnStaminaRestoreSpeedUpdated() {
             Timer.SetAcceleratrion(this.StaminaRestoreSpeed.GetValueByNature());
             DashUI.ResetUI();
+        }
+        private void OnDashExtrasUpdated() {
+            Debug.Log("대쉬 추가 동작 변경됨!");
         }
 
         private void Dash() {

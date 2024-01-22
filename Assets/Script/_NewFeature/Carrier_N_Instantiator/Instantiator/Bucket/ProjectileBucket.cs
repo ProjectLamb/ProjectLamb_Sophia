@@ -22,6 +22,12 @@ namespace Sophia.Instantiates
         public Stat InstantiableSizeMultiplyRatio {get; protected set;}
         public Stat InstantiableForwardingSpeedMultiplyRatio {get; protected set;}
 
+        public Extras<object> AttackExtras {get; protected set;}
+        public Extras<object> CreatedExtras {get; protected set;}
+        public Extras<object> TriggerdExtras {get; protected set;}
+        public Extras<object> ReleasedExtras {get; protected set;}
+        public Extras<object> ForwardingExtras {get; protected set;}
+
 #region Event
         /*
         당연히 Functional로 관리를 해야 하지만 Projectil이 엄연히 다음 이벤트를 가지고 있는것은 사실이니.
