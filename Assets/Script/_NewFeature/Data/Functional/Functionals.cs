@@ -202,7 +202,7 @@ namespace Sophia.DataSystem.Functional
 #region Player
         
             private Extras<object> OnDash = null;
-            private Extras<object> Onskill = null;
+            private Extras<object> OnSkill = null;
             private Extras<object> OnWeaponUse = null;
             private Extras<object> OnProjectileRestore = null;
             private Extras<object> OnSkillUse = null;
@@ -226,7 +226,7 @@ namespace Sophia.DataSystem.Functional
                     case E_FUNCTIONAL_EXTRAS_TYPE.Released :            {this.OnReleased = extrasRef as Extras<object>;         return;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Forwarding :          {this.OnForwarding = extrasRef as Extras<object>;       return;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Dash :                {this.OnDash = extrasRef as Extras<object> ;       return;}
-                    case E_FUNCTIONAL_EXTRAS_TYPE.skill :               {this.Onskill = extrasRef as Extras<object> ;       return;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.skill :               {this.OnSkill = extrasRef as Extras<object> ;       return;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.WeaponUse :           {this.OnWeaponUse = extrasRef as Extras<object> ;       return;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.ProjectileRestore :   {this.OnProjectileRestore = extrasRef as Extras<object> ;       return;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.SkillUse :            {this.OnSkillUse = extrasRef as Extras<object> ;       return;}
@@ -257,7 +257,7 @@ namespace Sophia.DataSystem.Functional
                     case E_FUNCTIONAL_EXTRAS_TYPE.Released :            {res = this.OnReleased as Extras<T>;            break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Forwarding :          {res = this.OnForwarding as Extras<T>;          break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Dash :                {res = this.OnDash as Extras<T>;                break;}
-                    case E_FUNCTIONAL_EXTRAS_TYPE.skill :               {res = this.Onskill as Extras<T>;               break;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.skill :               {res = this.OnSkill as Extras<T>;               break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.WeaponUse :           {res = this.OnWeaponUse as Extras<T>;           break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.ProjectileRestore :   {res = this.OnProjectileRestore as Extras<T>;   break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.SkillUse :            {res = this.OnSkillUse as Extras<T>;            break;}
@@ -298,7 +298,7 @@ namespace Sophia.DataSystem.Functional
                     case E_FUNCTIONAL_EXTRAS_TYPE.Released :            {res = this.OnReleased;      break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Forwarding :          {res = this.OnForwarding;    break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Dash :          {res = this.OnDash;    break;}
-                    case E_FUNCTIONAL_EXTRAS_TYPE.skill :          {res = this.Onskill;    break;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.skill :          {res = this.OnSkill;    break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.WeaponUse :          {res = this.OnWeaponUse;    break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.ProjectileRestore :          {res = this.OnProjectileRestore;    break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.SkillUse :          {res = this.OnSkillUse;    break;}
