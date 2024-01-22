@@ -68,3 +68,12 @@ flowchart RL
             EFun{ F? } --> EOut[4]
     end
 ```
+
+```mermaid
+---
+title: Animal example
+---
+
+classDiagram
+
+```
