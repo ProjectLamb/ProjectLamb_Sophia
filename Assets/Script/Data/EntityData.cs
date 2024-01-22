@@ -15,22 +15,22 @@ using UnityEngine.Events;
 public struct EntityData
 {
     //int CurHP; 이 EntityData를 포함하는 컴포넌트그 스코프 내에서 따로 정의한다. 오직 이 데이터
-    public string       EntityTag;
-    public int          MaxHP;
-    public int          Power;
-    public float        MoveSpeed;
-    public float        Defence;
-    public float        Tenacity;
-    public float        AttackSpeed;
-    public UnityAction  MoveState;
-    public UnityAction  AttackState;
+    public string EntityTag;
+    public int MaxHP;
+    public int Power;
+    public float MoveSpeed;
+    public float Defence;
+    public float Tenacity;
+    public float AttackSpeed;
+    public UnityAction MoveState;
+    public UnityAction AttackState;
     public UnityActionRef<int> AttackStateRef;
-    public UnityAction  HitState;
+    public UnityAction HitState;
     public UnityActionRef<int> HitStateRef;
     public UnityAction<Entity, Entity> ProjectileShootState;
-    public UnityAction  PhyiscTriggerState;
-    public UnityAction  DieState;
-    public UnityAction  UIAffectState;
+    public UnityAction PhyiscTriggerState;
+    public UnityAction DieState;
+    public UnityAction UIAffectState;
     public EntityData(ScriptableObjEntityData _scriptable)
     {
         EntityTag = _scriptable.EntityTag;
@@ -54,8 +54,8 @@ public struct EntityData
     public static EntityData operator +(EntityData x, EntityData y)
     {
         EntityData res = new EntityData();
-        if(!String.IsNullOrEmpty(x.EntityTag)){res.EntityTag = x.EntityTag;}
-        if(!String.IsNullOrEmpty(y.EntityTag)){res.EntityTag = y.EntityTag;}
+        if (!String.IsNullOrEmpty(x.EntityTag)) { res.EntityTag = x.EntityTag; }
+        if (!String.IsNullOrEmpty(y.EntityTag)) { res.EntityTag = y.EntityTag; }
         res.MaxHP = x.MaxHP + y.MaxHP;
         res.MoveSpeed = x.MoveSpeed + y.MoveSpeed;
         res.Defence = x.Defence + y.Defence;
@@ -77,8 +77,8 @@ public struct EntityData
     public static EntityData operator -(EntityData x, EntityData y)
     {
         EntityData res = new EntityData();
-        if(!String.IsNullOrEmpty(x.EntityTag)){res.EntityTag = x.EntityTag;}
-        if(!String.IsNullOrEmpty(y.EntityTag)){res.EntityTag = y.EntityTag;}
+        if (!String.IsNullOrEmpty(x.EntityTag)) { res.EntityTag = x.EntityTag; }
+        if (!String.IsNullOrEmpty(y.EntityTag)) { res.EntityTag = y.EntityTag; }
         res.MaxHP = x.MaxHP - y.MaxHP;
         res.MoveSpeed = x.MoveSpeed - y.MoveSpeed;
         res.Defence = x.Defence - y.Defence;
