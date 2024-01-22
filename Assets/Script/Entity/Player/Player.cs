@@ -113,10 +113,12 @@ public class Player : Entity {
     public override void GetDamaged(int _amount, VFXObject obj){
         if(Life.IsDie) {return;}
         Life.Damaged(_amount);
+        PlayerDataManager.GetEntityData().HitState.Invoke();
+        anim.SetTrigger("GetDamaged");
         visualModulator.InteractByVFX(obj);
     }
 
-    public override void Die(){
+    public override void Die() {
         Debug.Log("체력 없음!");
         anim.SetTrigger("Die");
         mIsDie = true;
@@ -270,7 +272,7 @@ public class Player : Entity {
         }
 
         // 세번째 공격이 이루어졌다면
-        if(isThrAttack)
+        if(attackTrigger)
         { 
             // DoAttack trigger reset
             anim.ResetTrigger("DoAttack");
