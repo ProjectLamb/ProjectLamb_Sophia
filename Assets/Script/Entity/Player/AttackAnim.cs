@@ -12,9 +12,10 @@ public class AttackAnim : MonoBehaviour
     public Weapon_Melee_Mace weapon;
     
     static public bool isAttack = false;
-    static public bool isThrAttack = false;
+    static public bool attackTrigger = false;
     static public bool canExitAttack = false;
     static public bool attackProTime = false;
+
     private void OnEnable() {
         weapon = (Weapon_Melee_Mace) player.weaponManager.weapon;
     }
@@ -43,16 +44,6 @@ public class AttackAnim : MonoBehaviour
         isAttack = false;
     }
 
-    void ThrAttackOn()
-    { // 세번째 공격이 실행됨
-        isThrAttack = true;
-    }
-
-    void ThrAttackOff()
-    { // 세번째 공격이 종료되고 idle 상태로 전환
-        isThrAttack = false;
-    }
-
     void ExitAttack()
     {
         canExitAttack = true;
@@ -62,7 +53,13 @@ public class AttackAnim : MonoBehaviour
     {
         canExitAttack = false;
         isAttack = false;
+        attackTrigger = true;
         attackProTime = false;
+    }
+
+    void ResetAttack()
+    {
+        attackTrigger = false;
     }
 
     void AttackPro()
