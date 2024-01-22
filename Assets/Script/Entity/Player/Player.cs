@@ -59,11 +59,22 @@ public class Player : Entity {
 // 대쉬를 했는지 
 // 대쉬를 했는지 
 
+
+    private Vector3                 mMoveVec;
+    private Quaternion              mRotate;
+    private bool                    mIsBorder;
+    private bool                    mIsDashed;
+    
+    public  bool                    mIsDie;
     public  bool                    isAttack; // 일반 공격(1,2,3타) 여부
-    public  bool                    isThrAttack; // 세번째 공격 여부
     public  bool                    canExitAttack; // 공격 중 탈출가능시점
 
+    public  bool                    attackTrigger; // 선입력되어있는 attack 트리거를 해제하기 위한 변수
+    public  bool                    attackProTime; // 공격 이펙트 출현시점
+
     [HideInInspector] Animator anim;
+    
+    private Vector2 inputVec;
 
     IEnumerator mCoWaitDash;        // StopCorutine을 사용하기 위해서는 코루틴 변수가 필요하다. 
     public ParticleSystem DieParticle;
@@ -84,19 +95,19 @@ public class Player : Entity {
         //Life.OnHit += PlayerDataManager.GetEntityData().HitStateRef;
     
         isAttack = false;
-        isThrAttack = false;
+        //isThrAttack = false;
 
         DashSkillAbility = new Sophia.Composite.DashSkill(entityRigidbody, DashDataSender);
         DashSkillAbility.SetAudioSource(DashSource);
         MasterData.MaxStaminaInject(DashSkillAbility.MaxStamina);
     }
 
-
-
 #region 
     public override void GetDamaged(int _amount){
         if(Life.IsDie) {return;}
         Life.Damaged(_amount);
+        PlayerDataManager.GetEntityData().HitState.Invoke();
+        anim.SetTrigger("GetDamaged");
     }
 
     public override void GetDamaged(int _amount, VFXObject obj){
@@ -105,16 +116,11 @@ public class Player : Entity {
         visualModulator.InteractByVFX(obj);
     }
 
-    public override void Die(){Debug.Log("죽었다는 로직 작성하기");}
-
-#endregion
-
-
-#region Move
-
-    private Vector2     inputVec;
-    private Vector3     mMoveVec; /*m*/
-    private Quaternion  mRotate; /*m*/
+    public override void Die(){
+        Debug.Log("체력 없음!");
+        anim.SetTrigger("Die");
+        mIsDie = true;
+    }
 
     public void OnMove(InputValue value) // new input system 사용
     {
@@ -253,9 +259,8 @@ public class Player : Entity {
     public void CheckAttack()
     {
         isAttack = AttackAnim.isAttack;
-        isThrAttack = AttackAnim.isThrAttack;
         canExitAttack = AttackAnim.canExitAttack;
-
+        // attackTrigger = AttackAnim.attackTrigger;
         // 공격중이라면
         if(isAttack){
             anim.SetBool("isAttack",true);
@@ -267,7 +272,7 @@ public class Player : Entity {
         // 세번째 공격이 이루어졌다면
         if(isThrAttack)
         { 
-            // DoAttack 트리거 무시
+            // DoAttack trigger reset
             anim.ResetTrigger("DoAttack");
         }
         
@@ -281,5 +286,4 @@ public class Player : Entity {
             anim.SetBool("canExitAttack",false);
         }
     }
-
 }
