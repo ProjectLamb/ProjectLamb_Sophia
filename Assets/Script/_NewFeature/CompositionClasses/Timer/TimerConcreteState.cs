@@ -25,7 +25,7 @@ namespace Sophia.Composite.Timer
 
         public void Exit(TimerComposite timer) { 
             timer.PassedTime = 0;
-            return; 
+            return;
         }
     }
 
