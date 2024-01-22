@@ -1,5 +1,5 @@
+using System;
 using UnityEngine;
-using UnityEngine.Events;
 using FMODPlus;
 using UnityEngine.InputSystem;
 using Cysharp.Threading.Tasks;
@@ -90,11 +90,11 @@ namespace Sophia.Entitys
         {
             if(DashSkillAbility.GetIsDashState(GetStat(E_NUMERIC_STAT_TYPE.MoveSpeed))) return;
             // GetAnimator().SetFloat("Move", this.entityRigidbody.velocity.magnitude);
-            if(!Movement.IsBorder(this.transform)) Movement.Tick(this.transform);
+            if(!Movement.IsBorder(this.transform)) Movement.MoveTick(this.transform);
         }
 
-        public void Turning() => Movement.Turning(transform,Input.mousePosition).Forget();
-        public void TurningWithCallback(UnityAction action) => Movement.TurningWithCallback(transform,Input.mousePosition,action).Forget();
+        public async UniTask Turning() {await Movement.Turning(transform, Input.mousePosition);}
+        //public void TurningWithCallback(UnityAction action) => Movement.TurningWithCallback(transform,Input.mousePosition,action).Forget();
 
 #endregion
 
@@ -129,9 +129,19 @@ namespace Sophia.Entitys
         private void Start(){
            StatReferer.SetRefStat(Life.MaxHp);
            StatReferer.SetRefStat(Life.Defence);
+
+           ExtrasReferer.SetRefExtras<float>(Life.HitExtras);
+           ExtrasReferer.SetRefExtras<float>(Life.DamagedExtras);
+           ExtrasReferer.SetRefExtras<object>(Life.DeadExtras);
+
            StatReferer.SetRefStat(Movement.MoveSpeed);
+           ExtrasReferer.SetRefExtras<Vector3>(Movement.MoveExtras);
+           ExtrasReferer.SetRefExtras<object>(Movement.IdleExtras);
+           
            StatReferer.SetRefStat(DashSkillAbility.MaxStamina);
            StatReferer.SetRefStat(DashSkillAbility.StaminaRestoreSpeed);
+           ExtrasReferer.SetRefExtras<object>(DashSkillAbility.DashExtras);
+           
            StatReferer.SetRefStat(AffectHandler.Tenacity);
 
            StatReferer.SetRefStat(Power);
@@ -145,11 +155,18 @@ namespace Sophia.Entitys
            StatReferer.SetRefStat(_weaponManager.MeleeRatio);
 
            DashSkillAbility.SetAudioSource(DashSource);
-
         
            ExtrasReferer.SetRefExtras<Entity>(new Extras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.TargetAffected, ()=>{Debug.Log("Affect Extras Changed");}));
         }
-        public void Attack() { _weaponManager.GetCurrentWeapon().Use(this); }
+        public async void Attack() { 
+            try {
+                await Turning();
+                _weaponManager.GetCurrentWeapon().Use(this); 
+            }
+            catch (OperationCanceledException) {
+                
+            }
+        }
         public void Skill() {throw new System.NotImplementedException();}
 
 #region Affect Handler
