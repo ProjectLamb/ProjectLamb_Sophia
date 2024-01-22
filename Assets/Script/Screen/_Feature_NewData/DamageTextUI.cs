@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.Events;
 using TMPro;
 using UnityEngine.Pool;
+using System.Collections;
+using DG.Tweening;
 
 namespace Feature_NewData
 {    
@@ -33,11 +35,21 @@ namespace Feature_NewData
     public class DamageTextUI : MonoBehaviour {
 
 #region Members
-        private TextMeshProUGUI _tmpPro;
-        private Rigidbody _rigid;
+        [SerializeField] private TextMeshProUGUI _tmpPro;
+        [SerializeField] private Rigidbody _rigid;
         public float AnimationSpeed {get; private set;}
         public float DestroyTimer {get; private set;}
+        public int DamageAmount;
 
+#endregion
+
+#region Getter
+        public float GetTextHeight() {
+            return _tmpPro.maxHeight;
+        }
+        public Vector3 GetNextPosition(){
+            return Vector3.up * 2;
+        }
 #endregion
 
 #region Setter
@@ -53,7 +65,13 @@ namespace Feature_NewData
         }
 
         public DamageTextUI SetText(float amount) {
-            _tmpPro.text = ((int)amount).ToString();
+            DamageAmount = (int)amount;
+            _tmpPro.text = DamageAmount.ToString();
+            return this;
+        }
+
+        public DamageTextUI SetPosition(Vector3 position) {
+            transform.position = position;
             return this;
         }
 
@@ -65,24 +83,49 @@ namespace Feature_NewData
 #endregion
 
         private void Awake() {
-            if(TryGetComponent<TextMeshProUGUI>(out _tmpPro)) {
+            if(_tmpPro == null && TryGetComponent<TextMeshProUGUI>(out _tmpPro)) {
                 throw new System.Exception("TextMeshProUGUI 컴포넌트 없음");
             }
-            if(TryGetComponent<Rigidbody>(out _rigid)) {
+            
+            if(_rigid == null && TryGetComponent<Rigidbody>(out _rigid)) {
                 throw new System.Exception("RigidBody 컴포넌트 없음");
             }
         }
+        
 
-        private void Update() {
-            
+        Coroutine CurrentDestroyCoroutine;
+
+        IEnumerator CoDestroy() {
+            yield return YieldInstructionCache.WaitForSeconds(DestroyTimer);
+            Destroy(this.gameObject);
         }
 
         public void ActivatedTextUI() {
             _rigid.velocity = Vector3.up * AnimationSpeed;
+            CurrentDestroyCoroutine = StartCoroutine(CoDestroy());
+        }
+
+        public void ReactivateTextUI(int amount) {
+            StopCoroutine(CurrentDestroyCoroutine);
+
+            int currentDamage = DamageAmount;
+            int newDamage = currentDamage + amount;
+            _rigid.velocity = Vector3.zero;
+            
+            Sequence ReactivateSeq = DOTween.Sequence();
+            Tween ShakeTween = transform.DOShakePosition(0.1f, 10);
+            Tween CountTween = DOTween.To(() => currentDamage, x => currentDamage = x, newDamage, 0.1f)
+                                        .OnUpdate(() => {_tmpPro.text = currentDamage.ToString(); DamageAmount = currentDamage;});
+            
+            ReactivateSeq.Append(ShakeTween).Join(CountTween).OnComplete(()=>{_rigid.velocity = Vector3.up*AnimationSpeed;}).Play();
+            
+            CurrentDestroyCoroutine = StartCoroutine(CoDestroy());
         }
 
         public void OnDisable() {}
-        public void OnDestroy() {}
+        public void OnDestroy() {
+            StopCoroutine(CurrentDestroyCoroutine);
+        }
         
 //      private void OnBecameInvisible() {
 //          poolRefer.Release(this);

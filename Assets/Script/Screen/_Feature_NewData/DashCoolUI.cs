@@ -10,32 +10,32 @@ namespace Feature_NewData
         public UnityEngine.UI.Image fill;
         public TextMeshProUGUI textMeshPro;
         
-        private CoolTimeManager Timer;
+        private CoolTimeManager TimerRef;
 
         public void SetTimer(CoolTimeManager coolTimeManager) {
-            Timer = coolTimeManager;
+            TimerRef = coolTimeManager;
 
-            Timer.AddOnTickingEvent(UpdateFillAmount)
+            TimerRef.AddOnTickingEvent(UpdateFillAmount)
                     .AddOnUseEvent(UseStack)
                     .AddOnFinishedEvent(RecoverStack)
                     .AddOnInitialized(ResetUI);
             
-            StartCoroutine(DoAndRenderUI(() => {textMeshPro.text = Timer.CurrentStacksCount.ToString();}));
+            StartCoroutine(DoAndRenderUI(() => {textMeshPro.text = TimerRef.CurrentStacksCount.ToString();}));
         }
 
 
         private void UpdateFillAmount(float NoneUse)
         {
-            fill.fillAmount = 1f - Timer.GetProgressAmount();
+            fill.fillAmount = 1f - TimerRef.GetProgressAmount();
         }
             
         public void ResetUI() {
             fill.fillAmount = 0;
-            StartCoroutine(DoAndRenderUI(() => {textMeshPro.text = Timer.BaseStacksCount.ToString();}));
+            StartCoroutine(DoAndRenderUI(() => {textMeshPro.text = TimerRef.BaseStacksCount.ToString();}));
         }
 
         public void DrawForce() {
-            StartCoroutine(DoAndRenderUI(() => {textMeshPro.text = Timer.BaseStacksCount.ToString();}));
+            StartCoroutine(DoAndRenderUI(() => {textMeshPro.text = TimerRef.BaseStacksCount.ToString();}));
         }
 
         IEnumerator DoAndRenderUI(UnityAction action){
@@ -43,10 +43,10 @@ namespace Feature_NewData
         }
 
         private void UseStack() {
-            StartCoroutine(DoAndRenderUI(() => {textMeshPro.text = Timer.CurrentStacksCount.ToString();}));
+            StartCoroutine(DoAndRenderUI(() => {textMeshPro.text = TimerRef.CurrentStacksCount.ToString();}));
         }
         private void RecoverStack() {
-            StartCoroutine(DoAndRenderUI(() => {textMeshPro.text = Timer.CurrentStacksCount.ToString();}));
+            StartCoroutine(DoAndRenderUI(() => {textMeshPro.text = TimerRef.CurrentStacksCount.ToString();}));
         }
     }
 }
