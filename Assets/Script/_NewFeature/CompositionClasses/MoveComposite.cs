@@ -12,6 +12,10 @@ namespace Sophia.Composite
     public class MovementComposite 
     {
         public  Stat MoveSpeed {get; protected set;}
+
+        public Extras<Vector3> OnMove {get; protected set;}
+        public Extras<object> OnIdle {get; protected set;}
+
         public  Rigidbody RbRef {get; protected set;}
 
         public  Vector3     ForwardingVector {get; set;}
@@ -35,11 +39,7 @@ namespace Sophia.Composite
         }
         public void SetInputVector(Vector2 vector) => mInputVec = vector;
 
-        protected UnityAction<Vector3> OnMoveForward = null;
-        public MovementComposite AddOnUpdateEvent(UnityAction<Vector3> action) {
-            this.OnMoveForward += action;
-            return this;
-        }
+        public event UnityAction<Vector3> OnMoveForward = null;
 
     #endregion
 

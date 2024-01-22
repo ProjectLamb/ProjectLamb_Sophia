@@ -21,7 +21,7 @@ namespace Sophia.Composite.Timer
             }
         }
 
-        public readonly float IntervalTime;
+        public float IntervalTime {get; private set;}
         internal float NextInterval;
 
         public const float baseAccelerationAmount = 1f;
@@ -31,18 +31,18 @@ namespace Sophia.Composite.Timer
         public bool IsLoop {get; internal set;}
         public E_TIMER_STATE StateType;
 
-        public TimerComposite(float baseTime, float intervalTime)
+        public TimerComposite(float baseTime)
         {
-            StateType = E_TIMER_STATE.Initialized;
-            currentState = TimerInitialize.Instance;
-            PassedTime = BaseTime = baseTime;
-            IntervalTime = intervalTime;
+            this.StateType = E_TIMER_STATE.Initialized;
+            this.currentState = TimerInitialize.Instance;
+            this.PassedTime = BaseTime = baseTime;
+            this.IntervalTime = Time.deltaTime;
 
-            OnInitialized ??= () => { };
-            OnStart ??= () => { };
-            OnInterval ??= () => { };
-            OnTicking ??= (float val) => { };
-            OnFinished ??= () => { };
+            this.OnInitialized ??= () => { };
+            this.OnStart ??= () => { };
+            this.OnInterval ??= () => { };
+            this.OnTicking ??= (float val) => { };
+            this.OnFinished ??= () => { };
         }
 
         #endregion
@@ -54,7 +54,14 @@ namespace Sophia.Composite.Timer
         public event UnityAction OnInterval = null;
         public event UnityAction<float> OnTicking = null;
         public event UnityAction OnFinished = null;
-        public event Func<bool> WhenRewindable = () => false;
+        private event Func<bool> WhenRewindable = () => false;
+        public TimerComposite SetRewindCondition(Func<bool> condition){
+            WhenRewindable = condition;
+            return this;
+        }
+        public void ClearRewindCondition() {
+            WhenRewindable = null;
+        }
 
         internal void InvoekInitializedAction() => OnInitialized?.Invoke();
         internal void InvokeStartAction() => OnStart?.Invoke();
@@ -69,6 +76,7 @@ namespace Sophia.Composite.Timer
             OnInterval = null;
             OnTicking = null;
             OnFinished = null;
+            WhenRewindable = null;
 
             OnInitialized = () => { };
             OnStart = () => { };
@@ -95,8 +103,9 @@ namespace Sophia.Composite.Timer
             return this;
         }
 
-        public TimerComposite SetRewindCondition(Func<bool> condition){
-            WhenRewindable = condition;
+        public TimerComposite SetIntervalTime(float interval)
+        {
+            this.IntervalTime = interval;
             return this;
         }
 

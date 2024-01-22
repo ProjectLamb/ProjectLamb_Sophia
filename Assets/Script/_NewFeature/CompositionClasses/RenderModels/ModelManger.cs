@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using Cysharp.Threading.Tasks;
+using System.Threading;
 
 namespace Sophia.Composite.RenderModels
 {    
@@ -40,20 +41,22 @@ namespace Sophia.Composite.RenderModels
             if(_materials.Count == 0) throw new System.Exception("Skin리스트가 없어서 설정하고싶은 스킨이 없음");
         }
 
-        public async UniTask ChangeSkin(Material skin) {
+        public async UniTask ChangeSkin(CancellationToken cancellationToken, Material skin) {
             _materials[1] = skin;
-            await UniTask.WaitForEndOfFrame(this);
             foreach (Renderer renderer in _renderers) {
                 renderer.sharedMaterials = _materials.ToArray();
             }
+            await UniTask.WaitForEndOfFrame(this, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
         }
 
-        public async UniTask RevertSkin() {
+        public async UniTask RevertSkin(CancellationToken cancellationToken) {
             _materials[1] = TransMaterial;
-            await UniTask.WaitForEndOfFrame(this);
             foreach (Renderer renderer in _renderers) {
                 renderer.sharedMaterials = _materials.ToArray();
             }
+            await UniTask.WaitForEndOfFrame(this, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
         }
 
         public void HoldObject(GameObject go, E_MODEL_HAND handPos) => _modelHands.HoldObject(go, handPos);

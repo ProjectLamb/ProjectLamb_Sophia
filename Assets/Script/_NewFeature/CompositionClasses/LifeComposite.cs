@@ -26,6 +26,11 @@ namespace Sophia.Composite
         public Stat MaxHp {get; protected set;}
         public Stat Defence {get; protected set;}
 
+        
+        public Extras<float> HitExtras {get; protected set;}
+        public Extras<float> DamagedExtras {get; protected set;}
+        public Extras<object> DeadExtras {get; protected set;}
+
         private float mCurrentHealth;
  
         public float CurrentHealth {
