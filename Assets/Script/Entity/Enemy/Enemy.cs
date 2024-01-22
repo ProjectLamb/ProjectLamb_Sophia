@@ -60,18 +60,24 @@ public class Enemy : Entity
     {
         if (Life.IsDie == true) { return; }
         Life.Damaged(_amount);
+        if (Life.IsDie) { Die(); }
     }
 
     public override void GetDamaged(int _amount, VFXObject _vfx)
     {
         if (Life.IsDie == true) { return; }
         Life.Damaged(_amount);
+        if (Life.IsDie) { Die(); }
         visualModulator.InteractByVFX(_vfx);
     }
 
     public void DestroySelf()
     {
         Destroy(gameObject);
+    }
+
+    public void OnDestroy() {
+        Life.OnDamaged -= Generate;
     }
 
     protected virtual void NavMeshSet()
@@ -110,6 +116,7 @@ public class Enemy : Entity
         BaseEnemyData = new EntityData(ScriptableED);
         FinalData = BaseEnemyData;
         Life = new Sophia.Composite.LifeComposite(FinalData.MaxHP);
+        Life.OnDamaged += Generate;
 
         isRecog = false;
         objectiveTarget = GameManager.Instance?.PlayerGameObject?.transform;
@@ -120,6 +127,10 @@ public class Enemy : Entity
             isOffensive = true;
 
         NavMeshSet();
+    }
+
+    public void Generate(float val) {
+        imageGenerator.GenerateImage((int)val);
     }
 
     private void Start()
