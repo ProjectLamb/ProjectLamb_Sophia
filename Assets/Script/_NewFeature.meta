@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Script/_NewFeature.meta
 guid: bf669bd11bd284a00ba2d281eefffa75
+========
+guid: e5594e1e7ea598d409319855db3fd1f5
+>>>>>>>> develop:Assets/Feel.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}
