@@ -85,10 +85,6 @@ Assets/Feel/*
 Assets/Pixel\ Crushers/*
 Assets/Editor\ Default\ Resources/*
 Assets/Gizmos/*
-<<<<<<< HEAD
-=======
-
->>>>>>> develop
 # Ignore Vscode
 .vscode/
 
