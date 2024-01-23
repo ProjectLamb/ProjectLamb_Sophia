@@ -11,6 +11,15 @@ using UnityEngine.InputSystem;
 /// </summary>
 public class PlayerController : MonoBehaviour
 {
+
+    public enum PlayerState
+    {
+        Idle,
+        Move,
+        Attack,
+        GetDamaged,
+        Die,
+    }
     Player player;
 
     static public bool IsMoveAllow = true; //인풋을 받을수 있는지 없는지
