@@ -42,7 +42,7 @@ public abstract class AbstractSkill : MonoBehaviour
     protected abstract void UseE();
     protected abstract void UseR();
 
-    public async UniTaskVoid AsyncWaitUse(float _waitSecondTime)
+    public async UniTask AsyncWaitUse(float _waitSecondTime)
     {
         PassedTime = 0;
         IsReady = false;

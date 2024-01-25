@@ -24,13 +24,13 @@ public struct EntityData
     public float        AttackSpeed;
     public UnityAction  MoveState;
     public UnityAction  AttackState;
-    public UnityActionRef<int> AttackStateRef;
+    public UnityActionRef<float> AttackStateRef;
     public UnityAction  HitState;
-    public UnityActionRef<int> HitStateRef;
+    public UnityActionRef<float> HitStateRef;
     public UnityAction<Entity, Entity> ProjectileShootState;
-    public UnityAction  PhyiscTriggerState;
-    public UnityAction  DieState;
-    public UnityAction  UIAffectState;
+    public UnityAction PhyiscTriggerState;
+    public UnityAction DieState;
+    public UnityAction UIAffectState;
     public EntityData(ScriptableObjEntityData _scriptable)
     {
         EntityTag = _scriptable.EntityTag;
@@ -54,8 +54,8 @@ public struct EntityData
     public static EntityData operator +(EntityData x, EntityData y)
     {
         EntityData res = new EntityData();
-        if(!String.IsNullOrEmpty(x.EntityTag)){res.EntityTag = x.EntityTag;}
-        if(!String.IsNullOrEmpty(y.EntityTag)){res.EntityTag = y.EntityTag;}
+        if (!String.IsNullOrEmpty(x.EntityTag)) { res.EntityTag = x.EntityTag; }
+        if (!String.IsNullOrEmpty(y.EntityTag)) { res.EntityTag = y.EntityTag; }
         res.MaxHP = x.MaxHP + y.MaxHP;
         res.MoveSpeed = x.MoveSpeed + y.MoveSpeed;
         res.Defence = x.Defence + y.Defence;
@@ -77,8 +77,8 @@ public struct EntityData
     public static EntityData operator -(EntityData x, EntityData y)
     {
         EntityData res = new EntityData();
-        if(!String.IsNullOrEmpty(x.EntityTag)){res.EntityTag = x.EntityTag;}
-        if(!String.IsNullOrEmpty(y.EntityTag)){res.EntityTag = y.EntityTag;}
+        if (!String.IsNullOrEmpty(x.EntityTag)) { res.EntityTag = x.EntityTag; }
+        if (!String.IsNullOrEmpty(y.EntityTag)) { res.EntityTag = y.EntityTag; }
         res.MaxHP = x.MaxHP - y.MaxHP;
         res.MoveSpeed = x.MoveSpeed - y.MoveSpeed;
         res.Defence = x.Defence - y.Defence;
