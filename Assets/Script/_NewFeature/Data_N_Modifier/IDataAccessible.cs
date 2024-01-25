@@ -29,16 +29,16 @@ namespace Sophia
         EfficienceMultiplyer = 41, CoolDownSpeed
     }
 
-    public interface IStatAccessable {
+    public interface IStatAccessible {
         public Stat GetStat(E_NUMERIC_STAT_TYPE numericType);
         public string GetStatsInfo();
     }
 
-    public interface IExtrasAccessable {
+    public interface IExtrasAccessible {
         public Extras<T> GetExtras<T>(E_FUNCTIONAL_EXTRAS_TYPE functionalType);
     }
 
-    public interface IDataAccessable : IStatAccessable, IExtrasAccessable {
+    public interface IDataAccessible : IStatAccessible, IExtrasAccessible {
         public EntityStatReferer GetStatReferer();
         public EntityExtrasReferer GetExtrasReferer();
     }

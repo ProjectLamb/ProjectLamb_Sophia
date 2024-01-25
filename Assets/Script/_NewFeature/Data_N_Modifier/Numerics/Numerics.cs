@@ -108,7 +108,7 @@ namespace Sophia.DataSystem.Numerics
         [SerializeField] public SerialModifireDats CoolDownSpeed;
     }
 
-    public class EntityStatReferer : IStatAccessable
+    public class EntityStatReferer : IStatAccessible
     {
 
 #region Life 

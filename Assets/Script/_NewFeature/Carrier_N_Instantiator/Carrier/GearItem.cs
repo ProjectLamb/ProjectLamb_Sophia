@@ -3,15 +3,16 @@ using UnityEngine;
 namespace Sophia.Instantiates 
 {
     using Sophia.Entitys;
-    public class GearItem : MonoBehaviour{
+    public class GearItem : Carrier{
         [SerializeField] public int Gear;
 
         public void SetGear(int data) => Gear = data;
 
-        private void OnTriggerEnter(Collider other) {
-            if(other.TryGetComponent<Player>(out Player player)){
+        protected override void OnTriggerLogic(Collider entity)
+        {
+            if(entity.TryGetComponent<Player>(out Player player)){
                 player._PlayerWealth.Gear += Gear;
             }
-        }    
+        }
     }
 }

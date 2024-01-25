@@ -11,7 +11,7 @@ namespace Sophia.DataSystem
         using Sophia.Entitys;
         using System.Threading;
 
-        public class PoisonedAffect : Affector{
+        public class PoisonedAffect : Affector {
     #region Members
 //          public readonly E_AFFECT_TYPE AffectType;
 //          public readonly Entity targetEntity;

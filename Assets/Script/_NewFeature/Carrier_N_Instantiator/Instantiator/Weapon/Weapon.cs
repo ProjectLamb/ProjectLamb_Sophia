@@ -131,8 +131,6 @@ namespace Sophia.Instantiates {
         }
 
 #endregion
-        /*UI에 데이터가 내장되어 있다. 그걸 받아서 사용하는식으로*/
-        public void InitByWeaponUI() {throw new System.NotImplementedException();}
 
 #region Getter
 
@@ -175,9 +173,7 @@ namespace Sophia.Instantiates {
 #endregion
 
         public void Use(Player player) {
-            if(NormalQueue.Count == 0) {
-                _projectiles.ForEach(E => NormalQueue.Enqueue(E));
-            }
+            if(NormalQueue.Count == 0) { _projectiles.ForEach(E => NormalQueue.Enqueue(E)); }
             ProjectileObject useProjectile = mInstantiatorRef.ActivateInstantable(NormalQueue.Dequeue());
             int useDamage = CalculateDamage(player);
             useProjectile.SetProjectileDamage(useDamage)?.Activate();

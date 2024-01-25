@@ -10,7 +10,7 @@ namespace Sophia.Entitys
     using Sophia.DataSystem.Functional;
     using Sophia.DataSystem.Modifiers.Affector;
 
-    public abstract class Entity : MonoBehaviour, ILifeAccessable, IDataAccessable, IVisualAccessable
+    public abstract class Entity : MonoBehaviour, ILifeAccessible, IDataAccessible, IVisualAccessible
     {
 #region SerializeMembeer 
         [SerializeField] protected ModelManger  _modelManger;
@@ -23,7 +23,7 @@ namespace Sophia.Entitys
 
 #endregion
 
-#region Life Accessable
+#region Life Accessible
         public abstract LifeComposite GetLifeComposite();
         public abstract void GetDamaged(int damage);
         public abstract void GetDamaged(int damage, VisualFXObject vfx);
@@ -31,7 +31,7 @@ namespace Sophia.Entitys
 
 #endregion
 
-#region Data Accessable
+#region Data Accessible
         public abstract EntityStatReferer GetStatReferer();
         public abstract Stat GetStat(E_NUMERIC_STAT_TYPE numericType);
         [ContextMenu("Get Stats Info")]
@@ -42,7 +42,7 @@ namespace Sophia.Entitys
 
 #endregion
 
-#region Affector Accessable
+#region Affector Accessible
 
         public abstract AffectorHandlerComposite GetAffectorHandlerComposite();
         public abstract void ModifiedByAffector(Affector affector);

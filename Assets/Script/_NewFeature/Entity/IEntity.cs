@@ -13,7 +13,7 @@ namespace Sophia
 
     }
 
-    public interface ILifeAccessable : IDamagable, IDieable{
+    public interface ILifeAccessible : IDamagable, IDieable{
         public LifeComposite GetLifeComposite();
     }
 }

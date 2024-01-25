@@ -6,8 +6,9 @@ using UnityEngine.Events;
 
 namespace Sophia.Instantiates
 {
+    using System.Globalization;
     using Sophia.Entitys;
-    public class VisualFXObject : MonoBehaviour, IPoolAccesable<VisualFXObject>
+    public class VisualFXObject : MonoBehaviour, IPoolAccesable
     {
 
 #region Serialize
@@ -70,9 +71,18 @@ namespace Sophia.Instantiates
 #region ObjectPool
 
         private IObjectPool<VisualFXObject> poolRefer { get; set; }
-        public void SetByPool(IObjectPool<VisualFXObject> pool)
+        public void SetByPool<T>(IObjectPool<T> pool) where T : MonoBehaviour
         {
-            poolRefer = pool;
+            try
+            {
+                if(typeof(T).Equals(typeof(VisualFXObject))){
+                    poolRefer = pool as IObjectPool<VisualFXObject>;
+                    return;
+                }
+            }
+            catch (System.Exception)
+            {
+            }
         }
         
         public void GetByPool()

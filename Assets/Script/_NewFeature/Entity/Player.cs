@@ -39,7 +39,7 @@ namespace Sophia.Entitys
         
 #endregion
 
-#region Life Accessable
+#region Life Accessible
 
         public override LifeComposite GetLifeComposite() => this.Life;
 
@@ -62,7 +62,7 @@ namespace Sophia.Entitys
 
 #endregion
 
-#region Data Accessable
+#region Data Accessible
         public override EntityStatReferer GetStatReferer() => StatReferer;
         public override Stat GetStat(E_NUMERIC_STAT_TYPE numericType) => StatReferer.GetStat(numericType);
 

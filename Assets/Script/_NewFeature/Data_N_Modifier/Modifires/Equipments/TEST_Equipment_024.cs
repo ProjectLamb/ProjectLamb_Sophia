@@ -31,7 +31,6 @@ public class TEST_Equipment_024 : Equipment { //, IPlayerDataApplicant{
             OwnerRef = player;
             Extras<Sophia.Entitys.Entity> extrasRef = OwnerRef.GetExtras<Sophia.Entitys.Entity>(E_FUNCTIONAL_EXTRAS_TYPE.TargetAffected);
             extrasRef.AddModifier(this.extrasModifier);
-            extrasRef.RecalculateExtras();
         }
         base.OnTriggerEnter(other);
     }
