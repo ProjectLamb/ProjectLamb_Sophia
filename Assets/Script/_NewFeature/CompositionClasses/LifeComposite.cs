@@ -1,0 +1,244 @@
+using UnityEngine;
+using UnityEngine.Events;
+using Sophia.DataSystem;
+
+namespace Sophia.Composite
+{
+    /*********************************************************************************
+    *
+    * 의존관계
+         DamageUI Instantiator ❌
+            DamageUI와 연동이 될것 ❌
+        
+        없고, 오직 Hp, Defence에 대해 
+        체력 계산만 할뿐,
+
+        그리고 IsDie인가 아닌가만 체크를 한다.
+
+    * 특수화
+        플레이어 LifeComposite에는 피격되었을때 잠시 무적판정이 들어가야한다.
+
+    *********************************************************************************/
+    public class LifeComposite {
+
+#region Members 
+        
+        public Stat MaxHp {get; protected set;}
+        public Stat Defence {get; protected set;}
+
+        
+        public Extras<float> HitExtras {get; protected set;}
+        public Extras<float> DamagedExtras {get; protected set;}
+        public Extras<object> DeadExtras {get; protected set;}
+
+        private float mCurrentHealth;
+ 
+        public float CurrentHealth {
+            get {return mCurrentHealth;}
+            protected set {
+                int floatToIntHp = MaxHp;
+                if(value > (float)floatToIntHp) {
+                    mCurrentHealth = (float)floatToIntHp; return;
+                }
+                if(value < 0) {mCurrentHealth = 0; return;}
+                mCurrentHealth = value;
+            }
+        }
+
+        private float mCurrentBarrier;
+        public float CurrentBarrier {
+            get {return mCurrentBarrier;}
+            protected set {
+                if(value <= 0.01f) {
+                    IsBarrierCovered = false;
+                    mCurrentBarrier = 0; 
+                    return;
+                }
+                else {
+                    IsBarrierCovered = true;
+                    mCurrentBarrier = value;
+                    return;
+                }
+            }
+        }
+
+        public LifeComposite(float maxHp, float defence) {
+            MaxHp = new Stat( maxHp,
+                E_NUMERIC_STAT_TYPE.MaxHp, 
+                E_STAT_USE_TYPE.Natural, OnMaxHpUpdated
+            );
+            Defence = new Stat( defence,
+                E_NUMERIC_STAT_TYPE.Defence, 
+                E_STAT_USE_TYPE.Natural, OnDefenceUpdated
+            );
+
+            HitExtras = new Extras<float>(
+                E_FUNCTIONAL_EXTRAS_TYPE.Hit, 
+                OnHitExtrasUpdated
+            );
+            DamagedExtras = new Extras<float> (
+                E_FUNCTIONAL_EXTRAS_TYPE.Damaged, 
+                OnDamageExtrasUpdated
+            );
+            DeadExtras = new Extras<object> (
+                E_FUNCTIONAL_EXTRAS_TYPE.Dead, 
+                OnDeadExtrasUpdated
+            );
+            
+            CurrentHealth = maxHp;
+            IsDie = false;
+            CurrentBarrier = 0;
+
+            //DashSkill을 참고해서 어떻게 의존성을 맺었는지 확인
+            OnHpUpdated      ??= (float val) => {};
+            OnBarrierUpdated ??= (float val) => {};
+            OnHit            ??= (float val) => {};
+            OnDamaged        ??= (float val) => {};
+            OnHeal           ??= (float val) => {};
+            OnBarrier        ??= (float val) => {};
+            OnEnterDie       ??= () => {};
+            OnExitDie        ??= () => {};
+            OnBreakBarrier   ??= () => {};
+        }
+
+        public LifeComposite(float maxHp) : this(maxHp, 0){}
+
+#endregion
+
+#region Getter
+
+        public bool IsDie {get; protected set;}
+
+        public bool IsHit {get; protected set;}
+
+        public bool IsBarrierCovered {get; protected set;}
+
+        public float GetHpRatio() { return CurrentHealth / MaxHp; }
+
+#endregion
+
+#region Setter 
+        
+
+        public event UnityAction<float>     OnHpUpdated = null;
+        public event UnityAction<float>     OnBarrierUpdated = null;
+        public event UnityAction<float>     OnDamaged = null;
+        public event UnityAction<float>     OnHeal = null;
+        public event UnityAction            OnEnterDie = null;
+        public event UnityAction            OnExitDie = null;
+        public event UnityAction<float>     OnBarrier = null;
+        public event UnityAction            OnBreakBarrier = null;
+        public event UnityAction<float>  OnHit = null;
+
+        public void ClearEvents() {
+            OnHpUpdated     = null;
+            OnBarrierUpdated = null;
+            OnDamaged       = null;
+            OnHeal          = null;
+            OnEnterDie      = null;
+            OnExitDie       = null;
+            OnBarrier       = null;
+            OnBreakBarrier  = null;
+            OnHit           = null;
+
+            OnHpUpdated     ??= (float val) => {};
+            OnBarrierUpdated ??= (float val) => {};
+            OnHit           ??= (float val) => {};
+            OnDamaged       ??= (float val) => {};
+            OnHeal          ??= (float val) => {};
+            OnEnterDie      ??= () => {};
+            OnExitDie       ??= () => {};
+            OnBarrier       ??= (float val) => {};
+            OnBreakBarrier  ??= () => {};
+        }
+
+#endregion
+
+        protected void OnMaxHpUpdated() { 
+            Debug.Log("최대체력 변경됨!");
+            // throw new System.NotImplementedException();
+        }
+
+        protected void OnDefenceUpdated() { 
+            Debug.Log("방어력 변경됨!");
+            // throw new System.NotImplementedException();
+        }
+        
+        protected void OnBarrierRatioUpdated() { 
+            Debug.Log("배리어 변경됨!");
+            // throw new System.NotImplementedException();
+        }
+
+        protected void OnHitExtrasUpdated() { 
+            Debug.Log("닿음 추가 동작 변경됨!");
+            // throw new System.NotImplementedException();
+        }
+
+        protected void OnDamageExtrasUpdated() { 
+            Debug.Log("피격 추가 동작 변경됨!");
+            // throw new System.NotImplementedException();
+        }
+        
+        protected void OnDeadExtrasUpdated() { 
+            Debug.Log("죽음 추가 동작 변경됨!");
+            // throw new System.NotImplementedException();
+        }
+
+        public void Healed(float amount) {
+            OnHeal.Invoke(amount);
+            CurrentHealth += amount;
+            OnHpUpdated.Invoke(CurrentHealth);
+        }
+
+        public void BarrierCoverd(float amount) {
+            OnBarrier.Invoke(amount);
+            CurrentBarrier += amount;
+            OnBarrierUpdated.Invoke(CurrentBarrier);
+        }
+
+        public void SetBarrier(float amount) {
+            CurrentBarrier = amount;
+        }
+        
+        public void Damaged(float damage) {
+            PerformHit(ref damage);
+            if(damage < 0.01f) {return;}
+            PerformDamage(damage);
+            if (CurrentHealth <= 0) { this.Died(); }
+        }
+
+        private void PerformHit(ref float damage) {
+            HitExtras.PerformStartFunctionals(ref damage);
+            DamageCalculatePipeline(ref damage);
+            OnHit.Invoke(damage);
+            HitExtras.PerformExitFunctionals(ref damage);
+        }
+
+        private void PerformDamage(float damage) {
+            // DamageStart
+            OnDamaged.Invoke(damage);
+            CurrentHealth -= damage;
+            DamagedExtras.PerformStartFunctionals(ref damage);
+            OnHpUpdated.Invoke(CurrentHealth);
+            DamagedExtras.PerformExitFunctionals(ref damage);
+        }
+
+        private void DamageCalculatePipeline(ref float _amount){
+
+        }
+
+        public void BreakBarrier(){
+            CurrentBarrier = 0;
+            OnBreakBarrier.Invoke();
+        }
+
+        public void Died() { 
+            object nullObject = null;
+            DeadExtras.PerformStartFunctionals(ref nullObject);
+            OnEnterDie.Invoke();
+            IsDie = true;
+            DeadExtras.PerformExitFunctionals(ref nullObject);
+            OnExitDie.Invoke();
+        }
+    }
+}

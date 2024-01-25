@@ -255,7 +255,6 @@ public class ElderOne : Boss
         transform.DOLookAt(objectiveTarget.position, turnSpeed);
         nav.SetDestination(objectiveTarget.position);
     }
-
     void Move_Exit()
     {
         animator.SetBool("IsWalk", false);

@@ -1,0 +1,121 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/CustomTemplate/Template/NKUSSTemplate.uss?fileID=7433441132597879392&amp;guid=6a25e899d15eb994b85241dddfd90559&amp;type=3#NKUSSTemplate" />
+    <Style src="project://database/Assets/CustomTemplate/Template/OdinUSSTemplate.uss?fileID=7433441132597879392&amp;guid=8ee2195f99d140f43ae4fd9b456629f9&amp;type=3#OdinUSSTemplate" />
+    <Style src="project://database/Assets/CustomTemplate/Template/ToggleUSSTemplate.uss?fileID=7433441132597879392&amp;guid=2e3e5c2da0c15f741a97092246c349e6&amp;type=3#ToggleUSSTemplate" />
+    <uie:ObjectField label="Script" binding-path="m_Script" name="unity-input-m_Script" class="unity-base-field__aligned" />
+    <ui:VisualElement style="align-items: center; justify-content: space-between; flex-direction: row; border-top-width: 4px; border-right-width: 4px; border-bottom-width: 4px; border-left-width: 4px; height: 132px; min-height: 132px;">
+        <ui:VisualElement style="align-items: center; width: 128px; height: 128px; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; -unity-text-outline-width: 4px; -unity-text-outline-color: rgb(0, 0, 0); background-color: rgb(0, 0, 0); margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 4px; padding-right: 4px; padding-bottom: 4px; padding-left: 4px;" />
+        <ui:VisualElement style="width: 60%; flex-direction: column; justify-content: flex-start; height: 128px;">
+            <ui:VisualElement style="flex-direction: row; justify-content: space-between; font-size: 18px; height: 24px;">
+                <ui:Label text="부품" display-tooltip-when-elided="true" style="font-size: 18px; width: 25%;" />
+                <ui:TextField picking-mode="Ignore" value="filler text" text="부품명" binding-path="_equipmentName" style="width: 75%; -unity-text-align: upper-left; white-space: normal;" />
+            </ui:VisualElement>
+            <ui:TextField picking-mode="Ignore" label="설명" value="filler text" binding-path="_description" style="flex-direction: column; height: 80%; -unity-text-align: upper-left;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:Foldout text="StatModifiers" value="true" style="overflow: visible; flex-direction: column; justify-content: flex-end; flex-wrap: nowrap; flex-basis: initial; display: flex; visibility: visible;">
+        <ui:Foldout text="Player" name="Foldout">
+            <ui:VisualElement name="VisualElement" style="flex-direction: row; flex-basis: auto; justify-content: space-around; width: initial;">
+                <ui:Label text="MaxHp Modifire" display-tooltip-when-elided="true" name="Label" style="max-width: 100%; min-width: 150px; width: 50%; visibility: visible; overflow: hidden; flex-direction: column-reverse; align-items: auto; justify-content: flex-start; margin-top: 1px; margin-right: 4px; margin-bottom: 1px; margin-left: 4px; padding-top: 1px; padding-right: 1px; padding-bottom: 1px;" />
+                <uie:FloatField value="42.2" binding-path="_calculateDatas.MaxHp.amount" style="max-width: none; min-width: auto; width: 30%; margin-right: 4px; margin-left: 4px; padding-top: 1px; padding-right: 1px; padding-bottom: 1px; padding-left: 1px;" />
+                <uie:EnumField type="Sophia.E_NUMERIC_STAT_TYPE, Assembly-CSharp" binding-path="_calculateDatas.MaxHp.calType" style="min-width: auto; max-width: none; width: 20%; margin-right: 4px; margin-left: 4px;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="VisualElement" style="flex-direction: row; flex-basis: auto; justify-content: space-around; width: initial;">
+                <ui:Label text="Defence Modifire" display-tooltip-when-elided="true" name="Label" style="max-width: 100%; min-width: 150px; width: 50%; visibility: visible; overflow: hidden; flex-direction: column-reverse; align-items: auto; justify-content: flex-start; margin-top: 1px; margin-right: 4px; margin-bottom: 1px; margin-left: 4px; padding-top: 1px; padding-right: 1px; padding-bottom: 1px;" />
+                <uie:FloatField value="42.2" binding-path="_calculateDatas.Defence.amount" style="max-width: none; min-width: auto; width: 30%; margin-right: 4px; margin-left: 4px; padding-top: 1px; padding-right: 1px; padding-bottom: 1px; padding-left: 1px;" />
+                <uie:EnumField type="Sophia.E_NUMERIC_STAT_TYPE, Assembly-CSharp" binding-path="_calculateDatas.Defence.calType" style="min-width: auto; max-width: none; width: 20%; margin-right: 4px; margin-left: 4px;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="VisualElement" style="flex-direction: row; flex-basis: auto; justify-content: space-around; width: initial;">
+                <ui:Label text="MoveSpeed Modifire" display-tooltip-when-elided="true" name="Label" style="max-width: 100%; min-width: 150px; width: 50%; visibility: visible; overflow: hidden; flex-direction: column-reverse; align-items: auto; justify-content: flex-start; margin-top: 1px; margin-right: 4px; margin-bottom: 1px; margin-left: 4px; padding-top: 1px; padding-right: 1px; padding-bottom: 1px;" />
+                <uie:FloatField value="42.2" binding-path="_calculateDatas.MoveSpeed.amount" style="max-width: none; min-width: auto; width: 30%; margin-right: 4px; margin-left: 4px; padding-top: 1px; padding-right: 1px; padding-bottom: 1px; padding-left: 1px;" />
+                <uie:EnumField type="Sophia.E_NUMERIC_STAT_TYPE, Assembly-CSharp" binding-path="_calculateDatas.MoveSpeed.calType" style="min-width: auto; max-width: none; width: 20%; margin-right: 4px; margin-left: 4px;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="VisualElement" style="flex-direction: row; flex-basis: auto; justify-content: space-around; width: initial;">
+                <ui:Label text="Accecerate Modifire" display-tooltip-when-elided="true" name="Label" style="max-width: 100%; min-width: 150px; width: 50%; visibility: visible; overflow: hidden; flex-direction: column-reverse; align-items: auto; justify-content: flex-start; margin-top: 1px; margin-right: 4px; margin-bottom: 1px; margin-left: 4px; padding-top: 1px; padding-right: 1px; padding-bottom: 1px;" />
+                <uie:FloatField value="42.2" binding-path="_calculateDatas.Accecerate.amount" style="max-width: none; min-width: auto; width: 30%; margin-right: 4px; margin-left: 4px; padding-top: 1px; padding-right: 1px; padding-bottom: 1px; padding-left: 1px;" />
+                <uie:EnumField type="Sophia.E_NUMERIC_STAT_TYPE, Assembly-CSharp" binding-path="_calculateDatas.Accecerate.calType" style="min-width: auto; max-width: none; width: 20%; margin-right: 4px; margin-left: 4px;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="VisualElement" style="flex-direction: row; flex-basis: auto; justify-content: space-around; width: initial;">
+                <ui:Label text="Tenacity Modifire" display-tooltip-when-elided="true" name="Label" style="max-width: 100%; min-width: 150px; width: 50%; visibility: visible; overflow: hidden; flex-direction: column-reverse; align-items: auto; justify-content: flex-start; margin-top: 1px; margin-right: 4px; margin-bottom: 1px; margin-left: 4px; padding-top: 1px; padding-right: 1px; padding-bottom: 1px;" />
+                <uie:FloatField value="42.2" binding-path="_calculateDatas.Tenacity.amount" style="max-width: none; min-width: auto; width: 30%; margin-right: 4px; margin-left: 4px; padding-top: 1px; padding-right: 1px; padding-bottom: 1px; padding-left: 1px;" />
+                <uie:EnumField type="Sophia.E_NUMERIC_STAT_TYPE, Assembly-CSharp" binding-path="_calculateDatas.Tenacity.calType" style="min-width: auto; max-width: none; width: 20%; margin-right: 4px; margin-left: 4px;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="VisualElement" style="flex-direction: row; flex-basis: auto; justify-content: space-around; width: initial;">
+                <ui:Label text="MaxStamina Modifire" display-tooltip-when-elided="true" name="Label" style="max-width: 100%; min-width: 150px; width: 50%; visibility: visible; overflow: hidden; flex-direction: column-reverse; align-items: auto; justify-content: flex-start; margin-top: 1px; margin-right: 4px; margin-bottom: 1px; margin-left: 4px; padding-top: 1px; padding-right: 1px; padding-bottom: 1px;" />
+                <uie:FloatField value="42.2" binding-path="_calculateDatas.MaxStamina.amount" style="max-width: none; min-width: auto; width: 30%; margin-right: 4px; margin-left: 4px; padding-top: 1px; padding-right: 1px; padding-bottom: 1px; padding-left: 1px;" />
+                <uie:EnumField type="Sophia.E_NUMERIC_STAT_TYPE, Assembly-CSharp" binding-path="_calculateDatas.MaxStamina.calType" style="min-width: auto; max-width: none; width: 20%; margin-right: 4px; margin-left: 4px;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="VisualElement" style="flex-direction: row; flex-basis: auto; justify-content: space-around; width: initial;">
+                <ui:Label text="StaminaRestoreSpeed Modifire" display-tooltip-when-elided="true" name="Label" style="max-width: 100%; min-width: 150px; width: 50%; visibility: visible; overflow: hidden; flex-direction: column-reverse; align-items: auto; justify-content: flex-start; margin-top: 1px; margin-right: 4px; margin-bottom: 1px; margin-left: 4px; padding-top: 1px; padding-right: 1px; padding-bottom: 1px;" />
+                <uie:FloatField value="42.2" binding-path="_calculateDatas.StaminaRestoreSpeed.amount" style="max-width: none; min-width: auto; width: 30%; margin-right: 4px; margin-left: 4px; padding-top: 1px; padding-right: 1px; padding-bottom: 1px; padding-left: 1px;" />
+                <uie:EnumField type="Sophia.E_NUMERIC_STAT_TYPE, Assembly-CSharp" binding-path="_calculateDatas.StaminaRestoreSpeed.calType" style="min-width: auto; max-width: none; width: 20%; margin-right: 4px; margin-left: 4px;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="VisualElement" style="flex-direction: row; flex-basis: auto; justify-content: space-around; width: initial;">
+                <ui:Label text="Power Modifire" display-tooltip-when-elided="true" name="Label" style="max-width: 100%; min-width: 150px; width: 50%; visibility: visible; overflow: hidden; flex-direction: column-reverse; align-items: auto; justify-content: flex-start; margin-top: 1px; margin-right: 4px; margin-bottom: 1px; margin-left: 4px; padding-top: 1px; padding-right: 1px; padding-bottom: 1px;" />
+                <uie:FloatField value="42.2" binding-path="_calculateDatas.Power.amount" style="max-width: none; min-width: auto; width: 30%; margin-right: 4px; margin-left: 4px; padding-top: 1px; padding-right: 1px; padding-bottom: 1px; padding-left: 1px;" />
+                <uie:EnumField type="Sophia.E_NUMERIC_STAT_TYPE, Assembly-CSharp" binding-path="_calculateDatas.Power.calType" style="min-width: auto; max-width: none; width: 20%; margin-right: 4px; margin-left: 4px;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="VisualElement" style="flex-direction: row; flex-basis: auto; justify-content: space-around; width: initial;">
+                <ui:Label text="Luck Modifire" display-tooltip-when-elided="true" name="Label" style="max-width: 100%; min-width: 150px; width: 50%; visibility: visible; overflow: hidden; flex-direction: column-reverse; align-items: auto; justify-content: flex-start; margin-top: 1px; margin-right: 4px; margin-bottom: 1px; margin-left: 4px; padding-top: 1px; padding-right: 1px; padding-bottom: 1px;" />
+                <uie:FloatField value="42.2" binding-path="_calculateDatas.Luck.amount" style="max-width: none; min-width: auto; width: 30%; margin-right: 4px; margin-left: 4px; padding-top: 1px; padding-right: 1px; padding-bottom: 1px; padding-left: 1px;" />
+                <uie:EnumField type="Sophia.E_NUMERIC_STAT_TYPE, Assembly-CSharp" binding-path="_calculateDatas.Luck.calType" style="min-width: auto; max-width: none; width: 20%; margin-right: 4px; margin-left: 4px;" />
+            </ui:VisualElement>
+        </ui:Foldout>
+        <ui:Foldout text="Instantiator">
+            <ui:VisualElement name="VisualElement" style="flex-direction: row; flex-basis: auto; justify-content: space-around; width: initial;">
+                <ui:Label text="DurateLifeTimeMultiplyRatio Modifire" display-tooltip-when-elided="true" name="Label" style="max-width: 100%; min-width: 150px; width: 50%; visibility: visible; overflow: hidden; flex-direction: column-reverse; align-items: auto; justify-content: flex-start; margin-top: 1px; margin-right: 4px; margin-bottom: 1px; margin-left: 4px; padding-top: 1px; padding-right: 1px; padding-bottom: 1px;" />
+                <uie:FloatField value="42.2" binding-path="_calculateDatas.InstantiableDurateLifeTimeMultiplyRatio.amount" style="max-width: none; min-width: auto; width: 30%; margin-right: 4px; margin-left: 4px; padding-top: 1px; padding-right: 1px; padding-bottom: 1px; padding-left: 1px;" />
+                <uie:EnumField type="Sophia.E_NUMERIC_STAT_TYPE, Assembly-CSharp" binding-path="_calculateDatas.InstantiableDurateLifeTimeMultiplyRatio.calType" style="min-width: auto; max-width: none; width: 20%; margin-right: 4px; margin-left: 4px;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="VisualElement" style="flex-direction: row; flex-basis: auto; justify-content: space-around; width: initial;">
+                <ui:Label text="SizeMultiplyRatio Modifire" display-tooltip-when-elided="true" name="Label" style="max-width: 100%; min-width: 150px; width: 50%; visibility: visible; overflow: hidden; flex-direction: column-reverse; align-items: auto; justify-content: flex-start; margin-top: 1px; margin-right: 4px; margin-bottom: 1px; margin-left: 4px; padding-top: 1px; padding-right: 1px; padding-bottom: 1px;" />
+                <uie:FloatField value="42.2" binding-path="_calculateDatas.InstantiableSizeMultiplyRatio.amount" style="max-width: none; min-width: auto; width: 30%; margin-right: 4px; margin-left: 4px; padding-top: 1px; padding-right: 1px; padding-bottom: 1px; padding-left: 1px;" />
+                <uie:EnumField type="Sophia.E_NUMERIC_STAT_TYPE, Assembly-CSharp" binding-path="_calculateDatas.InstantiableSizeMultiplyRatio.calType" style="min-width: auto; max-width: none; width: 20%; margin-right: 4px; margin-left: 4px;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="VisualElement" style="flex-direction: row; flex-basis: auto; justify-content: space-around; width: initial;">
+                <ui:Label text="ForwardingSpeedMultiplyRatio Modifire" display-tooltip-when-elided="true" name="Label" style="max-width: 100%; min-width: 150px; width: 50%; visibility: visible; overflow: hidden; flex-direction: column-reverse; align-items: auto; justify-content: flex-start; margin-top: 1px; margin-right: 4px; margin-bottom: 1px; margin-left: 4px; padding-top: 1px; padding-right: 1px; padding-bottom: 1px;" />
+                <uie:FloatField value="42.2" binding-path="_calculateDatas.InstantiableForwardingSpeedMultiplyRatio.amount" style="max-width: none; min-width: auto; width: 30%; margin-right: 4px; margin-left: 4px; padding-top: 1px; padding-right: 1px; padding-bottom: 1px; padding-left: 1px;" />
+                <uie:EnumField type="Sophia.E_NUMERIC_STAT_TYPE, Assembly-CSharp" binding-path="_calculateDatas.InstantiableForwardingSpeedMultiplyRatio.calType" style="min-width: auto; max-width: none; width: 20%; margin-right: 4px; margin-left: 4px;" />
+            </ui:VisualElement>
+        </ui:Foldout>
+        <ui:Foldout text="Weapon">
+            <ui:VisualElement name="VisualElement" style="flex-direction: row; flex-basis: auto; justify-content: space-around; width: initial;">
+                <ui:Label text="PoolSize Modifire" display-tooltip-when-elided="true" name="Label" style="max-width: 100%; min-width: 150px; width: 50%; visibility: visible; overflow: hidden; flex-direction: column-reverse; align-items: auto; justify-content: flex-start; margin-top: 1px; margin-right: 4px; margin-bottom: 1px; margin-left: 4px; padding-top: 1px; padding-right: 1px; padding-bottom: 1px;" />
+                <uie:FloatField value="42.2" binding-path="_calculateDatas.PoolSize.amount" style="max-width: none; min-width: auto; width: 30%; margin-right: 4px; margin-left: 4px; padding-top: 1px; padding-right: 1px; padding-bottom: 1px; padding-left: 1px;" />
+                <uie:EnumField type="Sophia.E_NUMERIC_STAT_TYPE, Assembly-CSharp" binding-path="_calculateDatas.PoolSize.calType" style="min-width: auto; max-width: none; width: 20%; margin-right: 4px; margin-left: 4px;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="VisualElement" style="flex-direction: row; flex-basis: auto; justify-content: space-around; width: initial;">
+                <ui:Label text="AttackSpeed Modifire" display-tooltip-when-elided="true" name="Label" style="max-width: 100%; min-width: 150px; width: 50%; visibility: visible; overflow: hidden; flex-direction: column-reverse; align-items: auto; justify-content: flex-start; margin-top: 1px; margin-right: 4px; margin-bottom: 1px; margin-left: 4px; padding-top: 1px; padding-right: 1px; padding-bottom: 1px;" />
+                <uie:FloatField value="42.2" binding-path="_calculateDatas.AttackSpeed.amount" style="max-width: none; min-width: auto; width: 30%; margin-right: 4px; margin-left: 4px; padding-top: 1px; padding-right: 1px; padding-bottom: 1px; padding-left: 1px;" />
+                <uie:EnumField type="Sophia.E_NUMERIC_STAT_TYPE, Assembly-CSharp" binding-path="_calculateDatas.AttackSpeed.calType" style="min-width: auto; max-width: none; width: 20%; margin-right: 4px; margin-left: 4px;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="VisualElement" style="flex-direction: row; flex-basis: auto; justify-content: space-around; width: initial;">
+                <ui:Label text="MeleeRatio Modifire" display-tooltip-when-elided="true" name="Label" style="max-width: 100%; min-width: 150px; width: 50%; visibility: visible; overflow: hidden; flex-direction: column-reverse; align-items: auto; justify-content: flex-start; margin-top: 1px; margin-right: 4px; margin-bottom: 1px; margin-left: 4px; padding-top: 1px; padding-right: 1px; padding-bottom: 1px;" />
+                <uie:FloatField value="42.2" binding-path="_calculateDatas.MeleeRatio.amount" style="max-width: none; min-width: auto; width: 30%; margin-right: 4px; margin-left: 4px; padding-top: 1px; padding-right: 1px; padding-bottom: 1px; padding-left: 1px;" />
+                <uie:EnumField type="Sophia.E_NUMERIC_STAT_TYPE, Assembly-CSharp" binding-path="_calculateDatas.MeleeRatio.calType" style="min-width: auto; max-width: none; width: 20%; margin-right: 4px; margin-left: 4px;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="VisualElement" style="flex-direction: row; flex-basis: auto; justify-content: space-around; width: initial;">
+                <ui:Label text="RangerRatio Modifire" display-tooltip-when-elided="true" name="Label" style="max-width: 100%; min-width: 150px; width: 50%; visibility: visible; overflow: hidden; flex-direction: column-reverse; align-items: auto; justify-content: flex-start; margin-top: 1px; margin-right: 4px; margin-bottom: 1px; margin-left: 4px; padding-top: 1px; padding-right: 1px; padding-bottom: 1px;" />
+                <uie:FloatField value="42.2" binding-path="_calculateDatas.RangerRatio.amount" style="max-width: none; min-width: auto; width: 30%; margin-right: 4px; margin-left: 4px; padding-top: 1px; padding-right: 1px; padding-bottom: 1px; padding-left: 1px;" />
+                <uie:EnumField type="Sophia.E_NUMERIC_STAT_TYPE, Assembly-CSharp" binding-path="_calculateDatas.RangerRatio.calType" style="min-width: auto; max-width: none; width: 20%; margin-right: 4px; margin-left: 4px;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="VisualElement" style="flex-direction: row; flex-basis: auto; justify-content: space-around; width: initial;">
+                <ui:Label text="TechRatio Modifire" display-tooltip-when-elided="true" name="Label" style="max-width: 100%; min-width: 150px; width: 50%; visibility: visible; overflow: hidden; flex-direction: column-reverse; align-items: auto; justify-content: flex-start; margin-top: 1px; margin-right: 4px; margin-bottom: 1px; margin-left: 4px; padding-top: 1px; padding-right: 1px; padding-bottom: 1px;" />
+                <uie:FloatField value="42.2" binding-path="_calculateDatas.TechRatio.amount" style="max-width: none; min-width: auto; width: 30%; margin-right: 4px; margin-left: 4px; padding-top: 1px; padding-right: 1px; padding-bottom: 1px; padding-left: 1px;" />
+                <uie:EnumField type="Sophia.E_NUMERIC_STAT_TYPE, Assembly-CSharp" binding-path="_calculateDatas.TechRatio.calType" style="min-width: auto; max-width: none; width: 20%; margin-right: 4px; margin-left: 4px;" />
+            </ui:VisualElement>
+        </ui:Foldout>
+        <ui:Foldout text="Skill">
+            <ui:VisualElement name="VisualElement" style="flex-direction: row; flex-basis: auto; justify-content: space-around; width: initial;">
+                <ui:Label text="EfficienceMultiplyer Modifire" display-tooltip-when-elided="true" name="Label" style="max-width: 100%; min-width: 150px; width: 50%; visibility: visible; overflow: hidden; flex-direction: column-reverse; align-items: auto; justify-content: flex-start; margin-top: 1px; margin-right: 4px; margin-bottom: 1px; margin-left: 4px; padding-top: 1px; padding-right: 1px; padding-bottom: 1px;" />
+                <uie:FloatField value="42.2" binding-path="_calculateDatas.EfficienceMultiplyer.amount" style="max-width: none; min-width: auto; width: 30%; margin-right: 4px; margin-left: 4px; padding-top: 1px; padding-right: 1px; padding-bottom: 1px; padding-left: 1px;" />
+                <uie:EnumField type="Sophia.E_NUMERIC_STAT_TYPE, Assembly-CSharp" binding-path="_calculateDatas.EfficienceMultiplyer.calType" style="min-width: auto; max-width: none; width: 20%; margin-right: 4px; margin-left: 4px;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="VisualElement" style="flex-direction: row; flex-basis: auto; justify-content: space-around; width: initial;">
+                <ui:Label text="CoolDownSpeed Modifire" display-tooltip-when-elided="true" name="Label" style="max-width: 100%; min-width: 150px; width: 50%; visibility: visible; overflow: hidden; flex-direction: column-reverse; align-items: auto; justify-content: flex-start; margin-top: 1px; margin-right: 4px; margin-bottom: 1px; margin-left: 4px; padding-top: 1px; padding-right: 1px; padding-bottom: 1px;" />
+                <uie:FloatField value="42.2" binding-path="_calculateDatas.CoolDownSpeed.amount" style="max-width: none; min-width: auto; width: 30%; margin-right: 4px; margin-left: 4px; padding-top: 1px; padding-right: 1px; padding-bottom: 1px; padding-left: 1px;" />
+                <uie:EnumField type="Sophia.E_NUMERIC_STAT_TYPE, Assembly-CSharp" binding-path="_calculateDatas.CoolDownSpeed.calType" style="min-width: auto; max-width: none; width: 20%; margin-right: 4px; margin-left: 4px;" />
+            </ui:VisualElement>
+        </ui:Foldout>
+    </ui:Foldout>
+</ui:UXML>

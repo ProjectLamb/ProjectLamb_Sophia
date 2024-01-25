@@ -6,19 +6,16 @@ using UnityEngine;
 public class Billboard : MonoBehaviour
 {
     private Transform mainCam;
-    private Canvas canvas;
-    
-    private void Awake() {
-        TryGetComponent<Canvas>(out canvas);
-    }
     
     private void Start()
     {
-        if(canvas != null) canvas.worldCamera = Camera.main;
         mainCam = Camera.main.transform;
+        if(TryGetComponent<Canvas>(out Canvas canvas)) {
+            canvas.worldCamera = Camera.main;
+        }
     }
 
-    private void Update() {
+    private void LateUpdate() {
         transform.LookAt(transform.position + mainCam.rotation * Vector3.forward, mainCam.rotation * Vector3.up);
     }
 }
