@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
 using Sophia_Carriers;
+using DG.Tweening;
 
 /// <summary>
 /// 적 클래스 <br/>
@@ -38,6 +39,7 @@ public class Enemy : Entity
     public bool isDie;
     public bool isOffensive;    //!isOffensive = Defensive
     int offensiveRate;
+    protected int MaxHealth;
 
     public Projectile[] projectiles;
 
@@ -91,12 +93,15 @@ public class Enemy : Entity
 
     protected virtual void Freeze()
     {
+        nav.enabled = false;
+        transform.DOKill();
         entityRigidbody.velocity = Vector3.zero;
         entityRigidbody.constraints = RigidbodyConstraints.FreezeAll;
     }
 
     protected virtual void UnFreeze()
     {
+        nav.enabled = true;
         entityRigidbody.constraints = RigidbodyConstraints.FreezeRotation;
     }
 
@@ -118,6 +123,7 @@ public class Enemy : Entity
         BaseEnemyData = new EntityData(ScriptableED);
         FinalData = BaseEnemyData;
         CurrentHealth = FinalData.MaxHP;
+        MaxHealth = GetFinalData().MaxHP;
 
         isRecog = false;
         objectiveTarget = GameManager.Instance?.PlayerGameObject?.transform;
