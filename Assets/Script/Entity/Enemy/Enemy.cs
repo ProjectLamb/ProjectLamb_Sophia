@@ -39,7 +39,6 @@ public class Enemy : Entity
     public bool isDie;
     public bool isOffensive;    //!isOffensive = Defensive
     int offensiveRate;
-    protected int MaxHealth;
 
     public Projectile[] projectiles;
 
@@ -124,10 +123,6 @@ public class Enemy : Entity
         //TA_escatrgot
         Life = new Sophia.Composite.LifeComposite(FinalData.MaxHP);
         Life.OnDamaged += Generate;
-
-        //neoskyclad
-        CurrentHealth = FinalData.MaxHP;
-        MaxHealth = GetFinalData().MaxHP;
 
         isRecog = false;
         objectiveTarget = GameManager.Instance?.PlayerGameObject?.transform;
