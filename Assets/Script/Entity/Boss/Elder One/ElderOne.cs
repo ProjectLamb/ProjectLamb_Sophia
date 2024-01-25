@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using MonsterLove.StateMachine;
 using DG.Tweening;
-using Feature_NewData;
 using Unity.VisualScripting;
 
 public class ElderOne : Boss
@@ -92,13 +91,13 @@ public class ElderOne : Boss
 
     void CheckDeath()
     {
-        if (CurrentHealth <= 0)
+        if (Life.CurrentHealth <= 0)
             fsm.ChangeState(States.Death);
     }
 
     void CheckPhase()
     {
-        if (CurrentHealth <= MaxHealth / 2)
+        if (Life.CurrentHealth <= Life.MaxHp / 2)
         {
             phase = 2;
             isPhaseChanged = true;
