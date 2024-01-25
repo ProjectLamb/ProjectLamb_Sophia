@@ -11,7 +11,7 @@ namespace Sophia.Instantiates
     using Sophia.Entitys;   
     /*변하는 녀석*/
 
-    public class ProjectileObject : MonoBehaviour, IPoolAccesable<ProjectileObject>
+    public class ProjectileObject : Carrier, IPoolAccesable
     {
 
 #region Serialize
@@ -95,10 +95,21 @@ namespace Sophia.Instantiates
 #region ObjectPool
 
         private IObjectPool<ProjectileObject> poolRefer { get; set; }
-        public void SetByPool(IObjectPool<ProjectileObject> pool)
+
+        public void SetByPool<T>(IObjectPool<T> pool) where T : MonoBehaviour
         {
-            poolRefer = pool;
+            try
+            {
+                if(typeof(T).Equals(typeof(ProjectileObject))){
+                    poolRefer = pool as IObjectPool<ProjectileObject>;
+                    return;
+                }
+            }
+            catch (System.Exception)
+            {
+            }
         }
+
 
         public void GetByPool()
         {
@@ -273,7 +284,6 @@ namespace Sophia.Instantiates
 
 #endregion
 
-
 #region Bindings
 
         public void Activate()
@@ -316,16 +326,9 @@ namespace Sophia.Instantiates
             poolRefer.Release(this);
         }
 
-        private void OnTriggerEnter(Collider other) {
-            if(!CheckIsOwnerCollider(other)) {
-                ColliderTriggerHandle(other);
-            }
-        }
-
-        public void ColliderTriggerHandle(Collider target)
-        {
-            if(CheckIsOwnerCollider(target)) {return;}
-            if (target.TryGetComponent<Entity>(out Entity targetEntity))
+        protected override void OnTriggerLogic(Collider entity) {
+            if(CheckIsOwnerCollider(entity)) {return;}
+            if (entity.TryGetComponent<Entity>(out Entity targetEntity))
             {
                 targetEntity.GetDamaged(CurrentProjectileDamage, _hitEffect);
                 OnProjectileTriggerd.Invoke();
@@ -344,7 +347,6 @@ namespace Sophia.Instantiates
             OnProjectileForwarding?.Invoke();
         }
 
-
 #region Helper
 
         public bool CheckIsSameOwner(Entity owner)
@@ -355,7 +357,6 @@ namespace Sophia.Instantiates
         {
             return OwnerRef.entityCollider.Equals(target);
         }
-
         #endregion
 
     }

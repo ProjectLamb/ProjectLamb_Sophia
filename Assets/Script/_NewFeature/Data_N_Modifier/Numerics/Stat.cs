@@ -121,7 +121,7 @@ namespace Sophia.DataSystem
             OnStatChanged.Invoke();
         }
 
-        public void CalculateWithUseAndCalcType(E_STAT_USE_TYPE useType, StatModifier calc, ref float adder, ref float multiplier) {
+        private void CalculateWithUseAndCalcType(E_STAT_USE_TYPE useType, StatModifier calc, ref float adder, ref float multiplier) {
                 switch(useType) {
                     case E_STAT_USE_TYPE.Natural:  {
                         if(calc.CalcType == E_STAT_CALC_TYPE.Add)        {adder += calc.Value; return;}

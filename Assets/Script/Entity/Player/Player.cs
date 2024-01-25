@@ -197,11 +197,7 @@ public class Player : Entity {
 #region Dash
     public FMODAudioSource DashSource;
     
-    public void Dash()
-    {
-        DashSkillAbility.Use();/*m*/ /*StatSpeed*/
-    }
-
+    public void Dash() => DashSkillAbility.Use();/*m*/ /*StatSpeed*/
     public (Vector3, int) DashDataSender() => (mMoveVec, (int)PlayerDataManager.GetEntityData().MoveSpeed);
 
 #endregion

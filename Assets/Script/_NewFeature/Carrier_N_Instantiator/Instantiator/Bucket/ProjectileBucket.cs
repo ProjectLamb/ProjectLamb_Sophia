@@ -18,6 +18,8 @@ namespace Sophia.Instantiates
 
 #endregion
 
+#region Member
+
         public Stat InstantiableDurateLifeTimeMultiplyRatio {get; protected set;}
         public Stat InstantiableSizeMultiplyRatio {get; protected set;}
         public Stat InstantiableForwardingSpeedMultiplyRatio {get; protected set;}
@@ -27,6 +29,28 @@ namespace Sophia.Instantiates
         public Extras<object> TriggerdExtras {get; protected set;}
         public Extras<object> ReleasedExtras {get; protected set;}
         public Extras<object> ForwardingExtras {get; protected set;}
+
+        private void Awake() {
+            InstantiableDurateLifeTimeMultiplyRatio = new Stat(_baseInstantiatorData.InstantiableDurateLifeTimeMultiplyRatio,
+                E_NUMERIC_STAT_TYPE.InstantiableDurateLifeTimeMultiplyRatio,
+                E_STAT_USE_TYPE.Ratio, OnDurateLifeTime
+            );
+            InstantiableSizeMultiplyRatio = new Stat(_baseInstantiatorData.InstantiableSizeMultiplyRatio,
+                E_NUMERIC_STAT_TYPE.InstantiableSizeMultiplyRatio,
+                E_STAT_USE_TYPE.Ratio, OnRatioSize
+            );
+            InstantiableForwardingSpeedMultiplyRatio = new Stat(_baseInstantiatorData.InstantiableForwardingSpeedMultiplyRatio,
+                E_NUMERIC_STAT_TYPE.InstantiableForwardingSpeedMultiplyRatio,
+                E_STAT_USE_TYPE.Ratio, OnForwardingSpeed
+            );
+
+            OnCreated       ??= () => {};
+            OnTriggerd      ??= () => {};
+            OnReleased      ??= () => {};
+            OnForwarding    ??= () => {};
+        }
+
+#endregion
 
 #region Event
         /*
@@ -47,26 +71,6 @@ namespace Sophia.Instantiates
         }
         protected void OnForwardingSpeed() {
             throw new System.NotImplementedException();
-        }
-
-        private void Awake() {
-            InstantiableDurateLifeTimeMultiplyRatio = new Stat(_baseInstantiatorData.InstantiableDurateLifeTimeMultiplyRatio,
-                E_NUMERIC_STAT_TYPE.InstantiableDurateLifeTimeMultiplyRatio,
-                E_STAT_USE_TYPE.Ratio, OnDurateLifeTime
-            );
-            InstantiableSizeMultiplyRatio = new Stat(_baseInstantiatorData.InstantiableSizeMultiplyRatio,
-                E_NUMERIC_STAT_TYPE.InstantiableSizeMultiplyRatio,
-                E_STAT_USE_TYPE.Ratio, OnRatioSize
-            );
-            InstantiableForwardingSpeedMultiplyRatio = new Stat(_baseInstantiatorData.InstantiableForwardingSpeedMultiplyRatio,
-                E_NUMERIC_STAT_TYPE.InstantiableForwardingSpeedMultiplyRatio,
-                E_STAT_USE_TYPE.Ratio, OnForwardingSpeed
-            );
-
-            OnCreated       ??= () => {};
-            OnTriggerd      ??= () => {};
-            OnReleased      ??= () => {};
-            OnForwarding    ??= () => {};
         }
         
 #endregion
@@ -176,13 +180,12 @@ namespace Sophia.Instantiates
             return instantiatedProjectile;
         }
 
-
-        public Quaternion GetForwardingAngle(Quaternion instantiatorQuaternion)
+        private Quaternion GetForwardingAngle(Quaternion instantiatorQuaternion)
         {
             return Quaternion.Euler(transform.eulerAngles + instantiatorQuaternion.eulerAngles);
         }
 
-        public Transform GetTransformParent(Transform instantiatorTransform)
+        private Transform GetTransformParent(Transform instantiatorTransform)
         {
             instantiatorTransform.SetParent(this.transform);
             return instantiatorTransform;

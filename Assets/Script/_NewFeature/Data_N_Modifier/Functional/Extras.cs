@@ -32,7 +32,7 @@ namespace Sophia.DataSystem
             Created, Triggerd, Released, Forwarding
     }
 
-    public interface IExtrasAccessable {
+    public interface IExtrasAccessible {
         // public Extras GetExtras(E_Functional_EXTRAS_MEMBERS FunctionalType);
         // public string GetExtrasInfo();
     }
@@ -104,18 +104,21 @@ namespace Sophia.DataSystem
         }
         
         public void PerformStartFunctionals(ref T input){
+            if(isDirty) {RecalculateExtras();}
             foreach(var action in FunctionalLists.Start) {
                 action?.Invoke(ref input);
             }
         }
         
         public void PerformTickFunctionals(ref T input) {
+            if(isDirty) {RecalculateExtras();}
             foreach(var action in FunctionalLists.Tick) {
                 action?.Invoke(ref input);
             }
         }
 
         public void PerformExitFunctionals(ref T input) {
+            if(isDirty) {RecalculateExtras();}
             foreach(var action in  FunctionalLists.Exit) {
                 action?.Invoke(ref input);
             }
@@ -170,15 +173,14 @@ namespace Sophia.DataSystem
             isDirty = true;
         }
 
-        public void ResetFunctionals()
+        void ResetFunctionals()
         {
             FunctionalLists.Start.Clear();
             FunctionalLists.Tick.Clear();
             FunctionalLists.Exit.Clear();
         }
 
-
-        public void RecalculateExtras()
+        void RecalculateExtras()
         {
             if(isDirty == false) return;
             ResetFunctionals();

@@ -25,6 +25,14 @@ using UnityEngine;
             }
         }
 
+        public void Equip() {
+
+        }
+
+        public void Drop() {
+
+        }
+
         protected virtual void OnTriggerEnter(Collider other) {
             if(other.TryGetComponent<Sophia.Entitys.Player>(out Sophia.Entitys.Player player)) {
                 foreach(var Modifiers in Modifiers) {
