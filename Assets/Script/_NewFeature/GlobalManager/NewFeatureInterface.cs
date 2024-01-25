@@ -30,19 +30,19 @@ namespace Sophia
     }
 
 //    public interface ICarrierInteractable {
-//        public IStatAccessable GetStat();
+//        public IStatAccessible GetStat();
 //    }
 
-//     public interface ISkillStatAccessable
+//     public interface ISkillStatAccessible
 //     {
 //         public Stat GetEfficienceMultiplyer();
 //     }
 
-    public interface IInstantiatorAccessable {
+    public interface IInstantiatorAccessible {
 
     }
 
-//     public interface IWeaponStatAccessable {
+//     public interface IWeaponStatAccessible {
 //         public Stat GetWeaponRatioDamage();
 //         public Stat GetAttackSpeed();
 //     }
@@ -51,18 +51,18 @@ namespace Sophia
 //        public void Restore(int amount);
 //    }
 
-    public interface IModelAccessable {
+    public interface IModelAccessible {
         public void ChangeSkin(Material skin);
         public void RevertSkin();
         public Animator GetAnimator();
     }
 
-    public interface IVFXAccessable {
+    public interface IVFXAccessible {
         public VisualFXObject ActivateInstantable(Entity owner, VisualFXObject _instantiable, Vector3 _offset);
         public VisualFXObject ActivateInstantable(Entity owner, VisualFXObject _instantiable);
     }
 
-    public interface IVisualAccessable {
+    public interface IVisualAccessible {
         public ModelManger GetModelManger();
         public VisualFXBucket GetVisualFXBucket();
     }

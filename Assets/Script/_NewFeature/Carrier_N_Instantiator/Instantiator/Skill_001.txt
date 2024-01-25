@@ -1,5 +1,5 @@
 
-public class Skill_001 : MonoBehaviour, ISkillStatAccessable{
+public class Skill_001 : MonoBehaviour, ISkillStatAccessible{
     private Player playerRef;
     
     public int MaxPoolSize;

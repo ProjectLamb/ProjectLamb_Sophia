@@ -6,14 +6,14 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Resources/WorkSpace/TA_Escatrgot/Scenes/00_Title.unity
-    guid: 8582909d445a147cd95df070448f1dbf
+    path: Assets/Resources/Scenes/00_Title.unity
+    guid: fdc6c687de0db4614938c6fca3c890cf
   - enabled: 1
-    path: Assets/Resources/WorkSpace/TA_Escatrgot/Scenes/01_Loading.unity
-    guid: 1da6b46e9b4504dd9a6471d4dde9bfa5
+    path: Assets/Resources/Scenes/01_Loading.unity
+    guid: c26e5b4335992436e8fda6f7afdaf27a
   - enabled: 1
-    path: Assets/Resources/WorkSpace/TA_Escatrgot/Scenes/_TEST_Chapter_.unity
-    guid: 5ba277994783542418bfc427f91d2bfa
+    path: Assets/Resources/Scenes/_TEST_Chapter_.unity
+    guid: 70f34d01d713042c1ada5fa533bf1ae3
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 1500e65aa38604acfa62802a54d459c5,
       type: 2}

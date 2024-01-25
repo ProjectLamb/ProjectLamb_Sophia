@@ -9,7 +9,7 @@ namespace Sophia.Entitys{
     using Sophia.DataSystem.Numerics;
     using Sophia.Instantiates;
 
-    public abstract class Enemy : Entity, IVisualAccessable {
+    public abstract class Enemy : Entity, IVisualAccessible {
 
         public EntityStatReferer entityStat;
         
