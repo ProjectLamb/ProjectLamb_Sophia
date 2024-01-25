@@ -60,28 +60,26 @@ public class Enemy : Entity
 
     public override void GetDamaged(int _amount)
     {
-        if (isDie == true) { return; }
-        GameManager.Instance.GlobalEvent.OnEnemyHitEvent.ForEach(E => E.Invoke());
-        FinalData.HitStateRef.Invoke(ref _amount);
-        imageGenerator.GenerateImage(_amount);
-        CurrentHealth -= _amount;
-        if (CurrentHealth <= 0) { this.Die(); }
+        if (Life.IsDie == true) { return; }
+        Life.Damaged(_amount);
+        if (Life.IsDie) { Die(); }
     }
 
     public override void GetDamaged(int _amount, VFXObject _vfx)
     {
-        if (isDie == true) { return; }
-        GameManager.Instance.GlobalEvent.OnEnemyHitEvent.ForEach(E => E.Invoke());
-        FinalData.HitStateRef.Invoke(ref _amount);
-        imageGenerator.GenerateImage(_amount);
-        CurrentHealth -= _amount;
+        if (Life.IsDie == true) { return; }
+        Life.Damaged(_amount);
+        if (Life.IsDie) { Die(); }
         visualModulator.InteractByVFX(_vfx);
-        if (CurrentHealth <= 0) { this.Die(); }
     }
 
     public void DestroySelf()
     {
         Destroy(gameObject);
+    }
+
+    public void OnDestroy() {
+        Life.OnDamaged -= Generate;
     }
 
     protected virtual void NavMeshSet()
@@ -122,6 +120,12 @@ public class Enemy : Entity
 
         BaseEnemyData = new EntityData(ScriptableED);
         FinalData = BaseEnemyData;
+
+        //TA_escatrgot
+        Life = new Sophia.Composite.LifeComposite(FinalData.MaxHP);
+        Life.OnDamaged += Generate;
+
+        //neoskyclad
         CurrentHealth = FinalData.MaxHP;
         MaxHealth = GetFinalData().MaxHP;
 
@@ -134,6 +138,10 @@ public class Enemy : Entity
             isOffensive = true;
 
         NavMeshSet();
+    }
+
+    public void Generate(float val) {
+        imageGenerator.GenerateImage((int)val);
     }
 
     private void Start()

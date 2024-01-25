@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class DEBUG_MONEY : MonoBehaviour
 {
+    /*
     public int moneyHack;
     // Start is called before the first frame update
     void Start()
@@ -17,4 +18,5 @@ public class DEBUG_MONEY : MonoBehaviour
     {
         
     }
+    */
 }

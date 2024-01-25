@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Sophia_Carriers;
+using System.Collections;
 
 /// <summary>
 /// Instantiate().Initialize(int amount, Entity owner)를 꼭 설정해야함 <br/>
@@ -127,8 +128,17 @@ namespace Sophia_Carriers {
             if(transform.CompareTag(_other.transform.tag)) {return;}
             IDamagable target = _other.GetComponent<IDamagable>();
             if(_other.TryGetComponent<IDamagable>(out IDamagable damagableTarget)){
-                damagableTarget.GetDamaged((int)ProjecttileDamage, this.HitEffect); 
+                damagableTarget.GetDamaged((int)ProjecttileDamage, HitEffect);
+                //StartCoroutine(TEST_CoHitFiveTime(damagableTarget));
             }
+        }
+
+        IEnumerator TEST_CoHitFiveTime(IDamagable damagableTarget) {
+            for(int i = 0; i < 5; i++){
+                damagableTarget.GetDamaged((int)ProjecttileDamage, HitEffect);
+                yield return YieldInstructionCache.WaitForSeconds(0.05f);
+            }
+            yield break;
         }
 
         protected void ConveyAffectorToTarget(Collider _other){
