@@ -54,6 +54,20 @@ namespace Sophia.Composite
             
             AddToUpator();
         }
+        private void OnMaxStaminaUpdated() {
+            Timer.SetMaxStackCounts(this.MaxStamina.GetValueByNature());
+            DashUI.ResetUI();
+        }
+
+        private void OnStaminaRestoreSpeedUpdated() {
+            Timer.SetAcceleratrion(this.StaminaRestoreSpeed.GetValueByNature());
+            DashUI.ResetUI();
+        }
+
+        private void OnDashExtrasUpdated() {
+            Debug.Log("대쉬 추가 동작 변경됨!");
+        }
+
 
 # endregion
 
@@ -69,44 +83,12 @@ namespace Sophia.Composite
 
         public void SetAudioSource(FMODAudioSource source) { DashSource = source; }
         
-        private Vector3 SetDashPower(Vector3 moveVec, int moveSpeed) {
-            Vector3 temp = moveVec * -Mathf.Log(1 / this.rigidbodyRef.drag);
-            return temp.normalized * moveSpeed * 10;
-        }
-
         public void SetDashCoolUIRefer(DashCoolUI UIRef) {
             DashUI = UIRef;
             DashUI.SetTimer(Timer);
         }
 
 #endregion
-
-        private void OnMaxStaminaUpdated() {
-            Timer.SetMaxStackCounts(this.MaxStamina.GetValueByNature());
-            DashUI.ResetUI();
-        }
-
-        private void OnStaminaRestoreSpeedUpdated() {
-            Timer.SetAcceleratrion(this.StaminaRestoreSpeed.GetValueByNature());
-            DashUI.ResetUI();
-        }
-        private void OnDashExtrasUpdated() {
-            Debug.Log("대쉬 추가 동작 변경됨!");
-        }
-
-        private void Dash() {
-            (Vector3 moveVec, int moveSpeed) data = this.BindMovementData.Invoke();
-            Vector3 dashPower = SetDashPower(data.moveVec, data.moveSpeed);
-            this.rigidbodyRef.AddForce(dashPower, ForceMode.VelocityChange);
-            DashSource.Play();
-        }
-
-        public void Use() {
-            (Vector3 moveVec, int moveSpeed) data = this.BindMovementData.Invoke();
-            if(!GetIsDashState(data.moveSpeed) && rigidbodyRef.velocity.magnitude > 0.01f && Timer.GetIsReadyToUse() ){
-                Timer.ActionStart();
-            }
-        }
 
 #region  Updator Implements
 
@@ -130,7 +112,26 @@ namespace Sophia.Composite
             IsUpdatorBinded = false;
         }
     
-        #endregion
+#endregion
+
+        private void Dash() {
+            (Vector3 moveVec, int moveSpeed) data = this.BindMovementData.Invoke();
+            Vector3 dashPower = SetDashPower(data.moveVec, data.moveSpeed);
+            this.rigidbodyRef.AddForce(dashPower, ForceMode.VelocityChange);
+            DashSource.Play();
+        }
+
+        public void Use() {
+            (Vector3 moveVec, int moveSpeed) data = this.BindMovementData.Invoke();
+            if(!GetIsDashState(data.moveSpeed) && rigidbodyRef.velocity.magnitude > 0.01f && Timer.GetIsReadyToUse() ){
+                Timer.ActionStart();
+            }
+        }
+
+        private Vector3 SetDashPower(Vector3 moveVec, int moveSpeed) {
+            Vector3 temp = moveVec * -Mathf.Log(1 / this.rigidbodyRef.drag);
+            return temp.normalized * moveSpeed * 10;
+        }
 
     }
 }

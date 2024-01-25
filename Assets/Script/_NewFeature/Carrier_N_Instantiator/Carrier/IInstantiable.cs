@@ -19,8 +19,8 @@ namespace Sophia.Instantiates
         Inner, Outer
     }
 
-    public interface IPoolAccesable<T> where T : class {
-        public void SetByPool(IObjectPool<T> pool);
+    public interface IPoolAccesable {
+        public void SetByPool<T>(IObjectPool<T> pool) where T : MonoBehaviour;
         public void GetByPool();
         public void ReleaseByPool();
         public void SetPoolEvents(UnityAction activated, UnityAction deActivated, UnityAction release);

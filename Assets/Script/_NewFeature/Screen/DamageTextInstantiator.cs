@@ -26,7 +26,7 @@ public class DamageTextInstantiator : MonoBehaviour
     private List<DamageTextUI> LayerdTextList;
 
     private void Start() {
-        LifeCompositeRef ??= GetComponentInParent<ILifeAccessable>().GetLifeComposite();
+        LifeCompositeRef ??= GetComponentInParent<ILifeAccessible>().GetLifeComposite();
         LifeCompositeRef.OnDamaged += Generate;
     }
 

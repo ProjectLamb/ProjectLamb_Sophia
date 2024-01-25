@@ -14,7 +14,7 @@ public class HealthBarUI : MonoBehaviour
 
     private void Start()
     {
-        LifeCompositeRef ??= GetComponentInParent<Sophia.ILifeAccessable>().GetLifeComposite();
+        LifeCompositeRef ??= GetComponentInParent<Sophia.ILifeAccessible>().GetLifeComposite();
         int intValue = LifeCompositeRef.MaxHp;
         slider.maxValue = (float)intValue;
 
