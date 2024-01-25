@@ -7,6 +7,7 @@ public class PlayerModelHands : MonoBehaviour
 {
     string LEFT_HAND = "LeftHand";
     string RIGHT_HAND = "RightHand";
+
     [SerializedDictionary("Input Key", "GameObject")]
     public SerializedDictionary<string, Transform> Hands = new SerializedDictionary<string, Transform>(); // 무기 클래스를 가져온다.
     [SerializedDictionary("Input Key", "GameObject")]
