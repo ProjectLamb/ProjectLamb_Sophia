@@ -68,8 +68,8 @@ public class Player : Entity {
     public  bool                    mIsDie;
     public  bool                    isAttack; // 일반 공격(1,2,3타) 여부
     public  bool                    canExitAttack; // 공격 중 탈출가능시점
-
-    public  bool                    attackTrigger; // 선입력되어있는 attack 트리거를 해제하기 위한 변수
+    //[merge] 0125중 TA_escatrgot branch의 attackTrigger가 변수명이 겹쳐서 resetAtkTrigger로 합쳤음
+    public  bool                    resetAtkTrigger; // 선입력되어있는 attack 트리거를 해제하기 위한 변수
     public  bool                    attackProTime; // 공격 이펙트 출현시점
 
     [HideInInspector] Animator anim;
@@ -203,7 +203,7 @@ public class Player : Entity {
 
     public void Attack()
     {
-        if(!anim.GetBool("isFinalAttack"))
+        if(!resetAtkTrigger)
             anim.SetTrigger("DoAttack");
         //Turning(() => weaponManager.weapon.Use(PlayerDataManager.GetEntityData().Power));
     }
@@ -259,7 +259,8 @@ public class Player : Entity {
     {
         isAttack = AttackAnim.isAttack;
         canExitAttack = AttackAnim.canExitAttack;
-        attackTrigger = AttackAnim.attackTrigger;
+        resetAtkTrigger = AttackAnim.resetAtkTrigger;
+
         // 공격중이라면
         if(isAttack){
             anim.SetBool("isAttack",true);
@@ -268,13 +269,6 @@ public class Player : Entity {
             anim.SetBool("isAttack",false);
         }
 
-        //공격 애니메이션 종료
-        if(attackTrigger)
-        { 
-            // DoAttack trigger reset
-            anim.ResetTrigger("DoAttack");
-        }
-        
         //공격 중 이동이 감지되었다면
         if(canExitAttack && inputVec != Vector2.zero)
         {
@@ -284,5 +278,8 @@ public class Player : Entity {
         {
             anim.SetBool("canExitAttack",false);
         }
+
+        if(resetAtkTrigger) // 세번째 공격 종료시점에 선입력되어있는 DoAttack 트리거 reset
+            anim.ResetTrigger("DoAttack");
     }
 }

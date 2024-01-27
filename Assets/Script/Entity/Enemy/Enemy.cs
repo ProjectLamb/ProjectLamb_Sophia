@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
 using Sophia_Carriers;
+using DG.Tweening;
 
 /// <summary>
 /// 적 클래스 <br/>
@@ -89,12 +90,15 @@ public class Enemy : Entity
 
     protected virtual void Freeze()
     {
+        nav.enabled = false;
+        transform.DOKill();
         entityRigidbody.velocity = Vector3.zero;
         entityRigidbody.constraints = RigidbodyConstraints.FreezeAll;
     }
 
     protected virtual void UnFreeze()
     {
+        nav.enabled = true;
         entityRigidbody.constraints = RigidbodyConstraints.FreezeRotation;
     }
 
@@ -115,6 +119,8 @@ public class Enemy : Entity
 
         BaseEnemyData = new EntityData(ScriptableED);
         FinalData = BaseEnemyData;
+
+        //TA_escatrgot
         Life = new Sophia.Composite.LifeComposite(FinalData.MaxHP);
         Life.OnDamaged += Generate;
 
