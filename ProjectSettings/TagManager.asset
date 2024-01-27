@@ -13,6 +13,7 @@ TagManager:
   - EnemyProjectile
   - Equipment
   - DebugUI
+  - BossProjectile
   layers:
   - Default
   - TransparentFX
