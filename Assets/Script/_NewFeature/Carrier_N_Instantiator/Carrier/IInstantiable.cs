@@ -24,6 +24,9 @@ namespace Sophia.Instantiates
         public void GetByPool();
         public void ReleaseByPool();
         public void SetPoolEvents(UnityAction activated, UnityAction deActivated, UnityAction release);
+        public event UnityAction OnActivated;
+        public event UnityAction OnDeActivated;
+        public event UnityAction OnRelease;
     }
 
     public interface IColliderTriggerable {
