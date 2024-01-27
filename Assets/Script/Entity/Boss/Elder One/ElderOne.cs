@@ -186,6 +186,12 @@ public class ElderOne : Boss
         //Death animation
     }
 
+    void SetCarrierBucketPosition()
+    {
+        carrierBucket.transform.position = new Vector3(transform.position.x, 0, transform.position.z);
+        attackCarrierBucket.transform.position = transform.position + new Vector3(0, attackCarrierBucket.GetComponent<CarrierBucket>().BucketScale / 2, attackRange);
+    }
+
     public void UseProjectile_NormalAttack()
     {
         this.attackCarrierBucket.CarrierInstantiatorByObjects(this, projectiles[0], new object[] { FinalData.Power * 1 });
@@ -201,7 +207,7 @@ public class ElderOne : Boss
     {
         Debug.Log("Init_Enter");
         //Init Settings
-        attackCarrierBucket.transform.position = new Vector3(0, attackCarrierBucket.GetComponent<CarrierBucket>().BucketScale / 2, attackRange);
+        SetCarrierBucketPosition();
         InitAnimParamList();
 
         fsm.ChangeState(States.Idle);
