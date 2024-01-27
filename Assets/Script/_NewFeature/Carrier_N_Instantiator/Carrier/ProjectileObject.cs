@@ -126,6 +126,10 @@ namespace Sophia.Instantiates
             return;
         }
         
+        public event UnityAction OnActivated;
+        public event UnityAction OnDeActivated;
+        public event UnityAction OnRelease;
+
         public void SetPoolEvents(UnityAction activated, UnityAction deActivated, UnityAction release)
         {
             OnActivated     = activated;
@@ -227,10 +231,6 @@ namespace Sophia.Instantiates
 #endregion
 
 #region Event
-        
-        public event UnityAction OnActivated;
-        public event UnityAction OnDeActivated;
-        public event UnityAction OnRelease;
 
         public event UnityAction OnProjectileCreated = null;
         public ProjectileObject SetOnProjectileCreatedEvent(UnityAction action)
