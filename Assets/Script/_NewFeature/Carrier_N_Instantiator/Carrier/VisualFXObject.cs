@@ -66,9 +66,9 @@ namespace Sophia.Instantiates
         public ParticleSystem Particle;
         public ParticleSystem.MainModule mParticleModule;
 
-#endregion
+        #endregion
 
-#region ObjectPool
+        #region ObjectPool
 
         private IObjectPool<VisualFXObject> poolRefer { get; set; }
         public void SetByPool<T>(IObjectPool<T> pool) where T : MonoBehaviour
@@ -99,6 +99,10 @@ namespace Sophia.Instantiates
             gameObject.SetActive(false);
             return;
         }
+        
+        public event UnityAction OnActivated;
+        public event UnityAction OnDeActivated;
+        public event UnityAction OnRelease;
 
         public void SetPoolEvents(UnityAction activated, UnityAction deActivated, UnityAction release)
         {
@@ -195,11 +199,6 @@ namespace Sophia.Instantiates
 #endregion
 
 #region Event Adder
-
-        public event UnityAction OnActivated;
-        public event UnityAction OnDeActivated;
-        public event UnityAction OnRelease;
-
         public void ClearEvents()
         {
             OnActivated = null;
