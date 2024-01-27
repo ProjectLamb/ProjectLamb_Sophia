@@ -88,12 +88,11 @@ public class Player : Entity {
         base.Awake();
         model.TryGetComponent<Animator>(out anim);
         model.TryGetComponent<AttackAnim>(out attackAnim);
+
+        Life = new Sophia.Composite.LifeComposite(PlayerDataManager.GetEntityData().MaxHP);
     }
 
     private void Start() {
-        Life = new Sophia.Composite.LifeComposite(PlayerDataManager.GetEntityData().MaxHP);
-        //Life.OnHit += PlayerDataManager.GetEntityData().HitStateRef;
-    
         isAttack = false;
         //isThrAttack = false;
 
