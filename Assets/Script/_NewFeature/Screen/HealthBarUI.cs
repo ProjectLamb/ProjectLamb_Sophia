@@ -14,7 +14,7 @@ public class HealthBarUI : MonoBehaviour
 
     private void Start()
     {
-        LifeCompositeRef ??= GetComponentInParent<Sophia.ILifeAccessible>().GetLifeComposite();
+        LifeCompositeRef ??= GetComponentInParent<Sophia.ILifeAccessible>(true).GetLifeComposite();
         int intValue = LifeCompositeRef.MaxHp;
         slider.maxValue = (float)intValue;
 
@@ -27,18 +27,6 @@ public class HealthBarUI : MonoBehaviour
     private void OnDestroy() {
         LifeCompositeRef.OnHpUpdated -= UpdateFillAmount;
         LifeCompositeRef.OnEnterDie  -= TurnOffUI;
-    }
-
-    public void SetLifeComposite(Sophia.Composite.LifeComposite LifeComposite)
-    {
-        int intValue = LifeComposite.MaxHp;
-        slider.maxValue = (float)intValue;
-
-        LifeCompositeRef = LifeComposite;
-        LifeCompositeRef.OnHpUpdated += UpdateFillAmount;
-        LifeCompositeRef.OnEnterDie += TurnOffUI;
-
-        StartCoroutine(DoAndRenderUI(() => { fill.color = gradient.Evaluate(1f); }));
     }
 
     public void DrawForce()
