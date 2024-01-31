@@ -17,9 +17,11 @@ public class Enemy_Template : Enemy
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    protected override void FixedUpdate()
     {
         transform.LookAt(objectiveTarget);
-        nav.SetDestination(objectiveTarget.position);
+        if(nav.enabled == true) {
+            nav?.SetDestination(objectiveTarget.position);
+        }
     }
 }
