@@ -115,7 +115,6 @@ public class CarrierBucket : MonoBehaviour {
         return carrierInstant;
     }    
     public Quaternion GetForwardingAngle(Transform _useCarrier){
-        Debug.Log(Quaternion.Euler(transform.eulerAngles + _useCarrier.transform.eulerAngles).eulerAngles);
         return Quaternion.Euler(transform.eulerAngles + _useCarrier.transform.eulerAngles);
     }
     

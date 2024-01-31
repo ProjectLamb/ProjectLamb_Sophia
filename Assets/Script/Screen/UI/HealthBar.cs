@@ -22,8 +22,7 @@ public class HealthBar : MonoBehaviour
     }
 
     private void OnDestroy() {
-        LifeCompositeRef.OnHpUpdated -= UpdateFillAmount;
-        LifeCompositeRef.OnEnterDie  -= TurnOffUI;
+        if(LifeCompositeRef != null) {LifeCompositeRef.ClearEvents();}
     }
 
     private void UpdateFillAmount(float currentHp)
