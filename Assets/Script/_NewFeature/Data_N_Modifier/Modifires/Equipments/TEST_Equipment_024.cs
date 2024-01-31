@@ -13,16 +13,34 @@ using Sophia.DataSystem.Modifiers;
 using Sophia.DataSystem;
 
 public class TEST_Equipment_024 : Equipment { //, IPlayerDataApplicant{
-    [SerializeField] public Material _material;
-    [SerializeField] public Sophia.Instantiates.VisualFXObject _visualFx;
-    [SerializeField] public float _baseDurateTime;
-    [SerializeField] public float _intervalTime;
-    [SerializeField] public float _TickDamageRatio;
-    [SerializeField] private float _TickDamage;
+
     ExtrasModifier<Sophia.Entitys.Entity> extrasModifier;
     Sophia.Entitys.Entity OwnerRef;
 
     private void Awake() {
+        
+        /******************************************************
+
+        Extras<Sophia.Entitys.Entity> TargetAffectedExtrasRef
+            = OwnerRef.GetExtras<Sophia.Entitys.Entity>(E_FUNCTIONAL_EXTRAS_TYPE.TargetAffected);
+        
+        ******************************************************/
+        
+        /******************************************************
+        
+        ExtrasModifier<Sophia.Entitys.Entity> extrasModifier 
+            = new ExtrasModifier<Sophia.Entitys.Entity>( UnityActionRef<Sophia.Entitys.Entity> ));
+
+            UnityActionRef<Sophia.Entitys.Entity> 내부는 반드시 Affector 객체가 생겨야 한다.
+        
+        ******************************************************/
+
+        /******************************************************
+        
+        TargetAffectedExtrasRef.AddModifier(this.extrasModifier);
+        
+        ******************************************************/
+
         extrasModifier = new ExtrasModifier<Sophia.Entitys.Entity>(OnAffectedToTarget, E_EXTRAS_PERFORM_TYPE.Tick, E_FUNCTIONAL_EXTRAS_TYPE.TargetAffected);
     }
     protected override void OnTriggerEnter(Collider other)
@@ -35,6 +53,12 @@ public class TEST_Equipment_024 : Equipment { //, IPlayerDataApplicant{
         base.OnTriggerEnter(other);
     }
 
+    [SerializeField] public Material _material;
+    [SerializeField] public Sophia.Instantiates.VisualFXObject _visualFx;
+    [SerializeField] public float _baseDurateTime;
+    [SerializeField] public float _intervalTime;
+    [SerializeField] public float _TickDamageRatio;
+    [SerializeField] private float _TickDamage;
     public void OnAffectedToTarget(ref Sophia.Entitys.Entity target) {
         Affector PoisionAffector = new PoisonedAffect(this.OwnerRef, target, this._baseDurateTime)
                                         .SetIntervalTime(this._intervalTime)

@@ -283,3 +283,4 @@ public class Player : Entity {
             anim.ResetTrigger("DoAttack");
     }
 }
+
