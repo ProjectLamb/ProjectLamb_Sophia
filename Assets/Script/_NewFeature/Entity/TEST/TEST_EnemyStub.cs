@@ -10,16 +10,17 @@ namespace Sophia.Entitys
     using Sophia.Instantiates;
     using Sophia.DataSystem.Functional;
     using Sophia.DataSystem.Modifiers.Affector;
+    using Cysharp.Threading.Tasks;
 
-    public class TEST_EnemyStub : Entity
+    public class TEST_EnemyStub : Entity, IMovable
     {
-        #region SerializeMembeer 
+#region SerializeMembeer 
         [SerializeField] protected SerialBaseEntityData _baseEntityData;
         // [SerializeField] protected ModelManger _modelManger;
         // [SerializeField] protected VisualFXBucket _visualFXBucket;
-        #endregion
+#endregion
 
-        #region Members
+#region Members
         //  [HideInInspector] public Collider entityCollider;
         //  [HideInInspector] public Rigidbody entityRigidbody;
 
@@ -31,10 +32,10 @@ namespace Sophia.Entitys
         public override AffectorHandlerComposite GetAffectorHandlerComposite() => this.affectorComposite;
         public override void ModifiedByAffector(Affector affector) => this.affectorComposite.ModifiyByAffector(affector);
 
-        #endregion
+#endregion
 
 
-        #region Life Accessible
+#region Life Accessible
 
         public override LifeComposite GetLifeComposite() => this.Life;
 
@@ -47,9 +48,9 @@ namespace Sophia.Entitys
 
         public override void Die() => Destroy(gameObject, 0.5f);
 
-        #endregion
+#endregion
 
-        #region Stat Accessible
+#region Stat Accessible
 
         public override Stat GetStat(E_NUMERIC_STAT_TYPE numericType) => StatReferer.GetStat(numericType);
 
@@ -66,7 +67,7 @@ namespace Sophia.Entitys
         public override EntityExtrasReferer GetExtrasReferer() => ExtrasReferer;
         public override Extras<T> GetExtras<T>(E_FUNCTIONAL_EXTRAS_TYPE functionalType) => ExtrasReferer.GetExtras<T>(functionalType);
 
-        #endregion
+#endregion
 
         private void Awake()
         {
@@ -76,6 +77,8 @@ namespace Sophia.Entitys
             StatReferer = new EntityStatReferer();
             Life = new LifeComposite(_baseEntityData.MaxHp, _baseEntityData.Defence);
             affectorComposite = new AffectorHandlerComposite(_baseEntityData.Tenacity);
+            
+            MoveSpeed = new Stat(_baseEntityData.MoveSpeed, E_NUMERIC_STAT_TYPE.MoveSpeed, E_STAT_USE_TYPE.Natural);
         }
 
         private void Start()
@@ -83,6 +86,33 @@ namespace Sophia.Entitys
             StatReferer.SetRefStat(Life.MaxHp);
             StatReferer.SetRefStat(Life.Defence);
             StatReferer.SetRefStat(affectorComposite.Tenacity);
+            StatReferer.SetRefStat(this.MoveSpeed);
         }
+
+        private void FixedUpdate() {
+            MoveTick();
+        }
+
+#region Movement Test
+
+        public bool IsMovable = false;
+        public Stat MoveSpeed;
+
+        public bool GetMoveState() => IsMovable;
+
+        public void SetMoveState(bool movableState) => IsMovable = movableState;
+
+        public void MoveTick() {
+            if(IsMovable == false) return;
+            Transform targetPos = GameManager.Instance.PlayerGameObject.transform;
+            Vector3 ForwardingVector = Vector3.Normalize((targetPos.position - transform.position));
+            entityRigidbody.velocity = ForwardingVector * MoveSpeed.GetValueForce() * Time.fixedDeltaTime;
+        }
+
+        public UniTask Turning()
+        {
+            throw new System.NotImplementedException();
+        }
+#endregion
     }
 }
