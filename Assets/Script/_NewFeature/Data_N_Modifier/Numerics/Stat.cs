@@ -88,8 +88,9 @@ namespace Sophia.DataSystem
 
         public void RemoveModifier(StatModifier StatModifier)
         {
-            statModifierList.Remove(StatModifier);
-            isDirty = true;
+            if(statModifierList.Remove(StatModifier)) {
+                isDirty = true;
+            }
         }
 
         public void ResetModifiers()

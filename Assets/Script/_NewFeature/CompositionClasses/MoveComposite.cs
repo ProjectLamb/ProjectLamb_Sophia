@@ -11,12 +11,20 @@ namespace Sophia.Composite
 {
     public class MovementComposite 
     {
+
+#region Data
+
         public  Stat MoveSpeed {get; protected set;}
 
         public Extras<Vector3> MoveExtras {get; protected set;}
         public Extras<object> IdleExtras {get; protected set;}
 
+#endregion
+
+#region Member
+
         public  Rigidbody RbRef {get; protected set;}
+        public bool IsMovable {get; protected set;}
 
         public  Vector3     ForwardingVector;
         public  Quaternion  Rotate;
@@ -27,7 +35,9 @@ namespace Sophia.Composite
         public LayerMask WallMask = LayerMask.GetMask("Wall");
         
         public MovementComposite(Rigidbody rigidbody, float baseMoveSpeed) {
+            
             RbRef = rigidbody;
+
             MoveSpeed = new Stat(baseMoveSpeed, 
                 E_NUMERIC_STAT_TYPE.MoveSpeed, 
                 E_STAT_USE_TYPE.Natural, 
@@ -43,9 +53,11 @@ namespace Sophia.Composite
                 OnIdleUpdated
             );
             
+            IsMovable = true;
         }
+#endregion
 
-    #region Event
+#region Event
 
         public void OnMoveSpeedUpdated() {
             Debug.Log("이동속도 변경됨!");
@@ -64,9 +76,9 @@ namespace Sophia.Composite
 
         public event UnityAction<Vector3> OnMoveForward = null;
 
-    #endregion
+#endregion
 
-    #region Getter
+#region Getter
 
         public Vector3 GetForwardingVector() {
             Vector3 res = Vector3.zero;
@@ -80,9 +92,17 @@ namespace Sophia.Composite
 
         public (Vector3, int) GetMovemenCompositetData() => (GetForwardingVector(), MoveSpeed);
     
-    #endregion
+#endregion
+
+#region Setter 
+
+        public void SetMovableState(bool Input) => IsMovable = Input;
+
+#endregion
 
         public void MoveTick(Transform transform) {
+            if(!IsMovable) {return;}
+
             ForwardingVector = GetForwardingVector();
             this.RbRef.velocity = ForwardingVector * MoveSpeed.GetValueForce();
 
@@ -96,6 +116,7 @@ namespace Sophia.Composite
 
         public async UniTask TurningWithCallback(Transform transform, Vector3 mousePosition, UnityAction _turningCallback)
         {
+            if(!IsMovable) {return;}
             Ray camRay = Camera.main.ScreenPointToRay(mousePosition);
 
             // 레이캐스트 시작
@@ -110,6 +131,8 @@ namespace Sophia.Composite
         }
 
         public async UniTask Turning(Transform transform, Vector3 mousePosition) {
+            if(!IsMovable) {return;}
+
             Ray camRay = Camera.main.ScreenPointToRay(mousePosition);
             if (Physics.Raycast(camRay, out RaycastHit groundHit, CamRayLength, GroundMask)) // 공격 도중에는 방향 전환 금지
             {
@@ -120,12 +143,12 @@ namespace Sophia.Composite
             await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);
         }
     
-    #region Helper
+#region Helper
         private Vector3 AngleToVector(float _angle) {
             _angle *= Mathf.Deg2Rad;
             return new Vector3(Mathf.Sin(_angle), 0, Mathf.Cos(_angle));
         }
 
-    #endregion
+#endregion
     }   
 }
