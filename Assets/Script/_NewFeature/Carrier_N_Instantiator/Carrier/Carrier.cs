@@ -6,7 +6,7 @@ namespace Sophia.Instantiates
 {
     public abstract class Carrier : MonoBehaviour
     {
-        protected void OnTriggerEnter(Collider other) {
+        private void OnTriggerEnter(Collider other) {
             OnTriggerLogic(other);
         }
 
