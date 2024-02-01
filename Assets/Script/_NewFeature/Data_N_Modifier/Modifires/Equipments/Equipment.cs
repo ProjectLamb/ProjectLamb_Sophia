@@ -7,8 +7,9 @@ using UnityEngine;
     using Sophia.DataSystem.Modifiers;
     using Sophia.DataSystem.Numerics;
     using UnityEngine.UI;
+    using Sophia.Instantiates;
 
-    public class Equipment : MonoBehaviour {
+public class Equipment : Carrier {
         [SerializeField] public string _equipmentName;
         [SerializeField] public Sprite   _icon;
         [SerializeField] public string  _description;
@@ -33,8 +34,10 @@ using UnityEngine;
 
         }
 
-        protected virtual void OnTriggerEnter(Collider other) {
-            if(other.TryGetComponent<Sophia.Entitys.Player>(out Sophia.Entitys.Player player)) {
+
+        protected override void OnTriggerLogic(Collider entity)
+        {
+            if(entity.TryGetComponent<Sophia.Entitys.Player>(out Sophia.Entitys.Player player)) {
                 foreach(var Modifiers in Modifiers) {
                     Stat stetRef = player.GetStat(Modifiers.Key);
                     stetRef.AddModifier(Modifiers.Value);
@@ -72,4 +75,4 @@ using UnityEngine;
             }
             return res;
         }
-    }
+}
