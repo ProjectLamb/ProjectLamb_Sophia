@@ -9,21 +9,40 @@ namespace Sophia.Composite
         public int[] ints;
         public float[] floats;
     }
+
     class AffectorFactory {
+
+#region Extras List
+        
         long bitset;
         public DataForFunction[] datas = new DataForFunction[64];
 
+        // Extras OnMoveExtras;
+#endregion
+
+#region Invoke
+
         public void foo() {
             for(int i = 0; i < 64; i++) {
-                if(1 == (bitset & 1 << i)) {
-                   SomeFunction(i); 
-                }
+                if(1 == (bitset & 1 << i)) { SomeFunction(i);  }
             }
         }
+
+        // OnMoveExtras.Invoke();
+#endregion
+
+#region Modifiers
+        public void AddFunction(int i) => bitset &= 1 << i;
+        // OnMoveExtras.AddModifier();
+        public void RemoveFunction(int i) => bitset ^= 1 << i;
+        // OnMoveExtras.RemoveModifier();
+#endregion
+        /*
+        */
         void SomeFunction(int i) {
             switch (i)
             {
-                case 0  : { 
+                case 0  : {
                     int speed = datas[0].ints[0];
                     int damage = datas[0].ints[1];
                     /*...*/
@@ -54,6 +73,7 @@ namespace Sophia.Composite
                 case 20 : { break;  }
                 case 21 : { break;  }
                 case 22 : { break;  }
+                default : { break;}
             }
         }
     }

@@ -58,8 +58,8 @@ namespace Sophia
     }
 
     public interface IVFXAccessible {
-        public VisualFXObject ActivateInstantable(Entity owner, VisualFXObject _instantiable, Vector3 _offset);
-        public VisualFXObject ActivateInstantable(Entity owner, VisualFXObject _instantiable);
+        public VisualFXObject InstantablePositioning(Entity owner, VisualFXObject _instantiable, Vector3 _offset);
+        public VisualFXObject InstantablePositioning(Entity owner, VisualFXObject _instantiable);
     }
 
     public interface IVisualAccessible {

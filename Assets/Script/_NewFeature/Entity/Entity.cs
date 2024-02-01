@@ -26,7 +26,6 @@ namespace Sophia.Entitys
 #region Life Accessible
         public abstract LifeComposite GetLifeComposite();
         public abstract void GetDamaged(int damage);
-        public abstract void GetDamaged(int damage, VisualFXObject vfx);
         public abstract void Die();
 
 #endregion
@@ -47,6 +46,9 @@ namespace Sophia.Entitys
         public abstract AffectorHandlerComposite GetAffectorHandlerComposite();
         public abstract void ModifiedByAffector(Affector affector);
 
+#endregion
+
+#region Visual Accessible
         public ModelManger GetModelManger() => this._modelManger;
         public VisualFXBucket GetVisualFXBucket() => this._visualFXBucket;
         

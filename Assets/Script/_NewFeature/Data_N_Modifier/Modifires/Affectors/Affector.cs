@@ -14,16 +14,16 @@ namespace Sophia.DataSystem
         {
             #region Members
             public readonly E_AFFECT_TYPE AffectType;
-            public readonly Entity targetEntity;
-            public readonly Entity ownerEntity;
+            public readonly Entity TargetRef;
+            public readonly Entity OwnerRef;
             public float BaseDurateTime { get; private set; }
             public TimerComposite Timer { get; private set; }
             public Affector(E_AFFECT_TYPE affectType, Entity ownerReceivers, Entity targetReceivers, float durateTime)
             {
                 this.AffectType = affectType;
 
-                this.ownerEntity = ownerReceivers;
-                this.targetEntity = targetReceivers;
+                this.OwnerRef = ownerReceivers;
+                this.TargetRef = targetReceivers;
                 this.BaseDurateTime = durateTime;
 
                 this.Timer = new TimerComposite(BaseDurateTime);
@@ -62,7 +62,7 @@ namespace Sophia.DataSystem
             }
             #endregion
 
-            public virtual void ConveyToTarget() => targetEntity.ModifiedByAffector(this);
+            public virtual void ConveyToTarget() => TargetRef.ModifiedByAffector(this);
             public virtual void Modifiy(float tenacity) { OnModifiy?.Invoke(ref tenacity); }
             public virtual void TickRunning() { OnTickRunning?.Invoke(); }
             public virtual void Revert() { OnRevert?.Invoke(); }

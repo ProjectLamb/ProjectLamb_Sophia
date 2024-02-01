@@ -4,8 +4,10 @@ using UnityEngine.Pool;
 
 namespace Sophia
 {    
+    using Entitys;
     using Instantiates;
-    
+    using Unity.VisualScripting;
+
     public class VisualFXObjectPool : MonoBehaviour {
         
         private static VisualFXObjectPool _instance;
@@ -19,6 +21,10 @@ namespace Sophia
                 return _instance;
             }
             private set{}
+        }
+
+        public static VisualFXObject GetObject(VisualFXObject visualFXReference, Entity caller) {
+            return Instance.VFXPool[visualFXReference.gameObject.name].Get().Init(caller);
         }
 
         [SerializeField] private List<VisualFXObject> _creatableVisualFXObjects; 
@@ -37,7 +43,8 @@ namespace Sophia
 
                 VFXPool[E.gameObject.name] = new ObjectPool<VisualFXObject>(
                     createFunc: () => {
-                        VisualFXObject concrete = Instantiate(E);
+                        if(E.DEBUG) {Debug.Log("인스턴시에이트 실행");}
+                        VisualFXObject concrete = Instantiate<VisualFXObject>(E) as VisualFXObject;
                         concrete.SetByPool(this.VFXPool[E.gameObject.name]);
                         return concrete;
                     },

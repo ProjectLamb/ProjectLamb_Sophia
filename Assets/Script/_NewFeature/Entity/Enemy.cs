@@ -9,25 +9,16 @@ namespace Sophia.Entitys{
     using Sophia.DataSystem.Numerics;
     using Sophia.Instantiates;
 
-    public abstract class Enemy : Entity, IVisualAccessible {
+    public abstract class Enemy : Entity, IMovable {
 
-        public EntityStatReferer entityStat;
-        
+#region SerializeMember
         [SerializeField]
         private float currentHealth;
 
-        private void Awake() {
-            entityStat = new EntityStatReferer();
-        }
+#endregion
 
-        public override void GetDamaged(int damage) {
-            currentHealth -= damage;
-            if(currentHealth <= 0) {Die();}
-        }
-        public override void GetDamaged(int damage, VisualFXObject vfx) {}
-        public override void Die() {throw new System.NotImplementedException();}
-
-        public Animator GetAnimator() { return _modelManger.GetAnimator(); }
+#region Data Accessible
+        public EntityStatReferer entityStat;
 
         public override Stat GetStat(E_NUMERIC_STAT_TYPE numericType){
             return entityStat.GetStat(numericType);
@@ -35,5 +26,46 @@ namespace Sophia.Entitys{
 
         [ContextMenu("Get Stats Info")]
         public override string GetStatsInfo() => entityStat.GetStatsInfo();
+
+
+#endregion
+
+#region Life Accessible
+        public override void GetDamaged(int damage) {
+            currentHealth -= damage;
+            if(currentHealth <= 0) {Die();}
+        }
+        public override void Die() {throw new System.NotImplementedException();}
+
+#endregion
+
+        private void Awake() {
+            entityStat = new EntityStatReferer();
+        }
+
+
+        public Animator GetAnimator() { return _modelManger.GetAnimator(); }
+
+#region Move Accessible
+        public bool GetMoveState()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void SetMoveState(bool movableState)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void MoveTick()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public UniTask Turning()
+        {
+            throw new System.NotImplementedException();
+        }
+#endregion
     }    
 }

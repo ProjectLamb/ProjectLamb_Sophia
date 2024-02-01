@@ -4,6 +4,7 @@ using UnityEngine.Pool;
 
 namespace Sophia
 {
+    using Entitys;
     using Instantiates;
     
     public class ProjectilePool : MonoBehaviour {
@@ -18,6 +19,10 @@ namespace Sophia
                 return _instance;
             }
             private set {}
+        }
+
+        public static ProjectileObject GetObject(ProjectileObject projectileReferernce, Entity caller) {
+            return Instance.ProPool[projectileReferernce.gameObject.name].Get().Init(caller);
         }
 
         [SerializeField] private List<ProjectileObject> _creatableProjectiles;
@@ -51,7 +56,7 @@ namespace Sophia
 #region ObjectPool
 
         private void OnGetObject(ProjectileObject projectile) {
-            transform.parent = null;
+            projectile.transform.parent = null;
             projectile.GetByPool();
         }
 
