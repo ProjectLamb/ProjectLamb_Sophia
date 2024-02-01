@@ -13,7 +13,7 @@ namespace Sophia.Entitys
     using Sophia.Instantiates;
     using Sophia.DataSystem.Modifiers.Affector;
 
-    public class Player : Entity {
+    public class Player : Entity, IMovable {
 
 #region SerializeMembeer 
         [SerializeField] private SerialBasePlayerData _basePlayerData;
@@ -48,13 +48,6 @@ namespace Sophia.Entitys
             Life.Damaged(damage);
             if(Life.IsDie) {Die();}
         }
-        public override void GetDamaged(int damage, VisualFXObject vfx) {
-            if (Life.IsDie) { return; }
-            Life.Damaged(damage);
-            if(Life.IsDie) {Die();}
-
-            _visualFXBucket.ActivateInstantable(this, vfx)?.Activate();
-        }
 
         public override void Die() {
             throw new System.NotImplementedException();
@@ -80,6 +73,9 @@ namespace Sophia.Entitys
 #region Movement
 
         public MovementComposite GetMovementComposite() => this.Movement;
+        public bool GetMoveState() => this.Movement.IsMovable;
+        public void SetMoveState(bool movableState) => this.Movement.SetMovableState(movableState);
+        
         public void OnMove(InputValue _value)
         {
             Vector2 move = _value.Get<Vector2>();

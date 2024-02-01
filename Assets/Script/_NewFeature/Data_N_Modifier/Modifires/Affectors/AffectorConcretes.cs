@@ -11,17 +11,19 @@ namespace Sophia.DataSystem
         using Sophia.Entitys;
         using System.Threading;
 
+
+
         public class PoisonedAffect : Affector {
     #region Members
 //          public readonly E_AFFECT_TYPE AffectType;
-//          public readonly Entity targetEntity;
+//          public readonly Entity TargetRef;
 //          public readonly Entity ownerEntity;
 //          public float BaseDurateTime              {get; private set;}
 //          public TimerComposite Timer              {get; private set;}
             private CancellationTokenSource cts;
 
-            public Material material;
-            public VisualFXObject visualFx;
+            public Material materialRef {get; private set;}
+            public VisualFXObject visualFxRef {get; private set;}
     
             public float TickDamage                  {get; private set;}
             public float TickDamageRatio             {get; private set;}
@@ -42,17 +44,16 @@ namespace Sophia.DataSystem
     #region Setter
 
             public PoisonedAffect SetMaterial(Material material) {
-                this.material = material;
-                Timer.OnStart += PoisonedMeshOn;
+                this.materialRef = material;
+                Timer.OnStart    += PoisonedMeshOn;
                 Timer.OnFinished += PoisonedMeshOff;
                 return this;
             }
 
             public PoisonedAffect SetVisualFXObject(VisualFXObject vfx) {
-                this.visualFx = vfx;
-                Timer.OnStart += PoisonedVFXOn;
+                this.visualFxRef = vfx;
+                Timer.OnStart    += PoisonedVFXOn;
                 Timer.OnFinished += PoisonedVFXOff;
-
                 return this;
             }
             
@@ -110,31 +111,36 @@ namespace Sophia.DataSystem
 
     #region Affects
 
-            private void PoisonedDamage() =>  targetEntity.GetDamaged((int)CalcTickDamage());
+            private void PoisonedDamage() =>  TargetRef.GetDamaged((int)CalcTickDamage());
             private async void PoisonedMeshOn()    {
-                Debug.Log("ChangeSkin"); 
                 try
                 {
-                    if(targetEntity == null) return;
-                    await targetEntity.GetModelManger().ChangeSkin(cts.Token,material);
+                    if(TargetRef == null) return;
+                    await TargetRef.GetModelManger().ChangeSkin(cts.Token,materialRef);
                 }
                 catch (OperationCanceledException) {
 
                 }
             }
             private async void PoisonedMeshOff()   {
-                Debug.Log("RevertSkin"); 
                 try
                 {
-                    if(targetEntity == null) return;
-                    await targetEntity.GetModelManger().RevertSkin(cts.Token);
+                    if(TargetRef == null) return;
+                    await TargetRef.GetModelManger().RevertSkin(cts.Token);
                 }
                 catch (OperationCanceledException) {
 
                 }
             }
-            private void PoisonedVFXOn()     {}//targetEntity.GetVisualFXBucket().ActivateInstantable(null, visualFx);}
-            private void PoisonedVFXOff()    {}//targetEntity.GetVisualFXBucket().ActivateInstantable(null, visualFx);}
+            private void PoisonedVFXOn()  {
+                if(visualFxRef.DEBUG)Debug.Log($"{visualFxRef.gameObject.name} 지금 타입은 {visualFxRef.AffectType.ToString()}");
+                VisualFXObject visualFX = VisualFXObjectPool.GetObject(visualFxRef, OwnerRef);
+                TargetRef.GetVisualFXBucket().InstantablePositioning(visualFX).Activate();
+            }
+            private void PoisonedVFXOff() {
+                if(visualFxRef.DEBUG)Debug.Log($"{visualFxRef.gameObject.name} 지금 타입은 {visualFxRef.AffectType.ToString()}");
+                TargetRef.GetVisualFXBucket().RemoveInstantableFromBucket(this.AffectType);
+            }
     #endregion
 
     #region Helper
