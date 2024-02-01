@@ -252,10 +252,10 @@ namespace Sophia.DataSystem
         public class AirborneAffect : Affector {
 #region Members
             public AirborneAffect(Entity ownerReceivers, Entity targetReceivers, float durateTime) 
-            : base(E_AFFECT_TYPE.Airborn, ownerReceivers, targetReceivers, durateTime) {
+            : base(E_AFFECT_TYPE.Airborne, ownerReceivers, targetReceivers, durateTime) {
                 Timer.OnFinished += Revert;
-                Timer.OnStart += AirboanStart;
-                Timer.OnFinished += AirboanEnd;
+                Timer.OnStart += AirboaneStart;
+                Timer.OnFinished += AirboaneEnd;
             }
             
 #endregion
@@ -290,7 +290,7 @@ namespace Sophia.DataSystem
 
 #endregion
 #region Affects
-            private void AirboanStart() {
+            private void AirboaneStart() {
                 if(TargetRef is IMovable) {
                     IMovable movableEntity = TargetRef as IMovable;
                     
@@ -299,7 +299,7 @@ namespace Sophia.DataSystem
                     movableEntity.SetMoveState(false);
                 }
             }
-            private void AirboanEnd() {
+            private void AirboaneEnd() {
                 if(TargetRef is IMovable) {
                     IMovable movableEntity = TargetRef as IMovable;
                     movableEntity.SetMoveState(true);
