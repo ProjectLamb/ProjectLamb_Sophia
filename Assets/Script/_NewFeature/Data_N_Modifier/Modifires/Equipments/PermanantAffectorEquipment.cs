@@ -45,7 +45,7 @@ public class PermanantAffectorEquipment : Carrier { //, IPlayerDataApplicant{
         switch(_affectType) {
             case E_AFFECT_TYPE.Poisoned : {affectAction = OnPoisionAffectedToTarget; break;}
             case E_AFFECT_TYPE.Stern    : {affectAction = OnSternAffectedToTarget; break;}
-            case E_AFFECT_TYPE.Airborn    : {affectAction = OnAirbornAffectedToTarget; break;}
+            case E_AFFECT_TYPE.Airborne    : {affectAction = OnAirbornAffectedToTarget; break;}
             default : {throw new System.Exception("현재 알맞는 어펙터가 없음");}
         }
 
