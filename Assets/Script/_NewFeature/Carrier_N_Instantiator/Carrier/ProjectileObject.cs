@@ -15,7 +15,6 @@ namespace Sophia.Instantiates
     {
 
 #region Serialize
-
         [SerializeField] private E_AFFECT_TYPE _affectType = E_AFFECT_TYPE.None;
         [SerializeField] private E_INSTANTIATE_STACKING_TYPE _stackingType = E_INSTANTIATE_STACKING_TYPE.Stack;
         [SerializeField] private E_INSTANTIATE_POSITION_TYPE _positioningType = E_INSTANTIATE_POSITION_TYPE.Outer;
@@ -27,15 +26,15 @@ namespace Sophia.Instantiates
         [SerializeField] private  Rigidbody  _carrierRigidBody = null;
         [SerializeField] private  VisualFXObject  _destroyEffect= null;
         [SerializeField] private  VisualFXObject  _hitEffect= null;
-        [SerializeField] public   ParticleSystem ProjectileParticle = null;
+        [SerializeField] private  ParticleSystem ProjectileParticle = null;
 
 #endregion
 
 #region Member
 
-        public E_AFFECT_TYPE AffectType { get; private set; }
-        public E_INSTANTIATE_STACKING_TYPE StackingType { get; private set; }
-        public E_INSTANTIATE_POSITION_TYPE PositioningType { get; private set; }
+        public E_AFFECT_TYPE AffectType { get {return this._affectType;} private set{} }
+        public E_INSTANTIATE_STACKING_TYPE StackingType { get {return this._stackingType;} private set{} }
+        public E_INSTANTIATE_POSITION_TYPE PositioningType { get {return this._positioningType;} private set{} }
         public Entity OwnerRef { get; private set; }
 
         public int CurrentProjectileDamage { get; private set; }
@@ -113,7 +112,6 @@ namespace Sophia.Instantiates
 
         public void GetByPool()
         {
-            this.ProjectileParticle.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             gameObject.SetActive(false);
         }
 
@@ -222,7 +220,7 @@ namespace Sophia.Instantiates
             OwnerRef = null;
             IsInitialized = false;
 
-            this.transform.transform.parent = null;
+            this.transform.parent = null;
             this.transform.localScale = Vector3.one;
             this.transform.rotation = Quaternion.identity;
             this.transform.position = Vector3.zero;
@@ -318,6 +316,9 @@ namespace Sophia.Instantiates
             CurrentDurateTime = _baseDurateTime;
             CurrentProjectileDamage = _baseProjectileDamage;
             CurrentForwardingSpeed = _baseForwardingSpeed;   
+
+            ProjectileParticle.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            ProjectileMainModule.stopAction = ParticleSystemStopAction.Callback;
         }
 
         private void OnParticleSystemStopped()
@@ -330,8 +331,12 @@ namespace Sophia.Instantiates
             if(CheckIsOwnerCollider(entity)) {return;}
             if (entity.TryGetComponent<Entity>(out Entity targetEntity))
             {
-                targetEntity.GetDamaged(CurrentProjectileDamage, _hitEffect);
+                targetEntity.GetDamaged(CurrentProjectileDamage);
+                VisualFXObject visualFX = VisualFXObjectPool.GetObject(_hitEffect, OwnerRef);
+                targetEntity.GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
+                
                 OnProjectileTriggerd.Invoke();
+                
                 Extras<Entity> targetAffectedExtras = OwnerRef.GetExtras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.TargetAffected);
                 targetAffectedExtras.PerformStartFunctionals(ref targetEntity);
                 targetAffectedExtras.PerformTickFunctionals(ref targetEntity);

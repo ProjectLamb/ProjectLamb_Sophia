@@ -45,15 +45,6 @@ namespace Sophia.Entitys
             if (Life.IsDie) { Die(); }
         }
 
-        public override void GetDamaged(int damage, VisualFXObject vfx)
-        {
-            if (Life.IsDie) { return; }
-            Life.Damaged(damage);
-            if (Life.IsDie) { Die(); }
-            /*기존 코드는 Actiavete의 책임이 있었는데 지금은 그냥 객체 리턴을 하므로 엄연히 활성화 단계는 함수 호출부에서 해야 할것이다*/
-            _visualFXBucket.ActivateInstantable(this, vfx)?.Activate();
-        }
-
         public override void Die() => Destroy(gameObject, 0.5f);
 
         #endregion

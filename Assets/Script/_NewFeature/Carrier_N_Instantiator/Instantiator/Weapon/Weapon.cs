@@ -169,20 +169,20 @@ namespace Sophia.Instantiates {
             NormalQueue.Clear();
             IsInitialized = false;
         }
-
+    
 #endregion
 
         public void Use(Player player) {
             if(NormalQueue.Count == 0) { _projectiles.ForEach(E => NormalQueue.Enqueue(E)); }
-            ProjectileObject useProjectile = mInstantiatorRef.ActivateInstantable(NormalQueue.Dequeue());
-            int useDamage = CalculateDamage(player);
-            useProjectile.SetProjectileDamage(useDamage)?.Activate();
+            ProjectileObject useProjectile = ProjectilePool.GetObject(NormalQueue.Dequeue(), player);
+            mInstantiatorRef.InstantablePositioning(useProjectile)
+                            .SetProjectileDamage(CalculateDamage(player.GetStat(E_NUMERIC_STAT_TYPE.Power)))?
+                            .Activate();
         }
 
-        private int CalculateDamage(Player player) {
-            int res = player.GetStat(E_NUMERIC_STAT_TYPE.Power);
-            res = (int)(res * CurrentRatioDamage);
-            return res;
+        private int CalculateDamage(int power) {
+            power = (int)(power * CurrentRatioDamage);
+            return power;
         }
     }
 }

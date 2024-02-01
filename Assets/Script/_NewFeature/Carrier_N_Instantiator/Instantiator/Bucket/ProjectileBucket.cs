@@ -8,6 +8,8 @@ namespace Sophia.Instantiates
     using Sophia.Entitys;
     using Sophia.DataSystem;
     using Sophia.DataSystem.Numerics;
+    using Unity.VisualScripting;
+
     public class ProjectileBucket : MonoBehaviour
     {        
 
@@ -79,11 +81,8 @@ namespace Sophia.Instantiates
         public float GetBucketSize() => _bucketScale * transform.lossyScale.z;
 #endregion
 
-        public ProjectileObject ActivateInstantable(ProjectileObject _instantiatable, Vector3 _offset)
+        public ProjectileObject InstantablePositioning(ProjectileObject instantiatedProjectile, Vector3 _offset)
         {
-            ProjectileObject instantiatedProjectile = ProjectilePool.Instance.ProPool[_instantiatable.gameObject.name].Get();
-            instantiatedProjectile.Init(_ownerRef);
-            
             Vector3     offset       = _offset;
             Vector3     position     = transform.position;
             Quaternion  forwardAngle = GetForwardingAngle(instantiatedProjectile.transform.rotation);
@@ -130,55 +129,7 @@ namespace Sophia.Instantiates
             return instantiatedProjectile;
         }
 
-        public ProjectileObject ActivateInstantable(ProjectileObject _instantiatable)
-        {
-            ProjectileObject instantiatedProjectile = ProjectilePool.Instance.ProPool[_instantiatable.gameObject.name].Get();
-            instantiatedProjectile.Init(_ownerRef);
-            
-            Vector3     offset       = _instantiatable.transform.position;
-            Vector3     position     = transform.position;
-            Quaternion  forwardAngle = GetForwardingAngle(instantiatedProjectile.transform.rotation);
-            instantiatedProjectile.transform.position = position;
-            instantiatedProjectile.transform.rotation = forwardAngle;
-
-            
-            switch (instantiatedProjectile.PositioningType)
-            {
-                case E_INSTANTIATE_POSITION_TYPE.Inner   :
-                {
-                    instantiatedProjectile.transform.SetParent(transform);   
-                    break;
-                }
-                case E_INSTANTIATE_POSITION_TYPE.Outer  :
-                {
-                    break;
-                }
-            }
-
-            switch (instantiatedProjectile.StackingType)
-            {
-                case E_INSTANTIATE_STACKING_TYPE.NonStack : 
-                {
-                    break;
-                }
-                case E_INSTANTIATE_STACKING_TYPE.Stack : 
-                {
-                    break;
-                }
-            }
-            
-            instantiatedProjectile.transform.position += offset * this.GetBucketSize();
-            instantiatedProjectile.SetDurateTimeByRatio(InstantiableDurateLifeTimeMultiplyRatio.GetValueForce())
-                                .SetScaleOverrideByRatio(this.GetBucketSize())
-                                .SetScaleMultiplyByRatio(InstantiableSizeMultiplyRatio.GetValueForce())
-                                .SetForwardingSpeedByRatio(InstantiableForwardingSpeedMultiplyRatio.GetValueForce())
-                                .SetOnProjectileCreatedEvent(OnCreated)
-                                .SetOnProjectileForwardingEvent(OnTriggerd)
-                                .SetOnProjectileReleasedEvent(OnReleased)
-                                .SetOnProjectileTriggerdEvent(OnForwarding);
-            
-            return instantiatedProjectile;
-        }
+        public ProjectileObject InstantablePositioning(ProjectileObject instantiatable) => InstantablePositioning(instantiatable, instantiatable.transform.position);
 
         private Quaternion GetForwardingAngle(Quaternion instantiatorQuaternion)
         {

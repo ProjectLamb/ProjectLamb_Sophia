@@ -25,7 +25,6 @@ namespace Sophia.Instantiates
         public void ReleaseByPool();
         public void SetPoolEvents(UnityAction activated, UnityAction deActivated, UnityAction release);
         public event UnityAction OnActivated;
-        public event UnityAction OnDeActivated;
         public event UnityAction OnRelease;
     }
 
@@ -35,8 +34,8 @@ namespace Sophia.Instantiates
 
     public interface IInstantiator<Instantable> {
         /*기존 코드는 Actiavete의 책임이 있었는데 지금은 그냥 객체 리턴을 하므로 엄연히 활성화 단계는 함수 호출부에서 해야 할것이다*/
-        public Instantable ActivateInstantable(Instantable _carrier, Vector3 _offset);
-        public Instantable ActivateInstantable(Instantable _carrier);
+        public Instantable InstantablePositioning(Instantable _carrier, Vector3 _offset);
+        public Instantable InstantablePositioning(Instantable _carrier);
     }
 
     /*********************************************************************************
