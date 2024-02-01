@@ -27,7 +27,7 @@ namespace Sophia.Composite.RenderModels
         [SerializeField] private Animator _modelAnimator;
         
         [Tooltip("SkinMaterial 스킨을 입힐 대상들이다.")]
-        [SerializeField]private List<Renderer> _renderers = new List<Renderer>();
+        [SerializeField] private List<Renderer> _renderers = new List<Renderer>();
         [SerializeField] private List<Material> _materials = new List<Material>();
         public Material TransMaterial;
 
@@ -58,7 +58,7 @@ namespace Sophia.Composite.RenderModels
             await UniTask.WaitForEndOfFrame(this, cancellationToken);
             cancellationToken.ThrowIfCancellationRequested();
         }
-
+        public GameObject GetModelObject() => _model;
         public void HoldObject(GameObject go, E_MODEL_HAND handPos) => _modelHands.HoldObject(go, handPos);
         public void DropObject(E_MODEL_HAND handPos) => _modelHands.DropObject(handPos);
 
