@@ -8,8 +8,9 @@ using UnityEngine;
     using Sophia.DataSystem.Numerics;
     using UnityEngine.UI;
     using Sophia.Instantiates;
+using Sophia.DataSystem.Functional;
 
-public class Equipment : Carrier {
+public class Equipment : Carrier , IUserInterfaceAccessible{
         [SerializeField] public string _equipmentName;
         [SerializeField] public Sprite   _icon;
         [SerializeField] public string  _description;
@@ -19,7 +20,7 @@ public class Equipment : Carrier {
         private void Awake() {
             Debug.Log(_equipmentName);
             foreach(E_NUMERIC_STAT_TYPE statType in Enum.GetValues(typeof(E_NUMERIC_STAT_TYPE))) {
-                SerialModifireDats statValue = GetValueByNumericType(statType);
+                SerialModifireDatas statValue = GetValueByNumericType(statType);
                 if(statValue.calType == E_STAT_CALC_TYPE.None) {continue;}
                 Debug.Log($"{statType.ToString()} : {statValue.amount}");
                 Modifiers.Add(statType, new StatModifier( statValue.amount, statValue.calType, statType));
@@ -48,9 +49,9 @@ public class Equipment : Carrier {
             }
         }
 
-        public SerialModifireDats GetValueByNumericType(E_NUMERIC_STAT_TYPE numericType)
+        public SerialModifireDatas GetValueByNumericType(E_NUMERIC_STAT_TYPE numericType)
         {
-            SerialModifireDats res = new SerialModifireDats {amount = -1f, calType = E_STAT_CALC_TYPE.None};
+            SerialModifireDatas res = new SerialModifireDatas {amount = -1f, calType = E_STAT_CALC_TYPE.None};
             switch (numericType)
             {
                 case E_NUMERIC_STAT_TYPE.MaxHp                                      : {res = _calculateDatas.MaxHp; break;}
@@ -75,4 +76,19 @@ public class Equipment : Carrier {
             }
             return res;
         }
+
+    public string GetName()
+    {
+        throw new NotImplementedException();
+    }
+
+    public string GetDescription()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Sprite GetSprite()
+    {
+        throw new NotImplementedException();
+    }
 }

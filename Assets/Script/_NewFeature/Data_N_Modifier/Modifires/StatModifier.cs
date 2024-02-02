@@ -5,7 +5,12 @@ using UnityEngine.Analytics;
 
 namespace Sophia.DataSystem.Modifiers
 {
-    using Sophia.DataSystem.Numerics;
+    [System.Serializable]
+    public struct SerialModifireDatas {
+        public float amount;
+        public E_STAT_CALC_TYPE calType;
+    }
+
     public class StatModifier
     {
         public readonly E_STAT_CALC_TYPE CalcType = E_STAT_CALC_TYPE.None;
