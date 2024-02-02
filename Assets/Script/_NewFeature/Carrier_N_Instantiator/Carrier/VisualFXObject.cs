@@ -169,7 +169,7 @@ namespace Sophia.Instantiates
         public event UnityAction OnActivated;
         public event UnityAction OnRelease;
 
-        public void SetPoolEvents(UnityAction activated, UnityAction deActivated, UnityAction release)
+        public void SetPoolEvents(UnityAction activated, UnityAction release)
         {
             OnActivated     = activated;
 

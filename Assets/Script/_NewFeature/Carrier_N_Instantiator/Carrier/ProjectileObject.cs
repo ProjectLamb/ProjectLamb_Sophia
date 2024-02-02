@@ -125,13 +125,11 @@ namespace Sophia.Instantiates
         }
         
         public event UnityAction OnActivated;
-        public event UnityAction OnDeActivated;
         public event UnityAction OnRelease;
 
-        public void SetPoolEvents(UnityAction activated, UnityAction deActivated, UnityAction release)
+        public void SetPoolEvents(UnityAction activated, UnityAction release)
         {
             OnActivated     = activated;
-            OnDeActivated   = deActivated;
             OnRelease       = release;
         }
 
@@ -262,7 +260,6 @@ namespace Sophia.Instantiates
         public void ClearEvents()
         {
             OnActivated = null;
-            OnDeActivated = null;
             OnRelease = null;
 
             OnProjectileCreated = null;
@@ -271,7 +268,6 @@ namespace Sophia.Instantiates
             OnProjectileForwarding = null;
 
             OnActivated             ??= () => {};
-            OnDeActivated           ??= () => {};
             OnRelease               ??= () => {};
             
             OnProjectileCreated     ??= () => {};
@@ -294,10 +290,8 @@ namespace Sophia.Instantiates
 
         public void DeActivate()
         {
-            IsActivated = false;
-            OnDeActivated?.Invoke();
-            gameObject.SetActive(false);
-            return;
+            if (!IsInitialized) { return; }
+            poolRefer.Release(this);
         }
 
 #endregion
@@ -321,11 +315,7 @@ namespace Sophia.Instantiates
             ProjectileMainModule.stopAction = ParticleSystemStopAction.Callback;
         }
 
-        private void OnParticleSystemStopped()
-        {
-            if (!IsInitialized) { return; }
-            poolRefer.Release(this);
-        }
+        private void OnParticleSystemStopped() => DeActivate();
 
         protected override void OnTriggerLogic(Collider entity) {
             if(CheckIsOwnerCollider(entity)) {return;}
