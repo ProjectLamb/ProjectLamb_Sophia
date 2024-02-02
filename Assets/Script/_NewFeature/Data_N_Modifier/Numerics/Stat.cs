@@ -119,7 +119,7 @@ namespace Sophia.DataSystem
             else {value = (float) Math.Round(value, 3);}
             isDirty = false;
 
-            OnStatChanged.Invoke();
+            OnStatChanged?.Invoke();
         }
 
         private void CalculateWithUseAndCalcType(E_STAT_USE_TYPE useType, StatModifier calc, ref float adder, ref float multiplier) {

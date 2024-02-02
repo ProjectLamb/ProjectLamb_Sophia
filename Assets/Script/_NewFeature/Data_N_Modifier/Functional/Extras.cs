@@ -32,35 +32,27 @@ namespace Sophia.DataSystem
             Created, Triggerd, Released, Forwarding
     }
 
-    public interface IExtrasAccessible {
-        // public Extras GetExtras(E_Functional_EXTRAS_MEMBERS FunctionalType);
-        // public string GetExtrasInfo();
-    }
-
     public class FunctionalPerforms<T> {
-        public List<UnityActionRef<T>> Start;
-        public List<UnityActionRef<T>> Tick;
-        public List<UnityActionRef<T>> Exit;
+        public List<IFunctionalCommand<T>> Start;
+        public List<IFunctionalCommand<T>> Tick;
+        public List<IFunctionalCommand<T>> Exit;
 
         public FunctionalPerforms() {
-            Start = new List<UnityActionRef<T>>();
-            Tick = new List<UnityActionRef<T>>();
-            Exit = new List<UnityActionRef<T>>();
+            Start = new List<IFunctionalCommand<T>>();
+            Tick = new List<IFunctionalCommand<T>>();
+            Exit = new List<IFunctionalCommand<T>>();
         }
 
-        public void InvokeLists(ref T value) {
-            foreach (var item in Start)
-            {
-                item.Invoke(ref value);
-            }
-            foreach (var item in Tick)
-            {
-                item.Invoke(ref value);
-            }
-            foreach (var item in Exit)
-            {
-                item.Invoke(ref value);
-            }
+        public void InvokeStartTime(ref T value) {
+            foreach (var command in Start)   command.Invoke(ref value);
+        }
+        
+        public void InvokeTickTime(ref T value){
+            foreach (var command in Tick)    command.Invoke(ref value);
+        }
+
+        public void InvokeExitTime(ref T value){
+            foreach (var command in Exit)    command.Invoke(ref value);
         }
     }
 
@@ -77,7 +69,6 @@ namespace Sophia.DataSystem
     }
 
     public class Extras<T> {
-        public readonly UnityActionRef<T> BaseFunctional = (ref T a) => {};
         public readonly E_FUNCTIONAL_EXTRAS_TYPE FunctionalType;
 
         private readonly FunctionalPerforms<T> FunctionalLists = new FunctionalPerforms<T>();
@@ -105,23 +96,17 @@ namespace Sophia.DataSystem
         
         public void PerformStartFunctionals(ref T input){
             if(isDirty) {RecalculateExtras();}
-            foreach(var action in FunctionalLists.Start) {
-                action?.Invoke(ref input);
-            }
+            FunctionalLists.InvokeStartTime(ref input);
         }
         
         public void PerformTickFunctionals(ref T input) {
             if(isDirty) {RecalculateExtras();}
-            foreach(var action in FunctionalLists.Tick) {
-                action?.Invoke(ref input);
-            }
+            FunctionalLists.InvokeTickTime(ref input);
         }
 
         public void PerformExitFunctionals(ref T input) {
             if(isDirty) {RecalculateExtras();}
-            foreach(var action in  FunctionalLists.Exit) {
-                action?.Invoke(ref input);
-            }
+            FunctionalLists.InvokeExitTime(ref input);
         }
 
         public void AddModifier(ExtrasModifier<T> extrasModifier) {
@@ -184,9 +169,6 @@ namespace Sophia.DataSystem
         {
             if(isDirty == false) return;
             ResetFunctionals();
-            FunctionalLists.Start.Add(BaseFunctional);
-            FunctionalLists.Tick.Add(BaseFunctional);
-            FunctionalLists.Exit.Add(BaseFunctional);
 
             ExtrasModifierList.Start.ForEach((calc) => {
                 if(!calc.FunctionalType.Equals(this.FunctionalType)) throw new System.Exception($"칼큘레이터 타겟 타입과 현재 타겟 타입이 다르다! {calc.FunctionalType.ToString()} != {this.FunctionalType.ToString()}");

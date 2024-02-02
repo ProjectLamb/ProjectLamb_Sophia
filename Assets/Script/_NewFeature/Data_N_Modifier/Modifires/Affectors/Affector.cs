@@ -62,12 +62,25 @@ namespace Sophia.DataSystem
             }
             #endregion
 
-            public virtual void ConveyToTarget() => TargetRef.ModifiedByAffector(this);
-            public virtual void Modifiy(float tenacity) { OnModifiy?.Invoke(ref tenacity); }
-            public virtual void TickRunning() { OnTickRunning?.Invoke(); }
-            public virtual void Revert() { OnRevert?.Invoke(); }
-            public virtual void CancleModify()
+            public void ConveyToTarget() => TargetRef.ModifiedByAffector(this);
+            public void Modifiy(float tenacity) { 
+                Timer.SetStart();
+                Timer.Execute();
+                OnModifiy?.Invoke(ref tenacity);
+            }
+            public void TickRunning() { 
+                Timer.Execute();
+                OnTickRunning?.Invoke(); 
+            }
+            public void PhysicsTick() {
+                
+            }
+
+            public void Revert() { OnRevert?.Invoke(); }
+            public void CancleModify()
             {
+                Timer.Pause();
+                Timer.ChangeState(TimerExit.Instance);
                 Timer = null;
                 OnCancle?.Invoke();
                 ClearEvent();
