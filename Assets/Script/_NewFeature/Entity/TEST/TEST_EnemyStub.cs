@@ -86,7 +86,7 @@ namespace Sophia.Entitys
             StatReferer.SetRefStat(Life.MaxHp);
             StatReferer.SetRefStat(Life.Defence);
             StatReferer.SetRefStat(affectorComposite.Tenacity);
-            StatReferer.SetRefStat(this.MoveSpeed);
+            StatReferer.SetRefStat(MoveSpeed);
         }
 
         private void FixedUpdate() {
