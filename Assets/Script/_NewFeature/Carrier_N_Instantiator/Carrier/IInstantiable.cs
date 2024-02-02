@@ -23,7 +23,7 @@ namespace Sophia.Instantiates
         public void SetByPool<T>(IObjectPool<T> pool) where T : MonoBehaviour;
         public void GetByPool();
         public void ReleaseByPool();
-        public void SetPoolEvents(UnityAction activated, UnityAction deActivated, UnityAction release);
+        public void SetPoolEvents(UnityAction activated, UnityAction release);
         public event UnityAction OnActivated;
         public event UnityAction OnRelease;
     }
