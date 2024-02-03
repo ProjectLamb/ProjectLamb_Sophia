@@ -62,7 +62,7 @@ namespace Sophia.Instantiates {
     public class Weapon : MonoBehaviour
     {
 
-#region Serialize Member
+#region SerializeMember Member
 
         [SerializeField] protected ModelManger  _modelManger;
         [SerializeField] protected List<VisualFXBucket>  _visualFXBucket;

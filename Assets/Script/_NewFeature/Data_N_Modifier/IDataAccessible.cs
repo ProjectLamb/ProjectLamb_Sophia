@@ -15,18 +15,20 @@ namespace Sophia
         None, Add, Mul
     }
 
-
     public enum E_NUMERIC_STAT_TYPE {
         None = 0,
-        MaxHp = 1, Defence, Power, AttackSpeed, MoveSpeed, Tenacity, Accecerate,
+        
+        MaxHp = 1, Defence, Power, AttackSpeed, MoveSpeed, Accecerate, Tenacity, 
 
-        MaxStamina = 11, StaminaRestoreSpeed, Luck,
+        MaxStamina = 11, StaminaRestoreSpeed,
 
         InstantiableDurateLifeTimeMultiplyRatio = 21, InstantiableSizeMultiplyRatio, InstantiableForwardingSpeedMultiplyRatio,
 
         PoolSize = 31, MeleeRatio, RangerRatio, TechRatio,
 
-        EfficienceMultiplyer = 41, CoolDownSpeed
+        EfficienceMultiplyer = 41, CoolDownSpeed,
+
+        Luck = 51
     }
 
     public interface IStatAccessible {

@@ -14,7 +14,7 @@ namespace Sophia.Instantiates
     public class ProjectileObject : Carrier, IPoolAccesable
     {
 
-#region Serialize
+#region SerializeMember
         [SerializeField] private E_AFFECT_TYPE _affectType = E_AFFECT_TYPE.None;
         [SerializeField] private E_INSTANTIATE_STACKING_TYPE _stackingType = E_INSTANTIATE_STACKING_TYPE.Stack;
         [SerializeField] private E_INSTANTIATE_POSITION_TYPE _positioningType = E_INSTANTIATE_POSITION_TYPE.Outer;
