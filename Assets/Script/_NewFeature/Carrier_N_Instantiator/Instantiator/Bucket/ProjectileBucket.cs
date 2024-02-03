@@ -13,7 +13,7 @@ namespace Sophia.Instantiates
     public class ProjectileBucket : MonoBehaviour
     {        
 
-#region Serialize
+#region SerializeMember
         [SerializeField] private SerialBaseInstantiatorData _baseInstantiatorData;
         [SerializeField] private Entity _ownerRef;
         [SerializeField] private float _bucketScale = 1f;

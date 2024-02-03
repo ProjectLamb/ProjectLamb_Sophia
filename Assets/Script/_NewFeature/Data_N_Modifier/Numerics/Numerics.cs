@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Text;
 using Sophia.DataSystem.Modifiers;
 using UnityEngine;
 
@@ -102,246 +104,107 @@ namespace Sophia.DataSystem.Numerics
         [SerializeField] public SerialModifireDatas TechRatio;
         [SerializeField] public SerialModifireDatas EfficienceMultiplyer;
         [SerializeField] public SerialModifireDatas CoolDownSpeed;
+
+        public SerialModifireDatas GetModifireDatas(E_NUMERIC_STAT_TYPE numericType)
+        {
+            switch (numericType)
+            {
+                case E_NUMERIC_STAT_TYPE.MaxHp                                      : {return MaxHp;}
+                case E_NUMERIC_STAT_TYPE.Defence                                    : {return Defence;}
+                case E_NUMERIC_STAT_TYPE.MoveSpeed                                  : {return MoveSpeed;}
+                case E_NUMERIC_STAT_TYPE.Accecerate                                 : {return Accecerate;}
+                case E_NUMERIC_STAT_TYPE.Tenacity                                   : {return Tenacity;}
+                case E_NUMERIC_STAT_TYPE.MaxStamina                                 : {return MaxStamina;}
+                case E_NUMERIC_STAT_TYPE.StaminaRestoreSpeed                        : {return StaminaRestoreSpeed;}
+                case E_NUMERIC_STAT_TYPE.Power                                      : {return Power;}
+                case E_NUMERIC_STAT_TYPE.Luck                                       : {return Luck;}
+                case E_NUMERIC_STAT_TYPE.InstantiableDurateLifeTimeMultiplyRatio    : {return InstantiableDurateLifeTimeMultiplyRatio;}
+                case E_NUMERIC_STAT_TYPE.InstantiableSizeMultiplyRatio              : {return InstantiableSizeMultiplyRatio;}
+                case E_NUMERIC_STAT_TYPE.InstantiableForwardingSpeedMultiplyRatio   : {return InstantiableForwardingSpeedMultiplyRatio;}
+                case E_NUMERIC_STAT_TYPE.PoolSize                                   : {return PoolSize;}
+                case E_NUMERIC_STAT_TYPE.AttackSpeed                                : {return AttackSpeed;}
+                case E_NUMERIC_STAT_TYPE.MeleeRatio                                 : {return MeleeRatio;}
+                case E_NUMERIC_STAT_TYPE.RangerRatio                                : {return RangerRatio;}
+                case E_NUMERIC_STAT_TYPE.TechRatio                                  : {return TechRatio;}
+                case E_NUMERIC_STAT_TYPE.EfficienceMultiplyer                       : {return EfficienceMultiplyer;}
+                case E_NUMERIC_STAT_TYPE.CoolDownSpeed                              : {return CoolDownSpeed;}
+                default : {return new SerialModifireDatas{amount = -1, calType = 0};}
+            }
+        }
     }
 
     public class EntityStatReferer : IStatAccessible
     {
+        private SortedList<E_NUMERIC_STAT_TYPE, Stat> Stats = new();
 
-#region Life 
-        private Stat MaxHp                  = null; // Natural
-        private Stat Defence                = null; //Natural to Function
-
-#endregion
-
-#region Move
-
-        private Stat MoveSpeed              = null; //Natural
-        private Stat Accecerate             = null; // Ratio 
-
-#endregion
-
-#region Affect
-
-        private Stat Tenacity               = null; // Natural to Fcuntion
-
-#endregion
-
-#region Instantiator
-
-        private Stat Power                  = null; // Natural
-        private Stat InstantiableDurateLifeTimeMultiplyRatio         = null; // Ratio
-        private Stat InstantiableSizeMultiplyRatio                   = null; // Ratio
-        private Stat InstantiableForwardingSpeedMultiplyRatio        = null; // Ratio
-
-#endregion
-
-        public virtual void SetRefStat(Stat statRef)
-        {
-            switch(statRef.NumericType) 
-            {
-                case E_NUMERIC_STAT_TYPE.MaxHp :            { this.MaxHp = statRef;             return; }
-                case E_NUMERIC_STAT_TYPE.Defence :          { this.Defence = statRef;           return; }
-                case E_NUMERIC_STAT_TYPE.MoveSpeed :        { this.MoveSpeed = statRef;         return; }
-                case E_NUMERIC_STAT_TYPE.Accecerate :       { this.Accecerate = statRef;        return; }
-                case E_NUMERIC_STAT_TYPE.Tenacity :         { this.Tenacity = statRef;          return; }
-                case E_NUMERIC_STAT_TYPE.Power :            { this.Power = statRef;             return; }
-                case E_NUMERIC_STAT_TYPE.InstantiableDurateLifeTimeMultiplyRatio :   { this.InstantiableDurateLifeTimeMultiplyRatio = statRef;    return; }
-                case E_NUMERIC_STAT_TYPE.InstantiableSizeMultiplyRatio :             { this.InstantiableSizeMultiplyRatio = statRef;              return; }
-                case E_NUMERIC_STAT_TYPE.InstantiableForwardingSpeedMultiplyRatio :  { this.InstantiableForwardingSpeedMultiplyRatio = statRef;   return; }
-                case E_NUMERIC_STAT_TYPE.None : {
-                    throw new System.Exception($"참조 스텟이 초기화되지 않음");
-                }
-                default : {
-                    throw new System.Exception($"이 Entity 멤버에는 {statRef.NumericType.ToString()} 없음");
-                }
-            }
+        public EntityStatReferer() {
+            Stats.Add(E_NUMERIC_STAT_TYPE.MaxHp, default);
+            Stats.Add(E_NUMERIC_STAT_TYPE.Defence, default);
+            Stats.Add(E_NUMERIC_STAT_TYPE.MoveSpeed, default);
+            Stats.Add(E_NUMERIC_STAT_TYPE.Accecerate, default);
+            Stats.Add(E_NUMERIC_STAT_TYPE.Tenacity, default);
+            Stats.Add(E_NUMERIC_STAT_TYPE.Power, default);
+            Stats.Add(E_NUMERIC_STAT_TYPE.InstantiableDurateLifeTimeMultiplyRatio, default);
+            Stats.Add(E_NUMERIC_STAT_TYPE.InstantiableSizeMultiplyRatio, default);
+            Stats.Add(E_NUMERIC_STAT_TYPE.InstantiableForwardingSpeedMultiplyRatio, default);
         }
 
-        public virtual Stat GetStat(E_NUMERIC_STAT_TYPE numericType)
-        {
-            Stat res = null;
-            switch (numericType)
-            {
-                case E_NUMERIC_STAT_TYPE.MaxHp:             { res = this.MaxHp;             break; }
-                case E_NUMERIC_STAT_TYPE.Defence:           { res = this.Defence;           break; }
-                case E_NUMERIC_STAT_TYPE.MoveSpeed:         { res = this.MoveSpeed;         break; }
-                case E_NUMERIC_STAT_TYPE.Accecerate:        { res = this.Accecerate;        break; }
-                case E_NUMERIC_STAT_TYPE.Tenacity:          { res = this.Tenacity;          break; }
-                case E_NUMERIC_STAT_TYPE.Power:             { res = this.Power;             break; }
-                case E_NUMERIC_STAT_TYPE.InstantiableDurateLifeTimeMultiplyRatio:    { res = this.InstantiableDurateLifeTimeMultiplyRatio;    break; }
-                case E_NUMERIC_STAT_TYPE.InstantiableSizeMultiplyRatio:              { res = this.InstantiableSizeMultiplyRatio;              break; }
-                case E_NUMERIC_STAT_TYPE.InstantiableForwardingSpeedMultiplyRatio:   { res = this.InstantiableForwardingSpeedMultiplyRatio;   break; }
-                default: {
-                    throw new System.Exception($"이 Entity 멤버에는 {numericType.ToString()} 없음");
-                }
+        public void SetRefStat(Stat statRef) {
+            if(statRef.NumericType == E_NUMERIC_STAT_TYPE.None) throw new System.Exception($"참조 스텟이 초기화되지 않음");
+
+            if(Stats.TryGetValue(statRef.NumericType, out Stat stat)) {
+                stat = statRef;
             }
-            if(res == null) {
-                throw new System.Exception($"참조하려는 {numericType.ToString()} 멤버가 초기화되지 않음");
+
+            else {throw new System.Exception($"이 Entity 멤버에는 {statRef.NumericType.ToString()} 없음");}
+        }
+        
+        public Stat GetStat(E_NUMERIC_STAT_TYPE numericType) {
+            if(numericType == E_NUMERIC_STAT_TYPE.None) {throw new System.Exception($"NoneStat은 가져올 수 없음");}
+
+            if(Stats.TryGetValue(numericType, out Stat stat)) {
+                return stat;
             }
-            return res;
+            
+            else {throw new System.Exception($"이 Entity 멤버에는 {numericType.ToString()} 없음");}
         }
 
-        protected virtual float GetStatByValues(E_NUMERIC_STAT_TYPE numericType)
+        public string GetStatsInfo()
         {
-            switch (numericType)
-            {
-                case E_NUMERIC_STAT_TYPE.MaxHp:             { return this.MaxHp == null ? -1 : this.MaxHp.GetValueForce(); }
-                case E_NUMERIC_STAT_TYPE.Defence:           { return this.Defence == null ? -1 : this.Defence.GetValueForce(); }
-                case E_NUMERIC_STAT_TYPE.MoveSpeed:         { return this.MoveSpeed == null ? -1 : this.MoveSpeed.GetValueForce(); }
-                case E_NUMERIC_STAT_TYPE.Accecerate:        { return this.Accecerate == null ? -1 : this.Accecerate.GetValueForce(); }
-                case E_NUMERIC_STAT_TYPE.Tenacity:          { return this.Tenacity == null ? -1 : this.Tenacity.GetValueForce(); }
-                case E_NUMERIC_STAT_TYPE.Power:             { return this.Power == null ? -1 : this.Power.GetValueForce(); }
-                case E_NUMERIC_STAT_TYPE.InstantiableDurateLifeTimeMultiplyRatio:    { return this.InstantiableDurateLifeTimeMultiplyRatio == null ? -1 : this.InstantiableDurateLifeTimeMultiplyRatio.GetValueForce(); }
-                case E_NUMERIC_STAT_TYPE.InstantiableSizeMultiplyRatio:              { return this.InstantiableSizeMultiplyRatio == null ? -1 : this.InstantiableSizeMultiplyRatio.GetValueForce(); }
-                case E_NUMERIC_STAT_TYPE.InstantiableForwardingSpeedMultiplyRatio:   { return this.InstantiableForwardingSpeedMultiplyRatio == null ? -1 : this.InstantiableForwardingSpeedMultiplyRatio.GetValueForce(); }
-                default: {
-                    return -1;
-                }
-            }
-        }
+            StringBuilder stringBuilder = new StringBuilder();
 
-        public virtual string GetStatsInfo()
-        {
-            string res = "";
-            foreach(E_NUMERIC_STAT_TYPE Enum in Enum.GetValues(typeof(E_NUMERIC_STAT_TYPE)))
+            foreach(E_NUMERIC_STAT_TYPE key in Enum.GetValues(typeof(E_NUMERIC_STAT_TYPE)))
             {
-                float val = this.GetStatByValues(Enum);
-                if(val < 0 ) {continue;}
-                res += $"{Enum.ToString()} : {val} \n";
+                stringBuilder.AppendFormat("{0} : {1:N}", key.ToString(), Stats[key]);
             }
-            return res;
+
+            return stringBuilder.ToString();
         }
     }
 
     public class PlayerStatReferer : EntityStatReferer
     {
-#region Life 
-        private Stat MaxHp                  = null; // Natural
-        private Stat Defence                = null; //Natural to Function
-
-#endregion
-
-#region Move
-
-        private Stat MoveSpeed              = null; //Natural
-        private Stat Accecerate             = null; // Ratio 
-
-#endregion
-
-#region Affect
-
-        private Stat Tenacity               = null; // Natural to Fcuntion
-
-#endregion
-
-#region Dash
-        private Stat MaxStamina             = null;
-        private Stat StaminaRestoreSpeed    = null;
-#endregion
-
-#region CoolTime
-        private Stat CoolDownSpeed          = null;
-#endregion
-
-#region Instantiator
-
-
-/******************************
-* Common
-******************************/
-
-        private Stat Power                  = null; // Natural
-        private Stat InstantiableDurateLifeTimeMultiplyRatio         = null;
-        private Stat InstantiableSizeMultiplyRatio                   = null;
-        private Stat InstantiableForwardingSpeedMultiplyRatio        = null;
-
-/******************************
-* Weapon Only
-******************************/
-        private Stat PoolSize               = null;
-        private Stat AttackSpeed            = null; //Ratio, 재생 속도
-        private Stat MeleeRatio             = null;
-        private Stat RangerRatio            = null;
-        private Stat TechRatio              = null;
-
-/******************************
-* Skill Only
-******************************/
-
-        private Stat EfficienceMultiplyer   = null;
-
-#endregion
-
-#region Other
-
-        private Stat Luck                   = null;
-
-        #endregion
-        public override void SetRefStat(Stat statRef)
-        {
-            switch(statRef.NumericType) 
-            {
-                case E_NUMERIC_STAT_TYPE.MaxHp                  : {this.MaxHp = statRef;return;}
-                case E_NUMERIC_STAT_TYPE.Defence                : {this.Defence = statRef;return;}
-                case E_NUMERIC_STAT_TYPE.MoveSpeed              : {this.MoveSpeed = statRef;return;}
-                case E_NUMERIC_STAT_TYPE.Accecerate             : {this.Accecerate = statRef;return;}
-                case E_NUMERIC_STAT_TYPE.Tenacity               : {this.Tenacity = statRef;return;}
-                case E_NUMERIC_STAT_TYPE.MaxStamina             : {this.MaxStamina = statRef;return;}
-                case E_NUMERIC_STAT_TYPE.StaminaRestoreSpeed    : {this.StaminaRestoreSpeed = statRef;return;}
-                case E_NUMERIC_STAT_TYPE.CoolDownSpeed          : {this.CoolDownSpeed = statRef;return;}
-                case E_NUMERIC_STAT_TYPE.Power                  : {this.Power = statRef;return;}
-                case E_NUMERIC_STAT_TYPE.InstantiableDurateLifeTimeMultiplyRatio         : {this.InstantiableDurateLifeTimeMultiplyRatio = statRef;return;}
-                case E_NUMERIC_STAT_TYPE.InstantiableSizeMultiplyRatio                   : {this.InstantiableSizeMultiplyRatio = statRef;return;}
-                case E_NUMERIC_STAT_TYPE.InstantiableForwardingSpeedMultiplyRatio        : {this.InstantiableForwardingSpeedMultiplyRatio = statRef;return;}
-                case E_NUMERIC_STAT_TYPE.PoolSize               : {this.PoolSize = statRef;return;}
-                case E_NUMERIC_STAT_TYPE.AttackSpeed            : {this.AttackSpeed = statRef;return;}
-                case E_NUMERIC_STAT_TYPE.MeleeRatio             : {this.MeleeRatio = statRef;return;}
-                case E_NUMERIC_STAT_TYPE.RangerRatio            : {this.RangerRatio = statRef;return;}
-                case E_NUMERIC_STAT_TYPE.TechRatio              : {this.TechRatio = statRef;return;}
-                case E_NUMERIC_STAT_TYPE.EfficienceMultiplyer   : {this.EfficienceMultiplyer = statRef;return;}
-                case E_NUMERIC_STAT_TYPE.Luck                   : {this.Luck = statRef;return;}
-                case E_NUMERIC_STAT_TYPE.None : {
-                    throw new System.Exception($"참조 스텟이 초기화되지 않음");
-                }
-                default : {
-                    throw new System.Exception($"이 Entity 멤버에는 {statRef.NumericType.ToString()} 없음");
-                }
-            }
-        }
-
-        public override Stat GetStat(E_NUMERIC_STAT_TYPE numericType)
-        {
-            Stat res = null;
-            switch (numericType)
-            {
-                case E_NUMERIC_STAT_TYPE.MaxHp                  : {res = this.MaxHp; break;}
-                case E_NUMERIC_STAT_TYPE.Defence                : {res = this.Defence; break;}
-                case E_NUMERIC_STAT_TYPE.MoveSpeed              : {res = this.MoveSpeed; break;}
-                case E_NUMERIC_STAT_TYPE.Accecerate             : {res = this.Accecerate; break;}
-                case E_NUMERIC_STAT_TYPE.Tenacity               : {res = this.Tenacity; break;}
-                case E_NUMERIC_STAT_TYPE.MaxStamina             : {res = this.MaxStamina; break;}
-                case E_NUMERIC_STAT_TYPE.StaminaRestoreSpeed    : {res = this.StaminaRestoreSpeed; break;}
-                case E_NUMERIC_STAT_TYPE.CoolDownSpeed          : {res = this.CoolDownSpeed; break;}
-                case E_NUMERIC_STAT_TYPE.Power                  : {res = this.Power; break;}
-                case E_NUMERIC_STAT_TYPE.InstantiableDurateLifeTimeMultiplyRatio         : {res = this.InstantiableDurateLifeTimeMultiplyRatio; break;}
-                case E_NUMERIC_STAT_TYPE.InstantiableSizeMultiplyRatio                   : {res = this.InstantiableSizeMultiplyRatio; break;}
-                case E_NUMERIC_STAT_TYPE.InstantiableForwardingSpeedMultiplyRatio        : {res = this.InstantiableForwardingSpeedMultiplyRatio; break;}
-                case E_NUMERIC_STAT_TYPE.PoolSize               : {res = this.PoolSize; break;}
-                case E_NUMERIC_STAT_TYPE.AttackSpeed            : {res = this.AttackSpeed; break;}
-                case E_NUMERIC_STAT_TYPE.MeleeRatio             : {res = this.MeleeRatio; break;}
-                case E_NUMERIC_STAT_TYPE.RangerRatio            : {res = this.RangerRatio; break;}
-                case E_NUMERIC_STAT_TYPE.TechRatio              : {res = this.TechRatio; break;}
-                case E_NUMERIC_STAT_TYPE.EfficienceMultiplyer   : {res = this.EfficienceMultiplyer; break;}
-                case E_NUMERIC_STAT_TYPE.Luck                   : {res = this.Luck; break;}
-                default: {
-                    throw new System.Exception($"이 Entity 멤버에는 {numericType.ToString()} 없음");
-                }
-            }
-
-            if(res == null) {
-                throw new System.Exception($"참조하려는 {numericType.ToString()} 멤버가 초기화되지 않음");
-            }
-            return res;
+        private SortedList<E_NUMERIC_STAT_TYPE, Stat> Stats = new();
+        public PlayerStatReferer() {
+            Stats.Add(E_NUMERIC_STAT_TYPE.MaxHp,                                    default);
+            Stats.Add(E_NUMERIC_STAT_TYPE.Defence,                                  default);
+            Stats.Add(E_NUMERIC_STAT_TYPE.MoveSpeed,                                default);
+            Stats.Add(E_NUMERIC_STAT_TYPE.Accecerate,                               default);
+            Stats.Add(E_NUMERIC_STAT_TYPE.Tenacity,                                 default);
+            Stats.Add(E_NUMERIC_STAT_TYPE.MaxStamina,                               default);
+            Stats.Add(E_NUMERIC_STAT_TYPE.StaminaRestoreSpeed,                      default);
+            Stats.Add(E_NUMERIC_STAT_TYPE.CoolDownSpeed,                            default);
+            Stats.Add(E_NUMERIC_STAT_TYPE.Power,                                    default);
+            Stats.Add(E_NUMERIC_STAT_TYPE.InstantiableDurateLifeTimeMultiplyRatio,  default);
+            Stats.Add(E_NUMERIC_STAT_TYPE.InstantiableSizeMultiplyRatio,            default);
+            Stats.Add(E_NUMERIC_STAT_TYPE.InstantiableForwardingSpeedMultiplyRatio, default);
+            Stats.Add(E_NUMERIC_STAT_TYPE.PoolSize,                                 default);
+            Stats.Add(E_NUMERIC_STAT_TYPE.AttackSpeed,                              default);
+            Stats.Add(E_NUMERIC_STAT_TYPE.MeleeRatio,                               default);
+            Stats.Add(E_NUMERIC_STAT_TYPE.RangerRatio,                              default);
+            Stats.Add(E_NUMERIC_STAT_TYPE.TechRatio,                                default);
+            Stats.Add(E_NUMERIC_STAT_TYPE.EfficienceMultiplyer,                     default);
+            Stats.Add(E_NUMERIC_STAT_TYPE.Luck,                                     default);
         }
     }
 }

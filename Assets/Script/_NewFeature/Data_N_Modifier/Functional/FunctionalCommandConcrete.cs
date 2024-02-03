@@ -10,6 +10,9 @@ namespace Sophia.DataSystem.Functional
 
     public class DefaultCommand<T> : IFunctionalCommand<T>
     {
+
+#region UI Access
+
         public string GetDescription() => "";
         public string GetName() => "";
         public Sprite GetSprite()
@@ -17,14 +20,21 @@ namespace Sophia.DataSystem.Functional
             throw new System.NotImplementedException();
         }
 
+#endregion
+
         public void Invoke(ref T referer) { return; }
     }
 
     public abstract class AffectConveyerCommand : IFunctionalCommand<Entitys.Entity>
     {
+        
+#region UI Access
+
         public abstract string GetName();
         public abstract string GetDescription();
         public abstract Sprite GetSprite();
+
+#endregion
 
         public abstract void SetOwner(Entitys.Entity entity);
 
@@ -173,6 +183,7 @@ namespace Sophia.DataSystem.Functional
         public override void SetOwner(Entity entity) => OwnerRef = entity;
         #endregion
     }
+    
     public class AirborneAffectConveyerCommand : AffectConveyerCommand
     {
         public readonly E_AFFECT_TYPE AffectType;

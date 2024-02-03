@@ -72,10 +72,6 @@ namespace Sophia.DataSystem
                 Timer.Execute();
                 OnTickRunning?.Invoke(); 
             }
-            public void PhysicsTick() {
-                
-            }
-
             public void Revert() { OnRevert?.Invoke(); }
             public void CancleModify()
             {
