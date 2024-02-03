@@ -66,7 +66,7 @@ namespace Sophia.Instantiates
     public class VisualFXObject : MonoBehaviour, IPoolAccesable
     {
 
-#region Serialize Member
+#region SerializeMember Member
 
         [SerializeField] private E_AFFECT_TYPE _affectType = E_AFFECT_TYPE.None;
         [SerializeField] private E_INSTANTIATE_STACKING_TYPE _stackingType = E_INSTANTIATE_STACKING_TYPE.Stack;
