@@ -3,6 +3,7 @@ using UnityEngine;
 namespace Sophia.DataSystem
 {
     using System;
+    using System.Threading;
     using Sophia.Composite.Timer;
     using Sophia.Entitys;
     using Sophia.Instantiates;
@@ -10,9 +11,14 @@ namespace Sophia.DataSystem
 
     namespace Modifiers.Affector
     {
+
+        /// <summary>
+        /// Modifier이자, 일시적인 상태 변화를 야기하는 것.
+        /// </summary>
         public abstract class Affector
         {
             #region Members
+            public readonly CancellationTokenSource cts;
             public readonly E_AFFECT_TYPE AffectType;
             public readonly Entity TargetRef;
             public readonly Entity OwnerRef;
@@ -20,6 +26,7 @@ namespace Sophia.DataSystem
             public TimerComposite Timer { get; private set; }
             public Affector(E_AFFECT_TYPE affectType, Entity ownerReceivers, Entity targetReceivers, float durateTime)
             {
+                cts = new CancellationTokenSource();
                 this.AffectType = affectType;
 
                 this.OwnerRef = ownerReceivers;
