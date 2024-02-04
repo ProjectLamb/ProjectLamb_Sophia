@@ -33,7 +33,7 @@ public class Equipment : Carrier , IUserInterfaceAccessible{
         }
 
         private void Awake() {
-            
+            InitializeStatModifiers(_calculateDatas);
         }
 
         public void Equip() {
