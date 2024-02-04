@@ -56,13 +56,16 @@ namespace Sophia.Entitys
 #endregion
 
 #region Data Accessible
-        public override EntityStatReferer GetStatReferer() => StatReferer;
+        public override EntityStatReferer GetStatReferer() => this.StatReferer;
         public override Stat GetStat(E_NUMERIC_STAT_TYPE numericType) => StatReferer.GetStat(numericType);
 
-        [ContextMenu("Get Stats Info")]
+        [ContextMenu("GetStatsInfo")]
+        public void GetStatsInfoDebug(){       
+            Debug.Log(StatReferer.GetStatsInfo());
+        }
+
         public override string GetStatsInfo()
         {
-            Debug.Log(this.StatReferer.GetStatsInfo());
             return this.StatReferer.GetStatsInfo();
         }
 

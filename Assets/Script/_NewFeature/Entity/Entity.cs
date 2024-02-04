@@ -33,7 +33,7 @@ namespace Sophia.Entitys
 #region Data Accessible
         public abstract EntityStatReferer GetStatReferer();
         public abstract Stat GetStat(E_NUMERIC_STAT_TYPE numericType);
-        [ContextMenu("Get Stats Info")]
+        
         public abstract string GetStatsInfo();
 
         public abstract EntityExtrasReferer GetExtrasReferer();

@@ -211,24 +211,24 @@ namespace Sophia.DataSystem.Functional
             public override void SetRefExtras<T>(Extras<T> extrasRef) {
                 switch(extrasRef.FunctionalType) 
                 {
-                    case E_FUNCTIONAL_EXTRAS_TYPE.Hit :                 {this.OnHit = extrasRef as Extras<float>;               return;}
-                    case E_FUNCTIONAL_EXTRAS_TYPE.Damaged :             {this.OnDamaged = extrasRef as Extras<float>;           return;}
-                    case E_FUNCTIONAL_EXTRAS_TYPE.Dead :                {this.OnDead = extrasRef as Extras<object>;             return;}
-                    case E_FUNCTIONAL_EXTRAS_TYPE.Move :                {this.OnMove = extrasRef as Extras<Vector3>;            return;}
-                    case E_FUNCTIONAL_EXTRAS_TYPE.Idle :                {this.OnIdle = extrasRef as Extras<object>;             return;}
-                    case E_FUNCTIONAL_EXTRAS_TYPE.OwnerAffected :            {this.OnOwnerAffected = extrasRef as Extras<Entity>;         return;}
-                    case E_FUNCTIONAL_EXTRAS_TYPE.TargetAffected :            {this.OnTargetAffected = extrasRef as Extras<Entity>;         return;}
-                    case E_FUNCTIONAL_EXTRAS_TYPE.PhyiscTriggered :     {this.OnPhyiscTriggered = extrasRef as Extras<Vector3>; return;}
-                    case E_FUNCTIONAL_EXTRAS_TYPE.Attack :              {this.OnAttack = extrasRef as Extras<object>;           return;}
-                    case E_FUNCTIONAL_EXTRAS_TYPE.Created :             {this.OnCreated = extrasRef as Extras<object>;          return;}
-                    case E_FUNCTIONAL_EXTRAS_TYPE.Triggerd :            {this.OnTriggerd = extrasRef as Extras<object>;         return;}
-                    case E_FUNCTIONAL_EXTRAS_TYPE.Released :            {this.OnReleased = extrasRef as Extras<object>;         return;}
-                    case E_FUNCTIONAL_EXTRAS_TYPE.Forwarding :          {this.OnForwarding = extrasRef as Extras<object>;       return;}
-                    case E_FUNCTIONAL_EXTRAS_TYPE.Dash :                {this.OnDash = extrasRef as Extras<object> ;       return;}
-                    case E_FUNCTIONAL_EXTRAS_TYPE.skill :               {this.OnSkill = extrasRef as Extras<object> ;       return;}
-                    case E_FUNCTIONAL_EXTRAS_TYPE.WeaponUse :           {this.OnWeaponUse = extrasRef as Extras<object> ;       return;}
-                    case E_FUNCTIONAL_EXTRAS_TYPE.ProjectileRestore :   {this.OnProjectileRestore = extrasRef as Extras<object> ;       return;}
-                    case E_FUNCTIONAL_EXTRAS_TYPE.SkillUse :            {this.OnSkillUse = extrasRef as Extras<object> ;       return;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.Hit :                 {this.OnHit = extrasRef as Extras<float>;                   return;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.Damaged :             {this.OnDamaged = extrasRef as Extras<float>;               return;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.Dead :                {this.OnDead = extrasRef as Extras<object>;                 return;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.Move :                {this.OnMove = extrasRef as Extras<Vector3>;                return;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.Idle :                {this.OnIdle = extrasRef as Extras<object>;                 return;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.OwnerAffected :       {this.OnOwnerAffected = extrasRef as Extras<Entity>;        return;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.TargetAffected :      {this.OnTargetAffected = extrasRef as Extras<Entity>;       return;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.PhyiscTriggered :     {this.OnPhyiscTriggered = extrasRef as Extras<Vector3>;     return;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.Attack :              {this.OnAttack = extrasRef as Extras<object>;               return;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.Created :             {this.OnCreated = extrasRef as Extras<object>;              return;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.Triggerd :            {this.OnTriggerd = extrasRef as Extras<object>;             return;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.Released :            {this.OnReleased = extrasRef as Extras<object>;             return;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.Forwarding :          {this.OnForwarding = extrasRef as Extras<object>;           return;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.Dash :                {this.OnDash = extrasRef as Extras<object> ;                return;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.skill :               {this.OnSkill = extrasRef as Extras<object> ;               return;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.WeaponUse :           {this.OnWeaponUse = extrasRef as Extras<object> ;           return;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.ProjectileRestore :   {this.OnProjectileRestore = extrasRef as Extras<object>;    return;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.SkillUse :            {this.OnSkillUse = extrasRef as Extras<object> ;            return;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.SkillRefilled :       {this.OnSkillRefilled = extrasRef as Extras<object> ;       return;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.None : {
                         throw new System.Exception($"참조 Extras가 초기화되지 않음");
@@ -247,8 +247,8 @@ namespace Sophia.DataSystem.Functional
                     case E_FUNCTIONAL_EXTRAS_TYPE.Dead :                {res = this.OnDead as Extras<T>;                break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Move :                {res = this.OnMove as Extras<T>;                break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Idle :                {res = this.OnIdle as Extras<T>;                break;}
-                    case E_FUNCTIONAL_EXTRAS_TYPE.OwnerAffected :            {res = this.OnOwnerAffected as Extras<T>;            break;}
-                    case E_FUNCTIONAL_EXTRAS_TYPE.TargetAffected :            {res = this.OnTargetAffected as Extras<T>;            break;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.OwnerAffected :       {res = this.OnOwnerAffected as Extras<T>;       break;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.TargetAffected :      {res = this.OnTargetAffected as Extras<T>;      break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.PhyiscTriggered :     {res = this.OnPhyiscTriggered as Extras<T>;     break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Attack :              {res = this.OnAttack as Extras<T>;              break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Created :             {res = this.OnCreated as Extras<T>;             break;}

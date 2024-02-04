@@ -135,47 +135,49 @@ namespace Sophia.DataSystem.Numerics
 
     public class EntityStatReferer : IStatAccessible
     {
-        private SortedList<E_NUMERIC_STAT_TYPE, Stat> Stats = new();
+        protected SortedList<E_NUMERIC_STAT_TYPE, Stat> Stats = new();
 
         public EntityStatReferer() {
-            Stats.Add(E_NUMERIC_STAT_TYPE.MaxHp, default);
-            Stats.Add(E_NUMERIC_STAT_TYPE.Defence, default);
-            Stats.Add(E_NUMERIC_STAT_TYPE.MoveSpeed, default);
-            Stats.Add(E_NUMERIC_STAT_TYPE.Accecerate, default);
-            Stats.Add(E_NUMERIC_STAT_TYPE.Tenacity, default);
-            Stats.Add(E_NUMERIC_STAT_TYPE.Power, default);
-            Stats.Add(E_NUMERIC_STAT_TYPE.InstantiableDurateLifeTimeMultiplyRatio, default);
-            Stats.Add(E_NUMERIC_STAT_TYPE.InstantiableSizeMultiplyRatio, default);
-            Stats.Add(E_NUMERIC_STAT_TYPE.InstantiableForwardingSpeedMultiplyRatio, default);
+            this.Stats.Add(E_NUMERIC_STAT_TYPE.MaxHp, null);
+            this.Stats.Add(E_NUMERIC_STAT_TYPE.Defence, null);
+            this.Stats.Add(E_NUMERIC_STAT_TYPE.MoveSpeed, null);
+            this.Stats.Add(E_NUMERIC_STAT_TYPE.Accecerate, null);
+            this.Stats.Add(E_NUMERIC_STAT_TYPE.Tenacity, null);
+            this.Stats.Add(E_NUMERIC_STAT_TYPE.Power, null);
+            this.Stats.Add(E_NUMERIC_STAT_TYPE.InstantiableDurateLifeTimeMultiplyRatio, null);
+            this.Stats.Add(E_NUMERIC_STAT_TYPE.InstantiableSizeMultiplyRatio, null);
+            this.Stats.Add(E_NUMERIC_STAT_TYPE.InstantiableForwardingSpeedMultiplyRatio, null);
         }
 
         public void SetRefStat(Stat statRef) {
             if(statRef.NumericType == E_NUMERIC_STAT_TYPE.None) throw new System.Exception($"참조 스텟이 초기화되지 않음");
 
-            if(Stats.TryGetValue(statRef.NumericType, out Stat stat)) {
-                stat = statRef;
+            if(Stats.ContainsKey(statRef.NumericType)) {
+                Stats[statRef.NumericType] = statRef;
             }
-
             else {throw new System.Exception($"이 Entity 멤버에는 {statRef.NumericType.ToString()} 없음");}
         }
         
         public Stat GetStat(E_NUMERIC_STAT_TYPE numericType) {
             if(numericType == E_NUMERIC_STAT_TYPE.None) {throw new System.Exception($"NoneStat은 가져올 수 없음");}
-
-            if(Stats.TryGetValue(numericType, out Stat stat)) {
-                return stat;
+            if(Stats.ContainsKey(numericType)) {
+                if(Stats.TryGetValue(numericType, out Stat stat)){ return stat; }
+                else {throw new System.Exception($"{numericType.ToString()} 값이 NULL 임");}
             }
-            
             else {throw new System.Exception($"이 Entity 멤버에는 {numericType.ToString()} 없음");}
         }
 
         public string GetStatsInfo()
         {
-            StringBuilder stringBuilder = new StringBuilder();
+            StringBuilder stringBuilder = new StringBuilder(1000);
 
             foreach(E_NUMERIC_STAT_TYPE key in Enum.GetValues(typeof(E_NUMERIC_STAT_TYPE)))
             {
-                stringBuilder.AppendFormat("{0} : {1:N}", key.ToString(), Stats[key]);
+                if(key == E_NUMERIC_STAT_TYPE.None || Stats[key] == null){continue;}
+                stringBuilder.Append(key.ToString());
+                stringBuilder.Append(" : ");
+                stringBuilder.Append(Stats[key].GetValueForce().ToString());
+                stringBuilder.Append("\n");
             }
 
             return stringBuilder.ToString();
@@ -184,27 +186,17 @@ namespace Sophia.DataSystem.Numerics
 
     public class PlayerStatReferer : EntityStatReferer
     {
-        private SortedList<E_NUMERIC_STAT_TYPE, Stat> Stats = new();
         public PlayerStatReferer() {
-            Stats.Add(E_NUMERIC_STAT_TYPE.MaxHp,                                    default);
-            Stats.Add(E_NUMERIC_STAT_TYPE.Defence,                                  default);
-            Stats.Add(E_NUMERIC_STAT_TYPE.MoveSpeed,                                default);
-            Stats.Add(E_NUMERIC_STAT_TYPE.Accecerate,                               default);
-            Stats.Add(E_NUMERIC_STAT_TYPE.Tenacity,                                 default);
-            Stats.Add(E_NUMERIC_STAT_TYPE.MaxStamina,                               default);
-            Stats.Add(E_NUMERIC_STAT_TYPE.StaminaRestoreSpeed,                      default);
-            Stats.Add(E_NUMERIC_STAT_TYPE.CoolDownSpeed,                            default);
-            Stats.Add(E_NUMERIC_STAT_TYPE.Power,                                    default);
-            Stats.Add(E_NUMERIC_STAT_TYPE.InstantiableDurateLifeTimeMultiplyRatio,  default);
-            Stats.Add(E_NUMERIC_STAT_TYPE.InstantiableSizeMultiplyRatio,            default);
-            Stats.Add(E_NUMERIC_STAT_TYPE.InstantiableForwardingSpeedMultiplyRatio, default);
-            Stats.Add(E_NUMERIC_STAT_TYPE.PoolSize,                                 default);
-            Stats.Add(E_NUMERIC_STAT_TYPE.AttackSpeed,                              default);
-            Stats.Add(E_NUMERIC_STAT_TYPE.MeleeRatio,                               default);
-            Stats.Add(E_NUMERIC_STAT_TYPE.RangerRatio,                              default);
-            Stats.Add(E_NUMERIC_STAT_TYPE.TechRatio,                                default);
-            Stats.Add(E_NUMERIC_STAT_TYPE.EfficienceMultiplyer,                     default);
-            Stats.Add(E_NUMERIC_STAT_TYPE.Luck,                                     default);
+            this.Stats.Add(E_NUMERIC_STAT_TYPE.MaxStamina,                               null);
+            this.Stats.Add(E_NUMERIC_STAT_TYPE.StaminaRestoreSpeed,                      null);
+            this.Stats.Add(E_NUMERIC_STAT_TYPE.CoolDownSpeed,                            null);
+            this.Stats.Add(E_NUMERIC_STAT_TYPE.PoolSize,                                 null);
+            this.Stats.Add(E_NUMERIC_STAT_TYPE.AttackSpeed,                              null);
+            this.Stats.Add(E_NUMERIC_STAT_TYPE.MeleeRatio,                               null);
+            this.Stats.Add(E_NUMERIC_STAT_TYPE.RangerRatio,                              null);
+            this.Stats.Add(E_NUMERIC_STAT_TYPE.TechRatio,                                null);
+            this.Stats.Add(E_NUMERIC_STAT_TYPE.EfficienceMultiplyer,                     null);
+            this.Stats.Add(E_NUMERIC_STAT_TYPE.Luck,                                     null);
         }
     }
 }
