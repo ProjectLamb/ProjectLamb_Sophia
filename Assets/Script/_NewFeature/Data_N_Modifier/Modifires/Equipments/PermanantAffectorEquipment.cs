@@ -19,14 +19,7 @@ public class PermanantAffectorEquipment : Carrier, IUserInterfaceAccessible
     [SerializeField] public Sprite _icon;
     [SerializeField] public string _description;
 
-    [SerializeField] public E_AFFECT_TYPE _affectType;
-    [SerializeField] public Material _material;
-    [SerializeField] public Sophia.Instantiates.VisualFXObject _visualFx;
-    [SerializeField] public float _baseDurateTime;
-    [SerializeField] public float _intervalTime;
-    [SerializeField] public float _tickDamageRatio;
-    [SerializeField] private float _tickDamage;
-    [SerializeField] SerialCalculateDatas _calculateDatas;
+    [SerializeField] public SerialAffectorData _serialAffectorData;
 
     ExtrasModifier<Sophia.Entitys.Entity> extrasModifier;
     IFunctionalCommand<Sophia.Entitys.Entity> affectCommand;
@@ -57,60 +50,12 @@ public class PermanantAffectorEquipment : Carrier, IUserInterfaceAccessible
     }
 
     private void InitializeExtrasModifiers(Sophia.Entitys.Entity owner) {
-        switch (_affectType)
-        {
-            case E_AFFECT_TYPE.Poisoned:
-                {
-                    affectCommand = new PoisionAffectConveyerCommand(
-                        owner,
-                        _material, _visualFx,
-                        _baseDurateTime, _intervalTime, _tickDamage, _tickDamageRatio
-                    );
-                    break;
-                }
-            case E_AFFECT_TYPE.Stern:
-                {
-                    affectCommand = new SternAffectConveyerCommand(
-                        owner,
-                        _material, _visualFx,
-                        _baseDurateTime, _intervalTime, _tickDamage, _tickDamageRatio
-                    );
-                    break;
-                }
-            case E_AFFECT_TYPE.Airborne:
-                {
-                    affectCommand = new AirborneAffectConveyerCommand(
-                        owner,
-                        _material, _visualFx,
-                        _baseDurateTime, _intervalTime, _tickDamage, _tickDamageRatio,
-                        3
-                    );
-                    break;
-                }
-            case E_AFFECT_TYPE.Frozen:
-                {
-                    affectCommand = new FrozenAffectConveyerCommand(
-                        owner,
-                        _material, _visualFx,
-                        _baseDurateTime, _intervalTime, _tickDamage, _tickDamageRatio,
-                        _calculateDatas
-                    );
-                    break;
-                }
-            case E_AFFECT_TYPE.BlackHole :
-                {
-                    affectCommand = new BlackHoleAffectConveyerCommand(
-                        owner,
-                        null, null,
-                        _baseDurateTime, _intervalTime, -1, -1,
-                        50
-                    );
-                    break;
-                }
-            default: { throw new System.Exception("현재 알맞는 어펙터가 없음"); }
-        }
 
-        extrasModifier = new ExtrasModifier<Sophia.Entitys.Entity>(affectCommand, E_EXTRAS_PERFORM_TYPE.Tick, E_FUNCTIONAL_EXTRAS_TYPE.TargetAffected);
+        extrasModifier = new ExtrasModifier<Sophia.Entitys.Entity>(
+            AffectCommand.GetAffect(owner, _serialAffectorData),
+            E_EXTRAS_PERFORM_TYPE.Tick, 
+            E_FUNCTIONAL_EXTRAS_TYPE.TargetAffected
+        );
 
     }
 
