@@ -165,7 +165,7 @@ namespace Sophia.DataSystem
             FunctionalLists.Exit.Clear();
         }
 
-        void RecalculateExtras()
+        public void RecalculateExtras()
         {
             if(isDirty == false) return;
             ResetFunctionals();

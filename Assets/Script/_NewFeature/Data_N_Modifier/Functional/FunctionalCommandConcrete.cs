@@ -35,9 +35,6 @@ namespace Sophia.DataSystem.Functional
         public abstract Sprite GetSprite();
 
 #endregion
-
-        public abstract void SetOwner(Entitys.Entity entity);
-
         protected abstract Affector AffectorFactory(ref Entitys.Entity target);
 
         public void Invoke(ref Entitys.Entity referer)
@@ -92,7 +89,6 @@ namespace Sophia.DataSystem.Functional
             throw new System.NotImplementedException();
         }
 
-        public override void SetOwner(Entity entity) => OwnerRef = entity;
 
         #endregion
     }
@@ -136,7 +132,6 @@ namespace Sophia.DataSystem.Functional
             throw new System.NotImplementedException();
         }
 
-        public override void SetOwner(Entity entity) => OwnerRef = entity;
         #endregion
     }
 
@@ -180,7 +175,6 @@ namespace Sophia.DataSystem.Functional
             throw new System.NotImplementedException();
         }
 
-        public override void SetOwner(Entity entity) => OwnerRef = entity;
         #endregion
     }
     
@@ -222,7 +216,6 @@ namespace Sophia.DataSystem.Functional
             throw new System.NotImplementedException();
         }
 
-        public override void SetOwner(Entity entity) => OwnerRef = entity;
         #endregion
     }
 
@@ -272,7 +265,6 @@ namespace Sophia.DataSystem.Functional
             throw new System.NotImplementedException();
         }
 
-        public override void SetOwner(Entity entity) => OwnerRef = entity;
         #endregion
     }
 
