@@ -29,7 +29,6 @@ public class PermanantAffectorEquipment : Carrier, IUserInterfaceAccessible
     [SerializeField] SerialCalculateDatas _calculateDatas;
 
     ExtrasModifier<Sophia.Entitys.Entity> extrasModifier;
-    Sophia.Entitys.Entity OwnerRef;
     IFunctionalCommand<Sophia.Entitys.Entity> affectCommand;
     private void Awake()
     {
@@ -55,12 +54,15 @@ public class PermanantAffectorEquipment : Carrier, IUserInterfaceAccessible
         TargetAffectedExtrasRef.AddModifier(this.extrasModifier);
         
         ******************************************************/
+    }
+
+    private void InitializeExtrasModifiers(Sophia.Entitys.Entity owner) {
         switch (_affectType)
         {
             case E_AFFECT_TYPE.Poisoned:
                 {
                     affectCommand = new PoisionAffectConveyerCommand(
-                        this.OwnerRef,
+                        owner,
                         _material, _visualFx,
                         _baseDurateTime, _intervalTime, _tickDamage, _tickDamageRatio
                     );
@@ -69,7 +71,7 @@ public class PermanantAffectorEquipment : Carrier, IUserInterfaceAccessible
             case E_AFFECT_TYPE.Stern:
                 {
                     affectCommand = new SternAffectConveyerCommand(
-                        this.OwnerRef,
+                        owner,
                         _material, _visualFx,
                         _baseDurateTime, _intervalTime, _tickDamage, _tickDamageRatio
                     );
@@ -78,7 +80,7 @@ public class PermanantAffectorEquipment : Carrier, IUserInterfaceAccessible
             case E_AFFECT_TYPE.Airborne:
                 {
                     affectCommand = new AirborneAffectConveyerCommand(
-                        this.OwnerRef,
+                        owner,
                         _material, _visualFx,
                         _baseDurateTime, _intervalTime, _tickDamage, _tickDamageRatio,
                         3
@@ -88,7 +90,7 @@ public class PermanantAffectorEquipment : Carrier, IUserInterfaceAccessible
             case E_AFFECT_TYPE.Frozen:
                 {
                     affectCommand = new FrozenAffectConveyerCommand(
-                        this.OwnerRef,
+                        owner,
                         _material, _visualFx,
                         _baseDurateTime, _intervalTime, _tickDamage, _tickDamageRatio,
                         _calculateDatas
@@ -98,7 +100,7 @@ public class PermanantAffectorEquipment : Carrier, IUserInterfaceAccessible
             case E_AFFECT_TYPE.BlackHole :
                 {
                     affectCommand = new BlackHoleAffectConveyerCommand(
-                        this.OwnerRef,
+                        owner,
                         null, null,
                         _baseDurateTime, _intervalTime, -1, -1,
                         50
@@ -109,18 +111,19 @@ public class PermanantAffectorEquipment : Carrier, IUserInterfaceAccessible
         }
 
         extrasModifier = new ExtrasModifier<Sophia.Entitys.Entity>(affectCommand, E_EXTRAS_PERFORM_TYPE.Tick, E_FUNCTIONAL_EXTRAS_TYPE.TargetAffected);
+
     }
 
     protected override void OnTriggerLogic(Collider entity)
     {
         if (entity.TryGetComponent(out Sophia.Entitys.Player player))
         {
-            Debug.Log("Triggerd");
-            this.OwnerRef = player;
-            Extras<Sophia.Entitys.Entity> extrasRef = OwnerRef.GetExtras<Sophia.Entitys.Entity>(E_FUNCTIONAL_EXTRAS_TYPE.TargetAffected);
+            InitializeExtrasModifiers(player);
+            Extras<Sophia.Entitys.Entity> extrasRef = player.GetExtras<Sophia.Entitys.Entity>(E_FUNCTIONAL_EXTRAS_TYPE.TargetAffected);
             extrasRef.AddModifier(this.extrasModifier);
-            (extrasModifier.Functional as AffectConveyerCommand).SetOwner(player);
-            Debug.Log($"아이템 이름 : {GetName()} 효과 : {GetDescription()}");
+            extrasRef.RecalculateExtras();
+            // Debug.Log("Triggerd");
+            // Debug.Log($"아이템 이름 : {GetName()} 효과 : {GetDescription()}");
             Destroy(this.gameObject);
         }
         else
