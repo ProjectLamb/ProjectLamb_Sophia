@@ -8,12 +8,10 @@ namespace Sophia.DataSystem
     namespace Modifiers.ConcreteAffectors
     {
         using Modifiers.Affector;
-        using Sophia.Instantiates;
         using Sophia.Entitys;
-        using System.Numerics;
-        using Unity.VisualScripting;
-        
-        public class BurnAffect         : Affector
+        using Sophia.DataSystem.Functional;
+
+        public class BurnAffect : Affector
         {
             #region Members
             //          public readonly E_AFFECT_TYPE AffectType;
@@ -29,18 +27,12 @@ namespace Sophia.DataSystem
             /*
             public VisualFXObject visualFxRef { get; private set; }
             */
-
-            public float TickDamage { get; private set; }
-            public float TickDamageRatio { get; private set; }
-            public float IntervalTime { get; private set; }
+            private TickDamageCommand FunctionalTickDamageCommand;
 
             public BurnAffect(Entity ownerReceivers, Entity targetReceivers, float durateTime)
             : base(E_AFFECT_TYPE.Burn, ownerReceivers, targetReceivers, durateTime)
             {
                 targetReceivers.GetLifeComposite().OnExitDie += () => cts.Cancel();
-                this.IntervalTime = Time.deltaTime;
-                this.TickDamageRatio = 1.0f;
-                this.TickDamage = 1f;
                 Timer.OnFinished += Revert;
             }
 
@@ -48,112 +40,28 @@ namespace Sophia.DataSystem
 
             #region Setter
 
-            /*
-            public BurnAffect SetMaterial(Material material)
+            public BurnAffect SetTickDamage(SerialTickDamageAffectData serialTickDamageAffectData)
             {
-                this.materialRef = material;
-                Timer.OnStart += BurnMeshOn;
-                Timer.OnFinished += BurnMeshOff;
-                return this;
-            }
-            */
-            /*
-            public BurnAffect SetVisualFXObject(VisualFXObject vfx)
-            {
-                this.visualFxRef = vfx;
-                Timer.OnStart += BurnVFXOn;
-                Timer.OnFinished += BurnVFXOff;
-                return this;
-            }
-            */
-            public BurnAffect SetTickDamage(float damage)
-            {
-                this.TickDamage = damage;
-                return this;
-            }
+                if (FunctionalTickDamageCommand == null)
+                {
 
-            public BurnAffect SetTickDamageRatio(float Ratio)
-            {
-                this.TickDamageRatio = Ratio;
+                    FunctionalTickDamageCommand = new TickDamageCommand(serialTickDamageAffectData);
+                    void TickDamage() => FunctionalTickDamageCommand.Invoke(ref TargetRef);
+
+                    Timer.SetIntervalTime(CalcDurateTime(serialTickDamageAffectData._intervalTime));
+                    Timer.OnInterval += TickDamage;
+                }
                 return this;
             }
-
-            public BurnAffect SetIntervalTime(float Interval)
-            {
-                IntervalTime = Interval;
-                this.Timer.SetIntervalTime(IntervalTime);
-                Timer.OnInterval += BurnDamage;
-                return this;
-            }
-
             public BurnAffect SetRewindCondition(Func<bool> func)
             {
                 Timer.SetRewindCondition(func);
                 return this;
             }
-
-            #endregion
-
-            #region Affects
-
-            private void BurnDamage() => TargetRef.GetDamaged((int)CalcTickDamage());
-
-            /*
-            private async void BurnMeshOn()
-            {
-                try
-                {
-                    if (TargetRef == null) return;
-                    await TargetRef.GetModelManger().ChangeSkin(cts.Token, materialRef);
-                }
-                catch (OperationCanceledException)
-                {
-
-                }
-            }
-            */
-
-            /*
-            private async void BurnMeshOff()
-            {
-                try
-                {
-                    if (TargetRef == null) return;
-                    await TargetRef.GetModelManger().RevertSkin(cts.Token);
-                }
-                catch (OperationCanceledException)
-                {
-
-                }
-            }
-            */
-            /*
-            private void BurnVFXOn()
-            {
-                if (visualFxRef.DEBUG) Debug.Log($"{visualFxRef.gameObject.name} 지금 타입은 {visualFxRef.AffectType.ToString()}");
-                VisualFXObject visualFX = VisualFXObjectPool.GetObject(visualFxRef, OwnerRef);
-                TargetRef.GetVisualFXBucket().InstantablePositioning(visualFX).Activate();
-            }
-            */
-
-            /*
-            private void BurnVFXOff()
-            {
-                if (visualFxRef.DEBUG) Debug.Log($"{visualFxRef.gameObject.name} 지금 타입은 {visualFxRef.AffectType.ToString()}");
-                TargetRef.GetVisualFXBucket().RemoveInstantableFromBucket(this.AffectType);
-            }
-            */
-            #endregion
-
-            #region Helper
-
-            private float CalcTickDamage() => TickDamageRatio * TickDamage;
-            private float CalcDurateTime(float tenacity) => BaseDurateTime * (1 - tenacity);
-
             #endregion
         }
 
-        public class PoisonedAffect     : Affector
+        public class PoisonedAffect : Affector
         {
             #region Members
             //          public readonly E_AFFECT_TYPE AffectType;
@@ -162,21 +70,14 @@ namespace Sophia.DataSystem
             //          public float BaseDurateTime              {get; private set;}
             //          public TimerComposite Timer              {get; private set;}
 
-
-            public Material materialRef { get; private set; }
-            public VisualFXObject visualFxRef { get; private set; }
-
-            public float TickDamage { get; private set; }
-            public float TickDamageRatio { get; private set; }
-            public float IntervalTime { get; private set; }
+            private TickDamageCommand FunctionalTickDamageCommand;
+            private SkinCommand FunctionalSkinCommand;
+            private VisualFXCommand FunctionalVisualFXCommand;
 
             public PoisonedAffect(Entity ownerReceivers, Entity targetReceivers, float durateTime)
             : base(E_AFFECT_TYPE.Poisoned, ownerReceivers, targetReceivers, durateTime)
             {
                 targetReceivers.GetLifeComposite().OnExitDie += () => cts.Cancel();
-                this.IntervalTime = Time.deltaTime;
-                this.TickDamageRatio = 1.0f;
-                this.TickDamage = 1f;
                 Timer.OnFinished += Revert;
             }
 
@@ -184,39 +85,47 @@ namespace Sophia.DataSystem
 
             #region Setter
 
-            public PoisonedAffect SetMaterial(Material material)
+            public PoisonedAffect SetMaterial(SerialSkinAffectData serialSkinAffectData)
             {
-                this.materialRef = material;
-                Timer.OnStart += PoisonedMeshOn;
-                Timer.OnFinished += PoisonedMeshOff;
+                if (FunctionalSkinCommand == null)
+                {
+
+                    FunctionalSkinCommand = new SkinCommand(serialSkinAffectData, this.cts);
+                    void MeshOn() => FunctionalSkinCommand.Invoke(ref TargetRef);
+                    void MeshOff() => FunctionalSkinCommand.Revert(ref TargetRef);
+
+                    Timer.OnStart += MeshOn;
+                    Timer.OnFinished += MeshOff;
+                }
                 return this;
             }
 
-            public PoisonedAffect SetVisualFXObject(VisualFXObject vfx)
+            public PoisonedAffect SetVisualFXObject(SerialVisualAffectData serialVisualAffectData)
             {
-                this.visualFxRef = vfx;
-                Timer.OnStart += PoisonedVFXOn;
-                Timer.OnFinished += PoisonedVFXOff;
+                if (FunctionalVisualFXCommand == null)
+                {
+
+                    FunctionalVisualFXCommand = new VisualFXCommand(E_AFFECT_TYPE.Poisoned, serialVisualAffectData);
+                    void VFXOn() => FunctionalVisualFXCommand.Invoke(ref TargetRef);
+                    void VFXOff() => FunctionalVisualFXCommand.Revert(ref TargetRef);
+
+                    Timer.OnStart += VFXOn;
+                    Timer.OnFinished += VFXOff;
+                }
                 return this;
             }
 
-            public PoisonedAffect SetTickDamage(float damage)
+            public PoisonedAffect SetTickDamage(SerialTickDamageAffectData serialTickDamageAffectData)
             {
-                this.TickDamage = damage;
-                return this;
-            }
+                if (FunctionalTickDamageCommand == null)
+                {
 
-            public PoisonedAffect SetTickDamageRatio(float Ratio)
-            {
-                this.TickDamageRatio = Ratio;
-                return this;
-            }
+                    FunctionalTickDamageCommand = new TickDamageCommand(serialTickDamageAffectData);
+                    void TickDamage() => FunctionalTickDamageCommand.Invoke(ref TargetRef);
 
-            public PoisonedAffect SetIntervalTime(float Interval)
-            {
-                IntervalTime = Interval;
-                this.Timer.SetIntervalTime(IntervalTime);
-                Timer.OnInterval += PoisonedDamage;
+                    Timer.SetIntervalTime(CalcDurateTime(serialTickDamageAffectData._intervalTime));
+                    Timer.OnInterval += TickDamage;
+                }
                 return this;
             }
 
@@ -227,56 +136,9 @@ namespace Sophia.DataSystem
             }
 
             #endregion
-
-            #region Affects
-
-            private void PoisonedDamage() => TargetRef.GetDamaged((int)CalcTickDamage());
-            private async void PoisonedMeshOn()
-            {
-                try
-                {
-                    if (TargetRef == null) return;
-                    await TargetRef.GetModelManger().ChangeSkin(cts.Token, materialRef);
-                }
-                catch (OperationCanceledException)
-                {
-
-                }
-            }
-            private async void PoisonedMeshOff()
-            {
-                try
-                {
-                    if (TargetRef == null) return;
-                    await TargetRef.GetModelManger().RevertSkin(cts.Token);
-                }
-                catch (OperationCanceledException)
-                {
-
-                }
-            }
-            private void PoisonedVFXOn()
-            {
-                if (visualFxRef.DEBUG) Debug.Log($"{visualFxRef.gameObject.name} 지금 타입은 {visualFxRef.AffectType.ToString()}");
-                VisualFXObject visualFX = VisualFXObjectPool.GetObject(visualFxRef, OwnerRef);
-                TargetRef.GetVisualFXBucket().InstantablePositioning(visualFX).Activate();
-            }
-            private void PoisonedVFXOff()
-            {
-                if (visualFxRef.DEBUG) Debug.Log($"{visualFxRef.gameObject.name} 지금 타입은 {visualFxRef.AffectType.ToString()}");
-                TargetRef.GetVisualFXBucket().RemoveInstantableFromBucket(this.AffectType);
-            }
-            #endregion
-
-            #region Helper
-
-            private float CalcTickDamage() => TickDamageRatio * TickDamage;
-            private float CalcDurateTime(float tenacity) => BaseDurateTime * (1 - tenacity);
-
-            #endregion
         }
 
-        public class BleedAffect        : Affector
+        public class BleedAffect : Affector
         {
             #region Members
             //          public readonly E_AFFECT_TYPE AffectType;
@@ -292,18 +154,11 @@ namespace Sophia.DataSystem
             /*
             public VisualFXObject visualFxRef { get; private set; }
             */
-
-            public float TickDamage { get; private set; }
-            public float TickDamageRatio { get; private set; }
-            public float IntervalTime { get; private set; }
-
+            public TickDamageCommand FunctionalTickDamageCommand;
             public BleedAffect(Entity ownerReceivers, Entity targetReceivers, float durateTime)
             : base(E_AFFECT_TYPE.Bleed, ownerReceivers, targetReceivers, durateTime)
             {
                 targetReceivers.GetLifeComposite().OnExitDie += () => cts.Cancel();
-                this.IntervalTime = Time.deltaTime;
-                this.TickDamageRatio = 1.0f;
-                this.TickDamage = 1f;
                 Timer.OnFinished += Revert;
             }
 
@@ -311,41 +166,18 @@ namespace Sophia.DataSystem
 
             #region Setter
 
-            /*
-            public BleedAffect SetMaterial(Material material)
-            {
-                this.materialRef = material;
-                Timer.OnStart += BleedMeshOn;
-                Timer.OnFinished += BleedMeshOff;
-                return this;
-            }
-            */
-            /*
-            public BleedAffect SetVisualFXObject(VisualFXObject vfx)
-            {
-                this.visualFxRef = vfx;
-                Timer.OnStart += BleedVFXOn;
-                Timer.OnFinished += BleedVFXOff;
-                return this;
-            }
-            */
-            public BleedAffect SetTickDamage(float damage)
-            {
-                this.TickDamage = damage;
-                return this;
-            }
 
-            public BleedAffect SetTickDamageRatio(float Ratio)
+            public BleedAffect SetTickDamage(SerialTickDamageAffectData serialTickDamageAffectData)
             {
-                this.TickDamageRatio = Ratio;
-                return this;
-            }
+                if (FunctionalTickDamageCommand == null)
+                {
 
-            public BleedAffect SetIntervalTime(float Interval)
-            {
-                IntervalTime = Interval;
-                this.Timer.SetIntervalTime(IntervalTime);
-                Timer.OnInterval += BleedDamage;
+                    FunctionalTickDamageCommand = new TickDamageCommand(serialTickDamageAffectData);
+                    void TickDamage() => FunctionalTickDamageCommand.Invoke(ref TargetRef);
+
+                    Timer.SetIntervalTime(CalcDurateTime(serialTickDamageAffectData._intervalTime));
+                    Timer.OnInterval += TickDamage;
+                }
                 return this;
             }
 
@@ -356,72 +188,14 @@ namespace Sophia.DataSystem
             }
 
             #endregion
-
-            #region Affects
-
-            private void BleedDamage() => TargetRef.GetDamaged((int)CalcTickDamage());
-
-            /*
-            private async void BleedMeshOn()
-            {
-                try
-                {
-                    if (TargetRef == null) return;
-                    await TargetRef.GetModelManger().ChangeSkin(cts.Token, materialRef);
-                }
-                catch (OperationCanceledException)
-                {
-
-                }
-            }
-            */
-
-            /*
-            private async void BleedMeshOff()
-            {
-                try
-                {
-                    if (TargetRef == null) return;
-                    await TargetRef.GetModelManger().RevertSkin(cts.Token);
-                }
-                catch (OperationCanceledException)
-                {
-
-                }
-            }
-            */
-            /*
-            private void BleedVFXOn()
-            {
-                if (visualFxRef.DEBUG) Debug.Log($"{visualFxRef.gameObject.name} 지금 타입은 {visualFxRef.AffectType.ToString()}");
-                VisualFXObject visualFX = VisualFXObjectPool.GetObject(visualFxRef, OwnerRef);
-                TargetRef.GetVisualFXBucket().InstantablePositioning(visualFX).Activate();
-            }
-            */
-
-            /*
-            private void BleedVFXOff()
-            {
-                if (visualFxRef.DEBUG) Debug.Log($"{visualFxRef.gameObject.name} 지금 타입은 {visualFxRef.AffectType.ToString()}");
-                TargetRef.GetVisualFXBucket().RemoveInstantableFromBucket(this.AffectType);
-            }
-            */
-            #endregion
-
-            #region Helper
-
-            private float CalcTickDamage() => TickDamageRatio * TickDamage;
-            private float CalcDurateTime(float tenacity) => BaseDurateTime * (1 - tenacity);
-
-            #endregion
         }
 
-        public class ColdAffect       : Affector
+        public class ColdAffect : Affector
         {
             #region Members
 
-            public Material materialRef { get; private set; }
-
+            private SkinCommand FunctionalSkinCommand;
+            private TemporaryModifiyCommand FunctionalTemporaryModifiyCommand;
             public StatModifier MoveSpeedModifier;
 
             public ColdAffect(Entity ownerReceivers, Entity targetReceivers, float durateTime)
@@ -433,83 +207,63 @@ namespace Sophia.DataSystem
 
             }
 
-
             #endregion
             #region Setter
-            public ColdAffect SetMaterial(Material material)
+            public ColdAffect SetMaterial(SerialSkinAffectData serialSkinAffectData)
             {
-                this.materialRef = material;
-                Timer.OnStart += ColdMeshOn;
-                Timer.OnFinished += ColdMeshOff;
+                if (FunctionalSkinCommand == null)
+                {
+
+                    FunctionalSkinCommand = new SkinCommand(serialSkinAffectData, this.cts);
+                    void MeshOn() => FunctionalSkinCommand.Invoke(ref TargetRef);
+                    void MeshOff() => FunctionalSkinCommand.Revert(ref TargetRef);
+
+                    Timer.OnStart += MeshOn;
+                    Timer.OnFinished += MeshOff;
+                }
                 return this;
             }
-            public ColdAffect SetModifyData(SerialModifireDatas moveSpeedModifiyData)
+
+            public ColdAffect SetModifyData(SerialModifireDatas ModifiyData)
             {
-                MoveSpeedModifier = new StatModifier(moveSpeedModifiyData.amount, moveSpeedModifiyData.calType, E_NUMERIC_STAT_TYPE.MoveSpeed);
-                Timer.OnStart += ColdStart;
-                Timer.OnFinished += ColdEnd;
+                if (FunctionalTemporaryModifiyCommand == null)
+                {
+
+                    FunctionalTemporaryModifiyCommand = new TemporaryModifiyCommand(ModifiyData, E_NUMERIC_STAT_TYPE.MoveSpeed);
+                    void Apply() => FunctionalTemporaryModifiyCommand.Invoke(ref TargetRef);
+                    void Unapply() => FunctionalTemporaryModifiyCommand.Revert(ref TargetRef);
+
+                    Timer.OnStart += Apply;
+                    Timer.OnFinished += Unapply;
+                }
                 return this;
             }
-            #endregion
-
-            #region Affects
-
-            private void ColdStart()
-            {
-                TargetRef.GetStatReferer().GetStat(E_NUMERIC_STAT_TYPE.MoveSpeed).AddModifier(MoveSpeedModifier);
-                Debug.Log(TargetRef.GetStatReferer().GetStat(E_NUMERIC_STAT_TYPE.MoveSpeed).GetValueForce());
-            }
-
-            private void ColdEnd()
-            {
-                TargetRef.GetStatReferer().GetStat(E_NUMERIC_STAT_TYPE.MoveSpeed).RemoveModifier(MoveSpeedModifier);
-                Debug.Log(TargetRef.GetStatReferer().GetStat(E_NUMERIC_STAT_TYPE.MoveSpeed).GetValueForce());
-            }
-
-            private async void ColdMeshOn()
-            {
-                try
-                {
-                    if (TargetRef == null) return;
-                    await TargetRef.GetModelManger().ChangeSkin(cts.Token, materialRef);
-                }
-                catch (OperationCanceledException) { }
-            }
-            private async void ColdMeshOff()
-            {
-                try
-                {
-                    if (TargetRef == null) return;
-                    await TargetRef.GetModelManger().RevertSkin(cts.Token);
-                }
-                catch (OperationCanceledException) { }
-            }
-            #endregion
-            #region Helper
-
             #endregion
         }
 
-        public class ConfusedAffect     : Affector
+        public class ConfusedAffect : Affector
         {
             public ConfusedAffect(E_AFFECT_TYPE affectType, Entity ownerReceivers, Entity targetReceivers, float durateTime) : base(affectType, ownerReceivers, targetReceivers, durateTime)
             {
+
             }
         }
 
-        public class FearAffect         : Affector
+        public class FearAffect : Affector
         {
             public FearAffect(E_AFFECT_TYPE affectType, Entity ownerReceivers, Entity targetReceivers, float durateTime) : base(affectType, ownerReceivers, targetReceivers, durateTime)
             {
+
             }
         }
 
-        public class SternAffect        : Affector
+        public class SternAffect : Affector
         {
             #region Members
 
-            public Material materialRef { get; private set; }
-            public VisualFXObject visualFxRef { get; private set; }
+            private SkinCommand FunctionalSkinCommand;
+            private PauseMoveCommand FunctionalPauseMoveCommand;
+            private VisualFXCommand FunctionalVisualFXCommand;
 
             public SternAffect(Entity ownerReceivers, Entity targetReceivers, float durateTime)
             : base(E_AFFECT_TYPE.Stern, ownerReceivers, targetReceivers, durateTime)
@@ -517,80 +271,47 @@ namespace Sophia.DataSystem
                 targetReceivers.GetLifeComposite().OnExitDie += () => cts.Cancel();
                 Timer.OnFinished += Revert;
 
-                Timer.OnStart += FreezeMovementOn;
-                Timer.OnFinished += FreezeMovementOff;
+                FunctionalPauseMoveCommand = new PauseMoveCommand();
+
+                Timer.OnStart += () => FunctionalPauseMoveCommand.Invoke(ref TargetRef);
+                Timer.OnFinished += () => FunctionalPauseMoveCommand.Revert(ref TargetRef);
             }
 
             #endregion
             #region Setter
-            public SternAffect SetMaterial(Material material)
+            public SternAffect SetMaterial(SerialSkinAffectData serialSkinAffectData)
             {
-                this.materialRef = material;
-                Timer.OnStart += SternMeshOn;
-                Timer.OnFinished += SternMeshOff;
+                if (FunctionalSkinCommand == null)
+                {
+
+                    FunctionalSkinCommand = new SkinCommand(serialSkinAffectData, this.cts);
+                    void MeshOn() => FunctionalSkinCommand.Invoke(ref TargetRef);
+                    void MeshOff() => FunctionalSkinCommand.Revert(ref TargetRef);
+
+                    Timer.OnStart += MeshOn;
+                    Timer.OnFinished += MeshOff;
+                }
                 return this;
             }
-            public SternAffect SetVisualFXObject(VisualFXObject vfx)
+
+            public SternAffect SetVisualFXObject(SerialVisualAffectData serialVisualAffectData)
             {
-                this.visualFxRef = vfx;
-                Timer.OnStart += SternVFXOn;
-                Timer.OnFinished += SternVFXOff;
+                if (FunctionalVisualFXCommand == null)
+                {
+
+                    FunctionalVisualFXCommand = new VisualFXCommand(E_AFFECT_TYPE.Stern, serialVisualAffectData);
+                    void VFXOn() => FunctionalVisualFXCommand.Invoke(ref TargetRef);
+                    void VFXOff() => FunctionalVisualFXCommand.Revert(ref TargetRef);
+
+                    Timer.OnStart += VFXOn;
+                    Timer.OnFinished += VFXOff;
+                }
                 return this;
             }
-            #endregion
-
-            #region Affects
-            private void FreezeMovementOn()
-            {
-                if (TargetRef is IMovable)
-                {
-                    IMovable movableEntity = TargetRef as IMovable;
-                    movableEntity.SetMoveState(false);
-                }
-            }
-            private void FreezeMovementOff()
-            {
-                if (TargetRef is IMovable)
-                {
-                    IMovable movableEntity = TargetRef as IMovable;
-                    movableEntity.SetMoveState(true);
-                }
-            }
-
-            private async void SternMeshOn()
-            {
-                try
-                {
-                    if (TargetRef == null) return;
-                    await TargetRef.GetModelManger().ChangeSkin(cts.Token, materialRef);
-                }
-                catch (OperationCanceledException) { }
-            }
-            private async void SternMeshOff()
-            {
-                try
-                {
-                    if (TargetRef == null) return;
-                    await TargetRef.GetModelManger().RevertSkin(cts.Token);
-                }
-                catch (OperationCanceledException) { }
-            }
-            private void SternVFXOn()
-            {
-                VisualFXObject visualFX = VisualFXObjectPool.GetObject(visualFxRef, OwnerRef);
-                TargetRef.GetVisualFXBucket().InstantablePositioning(visualFX).Activate();
-            }
-            private void SternVFXOff()
-            {
-                TargetRef.GetVisualFXBucket().RemoveInstantableFromBucket(E_AFFECT_TYPE.Stern);
-            }
-            #endregion
-            #region Helper
-
             #endregion
         }
 
-        public class BoundedAffect      : Affector
+        public class BoundedAffect : Affector
         {
             #region Members
 
@@ -603,108 +324,34 @@ namespace Sophia.DataSystem
             public VisualFXObject visualFxRef { get; private set; }
             */
 
+            private PauseMoveCommand FunctionalPauseMoveCommand;
+
             public BoundedAffect(Entity ownerReceivers, Entity targetReceivers, float durateTime)
             : base(E_AFFECT_TYPE.Bounded, ownerReceivers, targetReceivers, durateTime)
             {
                 targetReceivers.GetLifeComposite().OnExitDie += () => cts.Cancel();
                 Timer.OnFinished += Revert;
 
-                Timer.OnStart += BoundedMovementOn;
-                Timer.OnFinished += BoundedMovementOff;
+                FunctionalPauseMoveCommand = new PauseMoveCommand();
+
+                Timer.OnStart += () => FunctionalPauseMoveCommand.Invoke(ref TargetRef);
+                Timer.OnFinished += () => FunctionalPauseMoveCommand.Revert(ref TargetRef);
             }
 
             #endregion
             #region Setter
 
-            /*
-            public BoundedAffect SetMaterial(Material material)
-            {
-                this.materialRef = material;
-                Timer.OnStart += BoundedMeshOn;
-                Timer.OnFinished += BoundedMeshOff;
-                return this;
-            }
-            */
-
-            /*
-            public BoundedAffect SetVisualFXObject(VisualFXObject vfx)
-            {
-                this.visualFxRef = vfx;
-                Timer.OnStart += BoundedVFXOn;
-                Timer.OnFinished += BoundedVFXOff;
-                return this;
-            }
-            */
-
-            #endregion
-
-            #region Affects
-            private void BoundedMovementOn()
-            {
-                if (TargetRef is IMovable)
-                {
-                    IMovable movableEntity = TargetRef as IMovable;
-                    movableEntity.SetMoveState(false);
-                }
-            }
-            private void BoundedMovementOff()
-            {
-                if (TargetRef is IMovable)
-                {
-                    IMovable movableEntity = TargetRef as IMovable;
-                    movableEntity.SetMoveState(true);
-                }
-            }
-
-            /*
-            private async void BoundedMeshOn()
-            {
-                try
-                {
-                    if (TargetRef == null) return;
-                    await TargetRef.GetModelManger().ChangeSkin(cts.Token, materialRef);
-                }
-                catch (OperationCanceledException) { }
-            }
-            private async void BoundedMeshOff()
-            {
-                try
-                {
-                    if (TargetRef == null) return;
-                    await TargetRef.GetModelManger().RevertSkin(cts.Token);
-                }
-                catch (OperationCanceledException) { }
-            }
-            */
-
-            /*
-            private void BoundedVFXOn()
-            {
-                VisualFXObject visualFX = VisualFXObjectPool.GetObject(visualFxRef, OwnerRef);
-                TargetRef.GetVisualFXBucket().InstantablePositioning(visualFX).Activate();
-            }
-            private void BoundedVFXOff()
-            {
-                TargetRef.GetVisualFXBucket().RemoveInstantableFromBucket(E_AFFECT_TYPE.Stern);
-            }
-            */
-            #endregion
-            #region Helper
-
             #endregion
         }
 
-        public class KnockbackAffect    : Affector
+        public class KnockbackAffect : Affector
         {
             #region Members
-
-            public float ForceAmount { get; private set; }
-            public float IntervalTime { get; private set; }
+            public ImpulseForceCommand FunctionalImpulseForce;
 
             public KnockbackAffect(Entity ownerReceivers, Entity targetReceivers, float durateTime)
             : base(E_AFFECT_TYPE.Knockback, ownerReceivers, targetReceivers, durateTime)
             {
-
                 Timer.OnFinished += Revert;
             }
 
@@ -712,71 +359,31 @@ namespace Sophia.DataSystem
 
             #region Setter
 
-            public KnockbackAffect SetForceAmount(float forceAmount)
+            public KnockbackAffect SetForceAmount(SerialPhysicsAffectData serialPhysicsAffectData)
             {
-                ForceAmount = forceAmount;
-                Timer.OnStart += KnockbackOn;
-                Timer.OnFinished += KnockbackOff;
+                if (FunctionalImpulseForce == null)
+                {
+
+                    FunctionalImpulseForce = new ImpulseForceCommand(serialPhysicsAffectData, OwnerRef);
+                    void KnockBackOn() => FunctionalImpulseForce.Invoke(ref TargetRef);
+
+                    Timer.OnStart += KnockBackOn;
+                }
                 return this;
             }
-            /*
-            public KnockbackAffect SetIntervalTime(float interval)
-            {
-                IntervalTime = interval;
-                this.Timer.SetIntervalTime(IntervalTime);
-                Timer.OnInterval += KnockbackRunning;
-                return this;
-            }
-            */
 
-            #endregion
-
-            #region Affects
-
-            public void KnockbackOn()
-            {
-                if (TargetRef is IMovable)
-                {
-                    IMovable movableEntity = TargetRef as IMovable;
-                    TargetRef.entityRigidbody.velocity = UnityEngine.Vector3.zero;
-                    movableEntity.SetMoveState(false);
-                }
-            }
-
-
-            public void KnockbackRunning()
-            {
-                UnityEngine.Vector3 Dir = UnityEngine.Vector3.Normalize(TargetRef.entityRigidbody.position - OwnerRef.entityRigidbody.position);
-                TargetRef.entityRigidbody.velocity = Dir * ForceAmount * IntervalTime;
-            }
-
-            public void KnockbackOff()
-            {
-                if (TargetRef is IMovable)
-                {
-                    IMovable movableEntity = TargetRef as IMovable;
-                    TargetRef.entityRigidbody.velocity = UnityEngine.Vector3.zero;
-                    movableEntity.SetMoveState(true);
-                }
-            }
-
-            #endregion
-
-            #region Helper
             #endregion
         }
 
-        public class BlackHoleAffect    : Affector
+        public class BlackHoleAffect : Affector
         {
             #region Members
 
-            public float ForceAmount { get; private set; }
-            public float IntervalTime { get; private set; }
+            public GradualForceCommand FunctionalGradualForceCommand;
 
             public BlackHoleAffect(Entity ownerReceivers, Entity targetReceivers, float durateTime)
             : base(E_AFFECT_TYPE.BlackHole, ownerReceivers, targetReceivers, durateTime)
             {
-
                 Timer.OnFinished += Revert;
             }
 
@@ -784,63 +391,30 @@ namespace Sophia.DataSystem
 
             #region Setter
 
-            public BlackHoleAffect SetForceAmount(float forceAmount)
+            public BlackHoleAffect SetForceAmount(SerialPhysicsAffectData serialPhysicsAffectData)
             {
-                ForceAmount = forceAmount;
-                Timer.OnStart += BlackHoleOn;
-                Timer.OnFinished += BlackHoleOff;
+                if (FunctionalGradualForceCommand == null)
+                {
+
+                    FunctionalGradualForceCommand = new GradualForceCommand(serialPhysicsAffectData, OwnerRef);
+                    void BlackHoleOn() => FunctionalGradualForceCommand.Invoke(ref TargetRef);
+                    void BlackHoleOff() => TargetRef.entityRigidbody.velocity = Vector3.zero;
+                    this.Timer.SetIntervalTime(serialPhysicsAffectData._intervalTime);
+                    Timer.OnInterval += BlackHoleOn;
+                    Timer.OnFinished += BlackHoleOff;
+                }
                 return this;
             }
 
-            public BlackHoleAffect SetIntervalTime(float interval)
-            {
-                IntervalTime = interval;
-                this.Timer.SetIntervalTime(IntervalTime);
-                Timer.OnInterval += BlackHoleRunning;
-                return this;
-            }
-
-            #endregion
-
-            #region Affects
-
-            public void BlackHoleOn()
-            {
-                if (TargetRef is IMovable)
-                {
-                    IMovable movableEntity = TargetRef as IMovable;
-                    TargetRef.entityRigidbody.velocity = UnityEngine.Vector3.zero;
-                    movableEntity.SetMoveState(false);
-                }
-            }
-
-
-            public void BlackHoleRunning()
-            {
-                UnityEngine.Vector3 Dir = UnityEngine.Vector3.Normalize(OwnerRef.entityRigidbody.position - TargetRef.entityRigidbody.position);
-                TargetRef.entityRigidbody.velocity = Dir * ForceAmount * IntervalTime;
-            }
-
-            public void BlackHoleOff()
-            {
-                if (TargetRef is IMovable)
-                {
-                    IMovable movableEntity = TargetRef as IMovable;
-                    TargetRef.entityRigidbody.velocity = UnityEngine.Vector3.zero;
-                    movableEntity.SetMoveState(true);
-                }
-            }
-
-            #endregion
-
-            #region Helper
             #endregion
         }
 
-        public class AirborneAffect     : Affector
+        public class AirborneAffect : Affector
         {
             #region Members
-            public float JumpForce { get; private set; }
+            private DotweenForceCommand FunctionalDotweenForceCommand;
+            private PauseMoveCommand FunctionalPauseMoveCommand;
+
             public AirborneAffect(Entity ownerReceivers, Entity targetReceivers, float durateTime)
             : base(E_AFFECT_TYPE.Airborne, ownerReceivers, targetReceivers, durateTime)
             {
@@ -850,40 +424,25 @@ namespace Sophia.DataSystem
             #endregion
             #region Setter
 
-            public AirborneAffect SetJumpForce(float jumpForce)
+            public AirborneAffect SetJumpForce(SerialPhysicsAffectData serialPhysicsAffectData)
             {
-                JumpForce = jumpForce;
-                Timer.OnStart += AirborneStart;
-                Timer.OnFinished += AirborneEnd;
+                if (FunctionalDotweenForceCommand == null && FunctionalPauseMoveCommand == null)
+                {
+                    FunctionalDotweenForceCommand = new DotweenForceCommand(serialPhysicsAffectData, BaseDurateTime);
+                    FunctionalPauseMoveCommand = new PauseMoveCommand();
+
+                    void AirborneStart()
+                    {
+                        FunctionalPauseMoveCommand.Invoke(ref TargetRef);
+                        FunctionalDotweenForceCommand.Invoke(ref TargetRef);
+                    }
+                    void AirborneEnd() => FunctionalPauseMoveCommand.Revert(ref TargetRef);
+
+                    Timer.OnStart += AirborneStart;
+                    Timer.OnFinished += AirborneEnd;
+                }
                 return this;
             }
-
-            #endregion
-
-            #region Affects
-            private void AirborneStart()
-            {
-                if (TargetRef is IMovable)
-                {
-                    IMovable movableEntity = TargetRef as IMovable;
-
-                    GameObject targetModel = TargetRef.GetModelManger().GetModelObject();
-                    targetModel.transform.DOLocalJump(UnityEngine.Vector3.zero, JumpForce, 1, BaseDurateTime);
-                    movableEntity.SetMoveState(false);
-                }
-            }
-            private void AirborneEnd()
-            {
-                if (TargetRef is IMovable)
-                {
-                    IMovable movableEntity = TargetRef as IMovable;
-
-                    movableEntity.SetMoveState(true);
-                }
-            }
-
-            #endregion
-            #region Helper
 
             #endregion
         }
