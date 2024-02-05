@@ -20,10 +20,10 @@ namespace Sophia.DataSystem
             #region Members
             public readonly CancellationTokenSource cts;
             public readonly E_AFFECT_TYPE AffectType;
-            public readonly Entity TargetRef;
-            public readonly Entity OwnerRef;
             public float BaseDurateTime { get; private set; }
-            public TimerComposite Timer { get; private set; }
+            protected Entity TargetRef;
+            protected Entity OwnerRef;
+            protected TimerComposite Timer { get; private set; }
             public Affector(E_AFFECT_TYPE affectType, Entity ownerReceivers, Entity targetReceivers, float durateTime)
             {
                 cts = new CancellationTokenSource();
@@ -88,6 +88,8 @@ namespace Sophia.DataSystem
                 OnCancle?.Invoke();
                 ClearEvent();
             }
+
+            protected float CalcDurateTime(float tenacity) => BaseDurateTime * (1 - tenacity);
         }
     }
 }

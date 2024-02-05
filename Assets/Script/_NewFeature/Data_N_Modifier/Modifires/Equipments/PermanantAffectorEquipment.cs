@@ -52,7 +52,7 @@ public class PermanantAffectorEquipment : Carrier, IUserInterfaceAccessible
     private void InitializeExtrasModifiers(Sophia.Entitys.Entity owner) {
 
         extrasModifier = new ExtrasModifier<Sophia.Entitys.Entity>(
-            AffectCommand.GetAffect(owner, _serialAffectorData),
+            AffectCommandFactory.GetAffect(owner, _serialAffectorData),
             E_EXTRAS_PERFORM_TYPE.Tick, 
             E_FUNCTIONAL_EXTRAS_TYPE.TargetAffected
         );
