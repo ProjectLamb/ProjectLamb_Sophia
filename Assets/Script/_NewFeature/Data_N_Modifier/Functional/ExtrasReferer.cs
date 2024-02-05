@@ -1,7 +1,4 @@
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
-using System;
 
 namespace Sophia.DataSystem.Functional
 {
@@ -208,6 +205,15 @@ namespace Sophia.DataSystem.Functional
             private Extras<object> OnSkillRefilled = null;
             
 #endregion
+
+#region Equipment
+            
+            private Extras<object> OnEquip = null;
+            private Extras<object> OnDrop = null;
+            private Extras<int> OnGetGear = null;
+
+#endregion
+
             public override void SetRefExtras<T>(Extras<T> extrasRef) {
                 switch(extrasRef.FunctionalType) 
                 {

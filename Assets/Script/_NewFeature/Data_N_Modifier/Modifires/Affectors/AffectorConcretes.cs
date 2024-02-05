@@ -12,7 +12,7 @@ namespace Sophia.DataSystem
         using Sophia.Entitys;
         using System.Numerics;
         using Unity.VisualScripting;
-
+        
         public class BurnAffect         : Affector
         {
             #region Members
@@ -887,7 +887,6 @@ namespace Sophia.DataSystem
 
             #endregion
         }
-
 
     }
 }
