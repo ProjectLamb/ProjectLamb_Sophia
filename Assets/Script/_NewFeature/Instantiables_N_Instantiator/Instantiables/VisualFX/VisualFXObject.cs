@@ -18,6 +18,14 @@ namespace Sophia.Instantiates
     ///     </para>
     ///     <list type="bullet|number|table">
     ///         <item>
+    ///             <term>0 : 풀 초기화</term>
+    ///             <description>
+    ///                 VisualFXObjectPool의 <br/>
+    ///                 <c>VFXPool[Key:VisualFXObject's Name].Get();</c> 으로 풀에서 가져옴 <br/>
+    ///                 Get()되는 순간 VisualFXObject에서<br/> <c>OnGetObject(VisualFXObject vfxObject);</c> 실행 <br/>
+    ///             </description>
+    ///         </item>
+    ///         <item>
     ///             <term>1 : 풀에서 인스턴스 가져오기</term>
     ///             <description>
     ///                 VisualFXObjectPool의 <br/>

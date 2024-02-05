@@ -8,29 +8,6 @@ namespace Sophia.DataSystem
 {   
     using Functional;
     using Modifiers;
-    using Sophia.Entitys;
-
-    public enum E_EXTRAS_PERFORM_TYPE {
-        None, Start, Tick, Exit
-    }
-
-    public enum E_FUNCTIONAL_EXTRAS_TYPE
-    {
-        None = 0,
-        ENTITY_TYPE = 10,
-            Move, Hit, Damaged, Attack, OwnerAffected, TargetAffected, Dead, Idle, PhyiscTriggered,
-        
-        PLAYER_TYPE = 20,
-            Dash, skill,
-        WEAPON_TYPE = 30, 
-            WeaponUse, ProjectileRestore,
-        
-        SKILL_TYPE = 40,
-            SkillUse, SkillRefilled,
-
-        PROJECTILE_TYPE = 50,
-            Created, Triggerd, Released, Forwarding
-    }
 
     public class FunctionalPerforms<T> {
         public List<IFunctionalCommand<T>> Start;
