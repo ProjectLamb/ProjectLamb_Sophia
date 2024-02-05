@@ -5,6 +5,12 @@ namespace Sophia.DataSystem.Functional
     public interface IFunctionalCommand<T> : IUserInterfaceAccessible{
         public void Invoke(ref T referer);
     }
+    public interface IFunctionalRevertCommand<T> {
+        public void Revert(ref T referer);
+    }
+
+    public interface IFunctionalToggleCommand<T> : IFunctionalCommand<T>, IFunctionalRevertCommand<T> {
+    }
 
     public interface IUserInterfaceAccessible {
         public string GetName();
@@ -14,6 +20,24 @@ namespace Sophia.DataSystem.Functional
 
     public interface IRandomlyActivatable {
         public bool GetIsActivated();
+    }
+
+    public class DefaultCommand<T> : IFunctionalToggleCommand<T>
+    {
+
+        #region UI Access
+
+        public string GetDescription() => "";
+        public string GetName() => "";
+        public Sprite GetSprite()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        #endregion
+
+        public void Invoke(ref T referer) { return; }
+        public void Revert(ref T referer) { return; }
     }
 }
 /*
