@@ -42,6 +42,7 @@ namespace Sophia.DataSystem.Functional
         [SerializeField] public SerialCalculateDatas _calculateAffectData;
     }
 
+    
 
     public class DefaultCommand<T> : IFunctionalCommand<T>
     {
@@ -60,32 +61,35 @@ namespace Sophia.DataSystem.Functional
         public void Invoke(ref T referer) { return; }
     }
 
+    /// <summary>
+    /// 오브젝트 풀로 객체를 가져오는 방식으로 할것!
+    /// </summary>
     public class AffectCommand
     {
         public static AffectConveyerCommand GetAffect(Entity owner, SerialAffectorData _serialAffectorData)
         {
             switch (_serialAffectorData._affectType)
-            {
+            { 
                 case E_AFFECT_TYPE.Poisoned:
-                    {
-                        return new PoisionAffectConveyerCommand(owner, _serialAffectorData);
-                    }
+                {
+                    return new PoisionAffectConveyerCommand(owner, _serialAffectorData);
+                }
                 case E_AFFECT_TYPE.Stern:
-                    {
-                        return new SternAffectConveyerCommand(owner, _serialAffectorData);
-                    }
+                {
+                    return new SternAffectConveyerCommand(owner, _serialAffectorData);
+                }
                 case E_AFFECT_TYPE.Airborne:
-                    {
-                        return new AirborneAffectConveyerCommand(owner, _serialAffectorData);
-                    }
+                {
+                    return new AirborneAffectConveyerCommand(owner, _serialAffectorData);
+                }
                 case E_AFFECT_TYPE.Cold:
-                    {
-                        return new ColdAffectConveyerCommand(owner, _serialAffectorData);
-                    }
+                {
+                    return new ColdAffectConveyerCommand(owner, _serialAffectorData);
+                }
                 case E_AFFECT_TYPE.BlackHole:
-                    {
-                        return new BlackHoleAffectConveyerCommand(owner, _serialAffectorData);
-                    }
+                {
+                    return new BlackHoleAffectConveyerCommand(owner, _serialAffectorData);
+                }
                 default: { throw new System.Exception("현재 알맞는 어펙터가 없음"); }
             }
         }
@@ -109,7 +113,7 @@ namespace Sophia.DataSystem.Functional
         }
     }
 
-    public class BurnAffectConveyerCommand : AffectConveyerCommand
+    public class BurnAffectConveyerCommand      : AffectConveyerCommand
     {
         public readonly E_AFFECT_TYPE AffectType;
         public readonly Material AffectSkin;
@@ -159,7 +163,7 @@ namespace Sophia.DataSystem.Functional
         }
     }
 
-    public class PoisionAffectConveyerCommand : AffectConveyerCommand
+    public class PoisionAffectConveyerCommand   : AffectConveyerCommand
     {
         public readonly E_AFFECT_TYPE AffectType;
         public readonly Material AffectSkin;
@@ -220,7 +224,7 @@ namespace Sophia.DataSystem.Functional
         #endregion
     }
 
-    public class BleedAffectConveyerCommand : AffectConveyerCommand
+    public class BleedAffectConveyerCommand     : AffectConveyerCommand
     {
 
         public readonly E_AFFECT_TYPE AffectType;
@@ -273,8 +277,7 @@ namespace Sophia.DataSystem.Functional
         }
     }
 
-
-    public class ColdAffectConveyerCommand : AffectConveyerCommand
+    public class ColdAffectConveyerCommand      : AffectConveyerCommand
     {
         public readonly E_AFFECT_TYPE AffectType;
         public readonly Material AffectSkin;
@@ -325,7 +328,7 @@ namespace Sophia.DataSystem.Functional
         #endregion
     }
 
-    public class ConfusedAffectConveyerCommand : AffectConveyerCommand
+    public class ConfusedAffectConveyerCommand  : AffectConveyerCommand
     {
         public override string GetName() => "혼란";
         public override string GetDescription() => " 플레이어가 행동불능 상태가 되며, 주위를 방황합니다";
@@ -347,7 +350,7 @@ namespace Sophia.DataSystem.Functional
         }
     }
 
-    public class FearAffectConveyerCommand : AffectConveyerCommand
+    public class FearAffectConveyerCommand      : AffectConveyerCommand
     {
         public override string GetName() => "공포";
         public override string GetDescription() => " 행동불능 상태가 되며, 특정 지점으로부터 도망칩니다";
@@ -369,7 +372,7 @@ namespace Sophia.DataSystem.Functional
         }
     }
     
-    public class SternAffectConveyerCommand : AffectConveyerCommand
+    public class SternAffectConveyerCommand     : AffectConveyerCommand
     {
         public readonly E_AFFECT_TYPE AffectType;
         public readonly Material AffectSkin;
@@ -409,7 +412,7 @@ namespace Sophia.DataSystem.Functional
         #endregion
     }
 
-    public class BoundedAffectConveyerCommand : AffectConveyerCommand
+    public class BoundedAffectConveyerCommand   : AffectConveyerCommand
     {
         public readonly E_AFFECT_TYPE AffectType;
         public readonly Material AffectSkin;
@@ -527,7 +530,7 @@ namespace Sophia.DataSystem.Functional
         #endregion
     }
 
-    public class AirborneAffectConveyerCommand : AffectConveyerCommand
+    public class AirborneAffectConveyerCommand  : AffectConveyerCommand
     {
         public readonly E_AFFECT_TYPE AffectType;
         public readonly Material AffectSkin;
