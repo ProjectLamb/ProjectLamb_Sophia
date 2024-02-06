@@ -99,14 +99,6 @@ namespace Sophia.Entitys
             ExtrasReferer.SetRefExtras(Life.HitExtras);
             ExtrasReferer.SetRefExtras(Life.DamagedExtras);
             ExtrasReferer.SetRefExtras(Life.DeadExtras);
-
-            ExtrasReferer.GetExtras<float>(E_FUNCTIONAL_EXTRAS_TYPE.Hit).AddModifier(
-                new DataSystem.Modifiers.ExtrasModifier<float>(
-                    new DodgeCommand(this,null),
-                    E_EXTRAS_PERFORM_TYPE.Start,
-                    E_FUNCTIONAL_EXTRAS_TYPE.Hit
-                )
-            );
         }
 
         private void FixedUpdate() {
