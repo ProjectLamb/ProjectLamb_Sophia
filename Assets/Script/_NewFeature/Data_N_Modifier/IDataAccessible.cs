@@ -49,7 +49,10 @@ namespace Sophia
             SkillUse, SkillRefilled,
 
         PROJECTILE_TYPE = 50,
-            Created, Triggerd, Released, Forwarding
+            Created, Triggerd, Released, Forwarding,
+
+        GLOBAL_TYPE = 100,
+            EnemyDie
     }
 
     public enum E_AFFECT_TYPE {

@@ -25,7 +25,7 @@ public class Equipment : Carrier , IUserInterfaceAccessible{
         private void InitializeStatModifiers(SerialCalculateDatas calculateDatas) {
             foreach(E_NUMERIC_STAT_TYPE statType in Enum.GetValues(typeof(E_NUMERIC_STAT_TYPE))) 
             {
-                SerialModifireDatas statValue = calculateDatas.GetModifireDatas(statType);
+                SerialStatModifireDatas statValue = calculateDatas.GetModifireDatas(statType);
                 if(statValue.calType != E_STAT_CALC_TYPE.None) {
                     Modifiers.Add(statType, new StatModifier( statValue.amount, statValue.calType, statType));
                 }

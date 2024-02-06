@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Sophia.DataSystem.Functional
 {
@@ -39,7 +41,58 @@ namespace Sophia.DataSystem.Functional
         public void Invoke(ref T referer) { return; }
         public void Revert(ref T referer) { return; }
     }
+
+    public class ConvertedCommand : IFunctionalCommand<object>
+    {
+        float fixRefererF;
+        Vector3 fixRefererV;
+        Entitys.Entity fixRefererE;
+        UnityEvent function = new();
+
+        public ConvertedCommand (IFunctionalCommand<float> functionalCommand, float fixReferer) {
+            function = new UnityEvent();
+            fixRefererF = fixReferer;
+            function.AddListener(() => functionalCommand.Invoke(ref fixRefererF));
+        }
+        public ConvertedCommand (IFunctionalCommand<Vector3> functionalCommand, Vector3 fixReferer) {
+            function = new UnityEvent();
+            fixRefererV = fixReferer;
+            function.AddListener(() => functionalCommand.Invoke(ref fixRefererV));
+        }
+        public ConvertedCommand (IFunctionalCommand<Entitys.Entity> functionalCommand, Entitys.Entity fixReferer) {
+            function = new UnityEvent();
+            fixRefererE = fixReferer;
+            function.AddListener(() => functionalCommand.Invoke(ref fixRefererE));
+        }
+
+        private string descStr;
+        public string GetDescription() => descStr;
+        public void SetDescription(string str) => descStr = str;
+
+        
+        private string nameStr;
+        public string GetName() => nameStr;
+        public void SetName(string str) => nameStr = str;
+
+        public Sprite GetSprite() => null;        
+
+        public void Invoke(ref object referer) => function.Invoke();
+    }
+
+    public static class CommandConverter
+    {
+        public static IFunctionalCommand<object> Convert(IFunctionalCommand<float> command, float fixReferer) {
+            return new ConvertedCommand(command, fixReferer);
+        }
+        public static IFunctionalCommand<object> Convert(IFunctionalCommand<Vector3> command, Vector3 fixReferer) {
+            return new ConvertedCommand(command, fixReferer);
+        }
+        public static IFunctionalCommand<object> Convert(IFunctionalCommand<Entitys.Entity> command, Entitys.Entity fixReferer) {
+            return new ConvertedCommand(command, fixReferer);
+        }
+    }
 }
+
 /*
 
 기존 상황

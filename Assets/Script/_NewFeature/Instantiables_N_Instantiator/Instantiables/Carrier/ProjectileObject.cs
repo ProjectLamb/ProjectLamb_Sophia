@@ -321,16 +321,17 @@ namespace Sophia.Instantiates
             if(CheckIsOwnerCollider(entity)) {return;}
             if (entity.TryGetComponent<Entity>(out Entity targetEntity))
             {
-                targetEntity.GetDamaged(CurrentProjectileDamage);
-                VisualFXObject visualFX = VisualFXObjectPool.GetObject(_hitEffect, OwnerRef);
-                targetEntity.GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
-                
-                OnProjectileTriggerd.Invoke();
-                
-                Extras<Entity> targetAffectedExtras = OwnerRef.GetExtras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.TargetAffected);
-                targetAffectedExtras.PerformStartFunctionals(ref targetEntity);
-                targetAffectedExtras.PerformTickFunctionals(ref targetEntity);
-                targetAffectedExtras.PerformExitFunctionals(ref targetEntity);
+                if(targetEntity.GetDamaged(CurrentProjectileDamage)) {
+                    Extras<Entity> targetAffectedExtras = OwnerRef.GetExtras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.TargetAffected);
+                    targetAffectedExtras.PerformStartFunctionals(ref targetEntity);
+
+                    VisualFXObject visualFX = VisualFXObjectPool.GetObject(_hitEffect, OwnerRef);
+                    targetEntity.GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
+
+                    OnProjectileTriggerd.Invoke();
+                    targetAffectedExtras.PerformTickFunctionals(ref targetEntity);
+                    targetAffectedExtras.PerformExitFunctionals(ref targetEntity);
+                }
             }
         }
 

@@ -68,12 +68,19 @@ public class DamageTextUI : MonoBehaviour
         return this;
     }
 
+    public DamageTextUI SetTextByString(string str){
+        if(_tmpPro.text.Length != 0) return this;
+        _tmpPro.text = str;
+        return this;
+    }
     public DamageTextUI SetText(float amount)
     {
+        if(_tmpPro.text.Length != 0) return this;
         DamageAmount = (int)amount;
         _tmpPro.text = DamageAmount.ToString();
         return this;
     }
+
 
     public DamageTextUI SetPosition(Vector3 position)
     {
@@ -131,6 +138,16 @@ public class DamageTextUI : MonoBehaviour
 
         ReactivateSeq.Append(ShakeTween).Join(CountTween).OnComplete(() => { _rigid.velocity = Vector3.up * AnimationSpeed; }).Play();
 
+        CurrentDestroyCoroutine = StartCoroutine(CoDestroy());
+    }
+    public void ReactivateTextUIByString(string str) {
+        StopCoroutine(CurrentDestroyCoroutine);
+        _rigid.velocity = Vector3.zero;
+        _tmpPro.text = str;
+        Sequence ReactivateSeq = DOTween.Sequence();
+        Tween ShakeTween = transform.DOShakePosition(0.1f, 10);
+        ReactivateSeq.Append(ShakeTween).OnComplete(() => { _rigid.velocity = Vector3.up * AnimationSpeed; }).Play();
+        
         CurrentDestroyCoroutine = StartCoroutine(CoDestroy());
     }
 

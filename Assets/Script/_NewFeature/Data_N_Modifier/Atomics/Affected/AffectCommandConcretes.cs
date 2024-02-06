@@ -81,7 +81,7 @@ namespace Sophia.DataSystem.Functional
         }
     }
 
-    public abstract class AffectCommand : IFunctionalCommand<Entitys.Entity>, IUserInterfaceAccessible
+    public abstract class AffectCommand : IFunctionalCommand<Entitys.Entity>
     {
 
         #region UI Access
@@ -427,4 +427,42 @@ namespace Sophia.DataSystem.Functional
 
         #endregion
     }
+
+    public class MoveSpeedUpCommand      : AffectCommand
+    {
+        public MoveSpeedUpCommand(Entity owner, SerialAffectorData serialAffectorData) : base(owner, serialAffectorData)
+        {
+            AffectType = E_AFFECT_TYPE.MoveSpeedUp;
+        }
+
+
+        #region Concrete Logic
+
+        protected override Affector CreateAffector(ref Entitys.Entity target)
+        {
+            return new MoveSpeedUpAffect(OwnerRef, target, AffectData._baseDurateTime)
+                        .SetModifyData(AffectData._calculateAffectData.MoveSpeed)
+                        .SetVisualFXObject(AffectData._visualAffectData);
+        }
+
+        #endregion
+
+        #region UI Access
+
+        public override string GetName() => "이동속도 증가";
+        public override string GetDescription()
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.Append(" dlwmd").Append("\n");
+            return stringBuilder.ToString();
+        }
+        public override Sprite GetSprite()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        #endregion
+    }
+
+    
 }

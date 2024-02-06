@@ -10,7 +10,7 @@ namespace Sophia.DataSystem
         using Modifiers.Affector;
         using Sophia.Entitys;
         using Sophia.DataSystem.Functional;
-
+#region Debuff
         public class BurnAffect : Affector
         {
             #region Members
@@ -196,7 +196,6 @@ namespace Sophia.DataSystem
 
             private SkinCommand FunctionalSkinCommand;
             private TemporaryModifiyCommand FunctionalTemporaryModifiyCommand;
-            public StatModifier MoveSpeedModifier;
 
             public ColdAffect(Entity ownerReceivers, Entity targetReceivers, float durateTime)
             : base(E_AFFECT_TYPE.Cold, ownerReceivers, targetReceivers, durateTime)
@@ -224,7 +223,7 @@ namespace Sophia.DataSystem
                 return this;
             }
 
-            public ColdAffect SetModifyData(SerialModifireDatas ModifiyData)
+            public ColdAffect SetModifyData(SerialStatModifireDatas ModifiyData)
             {
                 if (FunctionalTemporaryModifiyCommand == null)
                 {
@@ -446,6 +445,52 @@ namespace Sophia.DataSystem
 
             #endregion
         }
+        #endregion
 
+        #region Buff
+        public class MoveSpeedUpAffect : Affector
+        {
+            public MoveSpeedUpAffect(Entity ownerReceivers, Entity targetReceivers, float durateTime) 
+            : base(E_AFFECT_TYPE.MoveSpeedUp, ownerReceivers, targetReceivers, durateTime)
+            {
+                Timer.OnFinished += Revert;
+            }
+
+            private TemporaryModifiyCommand FunctionalTemporaryModifiyCommand;
+            private VisualFXCommand FunctionalVisualFXCommand;
+            
+            public MoveSpeedUpAffect SetVisualFXObject(SerialVisualAffectData serialVisualAffectData)
+            {
+                if (FunctionalVisualFXCommand == null)
+                {
+
+                    FunctionalVisualFXCommand = new VisualFXCommand(E_AFFECT_TYPE.Poisoned, serialVisualAffectData);
+                    void VFXOn() => FunctionalVisualFXCommand.Invoke(ref TargetRef);
+                    void VFXOff() => FunctionalVisualFXCommand.Revert(ref TargetRef);
+
+                    Timer.OnStart += VFXOn;
+                    Timer.OnFinished += VFXOff;
+                }
+                return this;
+            }
+
+            public MoveSpeedUpAffect SetModifyData(SerialStatModifireDatas ModifiyData)
+            {
+                if (FunctionalTemporaryModifiyCommand == null)
+                {
+
+                    FunctionalTemporaryModifiyCommand = new TemporaryModifiyCommand(ModifiyData, E_NUMERIC_STAT_TYPE.MoveSpeed);
+                    void Apply() => FunctionalTemporaryModifiyCommand.Invoke(ref TargetRef);
+                    void Unapply() => FunctionalTemporaryModifiyCommand.Revert(ref TargetRef);
+
+                    Timer.OnStart += Apply;
+                    Timer.OnFinished += Unapply;
+                }
+                return this;
+            }
+        }
+        #endregion
     }
+
+
 }
