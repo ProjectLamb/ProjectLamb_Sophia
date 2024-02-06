@@ -24,7 +24,8 @@ namespace Sophia.DataSystem.Functional
     }
 
     [System.Serializable]
-    public struct SerialSkinAffectData {
+    public struct SerialSkinAffectData
+    {
         [SerializeField] public float _intervalTime;
         [SerializeField] public Material _materialRef;
     }
@@ -52,30 +53,30 @@ namespace Sophia.DataSystem.Functional
     /// </summary>
     public class AffectCommandFactory
     {
-        public static AffectCommand GetAffect(Entity owner, SerialAffectorData _serialAffectorData)
+        public static AffectCommand GetAffect(Entity owner, SerialAffectorData _serialAffectorData) 
         {
             switch (_serialAffectorData._affectType)
-            { 
+            {
                 case E_AFFECT_TYPE.Poisoned:
-                {
-                    return new PoisionAffectCommand(owner, _serialAffectorData);
-                }
+                    {
+                        return new PoisionAffectCommand(owner, _serialAffectorData);
+                    }
                 case E_AFFECT_TYPE.Stern:
-                {
-                    return new SternAffectCommand(owner, _serialAffectorData);
-                }
+                    {
+                        return new SternAffectCommand(owner, _serialAffectorData);
+                    }
                 case E_AFFECT_TYPE.Airborne:
-                {
-                    return new AirborneAffectCommand(owner, _serialAffectorData);
-                }
+                    {
+                        return new AirborneAffectCommand(owner, _serialAffectorData);
+                    }
                 case E_AFFECT_TYPE.Cold:
-                {
-                    return new ColdAffectCommand(owner, _serialAffectorData);
-                }
+                    {
+                        return new ColdAffectCommand(owner, _serialAffectorData);
+                    }
                 case E_AFFECT_TYPE.BlackHole:
-                {
-                    return new BlackHoleAffectCommand(owner, _serialAffectorData);
-                }
+                    {
+                        return new BlackHoleAffectCommand(owner, _serialAffectorData);
+                    }
                 default: { throw new System.Exception("현재 알맞는 어펙터가 없음"); }
             }
         }
@@ -92,12 +93,13 @@ namespace Sophia.DataSystem.Functional
 
         #endregion
         protected E_AFFECT_TYPE AffectType;
-        protected SerialAffectorData AffectData;
+        protected SerialAffectorData AffectData; 
         protected Entitys.Entity OwnerRef;
 
         protected abstract Affector CreateAffector(ref Entitys.Entity target);
 
-        public AffectCommand(Entitys.Entity owner, SerialAffectorData serialAffectorData) {
+        public AffectCommand(Entitys.Entity owner, SerialAffectorData serialAffectorData) 
+        {
             OwnerRef = owner;
             AffectData = serialAffectorData;
         }
@@ -108,13 +110,29 @@ namespace Sophia.DataSystem.Functional
         }
     }
 
-    public class BurnAffectCommand      : AffectCommand
+    public class BurnAffectCommand : AffectCommand
     {
+        public readonly Material AffectSkin;
+        public readonly VisualFXObject AffectVisualFX;
+        public readonly float BaseDurateTime;
+        public readonly float IntervalTime;
+        public readonly float BaseTickDamage;
+        public readonly float TickDamageRatio;
+
         public BurnAffectCommand(Entitys.Entity owner, SerialAffectorData serialAffectorData) : base(owner, serialAffectorData)
         {
+            OwnerRef = owner;
             AffectType = E_AFFECT_TYPE.Burn;
-        }
 
+            BaseDurateTime = serialAffectorData._baseDurateTime;
+
+            AffectSkin = serialAffectorData._skinAffectData._materialRef;
+            AffectVisualFX = serialAffectorData._visualAffectData._visualFxRef;
+
+            BaseTickDamage = serialAffectorData._tickDamageAffectData._baseTickDamage;
+            IntervalTime = serialAffectorData._tickDamageAffectData._intervalTime;
+            TickDamageRatio = serialAffectorData._tickDamageAffectData._tickDamageRatio;
+        }
         public override string GetName() => "화상";
 
         public override Sprite GetSprite()
@@ -125,7 +143,7 @@ namespace Sophia.DataSystem.Functional
         public override string GetDescription()
         {
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.Append($"플레이어가 화염 영역 위 위치할 때 활성화 되며, {AffectData._baseDurateTime}초 뒤 화상효과를 유발한 후 사라집니다\n");
+            stringBuilder.Append($"플레이어가 화염 영역 위 위치할 때 활성화 되며, {BaseDurateTime}초 뒤 화상효과를 유발한 후 사라집니다\n");
             stringBuilder.Append($"화염 영역을 벗어나게 되는 경우, 화염 영역 위 존재한 시간과 비례해 효과가 유지 된 후 사라집니다.");
             return stringBuilder.ToString();
         }
@@ -133,26 +151,47 @@ namespace Sophia.DataSystem.Functional
 
         protected override Affector CreateAffector(ref Entity target)
         {
-            return new BurnAffect(OwnerRef, target, AffectData._baseDurateTime)
-                        .SetTickDamage(AffectData._tickDamageAffectData);
+            return new BurnAffect(OwnerRef, target, BaseDurateTime)
+                        .SetIntervalTime(this.IntervalTime)
+                        .SetTickDamage(this.BaseTickDamage)
+                        .SetTickDamageRatio(this.TickDamageRatio);
         }
     }
 
-    public class PoisionAffectCommand   : AffectCommand
+    public class PoisionAffectCommand : AffectCommand
     {
-        public PoisionAffectCommand(Entity owner, SerialAffectorData serialAffectorData) : base(owner, serialAffectorData)
+        public readonly Material AffectSkin;
+        public readonly VisualFXObject AffectVisualFX;
+        public readonly float BaseDurateTime;
+        public readonly float IntervalTime;
+        public readonly float BaseTickDamage;
+        public readonly float TickDamageRatio;
+
+        public PoisionAffectCommand(Entitys.Entity owner, SerialAffectorData serialAffectorData) : base(owner, serialAffectorData)
         {
+            OwnerRef = owner;
             AffectType = E_AFFECT_TYPE.Poisoned;
+
+            BaseDurateTime = serialAffectorData._baseDurateTime;
+
+            AffectSkin = serialAffectorData._skinAffectData._materialRef;
+            AffectVisualFX = serialAffectorData._visualAffectData._visualFxRef;
+
+            BaseTickDamage = serialAffectorData._tickDamageAffectData._baseTickDamage;
+            IntervalTime = serialAffectorData._tickDamageAffectData._intervalTime;
+            TickDamageRatio = serialAffectorData._tickDamageAffectData._tickDamageRatio;
         }
 
         #region Concrete Logic
 
         protected override Affector CreateAffector(ref Entitys.Entity target)
         {
-            return new PoisonedAffect(OwnerRef, target, AffectData._baseDurateTime)
-                        .SetTickDamage(this.AffectData._tickDamageAffectData)
-                        .SetMaterial(this.AffectData._skinAffectData)
-                        .SetVisualFXObject(this.AffectData._visualAffectData);
+            return new PoisonedAffect(OwnerRef, target, BaseDurateTime)
+                        .SetIntervalTime(this.IntervalTime)
+                        .SetTickDamage(this.BaseTickDamage)
+                        .SetTickDamageRatio(this.TickDamageRatio)
+                        .SetMaterial(this.AffectSkin)
+                        .SetVisualFXObject(this.AffectVisualFX);
         }
 
         #endregion
@@ -178,13 +217,30 @@ namespace Sophia.DataSystem.Functional
         #endregion
     }
 
-    public class BleedAffectCommand     : AffectCommand
+    public class BleedAffectCommand : AffectCommand
     {
-        public BleedAffectCommand(Entity owner, SerialAffectorData serialAffectorData) : base(owner, serialAffectorData)
-        {
-            AffectType = E_AFFECT_TYPE.Bleed;
-        }
 
+        public readonly Material AffectSkin;
+        public readonly VisualFXObject AffectVisualFX;
+        public readonly float BaseDurateTime;
+        public readonly float IntervalTime;
+        public readonly float BaseTickDamage;
+        public readonly float TickDamageRatio;
+
+        public BleedAffectCommand(Entitys.Entity owner, SerialAffectorData serialAffectorData) : base(owner, serialAffectorData)
+        {
+            OwnerRef = owner;
+            AffectType = E_AFFECT_TYPE.Bleed;
+
+            BaseDurateTime = serialAffectorData._baseDurateTime;
+
+            AffectSkin = serialAffectorData._skinAffectData._materialRef;
+            AffectVisualFX = serialAffectorData._visualAffectData._visualFxRef;
+
+            BaseTickDamage = serialAffectorData._tickDamageAffectData._baseTickDamage;
+            IntervalTime = serialAffectorData._tickDamageAffectData._intervalTime;
+            TickDamageRatio = serialAffectorData._tickDamageAffectData._tickDamageRatio;
+        }
         public override string GetName() => "출혈";
 
         public override Sprite GetSprite()
@@ -205,26 +261,39 @@ namespace Sophia.DataSystem.Functional
 
         protected override Affector CreateAffector(ref Entity target)
         {
-            return new BleedAffect(OwnerRef, target, AffectData._baseDurateTime)
-                        .SetTickDamage(AffectData._tickDamageAffectData);
+            return new BleedAffect(OwnerRef, target, BaseDurateTime)
+                        .SetIntervalTime(this.IntervalTime)
+                        .SetTickDamage(this.BaseTickDamage)
+                        .SetTickDamageRatio(this.TickDamageRatio);
         }
     }
 
-    public class ColdAffectCommand      : AffectCommand
+    public class ColdAffectCommand : AffectCommand
     {
-        public ColdAffectCommand(Entity owner, SerialAffectorData serialAffectorData) : base(owner, serialAffectorData)
-        {
-            AffectType = E_AFFECT_TYPE.Cold;
-        }
+        public readonly Material AffectSkin;
+        public readonly VisualFXObject AffectVisualFX;
+        public readonly float BaseDurateTime;
+        public readonly float IntervalTime;
+        public readonly float BaseTickDamage;
+        public readonly float TickDamageRatio;
+        public SerialCalculateDatas CalculateDatas { get; private set; }
 
+        public ColdAffectCommand(Entitys.Entity owner, SerialAffectorData serialAffectorData) : base(owner, serialAffectorData)
+        {
+            OwnerRef = owner;
+            AffectType = E_AFFECT_TYPE.Cold;
+            BaseDurateTime = serialAffectorData._baseDurateTime;
+            CalculateDatas = serialAffectorData._calculateAffectData;
+            AffectSkin = serialAffectorData._skinAffectData._materialRef;
+        }
 
         #region Concrete Logic
 
         protected override Affector CreateAffector(ref Entitys.Entity target)
         {
-            return new ColdAffect(OwnerRef, target, AffectData._baseDurateTime)
-                        .SetModifyData(AffectData._calculateAffectData.MoveSpeed)
-                        .SetMaterial(AffectData._skinAffectData);
+            return new ColdAffect(OwnerRef, target, BaseDurateTime)
+                        .SetModifyData(CalculateDatas.MoveSpeed)
+                        .SetMaterial(AffectSkin);
         }
 
         #endregion
@@ -248,16 +317,17 @@ namespace Sophia.DataSystem.Functional
         #endregion
     }
 
-    public class ConfusedAffectCommand  : AffectCommand
+    public class ConfusedAffectCommand : AffectCommand
     {
-        public ConfusedAffectCommand(Entity owner, SerialAffectorData serialAffectorData) : base(owner, serialAffectorData)
-        {
-            AffectType = E_AFFECT_TYPE.Confused;
-        }
-
         public override string GetName() => "혼란";
         public override string GetDescription() => " 플레이어가 행동불능 상태가 되며, 주위를 방황합니다";
 
+
+        public ConfusedAffectCommand(Entitys.Entity owner, SerialAffectorData serialAffectorData) : base(owner, serialAffectorData)
+        {
+
+        }
+
         public override Sprite GetSprite()
         {
             throw new System.NotImplementedException();
@@ -269,16 +339,17 @@ namespace Sophia.DataSystem.Functional
         }
     }
 
-    public class FearAffectCommand      : AffectCommand
+    public class FearAffectCommand : AffectCommand
     {
-        public FearAffectCommand(Entity owner, SerialAffectorData serialAffectorData) : base(owner, serialAffectorData)
-        {
-            AffectType = E_AFFECT_TYPE.Fear;
-        }
-
         public override string GetName() => "공포";
         public override string GetDescription() => " 행동불능 상태가 되며, 특정 지점으로부터 도망칩니다";
 
+
+        public FearAffectCommand(Entitys.Entity owner, SerialAffectorData serialAffectorData) : base(owner, serialAffectorData)
+        {
+
+        }
+
         public override Sprite GetSprite()
         {
             throw new System.NotImplementedException();
@@ -289,29 +360,37 @@ namespace Sophia.DataSystem.Functional
             throw new System.NotImplementedException();
         }
     }
-    
-    public class SternAffectCommand     : AffectCommand
-    {
-        public SternAffectCommand(Entity owner, SerialAffectorData serialAffectorData) : base(owner, serialAffectorData)
-        {
-            AffectType = E_AFFECT_TYPE.Stern;
-        }
 
+    public class SternAffectCommand : AffectCommand
+    {
+        public readonly Material AffectSkin;
+        public readonly VisualFXObject AffectVisualFX;
+        public readonly float BaseDurateTime;
+
+
+        public SternAffectCommand(Entitys.Entity owner, SerialAffectorData serialAffectorData) : base(owner, serialAffectorData)
+        {
+            OwnerRef = owner;
+            AffectType = E_AFFECT_TYPE.Stern;
+            AffectSkin = serialAffectorData._skinAffectData._materialRef;
+            AffectVisualFX = serialAffectorData._visualAffectData._visualFxRef;
+            BaseDurateTime = serialAffectorData._baseDurateTime;
+        }
 
         #region Concrete Logic
 
         protected override Affector CreateAffector(ref Entitys.Entity target)
         {
-            return new SternAffect(OwnerRef, target, AffectData._baseDurateTime)
-                        .SetMaterial(AffectData._skinAffectData)
-                        .SetVisualFXObject(AffectData._visualAffectData);
+            return new SternAffect(OwnerRef, target, BaseDurateTime)
+                        .SetMaterial(this.AffectSkin)
+                        .SetVisualFXObject(this.AffectVisualFX);
         }
 
         #endregion
 
         #region UI Access
         public override string GetName() => "스턴";
-        public override string GetDescription() => $"스턴에 걸린 상대는 {(AffectData._baseDurateTime).ToString()}초 간 행동불능 및 이동불가 상태가 됩니다.";
+        public override string GetDescription() => $"스턴에 걸린 상대는 {(BaseDurateTime).ToString()}초 간 행동불능 및 이동불가 상태가 됩니다.";
         public override Sprite GetSprite()
         {
             throw new System.NotImplementedException();
@@ -320,18 +399,26 @@ namespace Sophia.DataSystem.Functional
         #endregion
     }
 
-    public class BoundedAffectCommand   : AffectCommand
+    public class BoundedAffectCommand : AffectCommand
     {
-        public BoundedAffectCommand(Entity owner, SerialAffectorData serialAffectorData) : base(owner, serialAffectorData)
+        public readonly Material AffectSkin;
+        public readonly VisualFXObject AffectVisualFX;
+        public readonly float BaseDurateTime;
+
+        public BoundedAffectCommand(Entitys.Entity owner, SerialAffectorData serialAffectorData) : base(owner, serialAffectorData)
         {
-            AffectType = E_AFFECT_TYPE.Bounded;
+            OwnerRef = owner;
+            AffectType = E_AFFECT_TYPE.Stern;
+            AffectSkin = serialAffectorData._skinAffectData._materialRef;
+            AffectVisualFX = serialAffectorData._visualAffectData._visualFxRef;
+            BaseDurateTime = serialAffectorData._baseDurateTime;
         }
 
         protected override Affector CreateAffector(ref Entity target)
         {
-            return new BoundedAffect(OwnerRef, target, AffectData._baseDurateTime);
+            return new BoundedAffect(OwnerRef, target, BaseDurateTime);
         }
-        
+
         public override string GetDescription() => "이동불가 상태가 됩니다(조작 가능)";
 
         public override string GetName() => "속박";
@@ -345,24 +432,36 @@ namespace Sophia.DataSystem.Functional
 
     public class KnockbackAffectCommand : AffectCommand
     {
-        public KnockbackAffectCommand(Entity owner, SerialAffectorData serialAffectorData) : base(owner, serialAffectorData)
+        public readonly Material AffectSkin;
+        public readonly VisualFXObject AffectVisualFX;
+        public readonly float BaseDurateTime;
+        public readonly float IntervalTime;
+        public readonly float BaseTickDamage;
+        public readonly float TickDamageRatio;
+        public readonly float ForceAmount;
+
+        public KnockbackAffectCommand(Entitys.Entity owner, SerialAffectorData serialAffectorData) : base(owner, serialAffectorData)
         {
+            OwnerRef = owner;
             AffectType = E_AFFECT_TYPE.Knockback;
+            BaseDurateTime = serialAffectorData._baseDurateTime;
+            IntervalTime = serialAffectorData._physicsAffectData._intervalTime;
+            ForceAmount = serialAffectorData._physicsAffectData._physicsForce;
         }
 
         #region Concrete Logic
 
         protected override Affector CreateAffector(ref Entitys.Entity target)
         {
-            return new KnockbackAffect(OwnerRef, target, AffectData._baseDurateTime)
-                        .SetForceAmount(AffectData._physicsAffectData);
+            return new KnockbackAffect(OwnerRef, target, BaseDurateTime)
+                        .SetForceAmount(ForceAmount);
         }
 
         #endregion
 
         #region UI Access
         public override string GetName() => "넉백";
-        public override string GetDescription() => $"넉백 에 걸린 상대는 {(AffectData._baseDurateTime).ToString()}초 간 강제 행동이 되며, 밀려납니다.";
+        public override string GetDescription() => $"넉백 에 걸린 상대는 {(IntervalTime).ToString()}초 간 강제 행동이 되며, 밀려납니다.";
         public override Sprite GetSprite()
         {
             throw new System.NotImplementedException();
@@ -373,25 +472,37 @@ namespace Sophia.DataSystem.Functional
 
     public class BlackHoleAffectCommand : AffectCommand
     {
-        public BlackHoleAffectCommand(Entity owner, SerialAffectorData serialAffectorData) : base(owner, serialAffectorData)
-        {
-            AffectType = E_AFFECT_TYPE.BlackHole;
-        }
+        public readonly Material AffectSkin;
+        public readonly VisualFXObject AffectVisualFX;
+        public readonly float BaseDurateTime;
+        public readonly float IntervalTime;
+        public readonly float BaseTickDamage;
+        public readonly float TickDamageRatio;
+        public readonly float ForceAmount;
 
+        public BlackHoleAffectCommand(Entitys.Entity owner, SerialAffectorData serialAffectorData) : base(owner, serialAffectorData)
+        {
+            OwnerRef = owner;
+            AffectType = E_AFFECT_TYPE.BlackHole;
+            BaseDurateTime = serialAffectorData._baseDurateTime;
+            IntervalTime = serialAffectorData._physicsAffectData._intervalTime;
+            ForceAmount = serialAffectorData._physicsAffectData._physicsForce;
+        }
 
         #region Concrete Logic
 
         protected override Affector CreateAffector(ref Entitys.Entity target)
         {
-            return new BlackHoleAffect(OwnerRef, target, AffectData._baseDurateTime)
-                            .SetForceAmount(AffectData._physicsAffectData);
+            return new BlackHoleAffect(OwnerRef, target, BaseDurateTime)
+                        .SetForceAmount(ForceAmount)
+                        .SetIntervalTime(IntervalTime);
         }
 
         #endregion
 
         #region UI Access
         public override string GetName() => "이끌림";
-        public override string GetDescription() => $"이끌림 에 걸린 상대는 {(AffectData._baseDurateTime).ToString()}초 간 강제행동을 하며. 끌어당겨집니다.";
+        public override string GetDescription() => $"이끌림 에 걸린 상대는 {(IntervalTime).ToString()}초 간 강제행동을 하며. 끌어당겨집니다.";
         public override Sprite GetSprite()
         {
             throw new System.NotImplementedException();
@@ -400,26 +511,37 @@ namespace Sophia.DataSystem.Functional
         #endregion
     }
 
-    public class AirborneAffectCommand  : AffectCommand
+    public class AirborneAffectCommand : AffectCommand
     {
-        public AirborneAffectCommand(Entity owner, SerialAffectorData serialAffectorData) : base(owner, serialAffectorData)
+        public readonly Material AffectSkin;
+        public readonly VisualFXObject AffectVisualFX;
+        public readonly float BaseDurateTime;
+        public readonly float IntervalTime;
+        public readonly float BaseTickDamage;
+        public readonly float TickDamageRatio;
+        public readonly float JumpForce;
+
+        public AirborneAffectCommand(Entitys.Entity owner, SerialAffectorData serialAffectorData) : base(owner, serialAffectorData)
         {
+            OwnerRef = owner;
             AffectType = E_AFFECT_TYPE.Airborne;
+            BaseDurateTime = serialAffectorData._baseDurateTime;
+            JumpForce = serialAffectorData._physicsAffectData._physicsForce;
         }
 
         #region Concrete Logic
 
         protected override Affector CreateAffector(ref Entitys.Entity target)
         {
-            return new AirborneAffect(OwnerRef, target, AffectData._baseDurateTime)
-                        .SetJumpForce(AffectData._physicsAffectData);
+            return new AirborneAffect(OwnerRef, target, BaseDurateTime)
+                        .SetJumpForce(JumpForce);
         }
 
         #endregion
 
         #region UI Access
         public override string GetName() => "에어본";
-        public override string GetDescription() => $"에어본 에 걸린 상대는 {(AffectData._baseDurateTime).ToString()}초 간 공중에 떠오릅니다.";
+        public override string GetDescription() => $"에어본 에 걸린 상대는 {(BaseDurateTime).ToString()}초 간 공중에 떠오릅니다.";
         public override Sprite GetSprite()
         {
             throw new System.NotImplementedException();
@@ -427,42 +549,4 @@ namespace Sophia.DataSystem.Functional
 
         #endregion
     }
-
-    public class MoveSpeedUpCommand      : AffectCommand
-    {
-        public MoveSpeedUpCommand(Entity owner, SerialAffectorData serialAffectorData) : base(owner, serialAffectorData)
-        {
-            AffectType = E_AFFECT_TYPE.MoveSpeedUp;
-        }
-
-
-        #region Concrete Logic
-
-        protected override Affector CreateAffector(ref Entitys.Entity target)
-        {
-            return new MoveSpeedUpAffect(OwnerRef, target, AffectData._baseDurateTime)
-                        .SetModifyData(AffectData._calculateAffectData.MoveSpeed)
-                        .SetVisualFXObject(AffectData._visualAffectData);
-        }
-
-        #endregion
-
-        #region UI Access
-
-        public override string GetName() => "이동속도 증가";
-        public override string GetDescription()
-        {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.Append(" dlwmd").Append("\n");
-            return stringBuilder.ToString();
-        }
-        public override Sprite GetSprite()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        #endregion
-    }
-
-    
 }
