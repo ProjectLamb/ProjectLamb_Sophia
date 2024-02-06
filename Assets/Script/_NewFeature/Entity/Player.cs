@@ -43,13 +43,15 @@ namespace Sophia.Entitys
 
         public override LifeComposite GetLifeComposite() => this.Life;
 
-        public override void GetDamaged(int damage) {
-            if (Life.IsDie) { return; }
-            Life.Damaged(damage);
+        public override bool GetDamaged(int damage) {
+            bool isDamaged = false;
+            if (Life.IsDie) { isDamaged = false; }
+            isDamaged = Life.Damaged(damage);
             if(Life.IsDie) {Die();}
+            return isDamaged;
         }
 
-        public override void Die() {
+        public override bool Die() {
             throw new System.NotImplementedException();
         }
 

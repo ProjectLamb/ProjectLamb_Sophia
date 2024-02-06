@@ -43,6 +43,7 @@ namespace Sophia.DataSystem.Functional
             private Extras<object> OnForwarding = null;
 
 #endregion
+
             public virtual void SetRefExtras<T>(Extras<T> extrasRef) {
                 switch(extrasRef.FunctionalType) 
                 {
@@ -214,6 +215,9 @@ namespace Sophia.DataSystem.Functional
 
 #endregion
 
+#region Global
+            private Extras<object> OnEnemyDie = null;
+#endregion
             public override void SetRefExtras<T>(Extras<T> extrasRef) {
                 switch(extrasRef.FunctionalType) 
                 {
@@ -236,6 +240,7 @@ namespace Sophia.DataSystem.Functional
                     case E_FUNCTIONAL_EXTRAS_TYPE.ProjectileRestore :   {this.OnProjectileRestore = extrasRef as Extras<object>;    return;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.SkillUse :            {this.OnSkillUse = extrasRef as Extras<object> ;            return;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.SkillRefilled :       {this.OnSkillRefilled = extrasRef as Extras<object> ;       return;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.EnemyDie :            {this.OnEnemyDie = extrasRef as Extras<object> ;       return;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.None : {
                         throw new System.Exception($"참조 Extras가 초기화되지 않음");
                     }
@@ -267,6 +272,7 @@ namespace Sophia.DataSystem.Functional
                     case E_FUNCTIONAL_EXTRAS_TYPE.ProjectileRestore :   {res = this.OnProjectileRestore as Extras<T>;   break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.SkillUse :            {res = this.OnSkillUse as Extras<T>;            break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.SkillRefilled :       {res = this.OnSkillRefilled as Extras<T>;       break;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.EnemyDie :            {res = this.OnEnemyDie as Extras<T>;       break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.None :                
                     default: {
                         throw new System.Exception($"이 Entity 멤버에는 {functionalType.ToString()} 없음");

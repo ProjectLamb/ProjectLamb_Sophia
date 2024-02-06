@@ -42,7 +42,6 @@ public class DamageTextInstantiator : MonoBehaviour
                                                 .SetText(_damageAmount)
                                                 .SetAnimationSpeed(5f)
                                                 .SetDestroyTimer(3f);
-
             StakingText.ActivatedTextUI();
         }
         else
@@ -68,5 +67,20 @@ public class DamageTextInstantiator : MonoBehaviour
             LayerdTextList.Last().SetPosition(addingPosition += textUI.GetNextPosition());
         });
         LayerdTextList.ForEach((T) => { T.ActivatedTextUI(); });
+    }
+    public void Generate(string _string) {
+        if (StakingText == null)
+        {
+            StakingText = Instantiate(textUI, transform)
+                                                .SetTextByString(_string)
+                                                .SetAnimationSpeed(5f)
+                                                .SetDestroyTimer(3f);
+            StakingText.ActivatedTextUI();
+        }
+        else
+        {
+            StakingText.SetPosition(transform.position)
+                        .ReactivateTextUIByString(_string);
+        }
     }
 }
