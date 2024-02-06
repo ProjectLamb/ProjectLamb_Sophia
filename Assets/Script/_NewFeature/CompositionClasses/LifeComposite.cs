@@ -26,7 +26,6 @@ namespace Sophia.Composite
         public Stat MaxHp {get; protected set;}
         public Stat Defence {get; protected set;}
 
-        
         public Extras<float> HitExtras {get; protected set;}
         public Extras<float> DamagedExtras {get; protected set;}
         public Extras<object> DeadExtras {get; protected set;}
@@ -200,11 +199,12 @@ namespace Sophia.Composite
             CurrentBarrier = amount;
         }
         
-        public void Damaged(float damage) {
+        public bool Damaged(float damage) {
             PerformHit(ref damage);
-            if(damage < 0.01f) {return;}
+            if(damage < 0.01f) {return false;}
             PerformDamage(damage);
             if (CurrentHealth <= 0) { this.Died(); }
+            return true;
         }
 
         private void PerformHit(ref float damage) {

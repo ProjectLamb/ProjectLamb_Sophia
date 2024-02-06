@@ -5,11 +5,11 @@ using Sophia.Instantiates;
 namespace Sophia
 {
     public interface IDamagable {
-        public void GetDamaged(int damage);
+        public bool GetDamaged(int damage);
     }
     
     public interface IDieable {
-        public void Die();
+        public bool Die();
 
     }
 

@@ -70,7 +70,7 @@ namespace Sophia.DataSystem
                 OnExtrasChanged.AddListener(extrasChangeHandler);
             }
         }
-        
+
         public void PerformStartFunctionals(ref T input){
             if(isDirty) {RecalculateExtras();}
             FunctionalLists.InvokeStartTime(ref input);
@@ -149,20 +149,20 @@ namespace Sophia.DataSystem
 
             ExtrasModifierList.Start.ForEach((calc) => {
                 if(!calc.FunctionalType.Equals(this.FunctionalType)) throw new System.Exception($"칼큘레이터 타겟 타입과 현재 타겟 타입이 다르다! {calc.FunctionalType.ToString()} != {this.FunctionalType.ToString()}");
-                FunctionalLists.Start.Add(calc.Functional);
+                FunctionalLists.Start.Add(calc.Value);
             });
             ExtrasModifierList.Tick.ForEach((calc) => {
                 if(!calc.FunctionalType.Equals(this.FunctionalType)) throw new System.Exception($"칼큘레이터 타겟 타입과 현재 타겟 타입이 다르다! {calc.FunctionalType.ToString()} != {this.FunctionalType.ToString()}");
-                FunctionalLists.Tick.Add(calc.Functional);
+                FunctionalLists.Tick.Add(calc.Value);
             });
             ExtrasModifierList.Exit.ForEach((calc) => {
                 if(!calc.FunctionalType.Equals(this.FunctionalType)) throw new System.Exception($"칼큘레이터 타겟 타입과 현재 타겟 타입이 다르다! {calc.FunctionalType.ToString()} != {this.FunctionalType.ToString()}");
-                FunctionalLists.Exit.Add(calc.Functional);
+                FunctionalLists.Exit.Add(calc.Value);
             });
 
             isDirty = false;
 
-            OnExtrasChanged.Invoke();
+            OnExtrasChanged?.Invoke();
         }
-    }    
+    }
 }

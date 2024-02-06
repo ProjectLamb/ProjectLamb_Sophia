@@ -10,7 +10,7 @@ namespace Sophia.DataSystem.Functional {
         private Entitys.Entity OwnerRef;
         private StatModifier TemporaryModifier;
         
-        public TemporaryModifiyCommand(SerialModifireDatas serialModifireDatas, E_NUMERIC_STAT_TYPE statType) {
+        public TemporaryModifiyCommand(SerialStatModifireDatas serialModifireDatas, E_NUMERIC_STAT_TYPE statType) {
             TemporaryModifier = new StatModifier(serialModifireDatas.amount, serialModifireDatas.calType, statType);
         }
 
@@ -37,7 +37,7 @@ namespace Sophia.DataSystem.Functional {
 /*
 private TemporaryModifiyCommand FunctionalTemporaryModifiyCommand;
 
-public ...Affect SetModifyData(SerialModifireDatas ModifiyData)
+public ...Affect SetModifyData(SerialStatModifireDatas ModifiyData)
 {
     if(FunctionalTemporaryModifiyCommand != null) return this;
 

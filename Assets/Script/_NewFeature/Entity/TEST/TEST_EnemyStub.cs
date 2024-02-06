@@ -39,14 +39,21 @@ namespace Sophia.Entitys
 
         public override LifeComposite GetLifeComposite() => this.Life;
 
-        public override void GetDamaged(int damage)
+        public override bool GetDamaged(int damage)
         {
-            if (Life.IsDie) { return; }
-            Life.Damaged(damage);
+            bool isDamaged = false;
+            if (Life.IsDie) { isDamaged = false; }
+            else {isDamaged = Life.Damaged(damage);}
             if (Life.IsDie) { Die(); }
+            return isDamaged;
         }
 
-        public override void Die() => Destroy(gameObject, 0.5f);
+        public override bool Die() {
+            object nullObject = null;
+            GameManager.Instance.NewFeatureGlobalEvent.OnEnemyDie.PerformStartFunctionals(ref nullObject);
+            Destroy(gameObject, 0.5f);
+            return true;
+        }
 
 #endregion
 
@@ -75,6 +82,7 @@ namespace Sophia.Entitys
             TryGetComponent<Rigidbody>(out entityRigidbody);
 
             StatReferer = new EntityStatReferer();
+            ExtrasReferer = new EntityExtrasReferer();
             Life = new LifeComposite(_baseEntityData.MaxHp, _baseEntityData.Defence);
             affectorComposite = new AffectorHandlerComposite(_baseEntityData.Tenacity);
             
@@ -87,6 +95,18 @@ namespace Sophia.Entitys
             StatReferer.SetRefStat(Life.Defence);
             StatReferer.SetRefStat(affectorComposite.Tenacity);
             StatReferer.SetRefStat(MoveSpeed);
+
+            ExtrasReferer.SetRefExtras(Life.HitExtras);
+            ExtrasReferer.SetRefExtras(Life.DamagedExtras);
+            ExtrasReferer.SetRefExtras(Life.DeadExtras);
+
+            ExtrasReferer.GetExtras<float>(E_FUNCTIONAL_EXTRAS_TYPE.Hit).AddModifier(
+                new DataSystem.Modifiers.ExtrasModifier<float>(
+                    new DodgeCommand(this,null),
+                    E_EXTRAS_PERFORM_TYPE.Start,
+                    E_FUNCTIONAL_EXTRAS_TYPE.Hit
+                )
+            );
         }
 
         private void FixedUpdate() {
