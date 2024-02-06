@@ -85,27 +85,27 @@ namespace Sophia.DataSystem.Numerics
     [System.Serializable]
     public struct SerialCalculateDatas
     {
-        [SerializeField] public SerialModifireDatas MaxHp;
-        [SerializeField] public SerialModifireDatas Defence;
-        [SerializeField] public SerialModifireDatas MoveSpeed;
-        [SerializeField] public SerialModifireDatas Accecerate;
-        [SerializeField] public SerialModifireDatas Tenacity;
-        [SerializeField] public SerialModifireDatas MaxStamina;
-        [SerializeField] public SerialModifireDatas StaminaRestoreSpeed;
-        [SerializeField] public SerialModifireDatas Luck;
-        [SerializeField] public SerialModifireDatas Power;
-        [SerializeField] public SerialModifireDatas InstantiableDurateLifeTimeMultiplyRatio;
-        [SerializeField] public SerialModifireDatas InstantiableSizeMultiplyRatio;
-        [SerializeField] public SerialModifireDatas InstantiableForwardingSpeedMultiplyRatio;
-        [SerializeField] public SerialModifireDatas PoolSize;
-        [SerializeField] public SerialModifireDatas AttackSpeed;
-        [SerializeField] public SerialModifireDatas MeleeRatio;
-        [SerializeField] public SerialModifireDatas RangerRatio;
-        [SerializeField] public SerialModifireDatas TechRatio;
-        [SerializeField] public SerialModifireDatas EfficienceMultiplyer;
-        [SerializeField] public SerialModifireDatas CoolDownSpeed;
+        [SerializeField] public SerialStatModifireDatas MaxHp;
+        [SerializeField] public SerialStatModifireDatas Defence;
+        [SerializeField] public SerialStatModifireDatas MoveSpeed;
+        [SerializeField] public SerialStatModifireDatas Accecerate;
+        [SerializeField] public SerialStatModifireDatas Tenacity;
+        [SerializeField] public SerialStatModifireDatas MaxStamina;
+        [SerializeField] public SerialStatModifireDatas StaminaRestoreSpeed;
+        [SerializeField] public SerialStatModifireDatas Luck;
+        [SerializeField] public SerialStatModifireDatas Power;
+        [SerializeField] public SerialStatModifireDatas InstantiableDurateLifeTimeMultiplyRatio;
+        [SerializeField] public SerialStatModifireDatas InstantiableSizeMultiplyRatio;
+        [SerializeField] public SerialStatModifireDatas InstantiableForwardingSpeedMultiplyRatio;
+        [SerializeField] public SerialStatModifireDatas PoolSize;
+        [SerializeField] public SerialStatModifireDatas AttackSpeed;
+        [SerializeField] public SerialStatModifireDatas MeleeRatio;
+        [SerializeField] public SerialStatModifireDatas RangerRatio;
+        [SerializeField] public SerialStatModifireDatas TechRatio;
+        [SerializeField] public SerialStatModifireDatas EfficienceMultiplyer;
+        [SerializeField] public SerialStatModifireDatas CoolDownSpeed;
 
-        public SerialModifireDatas GetModifireDatas(E_NUMERIC_STAT_TYPE numericType)
+        public SerialStatModifireDatas GetModifireDatas(E_NUMERIC_STAT_TYPE numericType)
         {
             switch (numericType)
             {
@@ -128,7 +128,7 @@ namespace Sophia.DataSystem.Numerics
                 case E_NUMERIC_STAT_TYPE.TechRatio                                  : {return TechRatio;}
                 case E_NUMERIC_STAT_TYPE.EfficienceMultiplyer                       : {return EfficienceMultiplyer;}
                 case E_NUMERIC_STAT_TYPE.CoolDownSpeed                              : {return CoolDownSpeed;}
-                default : {return new SerialModifireDatas{amount = -1, calType = 0};}
+                default : {return new SerialStatModifireDatas{amount = -1, calType = 0};}
             }
         }
     }

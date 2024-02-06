@@ -8,6 +8,7 @@ namespace Sophia.Entitys{
     using Sophia.DataSystem;
     using Sophia.DataSystem.Numerics;
     using Sophia.Instantiates;
+    using TMPro;
 
     public abstract class Enemy : Entity, IMovable {
 
@@ -31,11 +32,12 @@ namespace Sophia.Entitys{
 #endregion
 
 #region Life Accessible
-        public override void GetDamaged(int damage) {
+        public override bool GetDamaged(int damage) {
             currentHealth -= damage;
             if(currentHealth <= 0) {Die();}
+            return true;
         }
-        public override void Die() {throw new System.NotImplementedException();}
+        public override bool Die() {throw new System.NotImplementedException();}
 
 #endregion
 
