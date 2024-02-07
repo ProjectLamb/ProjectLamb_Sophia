@@ -1,14 +1,11 @@
 using UnityEngine;
 using UnityEngine.Events;
-using System;
-using System.Collections.Generic;
 
 namespace Sophia.Instantiates
 {
     using Sophia.Entitys;
     using Sophia.DataSystem;
-    using Sophia.DataSystem.Numerics;
-    using Unity.VisualScripting;
+    using Sophia.DataSystem.Referer;
 
     public class ProjectileBucket : MonoBehaviour
     {        

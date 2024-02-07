@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Sophia.DataSystem.Functional
+namespace Sophia.DataSystem.Referer
 {
     using Sophia.Entitys;
 

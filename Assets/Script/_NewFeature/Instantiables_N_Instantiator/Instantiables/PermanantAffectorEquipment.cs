@@ -11,7 +11,6 @@ using Sophia.DataSystem;
 using Sophia.Instantiates;
 using Sophia.DataSystem.Functional;
 using Sophia.DataSystem.Modifiers;
-using Sophia.DataSystem.Numerics;
 
 public class PermanantAffectorEquipment : Carrier, IUserInterfaceAccessible
 { //, IPlayerDataApplicant{

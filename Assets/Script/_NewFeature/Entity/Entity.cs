@@ -2,17 +2,16 @@ using UnityEngine;
 
 namespace Sophia.Entitys
 {
-    using Sophia.DataSystem.Numerics;
     using Sophia.DataSystem;
     using Sophia.Composite.RenderModels;
     using Sophia.Instantiates;
     using Sophia.Composite;
-    using Sophia.DataSystem.Functional;
+    using Sophia.DataSystem.Referer;
     using Sophia.DataSystem.Modifiers.Affector;
 
     public abstract class Entity : MonoBehaviour, ILifeAccessible, IDataAccessible, IVisualAccessible
     {
-#region SerializeMembeer 
+#region SerializeMember 
         [SerializeField] protected ModelManger  _modelManger;
         [SerializeField] protected VisualFXBucket  _visualFXBucket;
 #endregion
@@ -43,7 +42,7 @@ namespace Sophia.Entitys
 
 #region Affector Accessible
 
-        public abstract AffectorHandlerComposite GetAffectorHandlerComposite();
+        public abstract AffectorManager GetAffectorManager();
         public abstract void ModifiedByAffector(Affector affector);
 
 #endregion
