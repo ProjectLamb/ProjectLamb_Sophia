@@ -6,7 +6,6 @@ using UnityEngine.Events;
 
 namespace Sophia.DataSystem
 {
-    using Numerics;
     using Modifiers;
 
     public class Stat

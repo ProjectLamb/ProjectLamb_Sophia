@@ -21,8 +21,8 @@ namespace Sophia
             private set {}
         }
 
-        public static ProjectileObject GetObject(ProjectileObject projectileReferernce, Entity caller) {
-            return Instance.ProPool[projectileReferernce.gameObject.name].Get().Init(caller);
+        public static ProjectileObject GetObject(ProjectileObject projectileReferernce) {
+            return Instance.ProPool[projectileReferernce.gameObject.name].Get();
         }
 
         [SerializeField] private List<ProjectileObject> _creatableProjectiles;

@@ -3,9 +3,10 @@ using UnityEngine;
 namespace Sophia.DataSystem.Functional
 {
     using System.Text;
+    using Sophia.DataSystem.Referer;
     using Sophia.DataSystem.Modifiers.Affector;
     using Sophia.DataSystem.Modifiers.ConcreteAffectors;
-    using Sophia.DataSystem.Numerics;
+    
     using Sophia.Entitys;
     using Sophia.Instantiates;
     [System.Serializable]

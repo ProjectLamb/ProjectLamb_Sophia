@@ -1,11 +1,11 @@
 using UnityEngine;
-using Cysharp.Threading.Tasks;
-using System.Threading.Tasks;
+
 
 namespace Sophia
 {
     using Instantiates;
     using Composite.RenderModels;
+    using Sophia.DataSystem.Modifiers;
 
     /*********************************************************************************
     * IUpdatorBindable & IUpdatable
@@ -66,6 +66,7 @@ namespace Sophia
         public ModelManger GetModelManger();
         public VisualFXBucket GetVisualFXBucket();
     }
+
 
 //     public interface IUseMonobehaviourConstructor {
 //         public void Initialize(object data);
