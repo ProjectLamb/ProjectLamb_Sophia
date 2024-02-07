@@ -4,7 +4,7 @@ using System.Text;
 using Sophia.DataSystem.Modifiers;
 using UnityEngine;
 
-namespace Sophia.DataSystem.Numerics
+namespace Sophia.DataSystem.Referer
 {
     [System.Serializable]
     public struct SerialBaseEntityData{

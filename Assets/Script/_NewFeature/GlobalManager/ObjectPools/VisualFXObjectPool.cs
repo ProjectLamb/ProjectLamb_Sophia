@@ -23,8 +23,8 @@ namespace Sophia
             private set{}
         }
 
-        public static VisualFXObject GetObject(VisualFXObject visualFXReference, Entity caller) {
-            return Instance.VFXPool[visualFXReference.gameObject.name].Get().Init(caller);
+        public static VisualFXObject GetObject(VisualFXObject visualFXReference) {
+            return Instance.VFXPool[visualFXReference.gameObject.name].Get();
         }
 
         [SerializeField] private List<VisualFXObject> _creatableVisualFXObjects; 
