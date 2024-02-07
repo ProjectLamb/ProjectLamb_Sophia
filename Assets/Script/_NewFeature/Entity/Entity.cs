@@ -43,6 +43,7 @@ namespace Sophia.Entitys
 #region Affector Accessible
 
         public abstract AffectorManager GetAffectorManager();
+        public abstract void Affect(DataSystem.Modifiers.NewAffector.Affector affector);
         public abstract void ModifiedByAffector(Affector affector);
 
 #endregion

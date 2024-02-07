@@ -20,22 +20,20 @@ namespace Sophia.DataSystem.Functional
     }
 
     public class VisualFXAtomics {
-        private VisualFXObject VisualFXRef;
         private E_AFFECT_TYPE AffectType;
-        private Entity OwnerRef;
+        private VisualFXObject visualFX;
 
-        public VisualFXAtomics(E_AFFECT_TYPE affectType, Entity owner, SerialVisualAffectData serialVisualAffectData) {
+        public VisualFXAtomics(E_AFFECT_TYPE affectType, SerialVisualAffectData serialVisualAffectData) {
             AffectType = affectType;
-            VisualFXRef = serialVisualAffectData._visualFxRef;
-            OwnerRef = owner;
+            visualFX = serialVisualAffectData._visualFxRef;
         }
 
-        public void Invoke() {
-            VisualFXObject concreteVisualFX = VisualFXObjectPool.GetObject(VisualFXRef);
-            OwnerRef.GetVisualFXBucket().InstantablePositioning(concreteVisualFX).Activate();
+        public void Invoke(IVisualAccessible visualAccessible) {
+            VisualFXObject concreteVisualFX = VisualFXObjectPool.GetObject(visualFX);
+            visualAccessible.GetVisualFXBucket().InstantablePositioning(concreteVisualFX).Activate();
         }
-        public void Revert() {
-            OwnerRef.GetVisualFXBucket().RemoveInstantableFromBucket(AffectType);
+        public void Revert(IVisualAccessible visualAccessible) {
+            visualAccessible.GetVisualFXBucket().RemoveInstantableFromBucket(AffectType);
         }
     }
 }

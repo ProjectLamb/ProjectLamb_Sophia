@@ -9,19 +9,18 @@ namespace Sophia.DataSystem.Functional
     using Sophia.Entitys;
 
     public class MaterialChangeAtomics {
-        public CancellationToken cts;
-        public Material materialRef;
-        public Entity entityRef;
-        public MaterialChangeAtomics(Material material, Entity entity) {
-            material = materialRef;
-            entityRef = entity;
+        public CancellationToken cancellationToken;
+        public Material material;
+        public MaterialChangeAtomics(SerialSkinAffectData skinAffectData) {
+            material = skinAffectData._materialRef;
+            cancellationToken = new CancellationToken();
         }
 
-        public async void Invoke() {
-            await entityRef.GetModelManger().ChangeSkin(cts, materialRef);
+        public async void Invoke(IVisualAccessible visualAccessible) {
+            await visualAccessible.GetModelManger().ChangeSkin(cancellationToken, material);
         }
-        public async void Revert() {
-            await entityRef.GetModelManger().RevertSkin(cts);
+        public async void Revert(IVisualAccessible visualAccessible) {
+            await visualAccessible.GetModelManger().RevertSkin(cancellationToken);
         }
     }   
 }
