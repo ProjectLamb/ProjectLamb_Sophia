@@ -20,9 +20,10 @@ namespace Sophia.Entitys
         //      [SerializeField] private ModelManger  _modelManger;
         //      [SerializeField] private VisualFXBucket  _visualFXBucket;
         [SerializeField] private SerialBasePlayerData   _basePlayerData;
-        [SerializeField] private WeaponManager          _weaponManager;
         [SerializeField] private ProjectileBucket       _projectileBucket;
+        [SerializeField] private WeaponManager          _weaponManager;
         [SerializeField] private EquipmentManager       _equipmentManager;
+        [SerializeField] public  AffectorManager        _affectorManager;
         [SerializeField] public  Wealths                _PlayerWealth;
 
 #endregion
@@ -35,7 +36,6 @@ namespace Sophia.Entitys
         public PlayerExtrasReferer ExtrasReferer        { get; private set; }
         public LifeComposite Life                       { get; private set; }
         public MovementComposite Movement               { get; private set; }
-        public AffectorManager AffectHandler   { get; private set; }
         public DashSkill DashSkillAbility               { get; private set; }
         public Stat Power                               { get; private set; }
 
@@ -125,7 +125,7 @@ namespace Sophia.Entitys
                                             E_STAT_USE_TYPE.Natural,
                                             OnPowerUpdated
                                         );
-            AffectHandler = new AffectorManager(_basePlayerData.Tenacity);
+            _affectorManager.Init(_basePlayerData.Tenacity);
         }
         public void OnPowerUpdated() { throw new System.NotImplementedException(); }
         private void Start()
@@ -145,7 +145,6 @@ namespace Sophia.Entitys
             StatReferer.SetRefStat(DashSkillAbility.StaminaRestoreSpeed);
             ExtrasReferer.SetRefExtras<object>(DashSkillAbility.DashExtras);
 
-            StatReferer.SetRefStat(AffectHandler.Tenacity);
 
             StatReferer.SetRefStat(Power);
 
@@ -156,6 +155,7 @@ namespace Sophia.Entitys
             StatReferer.SetRefStat(_weaponManager.PoolSize);
             StatReferer.SetRefStat(_weaponManager.AttackSpeed);
             StatReferer.SetRefStat(_weaponManager.MeleeRatio);
+            StatReferer.SetRefStat(_affectorManager.Tenacity);
 
             DashSkillAbility.SetAudioSource(DashSource);
 
@@ -180,19 +180,20 @@ namespace Sophia.Entitys
 
 #endregion
 
-#region Affect Handler
-
-        public override AffectorManager GetAffectorManager() => this.AffectHandler;
-        public override void ModifiedByAffector(Affector affector) => this.AffectHandler.ModifiyByAffector(affector);
-
-#endregion
-
 
 #region Equip Handler
 
         public EquipmentManager GetEquipmentManager() => this._equipmentManager;
         public void Equip(Equipment equipment) => this._equipmentManager.Equip(equipment);
         public void Drop(Equipment equipment) => this._equipmentManager.Drop(equipment);
+
+#endregion
+
+#region Affect Handler
+
+        public override AffectorManager GetAffectorManager() => this._affectorManager;
+        public override void Affect(DataSystem.Modifiers.NewAffector.Affector affector) => this._affectorManager.Affect(affector);
+        public override void ModifiedByAffector(Affector affector) {return;}
 
 #endregion
 
