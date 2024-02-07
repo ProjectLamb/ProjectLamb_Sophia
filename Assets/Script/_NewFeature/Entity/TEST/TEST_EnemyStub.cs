@@ -6,15 +6,13 @@ namespace Sophia.Entitys
 {
     using Sophia.Composite;
     using Sophia.DataSystem;
-    using Sophia.DataSystem.Numerics;
-    using Sophia.Instantiates;
-    using Sophia.DataSystem.Functional;
+    using Sophia.DataSystem.Referer;
     using Sophia.DataSystem.Modifiers.Affector;
     using Cysharp.Threading.Tasks;
 
     public class TEST_EnemyStub : Entity, IMovable
     {
-#region SerializeMembeer 
+#region SerializeMember 
         [SerializeField] protected SerialBaseEntityData _baseEntityData;
         // [SerializeField] protected ModelManger _modelManger;
         // [SerializeField] protected VisualFXBucket _visualFXBucket;
@@ -27,9 +25,9 @@ namespace Sophia.Entitys
         public LifeComposite Life { get; private set; }
         public EntityStatReferer StatReferer { get; private set; }
         public EntityExtrasReferer ExtrasReferer { get; private set; }
-        public AffectorHandlerComposite affectorComposite {get; private set;}
+        public AffectorManager affectorComposite {get; private set;}
 
-        public override AffectorHandlerComposite GetAffectorHandlerComposite() => this.affectorComposite;
+        public override AffectorManager GetAffectorManager() => this.affectorComposite;
         public override void ModifiedByAffector(Affector affector) => this.affectorComposite.ModifiyByAffector(affector);
 
 #endregion
@@ -84,7 +82,7 @@ namespace Sophia.Entitys
             StatReferer = new EntityStatReferer();
             ExtrasReferer = new EntityExtrasReferer();
             Life = new LifeComposite(_baseEntityData.MaxHp, _baseEntityData.Defence);
-            affectorComposite = new AffectorHandlerComposite(_baseEntityData.Tenacity);
+            affectorComposite = new AffectorManager(_baseEntityData.Tenacity);
             
             MoveSpeed = new Stat(_baseEntityData.MoveSpeed, E_NUMERIC_STAT_TYPE.MoveSpeed, E_STAT_USE_TYPE.Natural);
         }

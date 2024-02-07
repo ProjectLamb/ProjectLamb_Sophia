@@ -20,7 +20,7 @@ public class Player : Entity {
     //VisualModulator visualModulator;
     //GameObject model;
 
-#region SerializeMembeer
+#region SerializeMember
     [SerializeField] public ScriptableObjPlayerData ScriptablePD;
     [SerializeField] private int mBarrierAmount;
 

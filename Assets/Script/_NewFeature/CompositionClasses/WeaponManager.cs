@@ -9,24 +9,27 @@ namespace Sophia.Composite
     using Sophia.Instantiates;
     using Sophia.DataSystem;
     using Sophia.Entitys;
-    using Sophia.DataSystem.Numerics;
-    
+    using Sophia.DataSystem.Referer;
+
     public class WeaponManager : MonoBehaviour
     {
+#region SerializeMember
+
         [SerializeField] private SerialBaseWeaponData _baseWeaponData;
         [SerializeField] private Entity _ownerRef;
         [SerializeField] private ProjectileBucket _projectileBucket;
-
         [SerializeField] private Weapon _currentWeapon;
 
-        /******************************
-        * Common
-        ******************************/
+#endregion
+
+
+#region DataSystem
 
         public Stat PoolSize        {get; private set;}
         public Stat AttackSpeed     {get; private set;}
         public Stat MeleeRatio      {get; private set;}
 
+#endregion
         private void Awake() {   
             PoolSize = new Stat(_baseWeaponData.PoolSize,
                 E_NUMERIC_STAT_TYPE.PoolSize,
@@ -55,10 +58,6 @@ namespace Sophia.Composite
 
         public Weapon GetCurrentWeapon() => this._currentWeapon;
 
-#endregion
-
-#region Setter
-        
 #endregion
 
 #region Event

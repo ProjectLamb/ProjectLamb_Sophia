@@ -98,7 +98,6 @@ namespace Sophia.Instantiates
         public E_INSTANTIATE_STACKING_TYPE StackingType { get{return this._stackingType;} private set{} }
         public E_INSTANTIATE_POSITION_TYPE PositioningType { get{return this._positioningType;} private set{} }
 
-        public Entity OwnerRef { get; private set; }
 
         private float mCurrentSize;
         public float CurrentSize
@@ -223,18 +222,16 @@ namespace Sophia.Instantiates
 
 #region Getter
 
-        public Entity GetOwner() => OwnerRef;
         public bool GetIsInitialized() => IsInitialized;
 
 #endregion
 
 #region Setter
 
-        public VisualFXObject Init(Entity owner)
+        public VisualFXObject Init()
         {
             if (GetIsInitialized() == true) { throw new System.Exception("이미 초기화가 됨."); }
 
-            OwnerRef = owner;
 
             ClearEvents();
 
@@ -276,7 +273,6 @@ namespace Sophia.Instantiates
 
             ClearEvents();
 
-            OwnerRef = null;
             IsInitialized = false;
 
             this.transform.parent = null;
@@ -317,14 +313,6 @@ namespace Sophia.Instantiates
         }
 
 
-#endregion
-
-#region Helper
-
-        public bool CheckIsSameOwner(Entity owner)
-        {
-            return OwnerRef.Equals(owner);
-        }
 #endregion
 
     }

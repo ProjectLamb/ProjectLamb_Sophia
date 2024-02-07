@@ -4,11 +4,8 @@ using UnityEngine;
 
 namespace Sophia.Entitys{
     using Cysharp.Threading.Tasks;
-    using Sophia.Composite;
     using Sophia.DataSystem;
-    using Sophia.DataSystem.Numerics;
-    using Sophia.Instantiates;
-    using TMPro;
+    using Sophia.DataSystem.Referer;
 
     public abstract class Enemy : Entity, IMovable {
 

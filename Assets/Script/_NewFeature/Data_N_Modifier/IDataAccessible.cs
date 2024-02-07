@@ -1,8 +1,9 @@
+using System;
+
 namespace Sophia
 {
     using DataSystem;
-    using Sophia.DataSystem.Functional;
-    using Sophia.DataSystem.Numerics;
+    using DataSystem.Referer;
 
     public enum E_STAT_USE_TYPE
     {
