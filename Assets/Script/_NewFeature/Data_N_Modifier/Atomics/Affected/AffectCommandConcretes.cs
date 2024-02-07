@@ -40,6 +40,9 @@ namespace Sophia.DataSystem.Functional
     [System.Serializable]
     public struct SerialAffectorData
     {
+        [SerializeField] public string _equipmentName;
+        [SerializeField] public string _description;
+        [SerializeField] public Sprite _icon;
         [SerializeField] public E_AFFECT_TYPE _affectType;
         [SerializeField] public float _baseDurateTime;
         [SerializeField] public SerialSkinAffectData _skinAffectData;

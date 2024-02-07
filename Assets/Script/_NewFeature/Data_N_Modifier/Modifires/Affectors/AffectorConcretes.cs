@@ -131,7 +131,7 @@ namespace Sophia.DataSystem
             private void BurnVFXOn()
             {
                 if (visualFxRef.DEBUG) Debug.Log($"{visualFxRef.gameObject.name} 지금 타입은 {visualFxRef.AffectType.ToString()}");
-                VisualFXObject visualFX = VisualFXObjectPool.GetObject(visualFxRef, OwnerRef);
+                VisualFXObject visualFX = VisualFXObjectPool.GetObject(visualFxRef);
                 TargetRef.GetVisualFXBucket().InstantablePositioning(visualFX).Activate();
             }
             */
@@ -257,7 +257,7 @@ namespace Sophia.DataSystem
             private void PoisonedVFXOn()
             {
                 if (visualFxRef.DEBUG) Debug.Log($"{visualFxRef.gameObject.name} 지금 타입은 {visualFxRef.AffectType.ToString()}");
-                VisualFXObject visualFX = VisualFXObjectPool.GetObject(visualFxRef, OwnerRef);
+                VisualFXObject visualFX = VisualFXObjectPool.GetObject(visualFxRef);
                 TargetRef.GetVisualFXBucket().InstantablePositioning(visualFX).Activate();
             }
             private void PoisonedVFXOff()
@@ -392,7 +392,7 @@ namespace Sophia.DataSystem
             private void BleedVFXOn()
             {
                 if (visualFxRef.DEBUG) Debug.Log($"{visualFxRef.gameObject.name} 지금 타입은 {visualFxRef.AffectType.ToString()}");
-                VisualFXObject visualFX = VisualFXObjectPool.GetObject(visualFxRef, OwnerRef);
+                VisualFXObject visualFX = VisualFXObjectPool.GetObject(visualFxRef);
                 TargetRef.GetVisualFXBucket().InstantablePositioning(visualFX).Activate();
             }
             */
@@ -575,7 +575,7 @@ namespace Sophia.DataSystem
             }
             private void SternVFXOn()
             {
-                VisualFXObject visualFX = VisualFXObjectPool.GetObject(visualFxRef, OwnerRef);
+                VisualFXObject visualFX = VisualFXObjectPool.GetObject(visualFxRef);
                 TargetRef.GetVisualFXBucket().InstantablePositioning(visualFX).Activate();
             }
             private void SternVFXOff()
@@ -678,7 +678,7 @@ namespace Sophia.DataSystem
             /*
             private void BoundedVFXOn()
             {
-                VisualFXObject visualFX = VisualFXObjectPool.GetObject(visualFxRef, OwnerRef);
+                VisualFXObject visualFX = VisualFXObjectPool.GetObject(visualFxRef);
                 TargetRef.GetVisualFXBucket().InstantablePositioning(visualFX).Activate();
             }
             private void BoundedVFXOff()
