@@ -18,18 +18,18 @@ namespace Sophia.Composite
         #endregion
 
         public SortedList<string, Equipment> equipedEquipment { get; private set; }
-        public IDataAccessible dataAccessible;
+        public IDataAccessible DataAccessible {get; private set;}
 
         private void Awake()
         {
             equipedEquipment    = new SortedList<string, Equipment>();
-            dataAccessible      = _entity;
+            DataAccessible      = _entity;
         }
 
         public void Equip(Equipment equipment)
         {
             equipedEquipment.Add(equipment.Name, equipment);
-            equipedEquipment[equipment.Name].Invoke(dataAccessible);
+            equipedEquipment[equipment.Name].Invoke(DataAccessible);
 
             _currentEquipments.Clear();
             foreach (var item in equipedEquipment)
@@ -40,7 +40,7 @@ namespace Sophia.Composite
 
         public void Drop(Equipment equipment)
         {
-            equipedEquipment[equipment.Name].Revert(dataAccessible);
+            equipedEquipment[equipment.Name].Revert(DataAccessible);
             equipedEquipment.Remove(equipment.Name);
 
             _currentEquipments.Clear();
@@ -55,7 +55,7 @@ namespace Sophia.Composite
         {
             if (equipedEquipment.Count != 0)
             {
-                equipedEquipment.First().Value.Revert(dataAccessible);
+                equipedEquipment.First().Value.Revert(DataAccessible);
                 equipedEquipment.RemoveAt(0);
                 _currentEquipments.Clear();
                 foreach (var item in equipedEquipment)

@@ -13,7 +13,7 @@ namespace Sophia.DataSystem
 
     namespace Modifiers.NewAffector
     {
-        public class Affector : IUserInterfaceAccessible
+        public abstract class Affector : IUserInterfaceAccessible
         {
             #region Members
 
@@ -21,36 +21,15 @@ namespace Sophia.DataSystem
             public readonly string Name;
             public readonly string Description;
             public readonly Sprite Icon;
-            public readonly Dictionary<E_NUMERIC_STAT_TYPE, StatModifier> StatModifiers = new();
+            
             public float BaseDurateTime { get; private set; }
-            protected TimerComposite Timer { get; private set; }
-
 
             public Affector(SerialAffectorData affectData)
             {
-                // Name = affectData. _equipmentName;
-                // Description = affectData._description;
-                // Icon = affectData._icon;
-                foreach (E_NUMERIC_STAT_TYPE statType in Enum.GetValues(typeof(E_NUMERIC_STAT_TYPE)))
-                {
-                    SerialStatModifireDatas statValue = affectData._calculateAffectData.GetModifireDatas(statType);
-                    if (statValue.calType != E_STAT_CALC_TYPE.None)
-                    {
-                        StatModifiers.Add(statType, new StatModifier(statValue.amount, statValue.calType, statType));
-                    }
-                }
-
-                Timer = new TimerComposite(BaseDurateTime);
+                Name = affectData._equipmentName;
+                Description = affectData._description;
+                Icon = affectData._icon;
             }
-            #endregion
-
-            #region Setter
-            public Affector SetAccelarationByTenacity(float tenecity)
-            {
-                Timer.SetAcceleratrion(tenecity);
-                return this;
-            }
-
             #endregion
 
             #region Event
@@ -58,26 +37,9 @@ namespace Sophia.DataSystem
 
             #endregion
 
-            public void Invoke(IDataAccessible dataAccessibleOwner)
-            {
-                foreach (var modifier in StatModifiers)
-                {
-                    Stat statRef = dataAccessibleOwner.GetStatReferer().GetStat(modifier.Key);
-                    statRef.AddModifier(modifier.Value);
-                    statRef.RecalculateStat();
-                }
-            }
-            public void Run() { Timer.Execute(); }
-            public void Revert(IDataAccessible dataAccessibleOwner)
-            {
-                foreach (var modifier in StatModifiers)
-                {
-                    Stat statRef = dataAccessibleOwner.GetStatReferer().GetStat(modifier.Key);
-                    statRef.RemoveModifier(modifier.Value);
-                    statRef.RecalculateStat();
-                }
-                OnRevert.Invoke();
-            }
+            public abstract void Invoke(Entity entity);
+            public abstract void Run(Entity entity);
+            public abstract void Revert(Entity entity);
 
             #region User Interface 
             public string GetName() => Name;

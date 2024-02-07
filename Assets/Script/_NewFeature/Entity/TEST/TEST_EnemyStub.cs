@@ -28,7 +28,7 @@ namespace Sophia.Entitys
         public AffectorManager affectorComposite {get; private set;}
 
         public override AffectorManager GetAffectorManager() => this.affectorComposite;
-        public override void ModifiedByAffector(Affector affector) => this.affectorComposite.ModifiyByAffector(affector);
+        // public override void ModifiedByAffector(Affector affector) => this.affectorComposite.ModifiyByAffector(affector);
 
 #endregion
 
@@ -82,7 +82,7 @@ namespace Sophia.Entitys
             StatReferer = new EntityStatReferer();
             ExtrasReferer = new EntityExtrasReferer();
             Life = new LifeComposite(_baseEntityData.MaxHp, _baseEntityData.Defence);
-            affectorComposite = new AffectorManager(_baseEntityData.Tenacity);
+            // affectorComposite = new AffectorManager(_baseEntityData.Tenacity);
             
             MoveSpeed = new Stat(_baseEntityData.MoveSpeed, E_NUMERIC_STAT_TYPE.MoveSpeed, E_STAT_USE_TYPE.Natural);
         }
@@ -123,6 +123,16 @@ namespace Sophia.Entitys
         {
             throw new System.NotImplementedException();
         }
-#endregion
+
+        public override void Affect(DataSystem.Modifiers.NewAffector.Affector affector)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override void ModifiedByAffector(Affector affector)
+        {
+            throw new System.NotImplementedException();
+        }
+        #endregion
     }
 }
