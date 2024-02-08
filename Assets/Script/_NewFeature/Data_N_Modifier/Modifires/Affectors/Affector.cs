@@ -51,7 +51,6 @@ namespace Sophia.DataSystem.Modifiers
             this.OnClear += ResetState;
         }
 
-
 #endregion
         
 #region Timer
