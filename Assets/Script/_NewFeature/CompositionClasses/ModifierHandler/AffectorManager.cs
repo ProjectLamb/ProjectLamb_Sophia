@@ -8,16 +8,14 @@ namespace Sophia.Composite
 {
     using Sophia.Entitys;
     using Sophia.DataSystem;
-    using Sophia.DataSystem.Modifiers.Affector;
-    using Sophia.DataSystem.Referer;
 
     public class AffectorManager : MonoBehaviour
     {
         class GarbageAffectorCleaner
         {
             public readonly SortedSet<E_AFFECT_TYPE> GarbageAffector = new();
-            Dictionary<E_AFFECT_TYPE, DataSystem.Modifiers.NewAffector.Affector> AffectorStacksRef;
-            public GarbageAffectorCleaner(Dictionary<E_AFFECT_TYPE, DataSystem.Modifiers.NewAffector.Affector> affectorStacks) => AffectorStacksRef = affectorStacks;
+            Dictionary<E_AFFECT_TYPE, DataSystem.Modifiers.Affector> AffectorStacksRef;
+            public GarbageAffectorCleaner(Dictionary<E_AFFECT_TYPE, DataSystem.Modifiers.Affector> affectorStacks) => AffectorStacksRef = affectorStacks;
 
             public void ClearGarbageAffector()
             {
@@ -33,7 +31,7 @@ namespace Sophia.Composite
 
         #endregion
         public IDataAccessible DataAccessible { get; private set; }
-        public Dictionary<E_AFFECT_TYPE, DataSystem.Modifiers.NewAffector.Affector> AffectingStacks { get; private set; }
+        public Dictionary<E_AFFECT_TYPE, DataSystem.Modifiers.Affector> AffectingStacks { get; private set; }
         public Stat Tenacity { get; private set; }
         GarbageAffectorCleaner affectorCleaner;
 
@@ -53,17 +51,17 @@ namespace Sophia.Composite
 
         private void Awake()
         {
-            AffectingStacks = new Dictionary<E_AFFECT_TYPE, DataSystem.Modifiers.NewAffector.Affector>();
+            AffectingStacks = new Dictionary<E_AFFECT_TYPE, DataSystem.Modifiers.Affector>();
             DataAccessible = _entity;
             foreach (E_AFFECT_TYPE affecType in Enum.GetValues(typeof(E_AFFECT_TYPE))) { AffectingStacks.Add(affecType, default); }
             affectorCleaner = new GarbageAffectorCleaner(AffectingStacks);
         }
 
-        public void Affect(DataSystem.Modifiers.NewAffector.Affector affector)
+        public void Affect(DataSystem.Modifiers.Affector affector)
         {
             E_AFFECT_TYPE newAffectorType = affector.AffectType;
             if (!AffectingStacks.ContainsKey(newAffectorType)) throw new System.Exception("현재 받아온 어펙터는 타입이 존재하지 않음");
-            if (AffectingStacks.TryGetValue(newAffectorType, out DataSystem.Modifiers.NewAffector.Affector affectingAffector))
+            if (AffectingStacks.TryGetValue(newAffectorType, out DataSystem.Modifiers.Affector affectingAffector))
             {
                 if (affectingAffector != default)
                 {
@@ -82,7 +80,7 @@ namespace Sophia.Composite
             }
         }
 
-        public void Revert(DataSystem.Modifiers.NewAffector.Affector affector)
+        public void Recover(DataSystem.Modifiers.Affector affector)
         {
             AffectingStacks[affector.AffectType].Revert(_entity);
 
@@ -95,7 +93,7 @@ namespace Sophia.Composite
 
         private void Update()
         {
-            foreach (KeyValuePair<E_AFFECT_TYPE, DataSystem.Modifiers.NewAffector.Affector> affectingAffector in AffectingStacks)
+            foreach (KeyValuePair<E_AFFECT_TYPE, DataSystem.Modifiers.Affector> affectingAffector in AffectingStacks)
             {
                 if (affectingAffector.Equals(default)) continue;
                 affectingAffector.Value?.Run(_entity);

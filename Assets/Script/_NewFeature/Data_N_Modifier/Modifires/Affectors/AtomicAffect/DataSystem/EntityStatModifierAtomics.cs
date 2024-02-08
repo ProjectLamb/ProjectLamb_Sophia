@@ -2,10 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Sophia.DataSystem.Functional
+namespace Sophia.DataSystem.Modifiers
 {
-    using Sophia.DataSystem.Modifiers;
-    using Sophia.DataSystem.Referer;
+
     public class EntityStatModifyAtomics {
         public readonly Dictionary<E_NUMERIC_STAT_TYPE, StatModifier> StatModifiers = new();
         public EntityStatModifyAtomics(SerialCalculateDatas serialCalculateDatas) {
