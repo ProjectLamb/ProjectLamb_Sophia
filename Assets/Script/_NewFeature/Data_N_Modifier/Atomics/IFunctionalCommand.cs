@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Sophia.DataSystem.Functional
+namespace Sophia
 {
     public interface IFunctionalCommand<T> : IUserInterfaceAccessible{
         public void Invoke(ref T referer);

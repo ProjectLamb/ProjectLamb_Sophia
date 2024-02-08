@@ -1,7 +1,7 @@
-namespace Sophia.DataSystem.Functional
+namespace Sophia.DataSystem.Modifiers
 {
-    using Sophia.Composite;
-    using Sophia.Entitys;
+    
+
     public class DamageAtomics {
         public readonly float baseTickDamage;
         public readonly float tickDamageRatio;
@@ -11,6 +11,7 @@ namespace Sophia.DataSystem.Functional
             tickDamageRatio = damageAffectData._tickDamageRatio;
             intervalTime    = damageAffectData._intervalTime;
         }
+
         public void Invoke(ILifeAccessible lifeAccessible) {
             lifeAccessible.GetDamaged((int)(baseTickDamage * tickDamageRatio));
         }

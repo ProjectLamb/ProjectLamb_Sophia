@@ -3,7 +3,27 @@ using UnityEngine.Events;
 using Feature_State;
 using System;
 
-namespace Sophia.Composite.Timer
+/*
+AffectorManager 는 자체적으로
+
+PassTime의 역할을 한다., UPdate를 돌면서 어느게 시간이 다 닳았는지 앟아야 하고, 그 어펙터를 Revert를 시켜야한다.
+
+Affect는 지나고, 남은 시간을 알 수 있다, 그리고 자체적으로 연결된 지난 시간에 대한 이벤트를 실행한다.
+Affect는 세가지 상태가 존재 한다
+    1. Ready                    : 오직 Start로만 전이 가능하다.
+    2. Start                    : 오직 시작하고, Running으로 바로 전환한다.
+    3. Running                  : 달리는 중이고, 
+                                    Interval 이벤트를 실행하고 
+                                    Terminate로 상태 전이가 가능하다.
+    4. Terminate가 존재한다.
+                                : Terminate가 됨을 알린다.
+
+
+AffectorManager는 어펙터가 Terminate라는것을 감지하여 뺴낼 준비를 한다.
+
+*/
+
+namespace Sophia.Composite
 {
     public class TimerComposite
     {
@@ -29,7 +49,7 @@ namespace Sophia.Composite.Timer
 
         public bool IsBlocked { get; internal set; }
         public bool IsLoop {get; internal set;}
-        public E_TIMER_STATE StateType;
+        public E_TIMER_STATE StateType {get; internal set;}
 
         public TimerComposite(float baseTime)
         {
@@ -89,6 +109,7 @@ namespace Sophia.Composite.Timer
 
         #region Getter
 
+        public E_TIMER_STATE GetCurrentState() => this.StateType;
         public float GetProgressAmount() { return PassedTime / BaseTime; }
         public bool  GetIsRewindable() {return WhenRewindable.Invoke();}
 

@@ -6,7 +6,6 @@ using UnityEngine;
 
 namespace Sophia.DataSystem
 {   
-    using Functional;
     using Modifiers;
 
     public class FunctionalPerforms<T> {

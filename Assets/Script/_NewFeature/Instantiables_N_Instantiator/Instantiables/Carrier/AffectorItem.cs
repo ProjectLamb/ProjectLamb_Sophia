@@ -3,9 +3,11 @@ using UnityEngine;
 
 namespace Sophia.Instantiates 
 {
-    using Sophia.DataSystem.Functional;
+    
     using Sophia.Entitys;
     using Sophia.DataSystem.Modifiers.NewConcreteAffector;
+    
+
     public class AffectorItem : Carrier
     {
         [SerializeField] SerialAffectorData _affectData;

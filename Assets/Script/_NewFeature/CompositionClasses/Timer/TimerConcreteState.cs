@@ -1,7 +1,7 @@
 using UnityEngine;
 using Feature_State;
 
-namespace Sophia.Composite.Timer
+namespace Sophia.Composite
 {
     public enum E_TIMER_STATE
     {
