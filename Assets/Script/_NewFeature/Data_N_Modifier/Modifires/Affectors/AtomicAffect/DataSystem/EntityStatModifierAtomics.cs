@@ -26,6 +26,7 @@ namespace Sophia.DataSystem.Modifiers
                 statRef.RecalculateStat();
             }
         }
+        
         public void Revert(IDataAccessible dataAccessible) {
             foreach (var modifier in StatModifiers)
             {

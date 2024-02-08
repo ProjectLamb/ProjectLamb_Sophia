@@ -6,29 +6,43 @@ namespace Sophia.Instantiates
     
     using Sophia.Entitys;
     using Sophia.DataSystem.Modifiers.NewConcreteAffector;
-    
+    using FMOD;
+    using Sophia.DataSystem.Modifiers;
 
     public class AffectorItem : Carrier
     {
         [SerializeField] SerialAffectorData _affectData;
         
-        public PoisonedAffect poisonedAffect;
+        public Affector affector;
 
         private void Awake() {
-            poisonedAffect = new PoisonedAffect(_affectData);
+            affector = AffectFactory(_affectData);
         }
         
         protected override void OnTriggerLogic(Collider entity)
         {
             if(entity.TryGetComponent(out Player player))
             {
-                if(EquipUserInterface()){
-                    player.Affect(poisonedAffect);
-                    Destroy(this.gameObject);
+                if(EquipUserInterface() && affector != null){
+                    player.Affect(affector);
+                    //Destroy(this.gameObject);
                 }
             }
         }
-
         public bool EquipUserInterface() { return true; }
+
+        public Affector AffectFactory(SerialAffectorData affectData) {
+            switch(affectData._affectType) 
+            {
+                case E_AFFECT_TYPE.Burn         :   {return new BurnAffect(_affectData);}
+                case E_AFFECT_TYPE.Poisoned     :   {return new PoisonedAffect(_affectData);}
+                case E_AFFECT_TYPE.Bleed        :   {return new BleedAffect(_affectData);}
+                case E_AFFECT_TYPE.Cold         :   {return new ColdAffect(_affectData);}
+                case E_AFFECT_TYPE.Stern        :   {return new SternAffect(_affectData);}
+                case E_AFFECT_TYPE.Bounded      :   {return new BoundedAffect(_affectData);}
+                case E_AFFECT_TYPE.Knockback    :   {return new KnockbackAffect(_affectData);}
+                default : {return null;}
+            }
+        }
     }
 }
