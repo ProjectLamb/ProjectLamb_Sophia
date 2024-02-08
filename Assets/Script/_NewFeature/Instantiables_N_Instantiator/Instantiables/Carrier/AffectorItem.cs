@@ -13,18 +13,12 @@ namespace Sophia.Instantiates
     {
         [SerializeField] SerialAffectorData _affectData;
         
-        public Affector affector;
-
-        private void Awake() {
-            affector = AffectFactory(_affectData);
-        }
-        
         protected override void OnTriggerLogic(Collider entity)
         {
             if(entity.TryGetComponent(out Player player))
             {
-                if(EquipUserInterface() && affector != null){
-                    player.Affect(affector);
+                if(EquipUserInterface()){
+                    player.Affect(AffectFactory(_affectData));
                     //Destroy(this.gameObject);
                 }
             }
