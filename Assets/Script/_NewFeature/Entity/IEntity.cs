@@ -23,4 +23,10 @@ namespace Sophia
         public void MoveTick();
         public UniTask Turning();
     }
+
+    public interface IAffectable {
+        public AffectorManager GetAffectorManager();
+        public void Affect(DataSystem.Modifiers.Affector affector);
+        public void Recover(DataSystem.Modifiers.Affector affector);
+    }
 }

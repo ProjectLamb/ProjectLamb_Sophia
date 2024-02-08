@@ -9,7 +9,7 @@ namespace Sophia.Entitys
     using Sophia.DataSystem.Referer;
     
 
-    public abstract class Entity : MonoBehaviour, ILifeAccessible, IDataAccessible, IVisualAccessible
+    public abstract class Entity : MonoBehaviour, ILifeAccessible, IDataAccessible, IVisualAccessible, IAffectable
     {
 #region SerializeMember 
         [SerializeField] protected ModelManger  _modelManger;
@@ -44,6 +44,7 @@ namespace Sophia.Entitys
 
         public abstract AffectorManager GetAffectorManager();
         public abstract void Affect(DataSystem.Modifiers.Affector affector);
+        public abstract void Recover(DataSystem.Modifiers.Affector affector);
 
 #endregion
 

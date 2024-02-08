@@ -35,6 +35,8 @@ namespace Sophia.Instantiates
                 case E_AFFECT_TYPE.Stern        :   {return new SternAffect(_affectData);}
                 case E_AFFECT_TYPE.Bounded      :   {return new BoundedAffect(_affectData);}
                 case E_AFFECT_TYPE.Knockback    :   {return new KnockbackAffect(_affectData);}
+                case E_AFFECT_TYPE.BlackHole    :   {return new BlackHoleAffect(_affectData);}
+                case E_AFFECT_TYPE.Airborne    :    {return new AirborneAffect(_affectData);}
                 default : {return null;}
             }
         }
