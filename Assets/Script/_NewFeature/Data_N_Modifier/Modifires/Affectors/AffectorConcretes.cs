@@ -187,10 +187,7 @@ namespace Sophia.DataSystem
                     this.InvokeOnClearAffect(this);
                 }
 
-                public override void Run(Entity entity)
-                {
-                    throw new System.NotImplementedException();
-                }
+                public override void Run(Entity entity){}
 
                 protected override void Init(SerialAffectorData affectData)
                 {
@@ -281,6 +278,80 @@ namespace Sophia.DataSystem
                     CurrentState = AffectorReadyState.Instance;
                     Description = affectData._description;
                     Icon = affectData._icon;
+                }
+            }
+
+            public class BlackHoleAffect : Affector
+            {
+                public RigidGradualAtomics RigidGradualAffector {get; private set;}
+                public HoldAtomics HoldAffector { get; private set; }
+                public BlackHoleAffect(SerialAffectorData affectData) : base(affectData)
+                {
+                }
+
+                public override void Enter(Entity entity){
+                    RigidGradualAffector.Invoke(entity);
+                    HoldAffector.Invoke(entity as IMovable);
+                }
+
+
+                public override void Run(Entity entity){
+                    RigidGradualAffector.Run(entity);
+                }
+                public override void Exit(Entity entity){
+                    RigidGradualAffector.Revert(entity);
+                    HoldAffector.Revert(entity as IMovable);
+                }
+
+                protected override void Init(SerialAffectorData affectData){
+                    AffectType = E_AFFECT_TYPE.BlackHole;
+                    Name = affectData._equipmentName;
+                    Description = affectData._description;
+                    Icon = affectData._icon;
+                    RigidGradualAffector = new RigidGradualAtomics(
+                        UnityEngine.Vector3.right, 
+                        affectData._physicsAffectData._physicsForce,
+                        affectData._physicsAffectData._intervalTime
+                    );
+                    HoldAffector = new HoldAtomics();
+
+                    Timer = new TimerComposite(affectData._baseDurateTime);
+                    CurrentState = AffectorReadyState.Instance;
+                }
+            }
+            
+            public class AirborneAffect : Affector
+            {
+                public TweenJumpTransformAtomics TweenJumpAffector {get; private set;}
+                public HoldAtomics HoldAffector { get; private set; }
+                public AirborneAffect(SerialAffectorData affectData) : base(affectData)
+                {
+                }
+
+                public override void Enter(Entity entity){
+                    TweenJumpAffector.Invoke(entity);
+                    HoldAffector.Invoke(entity as IMovable);
+                }
+
+
+                public override void Run(Entity entity){return;}
+                public override void Exit(Entity entity){
+                    HoldAffector.Revert(entity as IMovable);
+                }
+
+                protected override void Init(SerialAffectorData affectData){
+                    AffectType = E_AFFECT_TYPE.BlackHole;
+                    Name = affectData._equipmentName;
+                    Description = affectData._description;
+                    Icon = affectData._icon;
+                    TweenJumpAffector = new TweenJumpTransformAtomics(
+                        affectData._physicsAffectData._physicsForce,
+                        affectData._baseDurateTime
+                    );
+                    HoldAffector = new HoldAtomics();
+
+                    Timer = new TimerComposite(affectData._baseDurateTime);
+                    CurrentState = AffectorReadyState.Instance;
                 }
             }
         }

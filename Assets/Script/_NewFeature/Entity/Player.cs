@@ -179,7 +179,6 @@ namespace Sophia.Entitys
 
 #endregion
 
-
 #region Equip Handler
 
         public EquipmentManager GetEquipmentManager() => this._equipmentManager;
@@ -190,10 +189,11 @@ namespace Sophia.Entitys
 
 #region Affect Handler
 
-        public override AffectorManager GetAffectorManager() => this._affectorManager;
-        public override void Affect(DataSystem.Modifiers.Affector affector) => this._affectorManager.Affect(affector);
-
-#endregion
+        public override AffectorManager GetAffectorManager() => this._affectorManager ??= GetComponentInChildren<AffectorManager>();
+        public override void Affect(Affector affector) => this._affectorManager.Affect(affector);
+        public override void Recover(Affector affector) => this._affectorManager.Recover(affector);
+        
+        #endregion
 
     }
 }
