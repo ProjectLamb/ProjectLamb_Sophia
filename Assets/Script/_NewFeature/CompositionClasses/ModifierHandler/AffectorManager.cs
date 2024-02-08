@@ -10,22 +10,6 @@ namespace Sophia.Composite
 
     public class AffectorManager : MonoBehaviour
     {
-        class GarbageAffectorCleaner
-        {
-            public readonly SortedSet<E_AFFECT_TYPE> GarbageAffector = new();
-            Dictionary<E_AFFECT_TYPE, Affector> AffectorStacksRef;
-            public GarbageAffectorCleaner(Dictionary<E_AFFECT_TYPE, Affector> affectorStacks) => AffectorStacksRef = affectorStacks;
-
-            public void ClearGarbageAffector()
-            {
-                if (GarbageAffector.Count == 0) { return; }
-                foreach (var E in GarbageAffector) {  
-                    AffectorStacksRef.Remove(E); 
-                }
-                GarbageAffector.Clear();
-            }
-            public void AddGarbageByAffector(Affector affector) => GarbageAffector.Add(affector.AffectType);
-        }
         
         #region SerializeMember
 
@@ -39,8 +23,6 @@ namespace Sophia.Composite
         public Dictionary<E_AFFECT_TYPE, Affector> AffectingStacks { get; private set; }
         public Stat Tenacity { get; private set; }
         Array AffectKeys;
-        GarbageAffectorCleaner affectorCleaner;
-
         public void Init(float baseTenacity)
         {
             Tenacity = new Stat(baseTenacity,
@@ -60,7 +42,6 @@ namespace Sophia.Composite
         {
             AffectingStacks = new Dictionary<E_AFFECT_TYPE, Affector>();
             DataAccessible = _entity;
-            affectorCleaner = new GarbageAffectorCleaner(AffectingStacks);
             AffectKeys = Enum.GetValues(typeof(E_AFFECT_TYPE));
         }
 
@@ -69,28 +50,22 @@ namespace Sophia.Composite
             E_AFFECT_TYPE newAffectorType = affector.AffectType;
             if (AffectingStacks.TryGetValue(newAffectorType, out Affector affectingAffector))
             {
-                CancelAffector(affectingAffector);
+                TerminateAffector(affectingAffector);
                 Debug.Log("Updateed");
-                StartAffector(affector);
-                AffectingStacks.Add(newAffectorType, affector);
             }
-            else {
-                StartAffector(affector);
-                AffectingStacks.Add(newAffectorType, affector);
-            }
+            StartAffector(affector);
             UpdateDebugAffectList();
         }
 
         public void Recover(Affector affector)
         {
-            /*Exit*/
             TerminateAffector(affector);
+            AffectingStacks.Remove(affector.AffectType);
             UpdateDebugAffectList();
         }
 
         private void Update()
         {
-            affectorCleaner.ClearGarbageAffector();
             foreach(E_AFFECT_TYPE affectType in AffectKeys) {
                 if(AffectingStacks.TryGetValue(affectType, out Affector affectingAffector)) 
                 {
@@ -103,14 +78,14 @@ namespace Sophia.Composite
         #region Helper
         private void StartAffector(Affector affector) {
             affector.ChangeState(AffectorStartState.Instance);
-            affector.OnClear += affectorCleaner.AddGarbageByAffector;
-            affector.ExecuteState(_entity);
+            AffectingStacks.Add(affector.AffectType, affector);
+            AffectingStacks[affector.AffectType].ExecuteState(_entity);
         } 
         
         private void TerminateAffector(Affector affector) {
             affector.ChangeState(AffectorTerminateState.Instance);
             affector.ExecuteState(_entity);
-            affector.ResetState();
+            AffectingStacks.Remove(affector.AffectType);
         }
 
         private void RunAffector(Affector affector) {
@@ -119,11 +94,8 @@ namespace Sophia.Composite
                 affector.GetTimer().FrameTick(Time.deltaTime);
             }
             else if(affector.GetCurrentState() == AffectorTerminateState.Instance){
-                affector.ExecuteState(_entity);
+                TerminateAffector(affector);
             }
-        }
-
-        private void CancelAffector(Affector affector) {
         }
 
         private void UpdateDebugAffectList() {
