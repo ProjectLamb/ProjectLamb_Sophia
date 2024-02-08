@@ -7,7 +7,7 @@ namespace Sophia.Entitys
     using Sophia.Composite;
     using Sophia.DataSystem;
     using Sophia.DataSystem.Referer;
-    using Sophia.DataSystem.Modifiers.Affector;
+    
     using Cysharp.Threading.Tasks;
 
     public class TEST_EnemyStub : Entity, IMovable
@@ -124,12 +124,7 @@ namespace Sophia.Entitys
             throw new System.NotImplementedException();
         }
 
-        public override void Affect(DataSystem.Modifiers.NewAffector.Affector affector)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override void ModifiedByAffector(Affector affector)
+        public override void Affect(DataSystem.Modifiers.Affector affector)
         {
             throw new System.NotImplementedException();
         }

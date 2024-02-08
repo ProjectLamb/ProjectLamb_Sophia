@@ -2,9 +2,9 @@ using Sophia.Instantiates;
 using TMPro;
 using UnityEngine;
 
-namespace Sophia.DataSystem.Functional
+namespace Sophia.DataSystem.Modifiers
 {
-    using Entitys;
+    
     public class LayerChangeAtomics {
         private GameObject gameObjectRef;
         private int prevLayer;
@@ -15,8 +15,8 @@ namespace Sophia.DataSystem.Functional
             prevLayer = gameObjectRef.layer;
             changeLayer = layerMask.value;
         }
-        public void Invoke() => gameObjectRef.layer = changeLayer;
-        public void Revert() => gameObjectRef.layer = prevLayer;
+        public void Invoke(IVisualAccessible modelAccessible) => modelAccessible.GetModelManger().GetModelObject().layer = changeLayer;
+        public void Revert(IVisualAccessible modelAccessible) => modelAccessible.GetModelManger().GetModelObject().layer = prevLayer;
     }
 
     public class VisualFXAtomics {
@@ -29,7 +29,7 @@ namespace Sophia.DataSystem.Functional
         }
 
         public void Invoke(IVisualAccessible visualAccessible) {
-            VisualFXObject concreteVisualFX = VisualFXObjectPool.GetObject(visualFX);
+            VisualFXObject concreteVisualFX = VisualFXObjectPool.GetObject(visualFX).Init();
             visualAccessible.GetVisualFXBucket().InstantablePositioning(concreteVisualFX).Activate();
         }
         public void Revert(IVisualAccessible visualAccessible) {

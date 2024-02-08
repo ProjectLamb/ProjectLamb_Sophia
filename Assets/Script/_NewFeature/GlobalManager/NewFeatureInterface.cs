@@ -51,17 +51,6 @@ namespace Sophia
 //        public void Restore(int amount);
 //    }
 
-    public interface IModelAccessible {
-        public void ChangeSkin(Material skin);
-        public void RevertSkin();
-        public Animator GetAnimator();
-    }
-
-    public interface IVFXAccessible {
-        public VisualFXObject InstantablePositioning(Entity owner, VisualFXObject _instantiable, Vector3 _offset);
-        public VisualFXObject InstantablePositioning(Entity owner, VisualFXObject _instantiable);
-    }
-
     public interface IVisualAccessible {
         public ModelManger GetModelManger();
         public VisualFXBucket GetVisualFXBucket();

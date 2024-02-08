@@ -3,10 +3,11 @@ using System.Threading;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 
-namespace Sophia.DataSystem.Functional
+namespace Sophia.DataSystem.Modifiers
 {
     using Sophia.Composite.RenderModels;
     using Sophia.Entitys;
+    
 
     public class MaterialChangeAtomics {
         public CancellationToken cancellationToken;

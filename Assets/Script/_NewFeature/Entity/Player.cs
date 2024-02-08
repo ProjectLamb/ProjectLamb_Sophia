@@ -9,7 +9,6 @@ namespace Sophia.Entitys
     using Sophia.Composite;
     using Sophia.DataSystem;
     using Sophia.Instantiates;
-    using Sophia.DataSystem.Modifiers.Affector;
     using Sophia.DataSystem.Referer;
     using Sophia.DataSystem.Modifiers;
 
@@ -192,8 +191,7 @@ namespace Sophia.Entitys
 #region Affect Handler
 
         public override AffectorManager GetAffectorManager() => this._affectorManager;
-        public override void Affect(DataSystem.Modifiers.NewAffector.Affector affector) => this._affectorManager.Affect(affector);
-        public override void ModifiedByAffector(Affector affector) {return;}
+        public override void Affect(DataSystem.Modifiers.Affector affector) => this._affectorManager.Affect(affector);
 
 #endregion
 
