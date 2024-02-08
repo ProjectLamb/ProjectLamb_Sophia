@@ -9,11 +9,13 @@ namespace Sophia.Entitys
     using Sophia.DataSystem.Referer;
     
     using Cysharp.Threading.Tasks;
+    using Sophia.DataSystem.Modifiers;
 
     public class TEST_EnemyStub : Entity, IMovable
     {
 #region SerializeMember 
         [SerializeField] protected SerialBaseEntityData _baseEntityData;
+        [SerializeField] public AffectorManager _affectorManager;
         // [SerializeField] protected ModelManger _modelManger;
         // [SerializeField] protected VisualFXBucket _visualFXBucket;
 #endregion
@@ -25,13 +27,8 @@ namespace Sophia.Entitys
         public LifeComposite Life { get; private set; }
         public EntityStatReferer StatReferer { get; private set; }
         public EntityExtrasReferer ExtrasReferer { get; private set; }
-        public AffectorManager affectorComposite {get; private set;}
-
-        public override AffectorManager GetAffectorManager() => this.affectorComposite;
-        // public override void ModifiedByAffector(Affector affector) => this.affectorComposite.ModifiyByAffector(affector);
 
 #endregion
-
 
 #region Life Accessible
 
@@ -91,19 +88,20 @@ namespace Sophia.Entitys
         {
             StatReferer.SetRefStat(Life.MaxHp);
             StatReferer.SetRefStat(Life.Defence);
-            StatReferer.SetRefStat(affectorComposite.Tenacity);
             StatReferer.SetRefStat(MoveSpeed);
 
             ExtrasReferer.SetRefExtras(Life.HitExtras);
             ExtrasReferer.SetRefExtras(Life.DamagedExtras);
             ExtrasReferer.SetRefExtras(Life.DeadExtras);
+
+            StatReferer.SetRefStat(_affectorManager.Tenacity);
         }
 
         private void FixedUpdate() {
             MoveTick();
         }
 
-#region Movement Test
+#region Movement
 
         public bool IsMovable = false;
         public Stat MoveSpeed;
@@ -123,11 +121,9 @@ namespace Sophia.Entitys
         {
             throw new System.NotImplementedException();
         }
-
-        public override void Affect(DataSystem.Modifiers.Affector affector)
-        {
-            throw new System.NotImplementedException();
-        }
-        #endregion
+#endregion
+        public override AffectorManager GetAffectorManager() => this._affectorManager ??= GetComponentInChildren<AffectorManager>();
+        public override void Affect(Affector affector) => this._affectorManager.Affect(affector);
+        public override void Recover(Affector affector) => this._affectorManager.Recover(affector);
     }
 }

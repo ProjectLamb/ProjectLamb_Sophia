@@ -8,6 +8,7 @@ using Microsoft.SqlServer.Server;
 namespace Sophia.Instantiates
 {
     using Sophia.DataSystem;
+    using Sophia.DataSystem.Modifiers;
     using Sophia.Entitys;   
     /*변하는 녀석*/
 
@@ -27,6 +28,7 @@ namespace Sophia.Instantiates
         [SerializeField] private  VisualFXObject  _destroyEffect= null;
         [SerializeField] private  VisualFXObject  _hitEffect= null;
         [SerializeField] private  ParticleSystem ProjectileParticle = null;
+        [SerializeField] private  SerialAffectorData _serialAffectorData;
 
 #endregion
 
@@ -36,6 +38,7 @@ namespace Sophia.Instantiates
         public E_INSTANTIATE_STACKING_TYPE StackingType { get {return this._stackingType;} private set{} }
         public E_INSTANTIATE_POSITION_TYPE PositioningType { get {return this._positioningType;} private set{} }
         public Entity OwnerRef { get; private set; }
+        public Affector     NaturallyInherentAffector;
 
         public int CurrentProjectileDamage { get; private set; }
 
@@ -88,6 +91,7 @@ namespace Sophia.Instantiates
         public      ParticleSystem.EmissionModule   ParticleEmissionModule;
         public      ParticleSystem.TriggerModule    ParticleTriggerModule;
         public      ParticleSystem.CollisionModule  ParticleColliderModule;
+
 
 #endregion
 
@@ -329,8 +333,6 @@ namespace Sophia.Instantiates
                     targetEntity.GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
 
                     OnProjectileTriggerd.Invoke();
-                    targetAffectedExtras.PerformTickFunctionals(ref targetEntity);
-                    targetAffectedExtras.PerformExitFunctionals(ref targetEntity);
                 }
             }
         }
