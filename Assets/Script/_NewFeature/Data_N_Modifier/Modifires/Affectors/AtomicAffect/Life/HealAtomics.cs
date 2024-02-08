@@ -1,7 +1,7 @@
-namespace Sophia.DataSystem.Functional
+namespace Sophia.DataSystem.Modifiers
 {
     using Sophia.Composite;
-    using Sophia.Entitys;
+
     public class HealAtomics {
         private LifeComposite lifeRef; 
         float healAmount;

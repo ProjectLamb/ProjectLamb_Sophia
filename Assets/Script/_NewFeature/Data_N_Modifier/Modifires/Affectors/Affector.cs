@@ -1,139 +1,115 @@
 using UnityEngine;
+using UnityEngine.Events;
 
-namespace Sophia.DataSystem
+namespace Sophia.DataSystem.Modifiers
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Threading;
-    using Sophia.Composite.Timer;
-    using Sophia.DataSystem.Functional;
+    using Sophia.Composite.NewTimer;
     using Sophia.Entitys;
 
-    using UnityEngine.Events;
 
-    namespace Modifiers.NewAffector
+    public abstract class Affector : IUserInterfaceAccessible
     {
-        public abstract class Affector : IUserInterfaceAccessible
+        #region Members
+
+        public readonly E_AFFECT_TYPE AffectType;
+        public readonly string Name;
+        public readonly string Description;
+        public readonly Sprite Icon;
+        public TimerComposite Timer {get; protected set;}
+
+        public Affector(SerialAffectorData affectData)
         {
-            #region Members
+            AffectType = affectData._affectType;
+            Name = affectData._equipmentName;
+            Description = affectData._description;
+            Icon = affectData._icon;
+        }
+        #endregion
 
-            public readonly E_AFFECT_TYPE AffectType;
-            public readonly string Name;
-            public readonly string Description;
-            public readonly Sprite Icon;
-            
-            public float BaseDurateTime { get; private set; }
+        #region Event
+        public event UnityAction OnRevert;
+        protected void InvokeOnRevertAffect() => OnRevert();
 
-            public Affector(SerialAffectorData affectData)
-            {
-                Name = affectData._equipmentName;
-                Description = affectData._description;
-                Icon = affectData._icon;
-            }
-            #endregion
+        #endregion
 
-            #region Event
-            public event UnityAction OnRevert;
+        #region State
+        public AffectorState CurrentState;
+        public void ChangeState(AffectorState newState) {
+            if(newState == null) return;
+            CurrentState = newState;
+        }
+        public void Affect(Entity entity) => CurrentState.Affect(this, entity);
 
-            #endregion
+        #endregion
 
-            public abstract void Invoke(Entity entity);
-            public abstract void Run(Entity entity);
-            public abstract void Revert(Entity entity);
+        public abstract void Invoke(Entity entity);
+        public abstract void Run(Entity entity);
+        public abstract void Revert(Entity entity);
 
-            #region User Interface 
-            public string GetName() => Name;
-            public string GetDescription() => Description;
-            public Sprite GetSprite() => Icon;
-            #endregion
+        #region User Interface 
+        
+        public string GetName() => Name;
+        public string GetDescription() => Description;
+        public Sprite GetSprite() => Icon;
+
+        #endregion
+    }
+
+    public interface IStateMachine<State> {
+        public void ChangeState(State newState);
+    }
+
+    public interface ITimerState<Receiver> {
+        public void Execute(IStateMachine<ITimerState<Receiver>> machine, Receiver receiver);
+    }
+
+
+    public interface AffectorState {
+        public void Affect(Affector affector, Entity entity);
+    }
+
+    public class AffectorReadyState : AffectorState
+    {
+        private static AffectorReadyState _instance = new AffectorReadyState();
+        public static AffectorReadyState Instance => _instance;
+        public void Affect(Affector affector, Entity entity)
+        {
+            affector.ChangeState(AffectorStartState.Instance);
         }
     }
 
-    namespace Modifiers.Affector
+    public class AffectorStartState : AffectorState
     {
-        /// <summary>
-        /// Modifier이자, 일시적인 상태 변화를 야기하는 것.
-        /// </summary>
-        public abstract class Affector
+        private static AffectorStartState _instance = new AffectorStartState();
+        public static AffectorStartState Instance => _instance;
+
+        public void Affect(Affector affector, Entity entity)
         {
-            #region Members
-            public readonly CancellationTokenSource cts;
-            public readonly E_AFFECT_TYPE AffectType; //
-            public float BaseDurateTime { get; private set; } //
-            protected Entity TargetRef; //
-            protected Entity OwnerRef; //
-            protected TimerComposite Timer { get; private set; } //
-            public Affector(E_AFFECT_TYPE affectType, Entity ownerReceivers, Entity targetReceivers, float durateTime)
-            {
-                cts = new CancellationTokenSource();
-                this.AffectType = affectType; //
-
-                this.OwnerRef = ownerReceivers; //
-                this.TargetRef = targetReceivers; //
-                this.BaseDurateTime = durateTime; //
-
-                this.Timer = new TimerComposite(BaseDurateTime); //
-
-                OnModifiy = (ref float a) => { };
-                OnTickRunning = () => { };
-                OnRevert = () => { };
-            }
-            #endregion
-
-            #region Setter
-
-            public Affector SetAccelarationByTenacity(float tenecity)
-            {
-                Timer.SetAcceleratrion(tenecity);
-                return this;
-            }
-
-            #endregion
-
-            #region Event 
-
-            public event UnityActionRef<float> OnModifiy;
-            public event UnityAction OnTickRunning;
-            public event UnityAction OnRevert;
-            public event UnityAction OnCancle;
-            public void ClearEvent()
-            {
-                OnModifiy = null;
-                OnTickRunning = null;
-                OnRevert = null;
-                OnCancle = null;
-
-                OnModifiy = (ref float a) => { };
-                OnTickRunning = () => { };
-                OnRevert = () => { };
-                OnCancle = () => { };
-            }
-            #endregion
-
-            public void ConveyToTarget() => TargetRef.ModifiedByAffector(this);
-            public void Modifiy(float tenacity)
-            {
-                Timer.SetStart();
-                Timer.Execute();
-                OnModifiy?.Invoke(ref tenacity);
-            }
-            public void TickRunning()
-            {
-                Timer.Execute();
-                OnTickRunning?.Invoke();
-            }
-            public void Revert() { OnRevert?.Invoke(); }
-
-            public void CancleModify()
-            {
-                Timer.Pause();
-                Timer.ChangeState(TimerExit.Instance);
-                Timer = null;
-                OnCancle?.Invoke();
-                ClearEvent();
-            }
-
-            protected float CalcDurateTime(float tenacity) => BaseDurateTime * (1 - tenacity);
+            affector.Invoke(entity);
+            affector.ChangeState(AffectorRunState.Instance);
         }
     }
+
+    public class AffectorRunState : AffectorState
+    {
+        private static AffectorRunState _instance = new AffectorRunState();
+        public static AffectorRunState Instance => _instance;
+
+        public void Affect(Affector affector, Entity entity)
+        {
+            if(affector.Timer.GetIsActivateInterval()) affector.Run(entity);
+            if(affector.Timer.GetIsTimesUp()) affector.ChangeState(AffectorTerminateState.Instance);
+        }
+    }
+
+    public class AffectorTerminateState : AffectorState
+    {
+        private static AffectorTerminateState _instance = new AffectorTerminateState();
+        public static AffectorTerminateState Instance => _instance;
+        public void Affect(Affector affector, Entity entity)
+        {
+            affector.Revert(entity);
+        }
+    }
+
 }

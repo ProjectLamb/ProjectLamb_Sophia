@@ -2,22 +2,10 @@ using UnityEngine;
 
 using System;
 using System.Collections.Generic;
-using Sophia;
-using Sophia.DataSystem;
-using Sophia.DataSystem.Referer;
-using Sophia.DataSystem.Modifiers;
-using Sophia.DataSystem.Functional;
+
 
 namespace Sophia.DataSystem.Modifiers
 {
-    [System.Serializable]
-    public struct SerialEquipmentData {
-        [SerializeField] public string _equipmentName;
-        [SerializeField] public string _description;
-        [SerializeField] public Sprite _icon;
-        [SerializeField] public SerialCalculateDatas _calculateDatas;
-    }
-
     public class Equipment : IUserInterfaceAccessible
     {
         public readonly string Name;

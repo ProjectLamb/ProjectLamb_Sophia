@@ -34,7 +34,7 @@ namespace Sophia.Composite
             _currentEquipments.Clear();
             foreach (var item in equipedEquipment)
             {
-                _currentEquipments.Add(item.Key);
+                if(item.Value != null){_currentEquipments.Add(item.Key);}
             }
         }
 

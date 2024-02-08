@@ -7,7 +7,7 @@ namespace Sophia.Entitys
     using Sophia.Instantiates;
     using Sophia.Composite;
     using Sophia.DataSystem.Referer;
-    using Sophia.DataSystem.Modifiers.Affector;
+    
 
     public abstract class Entity : MonoBehaviour, ILifeAccessible, IDataAccessible, IVisualAccessible
     {
@@ -43,8 +43,7 @@ namespace Sophia.Entitys
 #region Affector Accessible
 
         public abstract AffectorManager GetAffectorManager();
-        public abstract void Affect(DataSystem.Modifiers.NewAffector.Affector affector);
-        public abstract void ModifiedByAffector(Affector affector);
+        public abstract void Affect(DataSystem.Modifiers.Affector affector);
 
 #endregion
 

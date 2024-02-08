@@ -6,7 +6,7 @@ using UnityEngine.Analytics;
 namespace Sophia.DataSystem.Modifiers
 {
     using System;
-    using Sophia.DataSystem.Functional;
+    
     using Sophia.Entitys;
     using UnityEngine;
 
