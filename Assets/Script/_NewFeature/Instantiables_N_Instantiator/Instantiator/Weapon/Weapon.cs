@@ -1,14 +1,10 @@
 using UnityEngine;
-using UnityEngine.Events;
 using System;
-using System.Collections;
-using System.Linq;
 using System.Collections.Generic;
-using Feature_State;
-using Sophia.Entitys;
 
 namespace Sophia.Instantiates {
     using Sophia.Entitys;
+    using Sophia.State;
     using Sophia.Composite.RenderModels;
 
     public enum E_WEAPONE_USE_STATE {

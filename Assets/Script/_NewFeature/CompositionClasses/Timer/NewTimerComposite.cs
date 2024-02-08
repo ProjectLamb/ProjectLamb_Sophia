@@ -4,8 +4,19 @@ namespace Sophia.Composite
 {
     namespace NewTimer
     {
+        public interface ITimer<Receiver> {
+            public TimerComposite GetTimer();
+            public void Enter(Receiver receiver);
+            public void Run(Receiver receiver);
+            public void Exit(Receiver receiver);
+
+        }
+
         public class TimerComposite
         {
+
+#region Member
+
             public readonly float BaseTime;
             public float AccelerationAmount = 1f; // Ratio;
 
@@ -20,36 +31,59 @@ namespace Sophia.Composite
                     mPassedTime = value;
                 }
             }
-            public IntervalTimerComposite intervalTimer;
-            public RewaindTimerComposite rewaindTimer;
+            public bool IsBlocked { get; internal set; }
 
             public TimerComposite(float baseTime)
             {
                 this.BaseTime = baseTime;
+                PassedTime = 0;
+                IsBlocked = false;
             }
-
-            public TimerComposite SetInterval(float interval)
-            {
-                intervalTimer = new IntervalTimerComposite(interval);
-                return this;
-            }
-
-            public TimerComposite SetRewaind(Func<bool> condition)
-            {
-                rewaindTimer = new RewaindTimerComposite(condition);
-                return this;
-            }
+            
             public TimerComposite SetAcceleratrion(float amount)
             {
                 if (amount <= 0) { amount = 0; }
                 AccelerationAmount = amount;
                 return this;
             }
+#endregion
 
-            public void FrameTick(float passedTick) => PassedTime += passedTick;
+#region Interval
+
+            public IntervalTimerComposite intervalTimer;
+            public TimerComposite SetInterval(float interval)
+            {
+                intervalTimer = new IntervalTimerComposite(interval);
+                return this;
+            }
+            public bool GetIsActivateInterval() => intervalTimer == null ? false : intervalTimer.GetIsActivateInterval(PassedTime);
+
+#endregion
+
+#region Rewind
+
+            public RewaindTimerComposite rewaindTimer;
+            public TimerComposite SetRewaind(Func<bool> condition)
+            {
+                rewaindTimer = new RewaindTimerComposite(condition);
+                return this;
+            }
+
+            public bool GetIsRewainable() => rewaindTimer == null ? false : rewaindTimer.GetIsRewainable();
+
+#endregion
+
+            public void FrameTick(float passedTick) {PassedTime += passedTick;}
             public float GetProgressAmount() { return PassedTime / BaseTime; }
-            public bool GetIsTimesUp() => PassedTime >= BaseTime;
-            public bool GetIsActivateInterval() => intervalTimer.GetIsActivateInterval(PassedTime);
+            public bool GetIsTimesUp() {return PassedTime >= BaseTime;}
+            public void Puase() => IsBlocked = true;
+            public void Continue() => IsBlocked = false;
+
+            public void ResetTimer() {
+                PassedTime = 0;
+                IsBlocked = false;
+                intervalTimer?.ResetNextInterval();
+            }
         }
 
         public class IntervalTimerComposite
@@ -71,6 +105,9 @@ namespace Sophia.Composite
                 }
                 return false;
             }
+            public void ResetNextInterval() {
+                NextInterval = IntervalTime;
+            }
         }
 
         public class RewaindTimerComposite
@@ -81,7 +118,7 @@ namespace Sophia.Composite
             {
                 WhenRewindable = condition;
             }
-            public bool GetIsRewainable() => WhenRewindable.Invoke();
+            public bool GetIsRewainable() =>  WhenRewindable.Invoke();
             public void ClearRewindCondition() => WhenRewindable = null;
         }
     }

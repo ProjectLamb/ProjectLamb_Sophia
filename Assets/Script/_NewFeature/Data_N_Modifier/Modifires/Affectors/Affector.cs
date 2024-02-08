@@ -3,50 +3,66 @@ using UnityEngine.Events;
 
 namespace Sophia.DataSystem.Modifiers
 {
+    using System.Threading;
     using Sophia.Composite.NewTimer;
     using Sophia.Entitys;
+    using Sophia.State;
 
-
-    public abstract class Affector : IUserInterfaceAccessible
+    public abstract class Affector : IUserInterfaceAccessible, IStateMachine<AffectorState, Entitys.Entity>, ITimer<Entity>
     {
-        #region Members
+#region Members
 
-        public readonly E_AFFECT_TYPE AffectType;
-        public readonly string Name;
-        public readonly string Description;
-        public readonly Sprite Icon;
-        public TimerComposite Timer {get; protected set;}
+        public E_AFFECT_TYPE AffectType {get; protected set;}
+        public string Name {get; protected set;}
+        public string Description {get; protected set;}
+        public Sprite Icon {get; protected set;}
 
         public Affector(SerialAffectorData affectData)
         {
-            AffectType = affectData._affectType;
-            Name = affectData._equipmentName;
-            Description = affectData._description;
-            Icon = affectData._icon;
+            this.Init(affectData);
+            OnClear += ResetState;
         }
-        #endregion
 
-        #region Event
-        public event UnityAction OnRevert;
-        protected void InvokeOnRevertAffect() => OnRevert();
+        protected abstract void Init(SerialAffectorData affectData);
+#endregion
 
-        #endregion
+#region Event
+        public event UnityAction<Affector> OnClear;
+        protected void InvokeOnClearAffect(Affector affector) => OnClear?.Invoke(affector);
+        public void ClearAffect(Affector affector) => OnClear?.Invoke(affector);
 
-        #region State
-        public AffectorState CurrentState;
+#endregion
+
+#region State Machine
+        protected AffectorState CurrentState;
+        public AffectorState GetCurrentState() => CurrentState;
         public void ChangeState(AffectorState newState) {
             if(newState == null) return;
-            CurrentState = newState;
+            if(GetIstransferableState(newState)) CurrentState = newState;
         }
-        public void Affect(Entity entity) => CurrentState.Affect(this, entity);
+        public void ExecuteState(Entity entity) => CurrentState.Affect(this, entity);
+        public bool GetIstransferableState(AffectorState transState) {
+            return (CurrentState.GetTransitionBit() & transState.GetCurrentBit()) == transState.GetCurrentBit();
+        }
+        public void ResetState(Affector affector) => ResetState();
+        public void ResetState() {
+            this.Timer.ResetTimer();
+            this.CurrentState = AffectorReadyState.Instance;
+            this.OnClear += ResetState;
+        }
 
-        #endregion
 
-        public abstract void Invoke(Entity entity);
+#endregion
+        
+#region Timer
+        protected TimerComposite Timer;
+        public TimerComposite GetTimer() => Timer;
+        public abstract void Enter(Entity entity);
         public abstract void Run(Entity entity);
-        public abstract void Revert(Entity entity);
+        public abstract void Exit(Entity entity);
+#endregion
 
-        #region User Interface 
+#region User Interface 
         
         public string GetName() => Name;
         public string GetDescription() => Description;
@@ -55,16 +71,7 @@ namespace Sophia.DataSystem.Modifiers
         #endregion
     }
 
-    public interface IStateMachine<State> {
-        public void ChangeState(State newState);
-    }
-
-    public interface ITimerState<Receiver> {
-        public void Execute(IStateMachine<ITimerState<Receiver>> machine, Receiver receiver);
-    }
-
-
-    public interface AffectorState {
+    public interface AffectorState : ITransitionAccessible{
         public void Affect(Affector affector, Entity entity);
     }
 
@@ -76,6 +83,9 @@ namespace Sophia.DataSystem.Modifiers
         {
             affector.ChangeState(AffectorStartState.Instance);
         }
+
+        public int GetCurrentBit() => (int)TimerStateBit.Ready;
+        public int GetTransitionBit() => (int)TimerStateBit.Start;
     }
 
     public class AffectorStartState : AffectorState
@@ -85,9 +95,12 @@ namespace Sophia.DataSystem.Modifiers
 
         public void Affect(Affector affector, Entity entity)
         {
-            affector.Invoke(entity);
+            affector.Enter(entity);
             affector.ChangeState(AffectorRunState.Instance);
         }
+
+        public int GetCurrentBit() => (int)TimerStateBit.Start;
+        public int GetTransitionBit() => (int)TimerStateBit.Run;
     }
 
     public class AffectorRunState : AffectorState
@@ -97,10 +110,30 @@ namespace Sophia.DataSystem.Modifiers
 
         public void Affect(Affector affector, Entity entity)
         {
-            if(affector.Timer.GetIsActivateInterval()) affector.Run(entity);
-            if(affector.Timer.GetIsTimesUp()) affector.ChangeState(AffectorTerminateState.Instance);
+            if(affector.GetTimer().IsBlocked) {affector.ChangeState(AffectorPauseState.Instance); return;}
+            if(affector.GetTimer().GetIsTimesUp()) { affector.ChangeState(AffectorTerminateState.Instance); return;}
+            if(affector.GetTimer().GetIsActivateInterval()) {
+                affector.Run(entity);
+            }
         }
+
+        public int GetCurrentBit() => (int)TimerStateBit.Run;
+        public int GetTransitionBit() => (int)TimerStateBit.Terminate + (int)TimerStateBit.Pause;
     }
+
+    public class AffectorPauseState : AffectorState
+    {
+        private static AffectorPauseState _instance = new AffectorPauseState();
+        public static AffectorPauseState Instance => _instance;
+        public void Affect(Affector affector, Entity entity)
+        {
+            if(!affector.GetTimer().IsBlocked) {affector.ChangeState(AffectorRunState.Instance); return;}
+        }
+
+        public int GetCurrentBit() => (int)TimerStateBit.Pause;
+        public int GetTransitionBit() => (int)TimerStateBit.Terminate + (int)TimerStateBit.Run;
+    }
+
 
     public class AffectorTerminateState : AffectorState
     {
@@ -108,8 +141,11 @@ namespace Sophia.DataSystem.Modifiers
         public static AffectorTerminateState Instance => _instance;
         public void Affect(Affector affector, Entity entity)
         {
-            affector.Revert(entity);
+            affector.Exit(entity);
         }
+
+        public int GetCurrentBit() => (int)TimerStateBit.Terminate;
+        public int GetTransitionBit() => 0;
     }
 
 }
