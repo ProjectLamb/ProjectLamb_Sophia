@@ -104,7 +104,7 @@ namespace Sophia.DataSystem.Modifiers
             }
             else {
                 entityRef.entityRigidbody.AddForce(
-                    Vector3.Normalize(targetTransformRef.position) * forceAmount,
+                    Vector3.Normalize(targetVector) * forceAmount,
                     ForceMode.Impulse
                 );
             }

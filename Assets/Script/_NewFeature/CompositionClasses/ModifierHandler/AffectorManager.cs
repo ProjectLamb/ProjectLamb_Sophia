@@ -1,38 +1,44 @@
 using UnityEngine;
-using UnityEngine.Events;
 using System;
 using System.Collections.Generic;
-using TMPro;
 
 namespace Sophia.Composite
 {
     using Sophia.Entitys;
     using Sophia.DataSystem;
+    using Sophia.DataSystem.Modifiers;
 
     public class AffectorManager : MonoBehaviour
     {
         class GarbageAffectorCleaner
         {
             public readonly SortedSet<E_AFFECT_TYPE> GarbageAffector = new();
-            Dictionary<E_AFFECT_TYPE, DataSystem.Modifiers.Affector> AffectorStacksRef;
-            public GarbageAffectorCleaner(Dictionary<E_AFFECT_TYPE, DataSystem.Modifiers.Affector> affectorStacks) => AffectorStacksRef = affectorStacks;
+            Dictionary<E_AFFECT_TYPE, Affector> AffectorStacksRef;
+            public GarbageAffectorCleaner(Dictionary<E_AFFECT_TYPE, Affector> affectorStacks) => AffectorStacksRef = affectorStacks;
 
             public void ClearGarbageAffector()
             {
                 if (GarbageAffector.Count == 0) { return; }
-                foreach (var E in GarbageAffector) { AffectorStacksRef[E] = default; }
+                foreach (var E in GarbageAffector) {  
+                    AffectorStacksRef.Remove(E); 
+                }
                 GarbageAffector.Clear();
             }
+            public void AddGarbageByAffector(Affector affector) => GarbageAffector.Add(affector.AffectType);
         }
+        
         #region SerializeMember
 
         [SerializeField] private Entity _entity;
         [SerializeField] private List<string> _currentAffectors;
 
         #endregion
+
+        #region Member
         public IDataAccessible DataAccessible { get; private set; }
-        public Dictionary<E_AFFECT_TYPE, DataSystem.Modifiers.Affector> AffectingStacks { get; private set; }
+        public Dictionary<E_AFFECT_TYPE, Affector> AffectingStacks { get; private set; }
         public Stat Tenacity { get; private set; }
+        Array AffectKeys;
         GarbageAffectorCleaner affectorCleaner;
 
         public void Init(float baseTenacity)
@@ -48,57 +54,87 @@ namespace Sophia.Composite
         {
             Debug.Log("TenacityUpdated");
         }
+        #endregion
 
         private void Awake()
         {
-            AffectingStacks = new Dictionary<E_AFFECT_TYPE, DataSystem.Modifiers.Affector>();
+            AffectingStacks = new Dictionary<E_AFFECT_TYPE, Affector>();
             DataAccessible = _entity;
-            foreach (E_AFFECT_TYPE affecType in Enum.GetValues(typeof(E_AFFECT_TYPE))) { AffectingStacks.Add(affecType, default); }
             affectorCleaner = new GarbageAffectorCleaner(AffectingStacks);
+            AffectKeys = Enum.GetValues(typeof(E_AFFECT_TYPE));
         }
 
-        public void Affect(DataSystem.Modifiers.Affector affector)
-        {
+        public void Affect(Affector affector)
+        {   
             E_AFFECT_TYPE newAffectorType = affector.AffectType;
-            if (!AffectingStacks.ContainsKey(newAffectorType)) throw new System.Exception("현재 받아온 어펙터는 타입이 존재하지 않음");
-            if (AffectingStacks.TryGetValue(newAffectorType, out DataSystem.Modifiers.Affector affectingAffector))
+            if (AffectingStacks.TryGetValue(newAffectorType, out Affector affectingAffector))
             {
-                if (affectingAffector != default)
-                {
-                    affectingAffector.Revert(_entity);
-                    AffectingStacks[affectingAffector.AffectType] = default;
-                }
+                CancelAffector(affectingAffector);
+                Debug.Log("Updateed");
+                StartAffector(affector);
+                AffectingStacks.Add(newAffectorType, affector);
             }
-            AffectingStacks[newAffectorType] = affector;
-            AffectingStacks[newAffectorType].OnRevert += () => affectorCleaner.GarbageAffector.Add(newAffectorType);
-            AffectingStacks[newAffectorType].Invoke(_entity);
-
-            _currentAffectors.Clear();
-            foreach (var item in AffectingStacks)
-            {
-                _currentAffectors.Add(item.Key.ToString());
+            else {
+                StartAffector(affector);
+                AffectingStacks.Add(newAffectorType, affector);
             }
+            UpdateDebugAffectList();
         }
 
-        public void Recover(DataSystem.Modifiers.Affector affector)
+        public void Recover(Affector affector)
         {
-            AffectingStacks[affector.AffectType].Revert(_entity);
-
-            _currentAffectors.Clear();
-            foreach (var item in AffectingStacks)
-            {
-                _currentAffectors.Add(item.Key.ToString());
-            }
+            /*Exit*/
+            TerminateAffector(affector);
+            UpdateDebugAffectList();
         }
 
         private void Update()
         {
-            foreach (KeyValuePair<E_AFFECT_TYPE, DataSystem.Modifiers.Affector> affectingAffector in AffectingStacks)
-            {
-                if (affectingAffector.Equals(default)) continue;
-                affectingAffector.Value?.Run(_entity);
+            affectorCleaner.ClearGarbageAffector();
+            foreach(E_AFFECT_TYPE affectType in AffectKeys) {
+                if(AffectingStacks.TryGetValue(affectType, out Affector affectingAffector)) 
+                {
+                    Debug.Log(affectingAffector.AffectType.ToString());
+                    RunAffector(affectingAffector);
+                }
             }
         }
+        
+        #region Helper
+        private void StartAffector(Affector affector) {
+            affector.ChangeState(AffectorStartState.Instance);
+            affector.OnClear += affectorCleaner.AddGarbageByAffector;
+            affector.ExecuteState(_entity);
+        } 
+        
+        private void TerminateAffector(Affector affector) {
+            affector.ChangeState(AffectorTerminateState.Instance);
+            affector.ExecuteState(_entity);
+            affector.ResetState();
+        }
+
+        private void RunAffector(Affector affector) {
+            if(affector.GetCurrentState() == AffectorRunState.Instance){
+                affector.ExecuteState(_entity);
+                affector.GetTimer().FrameTick(Time.deltaTime);
+            }
+            else if(affector.GetCurrentState() == AffectorTerminateState.Instance){
+                affector.ExecuteState(_entity);
+            }
+        }
+
+        private void CancelAffector(Affector affector) {
+        }
+
+        private void UpdateDebugAffectList() {
+            _currentAffectors.Clear();
+            foreach(E_AFFECT_TYPE affectType in AffectKeys) {
+                if(AffectingStacks.TryGetValue(affectType, out Affector e)){
+                    if(e != null && e != default) _currentAffectors.Add(affectType.ToString());
+                }
+            }
+        }
+        #endregion
     }
 }
 
