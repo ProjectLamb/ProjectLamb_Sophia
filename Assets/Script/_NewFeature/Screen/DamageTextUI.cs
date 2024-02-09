@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine.Pool;
 using System.Collections;
 using DG.Tweening;
+using Sophia.Composite;
 
 
 /*********************************************************************************
@@ -108,7 +109,6 @@ public class DamageTextUI : MonoBehaviour
         }
     }
 
-
     Coroutine CurrentDestroyCoroutine;
 
     IEnumerator CoDestroy()
@@ -123,31 +123,32 @@ public class DamageTextUI : MonoBehaviour
         CurrentDestroyCoroutine = StartCoroutine(CoDestroy());
     }
 
-    public void ReactivateTextUI(int amount)
+    public void ReactivateTextUI(DamageInfo damageInfo)
     {
+        /*
+        */
+
         StopCoroutine(CurrentDestroyCoroutine);
 
         int currentDamage = DamageAmount;
-        int newDamage = currentDamage + amount;
+        int newDamage = currentDamage + damageInfo.GetAmount();
         _rigid.velocity = Vector3.zero;
-
         Sequence ReactivateSeq = DOTween.Sequence();
-        Tween ShakeTween = transform.DOShakePosition(0.1f, 10);
-        Tween CountTween = DOTween.To(() => currentDamage, x => currentDamage = x, newDamage, 0.1f)
+        if(damageInfo.criticalDamage) {
+            Tween ShakeTween = transform.DOShakePosition(0.1f, 10);
+            Tween CountTween = DOTween.To(() => currentDamage, x => currentDamage = x, newDamage, 0.1f)
+                                    .OnUpdate(() => { _tmpPro.text = $"<b>!!{currentDamage}!!</b>"; DamageAmount = currentDamage; });
+            ReactivateSeq.Append(ShakeTween).Join(CountTween).OnComplete(() => { _rigid.velocity = Vector3.up * AnimationSpeed; }).Play();
+        }
+        else if(damageInfo.dodgeDamage) {
+            ReactivateSeq.OnComplete(() => {_tmpPro.text = $"<#666><i>Dodged<i></color>";_rigid.velocity = Vector3.up * AnimationSpeed; }).Play();
+        }
+        else {
+            Tween ShakeTween = transform.DOShakePosition(0.1f, 10);
+            Tween CountTween = DOTween.To(() => currentDamage, x => currentDamage = x, newDamage, 0.1f)
                                     .OnUpdate(() => { _tmpPro.text = currentDamage.ToString(); DamageAmount = currentDamage; });
-
-        ReactivateSeq.Append(ShakeTween).Join(CountTween).OnComplete(() => { _rigid.velocity = Vector3.up * AnimationSpeed; }).Play();
-
-        CurrentDestroyCoroutine = StartCoroutine(CoDestroy());
-    }
-    public void ReactivateTextUIByString(string str) {
-        StopCoroutine(CurrentDestroyCoroutine);
-        _rigid.velocity = Vector3.zero;
-        _tmpPro.text = str;
-        Sequence ReactivateSeq = DOTween.Sequence();
-        Tween ShakeTween = transform.DOShakePosition(0.1f, 10);
-        ReactivateSeq.Append(ShakeTween).OnComplete(() => { _rigid.velocity = Vector3.up * AnimationSpeed; }).Play();
-        
+            ReactivateSeq.Append(ShakeTween).Join(CountTween).OnComplete(() => { _rigid.velocity = Vector3.up * AnimationSpeed; }).Play();
+        }
         CurrentDestroyCoroutine = StartCoroutine(CoDestroy());
     }
 

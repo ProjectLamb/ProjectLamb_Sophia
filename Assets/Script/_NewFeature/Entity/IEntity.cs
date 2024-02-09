@@ -5,7 +5,7 @@ using Sophia.Instantiates;
 namespace Sophia
 {
     public interface IDamagable {
-        public bool GetDamaged(int damage);
+        public bool GetDamaged(DamageInfo damage);
     }
     
     public interface IDieable {
@@ -18,6 +18,7 @@ namespace Sophia
     }
 
     public interface IMovable {
+        public MovementComposite GetMovementComposite();
         public bool GetMoveState();
         public void SetMoveState(bool movableState);
         public void MoveTick();

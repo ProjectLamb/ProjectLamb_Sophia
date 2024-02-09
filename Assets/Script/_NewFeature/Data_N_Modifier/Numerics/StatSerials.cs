@@ -84,7 +84,7 @@ namespace Sophia
     }
 
     [System.Serializable]
-    public struct SerialCalculateDatas
+    public struct SerialStatCalculateDatas
     {
         [SerializeField] public SerialStatModifireDatas MaxHp;
         [SerializeField] public SerialStatModifireDatas Defence;

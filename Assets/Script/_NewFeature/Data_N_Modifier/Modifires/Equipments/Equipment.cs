@@ -21,7 +21,7 @@ namespace Sophia.DataSystem.Modifiers
 
             foreach (E_NUMERIC_STAT_TYPE statType in Enum.GetValues(typeof(E_NUMERIC_STAT_TYPE)))
             {
-                SerialStatModifireDatas statValue = equipmentData._calculateDatas.GetModifireDatas(statType);
+                SerialStatModifireDatas statValue = equipmentData._statCalculateDatas.GetModifireDatas(statType);
                 if (statValue.calType != E_STAT_CALC_TYPE.None)
                 {
                     StatModifiers.Add(statType, new StatModifier(statValue.amount, statValue.calType, statType));
@@ -35,7 +35,7 @@ namespace Sophia.DataSystem.Modifiers
             // }
         }
 
-        public void Invoke(IDataAccessible dataAccessible) {
+        public virtual void Invoke(IDataAccessible dataAccessible) {
             foreach (var modifier in StatModifiers)
             {
                 Stat statRef = dataAccessible.GetStatReferer().GetStat(modifier.Key);
@@ -43,7 +43,7 @@ namespace Sophia.DataSystem.Modifiers
                 statRef.RecalculateStat();
             }
         }
-        public void Revert(IDataAccessible dataAccessible) {
+        public virtual void Revert(IDataAccessible dataAccessible) {
             foreach (var modifier in StatModifiers)
             {
                 Stat statRef = dataAccessible.GetStatReferer().GetStat(modifier.Key);

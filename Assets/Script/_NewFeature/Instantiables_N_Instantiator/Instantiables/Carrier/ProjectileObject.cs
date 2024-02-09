@@ -7,6 +7,7 @@ using Microsoft.SqlServer.Server;
 
 namespace Sophia.Instantiates
 {
+    using Sophia.Composite;
     using Sophia.DataSystem;
     using Sophia.DataSystem.Modifiers;
     using Sophia.Entitys;   
@@ -19,7 +20,7 @@ namespace Sophia.Instantiates
         [SerializeField] private E_AFFECT_TYPE _affectType = E_AFFECT_TYPE.None;
         [SerializeField] private E_INSTANTIATE_STACKING_TYPE _stackingType = E_INSTANTIATE_STACKING_TYPE.Stack;
         [SerializeField] private E_INSTANTIATE_POSITION_TYPE _positioningType = E_INSTANTIATE_POSITION_TYPE.Outer;
-        [SerializeField] public int    _baseProjectileDamage = 1;
+        [SerializeField] public  DamageInfo    _baseProjectileDamage;
         [SerializeField] private float _baseDurateTime = 5f; //파티클 기본 지속 시간
         [SerializeField] private float _baseSize = 1f;
         [SerializeField] private float _baseForwardingSpeed = 5f; //파티클 기본 지속 시간
@@ -40,7 +41,12 @@ namespace Sophia.Instantiates
         public Entity OwnerRef { get; private set; }
         public Affector     NaturallyInherentAffector;
 
-        public int CurrentProjectileDamage { get; private set; }
+        private DamageInfo mCurrentProjectileDamage;
+        public DamageInfo CurrentProjectileDamage 
+        { 
+            get {return mCurrentProjectileDamage;}
+            private set {mCurrentProjectileDamage = value;}
+        }
 
         private float mCurrentDurateTime;
         public float CurrentDurateTime 
@@ -196,7 +202,7 @@ namespace Sophia.Instantiates
         이거 같은 경우는 플레이어가 자체 프로젝타일 사용 안할 수 도 있기 떄문임
         */
         public ProjectileObject SetProjectileDamage(int damage) {
-            CurrentProjectileDamage = damage;
+            mCurrentProjectileDamage.damageAmount = damage;
             return this;
         }
 
@@ -325,6 +331,7 @@ namespace Sophia.Instantiates
             if(CheckIsOwnerCollider(entity)) {return;}
             if (entity.TryGetComponent<Entity>(out Entity targetEntity))
             {
+
                 if(targetEntity.GetDamaged(CurrentProjectileDamage)) {
                     Extras<Entity> targetAffectedExtras = OwnerRef.GetExtras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.TargetAffected);
                     targetAffectedExtras.PerformStartFunctionals(ref targetEntity);
