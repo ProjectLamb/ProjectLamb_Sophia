@@ -88,7 +88,6 @@ namespace Sophia.Entitys
             StatReferer.SetRefStat(Life.Defence);
             StatReferer.SetRefStat(MoveSpeed);
 
-            ExtrasReferer.SetRefExtras(Life.HitExtras);
             ExtrasReferer.SetRefExtras(Life.DamagedExtras);
             ExtrasReferer.SetRefExtras(Life.DeadExtras);
 
@@ -120,10 +119,6 @@ namespace Sophia.Entitys
             throw new System.NotImplementedException();
         }
         
-        public MovementComposite GetMovementComposite()
-        {
-            throw new System.NotImplementedException();
-        }
 #endregion
         public override AffectorManager GetAffectorManager() => this._affectorManager ??= GetComponentInChildren<AffectorManager>();
         public override void Affect(Affector affector) => this._affectorManager.Affect(affector);
