@@ -6,6 +6,7 @@ using UnityEngine.AI;
 using UnityEngine.Events;
 using Sophia_Carriers;
 using DG.Tweening;
+using Sophia.Composite;
 
 /// <summary>
 /// 적 클래스 <br/>
@@ -60,14 +61,20 @@ public class Enemy : Entity
     public override void GetDamaged(int _amount)
     {
         if (Life.IsDie == true) { return; }
-        Life.Damaged(_amount);
+        DamageInfo damageInfo = new DamageInfo();
+        damageInfo.damageAmount = _amount;
+        damageInfo.damageRatio = 1;
+        Life.Damaged(damageInfo);
         if (Life.IsDie) { Die(); }
     }
 
     public override void GetDamaged(int _amount, VFXObject _vfx)
     {
         if (Life.IsDie == true) { return; }
-        Life.Damaged(_amount);
+                DamageInfo damageInfo = new DamageInfo();
+        damageInfo.damageAmount = _amount;
+        damageInfo.damageRatio = 1;
+        Life.Damaged(damageInfo);
         if (Life.IsDie) { Die(); }
         visualModulator.InteractByVFX(_vfx);
     }
@@ -135,8 +142,8 @@ public class Enemy : Entity
         NavMeshSet();
     }
 
-    public void Generate(float val) {
-        imageGenerator.GenerateImage((int)val);
+    public void Generate(DamageInfo info) {
+        imageGenerator.GenerateImage(info.GetAmount());
     }
 
     private void Start()

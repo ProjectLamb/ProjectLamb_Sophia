@@ -333,7 +333,6 @@ namespace Sophia.DataSystem
                     HoldAffector.Invoke(entity as IMovable);
                 }
 
-
                 public override void Run(Entity entity){return;}
                 public override void Exit(Entity entity){
                     HoldAffector.Revert(entity as IMovable);

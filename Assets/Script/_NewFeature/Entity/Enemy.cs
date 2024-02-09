@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Sophia.Entitys{
     using Cysharp.Threading.Tasks;
+    using Sophia.Composite;
     using Sophia.DataSystem;
     using Sophia.DataSystem.Referer;
 
@@ -29,8 +30,8 @@ namespace Sophia.Entitys{
 #endregion
 
 #region Life Accessible
-        public override bool GetDamaged(int damage) {
-            currentHealth -= damage;
+        public override bool GetDamaged(DamageInfo damage) {
+            currentHealth -= damage.GetAmount();
             if(currentHealth <= 0) {Die();}
             return true;
         }

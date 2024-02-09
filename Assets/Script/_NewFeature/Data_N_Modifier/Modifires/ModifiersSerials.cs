@@ -1,7 +1,8 @@
 using UnityEngine;
 namespace Sophia {
     using Instantiates;
-    
+    using Sophia.Composite;
+
     [System.Serializable]
     public struct SerialStatModifireDatas {
         public float amount;
@@ -9,17 +10,34 @@ namespace Sophia {
     }
 
     [System.Serializable]
+    public struct SerialOnDamageExtrasModifierDatas {
+        public E_FUNCTIONAL_EXTRAS_TYPE _extrasType;
+        public E_EXTRAS_PERFORM_TYPE _performType;
+        public SerialDamageConverterData _damageConverterData;
+    }
+
+    [System.Serializable]
+    public struct SerialDamageConverterData {
+        [SerializeField] public float _activatePercentage;
+        [SerializeField] public E_AFFECT_TYPE _affectType;
+        [SerializeField] public float _damageRatio;
+        [SerializeField] public bool _criticalDamage;
+        [SerializeField] public bool _dodgeDamage;
+        [SerializeField] public bool _piercingDamage;
+    }
+
+    [System.Serializable]
     public struct SerialEquipmentData {
         [SerializeField] public string _equipmentName;
         [SerializeField] public string _description;
         [SerializeField] public Sprite _icon;
-        [SerializeField] public SerialCalculateDatas _calculateDatas;
+        [SerializeField] public SerialStatCalculateDatas _statCalculateDatas;
+        [SerializeField] public SerialExtrasCalculateDatas _extrasCalculateDatas;
     }
         [System.Serializable]
     public struct SerialTickDamageAffectData
     {
-        [SerializeField] public float _baseTickDamage;
-        [SerializeField] public float _tickDamageRatio;
+        [SerializeField] public DamageInfo _baseTickDamage;
         [SerializeField] public float _intervalTime;
     }
 
@@ -55,7 +73,7 @@ namespace Sophia {
         [SerializeField] public SerialVisualAffectData _visualAffectData;
         [SerializeField] public SerialTickDamageAffectData _tickDamageAffectData;
         [SerializeField] public SerialPhysicsAffectData _physicsAffectData;
-        [SerializeField] public SerialCalculateDatas _calculateAffectData;
+        [SerializeField] public SerialStatCalculateDatas _calculateAffectData;
     }
 
 }

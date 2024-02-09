@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.AI;
 using Sophia_Carriers;
+using Sophia.Composite;
 
 public class Sandbag : Entity
 {    
@@ -51,7 +52,7 @@ public class Sandbag : Entity
         FinalData = BaseEnemyData;
         Life = new Sophia.Composite.LifeComposite(FinalData.MaxHP);
         // Life.OnHit += FinalData.HitStateRef;
-        Life.OnDamaged += (float val) => {
+        Life.OnDamaged += (DamageInfo val) => {
                 mAnimator.SetTrigger("DoHit");
                 GameManager.Instance.GlobalEvent.OnEnemyHitEvent.ForEach(E => E.Invoke());
             };
@@ -77,12 +78,26 @@ public class Sandbag : Entity
 
     public override void GetDamaged(int _amount){
         if(Life.IsDie == true) {return;}
-        Life.Damaged(_amount);
+        DamageInfo info = new DamageInfo{
+            affectType = Sophia.E_AFFECT_TYPE.None,
+            damageAmount = _amount,
+            damageRatio = 1,
+            criticalDamage = false,
+            dodgeDamage = false
+        };
+        Life.Damaged(info);
     }
 
     public override void GetDamaged(int _amount, VFXObject _vfx){
         if(Life.IsDie == true) {return;}
-        Life.Damaged(_amount);
+        DamageInfo info = new DamageInfo{
+            affectType = Sophia.E_AFFECT_TYPE.None,
+            damageAmount = _amount,
+            damageRatio = 1,
+            criticalDamage = false,
+            dodgeDamage = false
+        };
+        Life.Damaged(info);
 
         visualModulator.InteractByVFX( _vfx);
     }

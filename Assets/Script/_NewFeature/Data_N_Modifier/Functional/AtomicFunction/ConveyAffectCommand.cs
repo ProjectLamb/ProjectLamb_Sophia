@@ -16,13 +16,10 @@ namespace Sophia.DataSystem.Functional
 
             #region UI Access
             public string GetName() => "화상";
-
             public Sprite GetSprite()
             {
                 throw new System.NotImplementedException();
             }
-
-
             public string GetDescription()
             {
                 StringBuilder stringBuilder = new StringBuilder();
@@ -193,5 +190,7 @@ namespace Sophia.DataSystem.Functional
             }
             #endregion
         }
+
+        
     }
 }
