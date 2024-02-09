@@ -8,7 +8,7 @@ namespace Sophia.DataSystem.Modifiers
     using Sophia.Entitys;
     using Sophia.State;
 
-    public abstract class Affector : IUserInterfaceAccessible, IStateMachine<AffectorState, Entitys.Entity>, ITimer<Entity>
+    public abstract class Affector : IUserInterfaceAccessible, IStateMachine<AffectorState, Entitys.Entity>, ITimerAccessible<Entity>
     {
 #region Members
 
@@ -16,6 +16,7 @@ namespace Sophia.DataSystem.Modifiers
         public string Name {get; protected set;}
         public string Description {get; protected set;}
         public Sprite Icon {get; protected set;}
+        protected TimerComposite Timer;
 
         public Affector(SerialAffectorData affectData)
         {
@@ -54,8 +55,7 @@ namespace Sophia.DataSystem.Modifiers
 #endregion
         
 #region Timer
-        protected TimerComposite Timer;
-        public TimerComposite GetTimer() => Timer;
+        public TimerComposite GetTimerComposite() => Timer;
         public abstract void Enter(Entity entity);
         public abstract void Run(Entity entity);
         public abstract void Exit(Entity entity);
@@ -66,6 +66,7 @@ namespace Sophia.DataSystem.Modifiers
         public string GetName() => Name;
         public string GetDescription() => Description;
         public Sprite GetSprite() => Icon;
+
 
         #endregion
     }
@@ -109,9 +110,9 @@ namespace Sophia.DataSystem.Modifiers
 
         public void Affect(Affector affector, Entity entity)
         {
-            if(affector.GetTimer().IsBlocked) {affector.ChangeState(AffectorPauseState.Instance); return;}
-            if(affector.GetTimer().GetIsTimesUp()) { affector.ChangeState(AffectorTerminateState.Instance); return;}
-            if(affector.GetTimer().GetIsActivateInterval()) {
+            if(affector.GetTimerComposite().IsBlocked) {affector.ChangeState(AffectorPauseState.Instance); return;}
+            if(affector.GetTimerComposite().GetIsTimesUp()) { affector.ChangeState(AffectorTerminateState.Instance); return;}
+            if(affector.GetTimerComposite().GetIsActivateInterval()) {
                 affector.Run(entity);
             }
         }
@@ -126,7 +127,7 @@ namespace Sophia.DataSystem.Modifiers
         public static AffectorPauseState Instance => _instance;
         public void Affect(Affector affector, Entity entity)
         {
-            if(!affector.GetTimer().IsBlocked) {affector.ChangeState(AffectorRunState.Instance); return;}
+            if(!affector.GetTimerComposite().IsBlocked) {affector.ChangeState(AffectorRunState.Instance); return;}
         }
 
         public int GetCurrentBit() => (int)TimerStateBit.Pause;

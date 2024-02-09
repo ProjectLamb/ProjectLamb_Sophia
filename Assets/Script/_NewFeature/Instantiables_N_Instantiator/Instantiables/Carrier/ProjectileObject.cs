@@ -64,6 +64,7 @@ namespace Sophia.Instantiates
             }
         }
 
+        private Vector3 NomalizeScaleVector = Vector3.zero;
         private float mCurrentSize;
         public float CurrentSize 
         {
@@ -76,7 +77,8 @@ namespace Sophia.Instantiates
                     return;
                 }
                 mCurrentSize = value;
-                transform.localScale = Vector3.one * mCurrentSize;
+                if(NomalizeScaleVector == Vector3.zero) {NomalizeScaleVector = Vector3.Normalize(transform.localScale);}
+                transform.localScale = NomalizeScaleVector * mCurrentSize;
             }    
         }
 
@@ -170,11 +172,6 @@ namespace Sophia.Instantiates
             return this;
         }
 
-        public ProjectileObject InitByObject(Entity owner, object[] objects)
-        {
-            throw new System.NotImplementedException();
-        }
-        
         public ProjectileObject SetDurateTimeByRatio(float muls)
         {
             CurrentDurateTime = _baseDurateTime * muls;
@@ -323,6 +320,8 @@ namespace Sophia.Instantiates
 
             ProjectileParticle.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             ProjectileMainModule.stopAction = ParticleSystemStopAction.Callback;
+
+            NomalizeScaleVector = Vector3.Normalize(this.transform.localScale);
         }
 
         private void OnParticleSystemStopped() => DeActivate();
@@ -333,10 +332,10 @@ namespace Sophia.Instantiates
             {
 
                 if(targetEntity.GetDamaged(CurrentProjectileDamage)) {
-                    Extras<Entity> targetAffectedExtras = OwnerRef.GetExtras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.TargetAffected);
-                    targetAffectedExtras.PerformStartFunctionals(ref targetEntity);
+                    // Extras<Entity> targetAffectedExtras = OwnerRef.GetExtras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.TargetAffected);
+                    // targetAffectedExtras.PerformStartFunctionals(ref targetEntity);
 
-                    VisualFXObject visualFX = VisualFXObjectPool.GetObject(_hitEffect);
+                    VisualFXObject visualFX = VisualFXObjectPool.GetObject(_hitEffect).Init();
                     targetEntity.GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
 
                     OnProjectileTriggerd.Invoke();

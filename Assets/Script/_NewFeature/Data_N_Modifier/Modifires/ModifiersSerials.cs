@@ -21,9 +21,9 @@ namespace Sophia {
         [SerializeField] public float _activatePercentage;
         [SerializeField] public E_AFFECT_TYPE _affectType;
         [SerializeField] public float _damageRatio;
-        [SerializeField] public bool _criticalDamage;
-        [SerializeField] public bool _dodgeDamage;
-        [SerializeField] public bool _piercingDamage;
+        [SerializeField] public DamageHandleType damageHandleType;
+        [SerializeField] public HitType hitType;
+
     }
 
     [System.Serializable]

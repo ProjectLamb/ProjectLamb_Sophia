@@ -18,7 +18,7 @@ namespace Sophia.DataSystem.Functional
             public void Invoke(ref DamageInfo referer)
             {
                 if(converterData._activatePercentage <= random.Next(101)) return;
-                referer.dodgeDamage = true;
+                referer.damageHandleType = DamageHandleType.Dodged;
                 referer.damageAmount = 0;
                 referer.damageRatio = 0;
             }
@@ -40,7 +40,7 @@ namespace Sophia.DataSystem.Functional
             }
             public void Invoke(ref DamageInfo referer)
             {
-                referer.criticalDamage = converterData._criticalDamage;
+                referer.hitType = HitType.Critical;
                 referer.damageRatio = converterData._damageRatio;
             }
 

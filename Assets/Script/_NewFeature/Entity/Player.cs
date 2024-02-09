@@ -12,7 +12,7 @@ namespace Sophia.Entitys
     using Sophia.DataSystem.Referer;
     using Sophia.DataSystem.Modifiers;
 
-    public class Player : Entity, IMovable, IAttackable
+    public class Player : Entity, IMovementAccessible, IAffectManagerAccessible
     {
 
 #region SerializeMember 
@@ -131,7 +131,6 @@ namespace Sophia.Entitys
             StatReferer.SetRefStat(Life.MaxHp);
             StatReferer.SetRefStat(Life.Defence);
 
-            ExtrasReferer.SetRefExtras<DamageInfo>(Life.HitExtras);
             ExtrasReferer.SetRefExtras<DamageInfo>(Life.DamagedExtras);
             ExtrasReferer.SetRefExtras<object>(Life.DeadExtras);
 
@@ -198,6 +197,10 @@ namespace Sophia.Entitys
     public interface IAttackable
     {
         public void Attack();
+    }
+
+    public interface IWeaponManagerAccessible : IAffectable {
+        public WeaponManager GetWeaponManager();
     }
 }
 

@@ -5,11 +5,13 @@ namespace Sophia.Composite
     namespace NewTimer
     {
         public interface ITimer<Receiver> {
-            public TimerComposite GetTimer();
             public void Enter(Receiver receiver);
             public void Run(Receiver receiver);
             public void Exit(Receiver receiver);
+        }
 
+        public interface ITimerAccessible<Receiver> : ITimer<Receiver>{
+            public TimerComposite GetTimerComposite();
         }
 
         public class TimerComposite

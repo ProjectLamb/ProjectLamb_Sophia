@@ -39,7 +39,7 @@ namespace Sophia
     {
         None = 0,
         ENTITY_TYPE = 10,
-            Move, Hit, Damaged, Attack, OwnerAffected, TargetAffected, Dead, Idle, PhyiscTriggered,
+            Move, Damaged, Attack, OwnerAffected, TargetAffected, Dead, Idle, PhyiscTriggered,
         
         PLAYER_TYPE = 20,
             Dash, skill,

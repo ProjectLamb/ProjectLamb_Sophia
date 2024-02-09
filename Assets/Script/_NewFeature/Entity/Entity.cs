@@ -50,6 +50,7 @@ namespace Sophia.Entitys
 
 #region Visual Accessible
         public ModelManger GetModelManger() => this._modelManger;
+        public GameObject GetGameObject() => this._modelManger.GetModelObject();
         public VisualFXBucket GetVisualFXBucket() => this._visualFXBucket;
         
 #endregion
