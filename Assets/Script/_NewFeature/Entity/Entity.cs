@@ -24,7 +24,7 @@ namespace Sophia.Entitys
 
 #region Life Accessible
         public abstract LifeComposite GetLifeComposite();
-        public abstract bool GetDamaged(int damage);
+        public abstract bool GetDamaged(DamageInfo damage);
         public abstract bool Die();
 
 #endregion

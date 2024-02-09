@@ -19,6 +19,25 @@ namespace Sophia.Composite
         플레이어 LifeComposite에는 피격되었을때 잠시 무적판정이 들어가야한다.
 
     *********************************************************************************/
+    
+    [System.Serializable]
+    public struct DamageInfo {
+        [SerializeField] public E_AFFECT_TYPE affectType;
+        [SerializeField] public int  damageAmount;
+        [SerializeField] public float damageRatio;
+        [SerializeField] public bool criticalDamage;
+        [SerializeField] public bool dodgeDamage;
+        [SerializeField] public bool piercingDamage;
+
+        public int GetAmount() => (int)(damageAmount * damageRatio);
+        public string GetAmountByString() {
+            if(criticalDamage) return $"<b>!!{damageAmount * damageRatio}!!</b>";
+            if(piercingDamage) return $"<#FFF><b>{damageAmount * damageRatio}</b></color>";
+            if(dodgeDamage) return $"<#666><i>Dodged<i></color>";
+            return $"{damageAmount * damageRatio}";
+        }
+    }
+
     public class LifeComposite {
 
 #region Members 
@@ -26,8 +45,8 @@ namespace Sophia.Composite
         public Stat MaxHp {get; protected set;}
         public Stat Defence {get; protected set;}
 
-        public Extras<float> HitExtras {get; protected set;}
-        public Extras<float> DamagedExtras {get; protected set;}
+        public Extras<DamageInfo> HitExtras {get; protected set;}
+        public Extras<DamageInfo> DamagedExtras {get; protected set;}
         public Extras<object> DeadExtras {get; protected set;}
 
         private float mCurrentHealth;
@@ -71,11 +90,11 @@ namespace Sophia.Composite
                 E_STAT_USE_TYPE.Natural, OnDefenceUpdated
             );
 
-            HitExtras = new Extras<float>(
+            HitExtras = new Extras<DamageInfo>(
                 E_FUNCTIONAL_EXTRAS_TYPE.Hit, 
                 OnHitExtrasUpdated
             );
-            DamagedExtras = new Extras<float> (
+            DamagedExtras = new Extras<DamageInfo> (
                 E_FUNCTIONAL_EXTRAS_TYPE.Damaged, 
                 OnDamageExtrasUpdated
             );
@@ -91,8 +110,8 @@ namespace Sophia.Composite
             //DashSkill을 참고해서 어떻게 의존성을 맺었는지 확인
             OnHpUpdated      ??= (float val) => {};
             OnBarrierUpdated ??= (float val) => {};
-            OnHit            ??= (float val) => {};
-            OnDamaged        ??= (float val) => {};
+            OnHit            ??= (DamageInfo val) => {};
+            OnDamaged        ??= (DamageInfo val) => {};
             OnHeal           ??= (float val) => {};
             OnBarrier        ??= (float val) => {};
             OnEnterDie       ??= () => {};
@@ -121,13 +140,13 @@ namespace Sophia.Composite
 
         public event UnityAction<float>     OnHpUpdated = null;
         public event UnityAction<float>     OnBarrierUpdated = null;
-        public event UnityAction<float>     OnDamaged = null;
+        public event UnityAction<DamageInfo>     OnDamaged = null;
         public event UnityAction<float>     OnHeal = null;
         public event UnityAction            OnEnterDie = null;
         public event UnityAction            OnExitDie = null;
         public event UnityAction<float>     OnBarrier = null;
         public event UnityAction            OnBreakBarrier = null;
-        public event UnityAction<float>  OnHit = null;
+        public event UnityAction<DamageInfo>  OnHit = null;
 
         public void ClearEvents() {
             OnHpUpdated     = null;
@@ -142,8 +161,8 @@ namespace Sophia.Composite
 
             OnHpUpdated     ??= (float val) => {};
             OnBarrierUpdated ??= (float val) => {};
-            OnHit           ??= (float val) => {};
-            OnDamaged       ??= (float val) => {};
+            OnHit           ??= (DamageInfo val) => {};
+            OnDamaged       ??= (DamageInfo val) => {};
             OnHeal          ??= (float val) => {};
             OnEnterDie      ??= () => {};
             OnExitDie       ??= () => {};
@@ -199,32 +218,31 @@ namespace Sophia.Composite
             CurrentBarrier = amount;
         }
         
-        public bool Damaged(float damage) {
-            PerformHit(ref damage);
-            if(damage < 0.01f) {return false;}
-            PerformDamage(damage);
+        public bool Damaged(DamageInfo damageInfo) {
+            PerformHit(ref damageInfo);
+            PerformDamage(ref damageInfo);
             if (CurrentHealth <= 0) { this.Died(); }
             return true;
         }
 
-        private void PerformHit(ref float damage) {
-            HitExtras.PerformStartFunctionals(ref damage);
-            DamageCalculatePipeline(ref damage);
-            OnHit.Invoke(damage);
-            HitExtras.PerformExitFunctionals(ref damage);
+        private void PerformHit(ref DamageInfo damageInfo) {
+            HitExtras.PerformStartFunctionals(ref damageInfo);
+            DamageCalculatePipeline(ref damageInfo);
+            OnHit.Invoke(damageInfo);
+            HitExtras.PerformExitFunctionals(ref damageInfo);
         }
 
-        private void PerformDamage(float damage) {
+        private void PerformDamage(ref DamageInfo damageInfo) {
             // DamageStart
-            OnDamaged.Invoke(damage);
-            CurrentHealth -= damage;
-            DamagedExtras.PerformStartFunctionals(ref damage);
+            DamagedExtras.PerformStartFunctionals(ref damageInfo);
+            OnDamaged.Invoke(damageInfo);
+            CurrentHealth -= damageInfo.GetAmount();
             OnHpUpdated.Invoke(CurrentHealth);
-            DamagedExtras.PerformExitFunctionals(ref damage);
+            DamagedExtras.PerformExitFunctionals(ref damageInfo);
         }
 
-        private void DamageCalculatePipeline(ref float _amount){
-
+        private void DamageCalculatePipeline(ref DamageInfo _amount){
+            
         }
 
         public void BreakBarrier(){

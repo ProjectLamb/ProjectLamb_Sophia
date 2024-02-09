@@ -12,7 +12,7 @@ namespace Sophia.Entitys
     using Sophia.DataSystem.Referer;
     using Sophia.DataSystem.Modifiers;
 
-    public class Player : Entity, IMovable
+    public class Player : Entity, IMovable, IAttackable
     {
 
 #region SerializeMember 
@@ -22,7 +22,7 @@ namespace Sophia.Entitys
         [SerializeField] private ProjectileBucket       _projectileBucket;
         [SerializeField] private WeaponManager          _weaponManager;
         [SerializeField] private EquipmentManager       _equipmentManager;
-        [SerializeField] public  AffectorManager        _affectorManager;
+        [SerializeField] private AffectorManager        _affectorManager;
         [SerializeField] public  Wealths                _PlayerWealth;
 
 #endregion
@@ -44,7 +44,7 @@ namespace Sophia.Entitys
 
         public override LifeComposite GetLifeComposite() => this.Life;
 
-        public override bool GetDamaged(int damage)
+        public override bool GetDamaged(DamageInfo damage)
         {
             bool isDamaged = false;
             if (Life.IsDie) { isDamaged = false; }
@@ -105,10 +105,10 @@ namespace Sophia.Entitys
 
 #region Dash
         public FMODAudioSource DashSource;
-
         public void Dash() => DashSkillAbility.Use();/*m*/
 
 #endregion
+
         private void Awake()
         {
             TryGetComponent<Collider>(out entityCollider);
@@ -126,14 +126,13 @@ namespace Sophia.Entitys
                                         );
             _affectorManager.Init(_basePlayerData.Tenacity);
         }
-        public void OnPowerUpdated() { throw new System.NotImplementedException(); }
         private void Start()
         {
             StatReferer.SetRefStat(Life.MaxHp);
             StatReferer.SetRefStat(Life.Defence);
 
-            ExtrasReferer.SetRefExtras<float>(Life.HitExtras);
-            ExtrasReferer.SetRefExtras<float>(Life.DamagedExtras);
+            ExtrasReferer.SetRefExtras<DamageInfo>(Life.HitExtras);
+            ExtrasReferer.SetRefExtras<DamageInfo>(Life.DamagedExtras);
             ExtrasReferer.SetRefExtras<object>(Life.DeadExtras);
 
             StatReferer.SetRefStat(Movement.MoveSpeed);
@@ -160,6 +159,10 @@ namespace Sophia.Entitys
 
             ExtrasReferer.SetRefExtras<Entity>(new Extras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.TargetAffected, () => { Debug.Log("Affect Extras Changed"); }));
         }
+        public void Skill() { throw new System.NotImplementedException(); }
+
+#region Weapon Hanlder
+        public void OnPowerUpdated() { throw new System.NotImplementedException(); }
         public async void Attack()
         {
             try
@@ -172,11 +175,6 @@ namespace Sophia.Entitys
 
             }
         }
-        public void Skill() { throw new System.NotImplementedException(); }
-
-#region Weaponmanager
-        public WeaponManager GetWeaponManager() => this._weaponManager;
-
 #endregion
 
 #region Equip Handler
@@ -195,6 +193,11 @@ namespace Sophia.Entitys
         
         #endregion
 
+    }
+
+    public interface IAttackable
+    {
+        public void Attack();
     }
 }
 

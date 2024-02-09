@@ -1,23 +1,23 @@
+using Sophia.Composite;
+
 namespace Sophia.DataSystem.Modifiers
 {
     
 
     public class DamageAtomics {
-        public readonly float baseTickDamage;
-        public readonly float tickDamageRatio;
+        public readonly DamageInfo baseTickDamage;
         public readonly float intervalTime;
         public DamageAtomics(SerialTickDamageAffectData damageAffectData) {
             baseTickDamage  = damageAffectData._baseTickDamage;
-            tickDamageRatio = damageAffectData._tickDamageRatio;
             intervalTime    = damageAffectData._intervalTime;
         }
 
         public void Invoke(ILifeAccessible lifeAccessible) {
-            lifeAccessible.GetDamaged((int)(baseTickDamage * tickDamageRatio));
+            lifeAccessible.GetDamaged(baseTickDamage);
         }
 
         public void Run(ILifeAccessible lifeAccessible) {
-            lifeAccessible.GetDamaged((int)(baseTickDamage * tickDamageRatio));
+            lifeAccessible.GetDamaged(baseTickDamage);
         }
     }
 }

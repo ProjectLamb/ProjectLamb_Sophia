@@ -10,6 +10,7 @@ using FMODPlus;
 
 using Component = UnityEngine.Component;
 using Random = UnityEngine.Random;
+using Sophia.Composite;
 
 
 public class Player : Entity {
@@ -104,14 +105,20 @@ public class Player : Entity {
 #region 
     public override void GetDamaged(int _amount){
         if(Life.IsDie) {return;}
-        Life.Damaged(_amount);
+        DamageInfo damageInfo = new DamageInfo();
+        damageInfo.damageAmount = _amount;
+        damageInfo.damageRatio = 1;
+        Life.Damaged(damageInfo);
         PlayerDataManager.GetEntityData().HitState.Invoke();
         anim.SetTrigger("GetDamaged");
     }
 
     public override void GetDamaged(int _amount, VFXObject obj){
         if(Life.IsDie) {return;}
-        Life.Damaged(_amount);
+        DamageInfo damageInfo = new DamageInfo();
+        damageInfo.damageAmount = _amount;
+        damageInfo.damageRatio = 1;
+        Life.Damaged(damageInfo);
         PlayerDataManager.GetEntityData().HitState.Invoke();
         anim.SetTrigger("GetDamaged");
         visualModulator.InteractByVFX(obj);
