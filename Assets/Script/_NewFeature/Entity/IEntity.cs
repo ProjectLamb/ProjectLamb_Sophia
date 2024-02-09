@@ -18,16 +18,22 @@ namespace Sophia
     }
 
     public interface IMovable {
-        public MovementComposite GetMovementComposite();
         public bool GetMoveState();
         public void SetMoveState(bool movableState);
         public void MoveTick();
         public UniTask Turning();
     }
 
+    public interface IMovementAccessible :IMovable {
+        public MovementComposite GetMovementComposite();
+    }
+
     public interface IAffectable {
-        public AffectorManager GetAffectorManager();
         public void Affect(DataSystem.Modifiers.Affector affector);
         public void Recover(DataSystem.Modifiers.Affector affector);
+    }
+
+    public interface IAffectManagerAccessible : IAffectable {
+        public AffectorManager GetAffectorManager();
     }
 }

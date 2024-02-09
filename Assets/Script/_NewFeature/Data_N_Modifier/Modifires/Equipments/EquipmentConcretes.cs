@@ -19,16 +19,16 @@ namespace Sophia.DataSystem
                 public LightFlash_009(SerialEquipmentData equipmentData) : base(equipmentData)
                 {
                     floatReferenceExtrasModifier = new ExtrasModifier<DamageInfo>(
-                        new CalculateDamageCommands.Dodge(equipmentData._extrasCalculateDatas.OnHit[0]._damageConverterData),
+                        new CalculateDamageCommands.Dodge(equipmentData._extrasCalculateDatas.OnDamaged[0]._damageConverterData),
                         E_EXTRAS_PERFORM_TYPE.Start,
-                        E_FUNCTIONAL_EXTRAS_TYPE.Hit
+                        E_FUNCTIONAL_EXTRAS_TYPE.Damaged
                     );
                 }
 
                 public override void Invoke(IDataAccessible dataAccessible)
                 {
                     base.Invoke(dataAccessible);
-                    Extras<DamageInfo> extrasRef = dataAccessible.GetExtras<DamageInfo>(E_FUNCTIONAL_EXTRAS_TYPE.Hit);
+                    Extras<DamageInfo> extrasRef = dataAccessible.GetExtras<DamageInfo>(E_FUNCTIONAL_EXTRAS_TYPE.Damaged);
                     extrasRef.AddModifier(floatReferenceExtrasModifier);
                     extrasRef.RecalculateExtras();
                 }
@@ -36,7 +36,7 @@ namespace Sophia.DataSystem
                 public override void Revert(IDataAccessible dataAccessible)
                 {
                     base.Revert(dataAccessible);
-                    Extras<DamageInfo> extrasRef = dataAccessible.GetExtras<DamageInfo>(E_FUNCTIONAL_EXTRAS_TYPE.Hit);
+                    Extras<DamageInfo> extrasRef = dataAccessible.GetExtras<DamageInfo>(E_FUNCTIONAL_EXTRAS_TYPE.Damaged);
                     extrasRef.RemoveModifier(floatReferenceExtrasModifier);
                     extrasRef.RecalculateExtras();
                 }

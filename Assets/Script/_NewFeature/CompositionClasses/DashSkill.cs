@@ -5,6 +5,7 @@ using System.Numerics;
 using System;
 
 using Vector3 = UnityEngine.Vector3;
+using Sophia.UserInterface;
 
 namespace Sophia.Composite
 {

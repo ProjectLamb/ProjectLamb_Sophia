@@ -11,7 +11,7 @@ public class HealthBar : MonoBehaviour
     public Gradient     gradient;
 
     private void Start() {
-        LifeCompositeRef ??= GetComponentInParent<Entity>().Life;
+        LifeCompositeRef ??= GetComponentInParent<Sophia.Entitys.Entity>().GetLifeComposite();
         int intValue = LifeCompositeRef.MaxHp;
         slider.maxValue = (float)intValue;
 
