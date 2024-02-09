@@ -10,7 +10,7 @@ namespace Sophia.Entitys
     
     using Cysharp.Threading.Tasks;
     using Sophia.DataSystem.Modifiers;
-
+    using Sophia.DataSystem.Functional;
     public class TEST_EnemyStub : Entity, IMovable
     {
 #region SerializeMember 
@@ -34,7 +34,7 @@ namespace Sophia.Entitys
 
         public override LifeComposite GetLifeComposite() => this.Life;
 
-        public override bool GetDamaged(int damage)
+        public override bool GetDamaged(DamageInfo damage)
         {
             bool isDamaged = false;
             if (Life.IsDie) { isDamaged = false; }
@@ -44,8 +44,6 @@ namespace Sophia.Entitys
         }
 
         public override bool Die() {
-            object nullObject = null;
-            GameManager.Instance.NewFeatureGlobalEvent.OnEnemyDie.PerformStartFunctionals(ref nullObject);
             Destroy(gameObject, 0.5f);
             return true;
         }
@@ -65,12 +63,12 @@ namespace Sophia.Entitys
 
 
         public override EntityStatReferer GetStatReferer() => StatReferer;
-
         public override EntityExtrasReferer GetExtrasReferer() => ExtrasReferer;
         public override Extras<T> GetExtras<T>(E_FUNCTIONAL_EXTRAS_TYPE functionalType) => ExtrasReferer.GetExtras<T>(functionalType);
 
 #endregion
 
+        public ExtrasModifier<DamageInfo> floatReferenceExtrasModifier;
         private void Awake()
         {
             TryGetComponent<Collider>(out entityCollider);
@@ -79,9 +77,9 @@ namespace Sophia.Entitys
             StatReferer = new EntityStatReferer();
             ExtrasReferer = new EntityExtrasReferer();
             Life = new LifeComposite(_baseEntityData.MaxHp, _baseEntityData.Defence);
-            // affectorComposite = new AffectorManager(_baseEntityData.Tenacity);
             
             MoveSpeed = new Stat(_baseEntityData.MoveSpeed, E_NUMERIC_STAT_TYPE.MoveSpeed, E_STAT_USE_TYPE.Natural);
+            _affectorManager.Init(_baseEntityData.Tenacity);
         }
 
         private void Start()
@@ -121,9 +119,15 @@ namespace Sophia.Entitys
         {
             throw new System.NotImplementedException();
         }
+        
+        public MovementComposite GetMovementComposite()
+        {
+            throw new System.NotImplementedException();
+        }
 #endregion
         public override AffectorManager GetAffectorManager() => this._affectorManager ??= GetComponentInChildren<AffectorManager>();
         public override void Affect(Affector affector) => this._affectorManager.Affect(affector);
         public override void Recover(Affector affector) => this._affectorManager.Recover(affector);
+
     }
 }
