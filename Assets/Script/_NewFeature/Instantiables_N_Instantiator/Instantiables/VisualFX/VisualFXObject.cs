@@ -79,6 +79,7 @@ namespace Sophia.Instantiates
         [SerializeField] private E_AFFECT_TYPE _affectType = E_AFFECT_TYPE.None;
         [SerializeField] private E_INSTANTIATE_STACKING_TYPE _stackingType = E_INSTANTIATE_STACKING_TYPE.Stack;
         [SerializeField] private E_INSTANTIATE_POSITION_TYPE _positioningType = E_INSTANTIATE_POSITION_TYPE.Outer;
+        [SerializeField] public  ParticleSystem _visualFXParticle;
         [SerializeField] private bool _isLooping = false; // 파티클이 반복되는 녀석인가.
         [SerializeField] private float _baseSize = 1f;
         [SerializeField] private float _baseDurateTime = 5f; //파티클 기본 지속 시간
@@ -131,8 +132,6 @@ namespace Sophia.Instantiates
 
         public bool IsInitialized { get; private set; }
         public bool IsActivated { get; private set; }
-
-        public      ParticleSystem VisualFXParticle;
             
         public      ParticleSystem.MainModule       VisualFXMainModule;
         public      ParticleSystem.EmissionModule   ParticleEmissionModule;
@@ -187,10 +186,10 @@ namespace Sophia.Instantiates
 
         private void Awake()
         {
-            VisualFXMainModule      = VisualFXParticle.main;
-            ParticleEmissionModule  = VisualFXParticle.emission;
-            ParticleTriggerModule   = VisualFXParticle.trigger;
-            ParticleColliderModule  = VisualFXParticle.collision;
+            VisualFXMainModule      = _visualFXParticle.main;
+            ParticleEmissionModule  = _visualFXParticle.emission;
+            ParticleTriggerModule   = _visualFXParticle.trigger;
+            ParticleColliderModule  = _visualFXParticle.collision;
 
             AffectType = _affectType;
             
@@ -231,10 +230,7 @@ namespace Sophia.Instantiates
         public VisualFXObject Init()
         {
             if (GetIsInitialized() == true) { throw new System.Exception("이미 초기화가 됨."); }
-
-
             ClearEvents();
-
             IsInitialized = true;
             return this;
         }

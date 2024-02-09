@@ -9,7 +9,6 @@ namespace Sophia.DataSystem.Referer
     {
 #region Life
 
-            private Extras<DamageInfo> OnHit = null;
             private Extras<DamageInfo> OnDamaged = null;
             private Extras<object> OnDead = null;
 
@@ -48,7 +47,6 @@ namespace Sophia.DataSystem.Referer
             public virtual void SetRefExtras<T>(Extras<T> extrasRef) {
                 switch(extrasRef.FunctionalType) 
                 {
-                    case E_FUNCTIONAL_EXTRAS_TYPE.Hit :                 {this.OnHit = extrasRef as Extras<DamageInfo>;               return;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Damaged :             {this.OnDamaged = extrasRef as Extras<DamageInfo>;           return;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Dead :                {this.OnDead = extrasRef as Extras<object>;             return;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Move :                {this.OnMove = extrasRef as Extras<Vector3>;            return;}
@@ -72,7 +70,6 @@ namespace Sophia.DataSystem.Referer
             public virtual Extras<T> GetExtras<T>(E_FUNCTIONAL_EXTRAS_TYPE functionalType) {
                 Extras<T> res = null;
                 switch(functionalType) {
-                    case E_FUNCTIONAL_EXTRAS_TYPE.Hit :                 {res = this.OnHit as Extras<T>;                 break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Damaged :             {res = this.OnDamaged as Extras<T>;             break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Dead :                {res = this.OnDead as Extras<T>;                break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Move :                {res = this.OnMove as Extras<T>;                break;}
@@ -98,7 +95,6 @@ namespace Sophia.DataSystem.Referer
             public virtual Extras<DamageInfo> GetExtrasDamageInfo(E_FUNCTIONAL_EXTRAS_TYPE functionalType) {
                 Extras<DamageInfo> res = null;
                 switch(functionalType) {
-                    case E_FUNCTIONAL_EXTRAS_TYPE.Hit :             {res = this.OnHit; break;   }
                     case E_FUNCTIONAL_EXTRAS_TYPE.Damaged :         {res = this.OnDamaged; break;   }
                     default: {
                         throw new System.Exception($"이 Entity 멤버에는 {functionalType.ToString()} 없음");
@@ -162,7 +158,6 @@ namespace Sophia.DataSystem.Referer
     public class PlayerExtrasReferer : EntityExtrasReferer{
 #region Life
 
-            private Extras<DamageInfo> OnHit = null;
             private Extras<DamageInfo> OnDamaged = null;
             private Extras<object> OnDead = null;
 
@@ -210,9 +205,6 @@ namespace Sophia.DataSystem.Referer
 
 #region Equipment
             
-            private Extras<object> OnEquip = null;
-            private Extras<object> OnDrop = null;
-            private Extras<int> OnGetGear = null;
 
 #endregion
 
@@ -221,7 +213,6 @@ namespace Sophia.DataSystem.Referer
             public override void SetRefExtras<T>(Extras<T> extrasRef) {
                 switch(extrasRef.FunctionalType) 
                 {
-                    case E_FUNCTIONAL_EXTRAS_TYPE.Hit :                 {this.OnHit = extrasRef as Extras<DamageInfo>;                   return;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Damaged :             {this.OnDamaged = extrasRef as Extras<DamageInfo>;               return;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Dead :                {this.OnDead = extrasRef as Extras<object>;                 return;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Move :                {this.OnMove = extrasRef as Extras<Vector3>;                return;}
@@ -252,7 +243,6 @@ namespace Sophia.DataSystem.Referer
             public override Extras<T> GetExtras<T>(E_FUNCTIONAL_EXTRAS_TYPE functionalType) {
                 Extras<T> res = null;
                 switch(functionalType) {
-                    case E_FUNCTIONAL_EXTRAS_TYPE.Hit :                 {res = this.OnHit as Extras<T>;                 break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Damaged :             {res = this.OnDamaged as Extras<T>;             break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Dead :                {res = this.OnDead as Extras<T>;                break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Move :                {res = this.OnMove as Extras<T>;                break;}
@@ -284,7 +274,6 @@ namespace Sophia.DataSystem.Referer
             public override Extras<DamageInfo> GetExtrasDamageInfo(E_FUNCTIONAL_EXTRAS_TYPE functionalType) {
                 Extras<DamageInfo> res = null;
                 switch(functionalType) {
-                    case E_FUNCTIONAL_EXTRAS_TYPE.Hit :             {res = this.OnHit; break;   }
                     case E_FUNCTIONAL_EXTRAS_TYPE.Damaged :         {res = this.OnDamaged; break;   }
                     default: {
                         throw new System.Exception($"이 Entity 멤버에는 {functionalType.ToString()} 없음");

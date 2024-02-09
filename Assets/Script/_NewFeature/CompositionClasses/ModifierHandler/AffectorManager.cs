@@ -91,7 +91,7 @@ namespace Sophia.Composite
         private void RunAffector(Affector affector) {
             if(affector.GetCurrentState() == AffectorRunState.Instance){
                 affector.ExecuteState(_entity);
-                affector.GetTimer().FrameTick(Time.deltaTime);
+                affector.GetTimerComposite().FrameTick(Time.deltaTime);
             }
             else if(affector.GetCurrentState() == AffectorTerminateState.Instance){
                 TerminateAffector(affector);
