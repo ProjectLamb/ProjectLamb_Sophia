@@ -6,23 +6,22 @@ using System;
 
 using Vector3 = UnityEngine.Vector3;
 using Sophia.UserInterface;
+using Sophia.DataSystem.Referer;
 
 namespace Sophia.Composite
 {
-    public class DashSkill : IUpdatorBindable {
+    public class DashSkill : IUpdatorBindable, IDataSetable {
 
 #region Members 
-        private Rigidbody rigidbodyRef;
-        private FMODAudioSource DashSource;
-        // private Stat MaxStamina = new Stat(3, E_STAT_USE_TYPE.Natural);
-        // private Stat StaminaRestoreSpeed = new Stat(1, E_STAT_USE_TYPE.Ratio);
 
         public Stat MaxStamina {get; private set;}
         public Stat StaminaRestoreSpeed {get; private set;}
-
         public Extras<object> DashExtras {get; private set;}
 
-        public Sophia.Composite.CoolTimeComposite Timer {get; private set;}
+        private Rigidbody rigidbodyRef;
+        private FMODAudioSource DashSource;
+
+        public CoolTimeComposite Timer {get; private set;}
         public DashCoolUI DashUI {get; private set;}
         public Func<(Vector3, int)> BindMovementData;
 
@@ -55,20 +54,7 @@ namespace Sophia.Composite
             
             AddToUpator();
         }
-        private void OnMaxStaminaUpdated() {
-            Timer.SetMaxStackCounts(this.MaxStamina.GetValueByNature());
-            DashUI.ResetUI();
-        }
-
-        private void OnStaminaRestoreSpeedUpdated() {
-            Timer.SetAcceleratrion(this.StaminaRestoreSpeed.GetValueByNature());
-            DashUI.ResetUI();
-        }
-
-        private void OnDashExtrasUpdated() {
-            Debug.Log("대쉬 추가 동작 변경됨!");
-        }
-
+        
 
 # endregion
 
@@ -83,7 +69,6 @@ namespace Sophia.Composite
 #region Setter
 
         public void SetAudioSource(FMODAudioSource source) { DashSource = source; }
-        
         public void SetDashCoolUIRefer(DashCoolUI UIRef) {
             DashUI = UIRef;
             DashUI.SetTimer(Timer);
@@ -91,7 +76,38 @@ namespace Sophia.Composite
 
 #endregion
 
-#region  Updator Implements
+#region Event
+        private void OnMaxStaminaUpdated() {
+            Timer.SetMaxStackCounts(this.MaxStamina.GetValueByNature());
+            DashUI.ResetUI();
+        }
+
+        private void OnStaminaRestoreSpeedUpdated() {
+            Timer.SetAcceleratrion(this.StaminaRestoreSpeed.GetValueByNature());
+            DashUI.ResetUI();
+        }
+
+        private void OnDashExtrasUpdated() {
+            Debug.Log("대쉬 추가 동작 변경됨!");
+        }
+
+#endregion
+
+#region Data Referer 
+        public void SetStatDataToReferer(EntityStatReferer statReferer)
+        {
+            statReferer.SetRefStat(MaxStamina);
+            statReferer.SetRefStat(StaminaRestoreSpeed);
+        }
+
+        public void SetExtrasDataToReferer(EntityExtrasReferer extrasReferer)
+        {
+            extrasReferer.SetRefExtras<object>(DashExtras);
+        }
+
+#endregion
+
+#region Updator Implements
 
         public void LateTick() {return;}
 
@@ -133,6 +149,5 @@ namespace Sophia.Composite
             Vector3 temp = moveVec * -Mathf.Log(1 / this.rigidbodyRef.drag);
             return temp.normalized * moveSpeed * 10;
         }
-
     }
 }

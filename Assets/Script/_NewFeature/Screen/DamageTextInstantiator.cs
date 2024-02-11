@@ -41,7 +41,6 @@ namespace Sophia.UserInterface
 
         public void Generate(DamageInfo _damageInfo)
         {
-            StartCoroutine(DoAndRenderUI(() =>{
                 if (StakingText == null)
                 {
                     StakingText = Instantiate(textUI, transform)
@@ -56,13 +55,6 @@ namespace Sophia.UserInterface
                                 .ReactivateTextUI(_damageInfo);
                 }
                 Debug.Log("Gen");
-            }));
-        }
-
-        IEnumerator DoAndRenderUI(UnityAction action)
-        {
-            action.Invoke(); 
-            yield return new WaitForEndOfFrame();
         }
     }
 }

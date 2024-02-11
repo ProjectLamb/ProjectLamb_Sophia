@@ -54,16 +54,14 @@ namespace Sophia.Instantiates {
         }
     }
     /*변하는 녀석*/
-
     public class Weapon : MonoBehaviour
     {
 
 #region SerializeMember Member
 
         [SerializeField] protected ModelManger  _modelManger;
-        [SerializeField] protected List<VisualFXBucket>  _visualFXBucket;
-
-        [SerializeField] private List<ProjectileObject> _projectiles;
+        [SerializeField] protected List<VisualFXBucket>  _weaponVisualFXBucket;
+        [SerializeField] private List<ProjectileObject> _weaponProjectiles;
         [SerializeField] private List<Animation> _performAnimation;
         [SerializeField] private int    _basePoolSize = 3;
         [SerializeField] private float  _baseRatioAttackSpeed = 1f;
@@ -139,7 +137,7 @@ namespace Sophia.Instantiates {
             if(IsInitialized) throw new System.Exception("이미 생성자로 초기화 됨");
             mInstantiatorRef = bucket;
             StateType = E_WEAPONE_USE_STATE.Normal;
-            _projectiles.ForEach(E => NormalQueue.Enqueue(E));
+            _weaponProjectiles.ForEach(E => NormalQueue.Enqueue(E));
 
             CurrentPoolSize         = _basePoolSize;
             CurrentRatioAttackSpeed = ratioAttackSpeed * _baseRatioAttackSpeed;
@@ -153,7 +151,7 @@ namespace Sophia.Instantiates {
             CurrentRatioAttackSpeed = _baseRatioAttackSpeed;
             CurrentRatioDamage = _baseRatioDamage;
             NormalQueue.Clear();
-            _projectiles.ForEach(E => NormalQueue.Enqueue(E));
+            _weaponProjectiles.ForEach(E => NormalQueue.Enqueue(E));
         }
 
         public void WeaponDistructor() {
@@ -169,16 +167,12 @@ namespace Sophia.Instantiates {
 #endregion
 
         public void Use(Player player) {
-            if(NormalQueue.Count == 0) { _projectiles.ForEach(E => NormalQueue.Enqueue(E)); }
+            if(NormalQueue.Count == 0) { _weaponProjectiles.ForEach(E => NormalQueue.Enqueue(E)); }
             ProjectileObject useProjectile = ProjectilePool.GetObject(NormalQueue.Dequeue()).Init(player);
             mInstantiatorRef.InstantablePositioning(useProjectile)
-                            .SetProjectileDamage(CalculateDamage(player.GetStat(E_NUMERIC_STAT_TYPE.Power)))?
+                            .SetProjectilePower(player.GetStat(E_NUMERIC_STAT_TYPE.Power))
+                            .SetProjectileDamageInfoByWaepon(player.GetExtras<DamageInfo>(E_FUNCTIONAL_EXTRAS_TYPE.WeaponUse))
                             .Activate();
-        }
-
-        private int CalculateDamage(int power) {
-            power = (int)(power * CurrentRatioDamage);
-            return power;
         }
     }
 }
