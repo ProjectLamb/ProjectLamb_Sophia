@@ -38,7 +38,9 @@ namespace Sophia.Entitys
         {
             bool isDamaged = false;
             if (Life.IsDie) { isDamaged = false; }
-            else {isDamaged = Life.Damaged(damage);}
+            else {
+                if(isDamaged = Life.Damaged(damage)) {GameManager.Instance.GlobalEvent.OnEnemyHitEvent.ForEach(Event => Event.Invoke());}
+            }
             if (Life.IsDie) { Die(); }
             return isDamaged;
         }

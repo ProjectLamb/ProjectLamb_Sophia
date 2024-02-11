@@ -7,12 +7,7 @@ namespace Sophia
     public interface IFunctionalCommand<T> : IUserInterfaceAccessible{
         public void Invoke(ref T referer);
     }
-    public interface IFunctionalRevertCommand<T> {
-        public void Revert(ref T referer);
-    }
 
-    public interface IFunctionalToggleCommand<T> : IFunctionalCommand<T>, IFunctionalRevertCommand<T> {
-    }
 
     public interface IUserInterfaceAccessible {
         public string GetName();
@@ -23,74 +18,7 @@ namespace Sophia
     public interface IRandomlyActivatable {
         public bool GetIsActivated();
     }
-
-    public class DefaultCommand<T> : IFunctionalToggleCommand<T>
-    {
-
-        #region UI Access
-
-        public string GetDescription() => "";
-        public string GetName() => "";
-        public Sprite GetSprite()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        #endregion
-
-        public void Invoke(ref T referer) { return; }
-        public void Revert(ref T referer) { return; }
-    }
-
-    public class ConvertedCommand : IFunctionalCommand<object>
-    {
-        float fixRefererF;
-        Vector3 fixRefererV;
-        Entitys.Entity fixRefererE;
-        UnityEvent function = new();
-
-        public ConvertedCommand (IFunctionalCommand<float> functionalCommand, float fixReferer) {
-            function = new UnityEvent();
-            fixRefererF = fixReferer;
-            function.AddListener(() => functionalCommand.Invoke(ref fixRefererF));
-        }
-        public ConvertedCommand (IFunctionalCommand<Vector3> functionalCommand, Vector3 fixReferer) {
-            function = new UnityEvent();
-            fixRefererV = fixReferer;
-            function.AddListener(() => functionalCommand.Invoke(ref fixRefererV));
-        }
-        public ConvertedCommand (IFunctionalCommand<Entitys.Entity> functionalCommand, Entitys.Entity fixReferer) {
-            function = new UnityEvent();
-            fixRefererE = fixReferer;
-            function.AddListener(() => functionalCommand.Invoke(ref fixRefererE));
-        }
-
-        private string descStr;
-        public string GetDescription() => descStr;
-        public void SetDescription(string str) => descStr = str;
-
-        
-        private string nameStr;
-        public string GetName() => nameStr;
-        public void SetName(string str) => nameStr = str;
-
-        public Sprite GetSprite() => null;        
-
-        public void Invoke(ref object referer) => function.Invoke();
-    }
-
-    public static class CommandConverter
-    {
-        public static IFunctionalCommand<object> Convert(IFunctionalCommand<float> command, float fixReferer) {
-            return new ConvertedCommand(command, fixReferer);
-        }
-        public static IFunctionalCommand<object> Convert(IFunctionalCommand<Vector3> command, Vector3 fixReferer) {
-            return new ConvertedCommand(command, fixReferer);
-        }
-        public static IFunctionalCommand<object> Convert(IFunctionalCommand<Entitys.Entity> command, Entitys.Entity fixReferer) {
-            return new ConvertedCommand(command, fixReferer);
-        }
-    }
+    
 }
 
 /*

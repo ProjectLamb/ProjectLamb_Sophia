@@ -5,7 +5,7 @@ namespace Sophia.Instantiates
 {
     
     using Sophia.Entitys;
-    using Sophia.DataSystem.Modifiers.NewConcreteAffector;
+    using Sophia.DataSystem.Modifiers.ConcreteAffector;
     using FMOD;
     using Sophia.DataSystem.Modifiers;
 

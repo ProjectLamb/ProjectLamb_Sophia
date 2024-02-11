@@ -14,7 +14,6 @@ namespace Sophia.DataSystem.Modifiers
         public readonly string Description;
         public readonly Sprite Icon;
         public readonly Dictionary<E_NUMERIC_STAT_TYPE, StatModifier> StatModifiers = new();
-        public List<ExtrasModifier<DamageInfo>> DamageExtrasModifiers = new();
 
         public Equipment(SerialEquipmentData equipmentData) {
             Name            = equipmentData._equipmentName;
@@ -29,12 +28,7 @@ namespace Sophia.DataSystem.Modifiers
                     StatModifiers.Add(statType, new StatModifier(statValue.amount, statValue.calType, statType));
                 }
             }
-            ExtrasModifier<DamageInfo> DamageExtrasModifier = new ExtrasModifier<DamageInfo> (
-                new CalculateDamageCommands.Dodge(equipmentData._extrasCalculateDatas.OnDamaged[0]._damageConverterData),
-                E_EXTRAS_PERFORM_TYPE.Start,
-                E_FUNCTIONAL_EXTRAS_TYPE.Damaged
-            );
-            DamageExtrasModifiers.Add(DamageExtrasModifier);
+
             // foreach(E_FUNCTIONAL_EXTRAS_TYPE funcType in Enum.GetValues(typeof(E_FUNCTIONAL_EXTRAS_TYPE))) {
             //     SerialExtrasModifireDatas extrasValue = equipmentData._extraDatas.GetModifireDatas(funcType);
             //     if(funcType....)
@@ -46,27 +40,17 @@ namespace Sophia.DataSystem.Modifiers
         public virtual void Invoke(IDataAccessible dataAccessible) {
             foreach (var modifier in StatModifiers)
             {
-                Stat statRef = dataAccessible.GetStatReferer().GetStat(modifier.Key);
+                Stat statRef = dataAccessible.GetStat(modifier.Key);
                 statRef.AddModifier(modifier.Value);
                 statRef.RecalculateStat();
-            }
-            foreach(var modifier in DamageExtrasModifiers) {
-                Extras<DamageInfo> extrasRef = dataAccessible.GetExtrasReferer().GetExtras<DamageInfo>(E_FUNCTIONAL_EXTRAS_TYPE.Damaged);
-                extrasRef.AddModifier(modifier);
-                extrasRef.RecalculateExtras();
             }
         }
         public virtual void Revert(IDataAccessible dataAccessible) {
             foreach (var modifier in StatModifiers)
             {
-                Stat statRef = dataAccessible.GetStatReferer().GetStat(modifier.Key);
+                Stat statRef = dataAccessible.GetStat(modifier.Key);
                 statRef.RemoveModifier(modifier.Value);
                 statRef.RecalculateStat();
-            }
-            foreach(var modifier in DamageExtrasModifiers) {
-                Extras<DamageInfo> extrasRef = dataAccessible.GetExtrasReferer().GetExtras<DamageInfo>(E_FUNCTIONAL_EXTRAS_TYPE.Damaged);
-                extrasRef.RemoveModifier(modifier);
-                extrasRef.RecalculateExtras();
             }
         }
 

@@ -1,17 +1,10 @@
-using System;
-using System.Linq;
 using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using FMODPlus;
 
-using Component = UnityEngine.Component;
-using Random = UnityEngine.Random;
-using Sophia.Composite;
-
+using Sophia;
 
 public class Player : Entity {
 

@@ -59,7 +59,7 @@ namespace Sophia.DataSystem.Referer
 
     public class PlayerStatReferer : EntityStatReferer
     {
-        public PlayerStatReferer() {
+        public PlayerStatReferer() : base() {
             this.Stats.Add(E_NUMERIC_STAT_TYPE.MaxStamina,                               null);
             this.Stats.Add(E_NUMERIC_STAT_TYPE.StaminaRestoreSpeed,                      null);
             this.Stats.Add(E_NUMERIC_STAT_TYPE.CoolDownSpeed,                            null);
