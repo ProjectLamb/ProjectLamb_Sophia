@@ -1,12 +1,7 @@
-using System.Linq;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
-using UnityEngine.Events;
 using Sophia_Carriers;
 using DG.Tweening;
-using Sophia.Composite;
+using Sophia;
 
 /// <summary>
 /// 적 클래스 <br/>

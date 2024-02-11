@@ -5,6 +5,7 @@ namespace Sophia {
 
     [System.Serializable]
     public struct SerialExtrasCalculateDatas {
-        [SerializeField] public SerialOnDamageExtrasModifierDatas[] OnDamaged;
+        [SerializeField] public SerialOnDamageExtrasModifierDatas OnDamaged;
+        [SerializeField] public SerialOnConveyAffectExtrasModifierDatas OnConveyAffect;
     }
 }

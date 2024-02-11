@@ -1,11 +1,6 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.AI;
 using Sophia_Carriers;
-using Sophia.Composite;
+using Sophia;
 
 public class Sandbag : Entity
 {    

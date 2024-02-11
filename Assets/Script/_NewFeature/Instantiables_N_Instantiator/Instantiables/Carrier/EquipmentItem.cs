@@ -4,7 +4,7 @@ namespace Sophia.Instantiates
 {
     using Sophia.DataSystem;
     using Sophia.DataSystem.Modifiers;
-    using Sophia.DataSystem.Referer;
+    using Sophia.DataSystem.Modifiers.ConcreteEquipment;
     using Sophia.Entitys;
     public class EquipmentItem : Carrier
     {
@@ -12,7 +12,7 @@ namespace Sophia.Instantiates
         public Equipment equipment {get; private set;}
 
         private void Awake() {
-            equipment = new Equipment(_equipmentData);
+            equipment = FactoryConcreteEquipment.GetEquipmentByID(ref _equipmentData);
         }
 
         protected override void OnTriggerLogic(Collider entity)

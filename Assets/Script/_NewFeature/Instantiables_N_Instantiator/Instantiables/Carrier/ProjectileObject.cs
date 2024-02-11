@@ -20,7 +20,7 @@ namespace Sophia.Instantiates
         [SerializeField] private E_AFFECT_TYPE _affectType = E_AFFECT_TYPE.None;
         [SerializeField] private E_INSTANTIATE_STACKING_TYPE _stackingType = E_INSTANTIATE_STACKING_TYPE.Stack;
         [SerializeField] private E_INSTANTIATE_POSITION_TYPE _positioningType = E_INSTANTIATE_POSITION_TYPE.Outer;
-        [SerializeField] public  DamageInfo    _baseProjectileDamage;
+        [SerializeField] private DamageInfo    _baseProjectileDamage;
         [SerializeField] private float _baseDurateTime = 5f; //파티클 기본 지속 시간
         [SerializeField] private float _baseSize = 1f;
         [SerializeField] private float _baseForwardingSpeed = 5f; //파티클 기본 지속 시간
@@ -121,7 +121,6 @@ namespace Sophia.Instantiates
             }
         }
 
-
         public void GetByPool()
         {
             gameObject.SetActive(false);
@@ -165,6 +164,10 @@ namespace Sophia.Instantiates
             if(owner == null) throw new System.Exception("투사체 생성 엔티티가 NULL임");
 
             OwnerRef = owner;
+            CurrentSize = _baseSize;
+            CurrentDurateTime = _baseDurateTime;
+            CurrentProjectileDamage = _baseProjectileDamage;
+            CurrentForwardingSpeed = _baseForwardingSpeed;
 
             ClearEvents();
             transform.tag = owner.transform.tag + "Projectile";
@@ -183,6 +186,7 @@ namespace Sophia.Instantiates
             CurrentSize = _baseSize * sizeRatio;
             return this;
         }
+        
         public ProjectileObject SetScaleMultiplyByRatio(float sizeMulRatio)
         {
             CurrentSize *= sizeMulRatio;
@@ -198,8 +202,17 @@ namespace Sophia.Instantiates
         /*
         이거 같은 경우는 플레이어가 자체 프로젝타일 사용 안할 수 도 있기 떄문임
         */
-        public ProjectileObject SetProjectileDamage(int damage) {
-            mCurrentProjectileDamage.damageAmount = damage;
+        public ProjectileObject SetProjectilePower(int power) {
+            mCurrentProjectileDamage.damageAmount = power;
+            return this;
+        }
+
+        public ProjectileObject SetProjectileDamageInfoByWaepon(Extras<DamageInfo> weaponUse) {
+            weaponUse.PerformStartFunctionals(ref mCurrentProjectileDamage);
+            return this;
+        }
+        public ProjectileObject SetProjectileDamageInfoBySkill(Extras<DamageInfo> skillUse) {
+            skillUse.PerformStartFunctionals(ref mCurrentProjectileDamage);
             return this;
         }
 
@@ -302,6 +315,7 @@ namespace Sophia.Instantiates
         }
 
 #endregion
+
         private void Awake()
         {
             ProjectileMainModule    = ProjectileParticle.main;
@@ -312,18 +326,12 @@ namespace Sophia.Instantiates
             AffectType = _affectType;
             StackingType = _stackingType;
             PositioningType = _positioningType;
-
-            CurrentSize = _baseSize;
-            CurrentDurateTime = _baseDurateTime;
-            CurrentProjectileDamage = _baseProjectileDamage;
-            CurrentForwardingSpeed = _baseForwardingSpeed;   
-
             ProjectileParticle.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             ProjectileMainModule.stopAction = ParticleSystemStopAction.Callback;
 
             NomalizeScaleVector = Vector3.Normalize(this.transform.localScale);
         }
-
+        
         private void OnParticleSystemStopped() => DeActivate();
 
         protected override void OnTriggerLogic(Collider entity) {

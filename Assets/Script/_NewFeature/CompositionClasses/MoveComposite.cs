@@ -6,18 +6,18 @@ using UnityEngine.InputSystem;
 using UnityEngine.Events;
 using Cysharp.Threading.Tasks;
 using Sophia.DataSystem;
+using Sophia.DataSystem.Referer;
 
 namespace Sophia.Composite
 {
-    public class MovementComposite 
+    public class MovementComposite : IDataSetable
     {
 
 #region Data
 
-        public  Stat MoveSpeed {get; protected set;}
-
-        public Extras<Vector3> MoveExtras {get; protected set;}
-        public Extras<object> IdleExtras {get; protected set;}
+        public Stat             MoveSpeed   {get; protected set;}
+        public Extras<Vector3>  MoveExtras  {get; protected set;}
+        public Extras<object>   IdleExtras  {get; protected set;}
 
 #endregion
 
@@ -38,20 +38,9 @@ namespace Sophia.Composite
             
             RbRef = rigidbody;
 
-            MoveSpeed = new Stat(baseMoveSpeed, 
-                E_NUMERIC_STAT_TYPE.MoveSpeed, 
-                E_STAT_USE_TYPE.Natural, 
-                OnMoveSpeedUpdated
-            );
-
-            MoveExtras = new Extras<Vector3>(
-                E_FUNCTIONAL_EXTRAS_TYPE.Move,
-                OnMoveExtrasUpdated
-            );
-            IdleExtras = new Extras<object>(
-                E_FUNCTIONAL_EXTRAS_TYPE.Idle,
-                OnIdleUpdated
-            );
+            MoveSpeed   = new Stat(baseMoveSpeed, E_NUMERIC_STAT_TYPE.MoveSpeed, E_STAT_USE_TYPE.Natural, OnMoveSpeedUpdated);
+            MoveExtras  = new Extras<Vector3>( E_FUNCTIONAL_EXTRAS_TYPE.Move, OnMoveExtrasUpdated);
+            IdleExtras  = new Extras<object>( E_FUNCTIONAL_EXTRAS_TYPE.Idle, OnIdleUpdated );
             
             IsMovable = true;
         }
@@ -59,18 +48,9 @@ namespace Sophia.Composite
 
 #region Event
 
-        public void OnMoveSpeedUpdated() {
-            Debug.Log("이동속도 변경됨!");
-            // throw new System.NotImplementedException();
-        }
-        public void OnMoveExtrasUpdated() {
-            Debug.Log("이동 추가 동작 변경됨!");
-            // throw new System.NotImplementedException();
-        }
-        public void OnIdleUpdated() {
-            Debug.Log("대기 추가 동작 변경됨!");
-            // throw new System.NotImplementedException();
-        }
+        public void OnMoveSpeedUpdated() => Debug.Log("이동속도 변경됨!");
+        public void OnMoveExtrasUpdated() => Debug.Log("이동 추가 동작 변경됨!");
+        public void OnIdleUpdated() => Debug.Log("대기 추가 동작 변경됨!");
 
         public void SetInputVector(Vector2 vector) => mInputVec = vector;
 
@@ -97,6 +77,20 @@ namespace Sophia.Composite
 #region Setter 
 
         public void SetMovableState(bool Input) => IsMovable = Input;
+
+#endregion
+
+#region Data Referer 
+        public void SetStatDataToReferer(EntityStatReferer statReferer)
+        {
+            statReferer.SetRefStat(MoveSpeed);
+        }
+
+        public void SetExtrasDataToReferer(EntityExtrasReferer extrasReferer)
+        {
+            extrasReferer.SetRefExtras<Vector3>(MoveExtras);
+            extrasReferer.SetRefExtras<object>(IdleExtras);
+        }
 
 #endregion
 
@@ -148,7 +142,6 @@ namespace Sophia.Composite
             _angle *= Mathf.Deg2Rad;
             return new Vector3(Mathf.Sin(_angle), 0, Mathf.Cos(_angle));
         }
-
 #endregion
     }   
 }

@@ -11,6 +11,7 @@ namespace Sophia.Entitys
     using Sophia.Instantiates;
     using Sophia.DataSystem.Referer;
     using Sophia.DataSystem.Modifiers;
+    using System.Collections.Generic;
 
     public class Player : Entity, IMovementAccessible, IAffectManagerAccessible
     {
@@ -37,6 +38,15 @@ namespace Sophia.Entitys
         public MovementComposite Movement               { get; private set; }
         public DashSkill DashSkillAbility               { get; private set; }
         public Stat Power                               { get; private set; }
+
+        private List<IDataSetable> Setables = new();
+        private void SetDataToReferer(){
+            StatReferer.SetRefStat(Power);
+            Setables.ForEach(E => {
+                E.SetStatDataToReferer(StatReferer);
+                E.SetExtrasDataToReferer(ExtrasReferer);
+            });
+        }
 
 #endregion
 
@@ -116,48 +126,27 @@ namespace Sophia.Entitys
 
             StatReferer = new PlayerStatReferer();
             ExtrasReferer = new PlayerExtrasReferer();
+
             Life = new LifeComposite(_basePlayerData.MaxHp, _basePlayerData.Defence);
             Movement = new MovementComposite(entityRigidbody, _basePlayerData.MoveSpeed);
             DashSkillAbility = new DashSkill(this.entityRigidbody, Movement.GetMovemenCompositetData);
-            Power = new Stat(_basePlayerData.Power,
-                                            E_NUMERIC_STAT_TYPE.Power,
-                                            E_STAT_USE_TYPE.Natural,
-                                            OnPowerUpdated
-                                        );
+            Power = new Stat(_basePlayerData.Power, E_NUMERIC_STAT_TYPE.Power, E_STAT_USE_TYPE.Natural, OnPowerUpdated );
             _affectorManager.Init(_basePlayerData.Tenacity);
+            
+
+            Setables.Add(Life);
+            Setables.Add(Movement);
+            Setables.Add(DashSkillAbility);
+            Setables.Add(_projectileBucket);
+            Setables.Add(_weaponManager);
+            Setables.Add(_affectorManager);
         }
         private void Start()
         {
-            StatReferer.SetRefStat(Life.MaxHp);
-            StatReferer.SetRefStat(Life.Defence);
-
-            ExtrasReferer.SetRefExtras<DamageInfo>(Life.DamagedExtras);
-            ExtrasReferer.SetRefExtras<object>(Life.DeadExtras);
-
-            StatReferer.SetRefStat(Movement.MoveSpeed);
-            ExtrasReferer.SetRefExtras<Vector3>(Movement.MoveExtras);
-            ExtrasReferer.SetRefExtras<object>(Movement.IdleExtras);
-
-            StatReferer.SetRefStat(DashSkillAbility.MaxStamina);
-            StatReferer.SetRefStat(DashSkillAbility.StaminaRestoreSpeed);
-            ExtrasReferer.SetRefExtras<object>(DashSkillAbility.DashExtras);
-
-
-            StatReferer.SetRefStat(Power);
-
-            StatReferer.SetRefStat(_projectileBucket.InstantiableDurateLifeTimeMultiplyRatio);
-            StatReferer.SetRefStat(_projectileBucket.InstantiableSizeMultiplyRatio);
-            StatReferer.SetRefStat(_projectileBucket.InstantiableForwardingSpeedMultiplyRatio);
-
-            StatReferer.SetRefStat(_weaponManager.PoolSize);
-            StatReferer.SetRefStat(_weaponManager.AttackSpeed);
-            StatReferer.SetRefStat(_weaponManager.MeleeRatio);
-            StatReferer.SetRefStat(_affectorManager.Tenacity);
-
+            SetDataToReferer();
             DashSkillAbility.SetAudioSource(DashSource);
-
-            ExtrasReferer.SetRefExtras<Entity>(new Extras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.TargetAffected, () => { Debug.Log("Affect Extras Changed"); }));
         }
+        
         public void Skill() { throw new System.NotImplementedException(); }
 
 #region Weapon Hanlder
@@ -189,18 +178,19 @@ namespace Sophia.Entitys
         public override AffectorManager GetAffectorManager() => this._affectorManager ??= GetComponentInChildren<AffectorManager>();
         public override void Affect(Affector affector) => this._affectorManager.Affect(affector);
         public override void Recover(Affector affector) => this._affectorManager.Recover(affector);
-        
-        #endregion
 
-    }
+        public void SetStatDataToReferer(EntityStatReferer statReferer)
+        {
+            throw new NotImplementedException();
+        }
 
-    public interface IAttackable
-    {
-        public void Attack();
-    }
+        public void SetStatDataToReferer(EntityExtrasReferer extrasReferer)
+        {
+            throw new NotImplementedException();
+        }
 
-    public interface IWeaponManagerAccessible : IAffectable {
-        public WeaponManager GetWeaponManager();
+#endregion
+
     }
 }
 

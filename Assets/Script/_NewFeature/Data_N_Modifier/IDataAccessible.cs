@@ -19,13 +19,13 @@ namespace Sophia
     public enum E_NUMERIC_STAT_TYPE {
         None = 0,
         
-        MaxHp = 1, Defence, Power, AttackSpeed, MoveSpeed, Accecerate, Tenacity, 
+        MaxHp = 1, Defence, Power, MoveSpeed, Accecerate, Tenacity, 
 
         MaxStamina = 11, StaminaRestoreSpeed,
 
         InstantiableDurateLifeTimeMultiplyRatio = 21, InstantiableSizeMultiplyRatio, InstantiableForwardingSpeedMultiplyRatio,
 
-        PoolSize = 31, MeleeRatio, RangerRatio, TechRatio,
+        PoolSize = 31, AttackSpeed, MeleeRatio, RangerRatio, TechRatio,
 
         EfficienceMultiplyer = 41, CoolDownSpeed,
 
@@ -39,10 +39,10 @@ namespace Sophia
     {
         None = 0,
         ENTITY_TYPE = 10,
-            Move, Damaged, Attack, OwnerAffected, TargetAffected, Dead, Idle, PhyiscTriggered,
+            Move, Damaged, Attack, ConveyAffect, Dead, Idle, PhyiscTriggered,
         
         PLAYER_TYPE = 20,
-            Dash, skill,
+            Dash, Skill,
         WEAPON_TYPE = 30, 
             WeaponUse, ProjectileRestore,
         
@@ -79,5 +79,11 @@ namespace Sophia
     public interface IDataAccessible : IStatAccessible, IExtrasAccessible {
         public EntityStatReferer GetStatReferer();
         public EntityExtrasReferer GetExtrasReferer();
+    }
+
+    public interface IDataSetable
+    {
+        public void SetStatDataToReferer(EntityStatReferer statReferer);
+        public void SetExtrasDataToReferer(EntityExtrasReferer extrasReferer);
     }
 }
