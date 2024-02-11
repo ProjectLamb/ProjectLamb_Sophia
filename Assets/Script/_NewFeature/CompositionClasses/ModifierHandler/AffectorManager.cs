@@ -7,18 +7,20 @@ namespace Sophia.Composite
     using Sophia.Entitys;
     using Sophia.DataSystem;
     using Sophia.DataSystem.Modifiers;
+    using Sophia.DataSystem.Referer;
 
-    public class AffectorManager : MonoBehaviour
+    public class AffectorManager : MonoBehaviour, IDataSetable
     {
         
-        #region SerializeMember
+#region SerializeMember
 
         [SerializeField] private Entity _entity;
         [SerializeField] private List<string> _currentAffectors;
 
-        #endregion
+#endregion
 
-        #region Member
+#region Member
+
         public IDataAccessible DataAccessible { get; private set; }
         public Dictionary<E_AFFECT_TYPE, Affector> AffectingStacks { get; private set; }
         public Stat Tenacity { get; private set; }
@@ -32,11 +34,22 @@ namespace Sophia.Composite
             );
         }
 
-        private void OnTenacityUpdated()
+#endregion
+
+#region Event
+            private void OnTenacityUpdated() => Debug.Log("TenacityUpdated");
+            
+#endregion
+
+#region Data Referer
+        public void SetStatDataToReferer(EntityStatReferer statReferer)
         {
-            Debug.Log("TenacityUpdated");
+            statReferer.SetRefStat(Tenacity);
         }
-        #endregion
+
+        public void SetExtrasDataToReferer (EntityExtrasReferer entityExtrasReferer) {}
+
+#endregion
 
         private void Awake()
         {
@@ -75,7 +88,7 @@ namespace Sophia.Composite
             }
         }
         
-        #region Helper
+#region Helper
         private void StartAffector(Affector affector) {
             affector.ChangeState(AffectorStartState.Instance);
             AffectingStacks.Add(affector.AffectType, affector);
@@ -106,6 +119,6 @@ namespace Sophia.Composite
                 }
             }
         }
-        #endregion
+#endregion
     }
 }

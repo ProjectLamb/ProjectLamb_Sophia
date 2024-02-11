@@ -37,7 +37,7 @@ namespace Sophia.UserInterface
     {
 
         #region Members
-        [SerializeField] private TextMeshProUGUI _tmpPro;
+        [SerializeField] Michsky.UI.MTP.TextItem _textItem;
         [SerializeField] private Rigidbody _rigid;
         public float AnimationSpeed { get; private set; }
         public float DestroyTimer { get; private set; }
@@ -48,7 +48,7 @@ namespace Sophia.UserInterface
         #region Getter
         public float GetTextHeight()
         {
-            return _tmpPro.maxHeight;
+            return _textItem.textObject.maxHeight;
         }
         public Vector3 GetNextPosition()
         {
@@ -72,15 +72,16 @@ namespace Sophia.UserInterface
 
         public DamageTextUI SetTextByString(string str)
         {
-            if (_tmpPro.text.Length != 0) return this;
-            _tmpPro.text = str;
+            if (_textItem.text.Length != 0) return this;
+            _textItem.text = str;
+            _textItem.UpdateText();
             return this;
         }
         public DamageTextUI SetText(float amount)
         {
-            if (_tmpPro.text.Length != 0) return this;
+            if (_textItem.text.Length != 0) return this;
             DamageAmount = (int)amount;
-            _tmpPro.text = DamageAmount.ToString();
+            _textItem.text = DamageAmount.ToString();
             return this;
         }
 
@@ -100,11 +101,6 @@ namespace Sophia.UserInterface
 
         private void Awake()
         {
-            if (_tmpPro == null && TryGetComponent<TextMeshProUGUI>(out _tmpPro))
-            {
-                throw new System.Exception("TextMeshProUGUI 컴포넌트 없음");
-            }
-
             if (_rigid == null && TryGetComponent<Rigidbody>(out _rigid))
             {
                 throw new System.Exception("RigidBody 컴포넌트 없음");
@@ -143,18 +139,18 @@ namespace Sophia.UserInterface
             {
                 Tween ShakeTween = transform.DOShakePosition(0.1f, 10);
                 Tween CountTween = DOTween.To(() => currentDamage, x => currentDamage = x, newDamage, 0.1f)
-                                        .OnUpdate(() => { _tmpPro.text = $"<b>!!{currentDamage}!!</b>"; DamageAmount = currentDamage; });
+                                        .OnUpdate(() => { _textItem.text = $"<b>!{currentDamage}!</b>"; _textItem.UpdateText(); DamageAmount = currentDamage; });
                 ReactivateSeq.Append(ShakeTween).Join(CountTween).OnComplete(() => { _rigid.velocity = Vector3.up * AnimationSpeed; }).Play();
             }
-            else if (damageInfo.damageHandleType == DamageHandleType.Dodged)
+            else if (damageInfo.damageHandleType == DamageHandleType.Dodge)
             {
-                ReactivateSeq.OnComplete(() => { _tmpPro.text = $"<#666><i>Dodged<i></color>"; _rigid.velocity = Vector3.up * AnimationSpeed; }).Play();
+                ReactivateSeq.OnComplete(() => { _textItem.text = $"<#666><i>Dodged<i></color>"; _textItem.UpdateText(); _rigid.velocity = Vector3.up * AnimationSpeed; }).Play();
             }
             else
             {
                 Tween ShakeTween = transform.DOShakePosition(0.1f, 10);
                 Tween CountTween = DOTween.To(() => currentDamage, x => currentDamage = x, newDamage, 0.1f)
-                                        .OnUpdate(() => { _tmpPro.text = currentDamage.ToString(); DamageAmount = currentDamage; });
+                                        .OnUpdate(() => { _textItem.text = currentDamage.ToString(); _textItem.UpdateText(); DamageAmount = currentDamage; });
                 ReactivateSeq.Append(ShakeTween).Join(CountTween).OnComplete(() => { _rigid.velocity = Vector3.up * AnimationSpeed; }).Play();
             }
             CurrentDestroyCoroutine = StartCoroutine(CoDestroy());

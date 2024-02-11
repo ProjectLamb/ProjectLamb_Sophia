@@ -4,21 +4,21 @@ namespace Sophia.DataSystem.Functional
 {
     using Sophia.Composite;
     using UnityEngine;
-
-    public static class CalculateDamageCommands
+    
+    public static class CalculateDamageCommand
     {
-        public class Dodge : IFunctionalCommand<DamageInfo>
+        public class DodgeHit : IFunctionalCommand<DamageInfo>
         {
             public SerialDamageConverterData converterData;
             public System.Random random;
-            public Dodge(SerialDamageConverterData serialDamageConverterData) {
+            public DodgeHit(SerialDamageConverterData serialDamageConverterData) {
                 random = new System.Random();
                 converterData = serialDamageConverterData;
             }
             public void Invoke(ref DamageInfo referer)
             {
                 if(converterData._activatePercentage <= random.Next(101)) return;
-                referer.damageHandleType = DamageHandleType.Dodged;
+                referer.damageHandleType = DamageHandleType.Dodge;
                 referer.damageAmount = 0;
                 referer.damageRatio = 0;
             }
@@ -30,24 +30,27 @@ namespace Sophia.DataSystem.Functional
             #endregion
         }
 
-        public class LuckyHit : IFunctionalCommand<DamageInfo>
+        public class CriticalHit : IFunctionalCommand<DamageInfo>
         {
             public SerialDamageConverterData converterData;
             public System.Random random;
-            public LuckyHit(SerialDamageConverterData serialDamageConverterData) {
+            public CriticalHit(SerialDamageConverterData serialDamageConverterData) {
                 random = new System.Random();
                 converterData = serialDamageConverterData;
             }
             public void Invoke(ref DamageInfo referer)
             {
+                if(converterData._activatePercentage <= random.Next(101)) return;
                 referer.hitType = HitType.Critical;
-                referer.damageRatio = converterData._damageRatio;
+                referer.damageRatio *= converterData._damageRatio;
             }
 
             #region UI Access
+
             public string GetName() =>"럭키 치명타";
             public string GetDescription() => "럭키 치명타";
             public Sprite GetSprite() => null;
+
             #endregion
         }
     }

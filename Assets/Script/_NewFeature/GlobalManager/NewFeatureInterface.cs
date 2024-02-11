@@ -60,4 +60,13 @@ namespace Sophia
 //     public interface IUseMonobehaviourConstructor {
 //         public void Initialize(object data);
 //     }
+
+    public interface IAttackable
+    {
+        public void Attack();
+    }
+
+    public interface IWeaponManagerAccessible : IAffectable {
+        public WeaponManager GetWeaponManager();
+    }
 }

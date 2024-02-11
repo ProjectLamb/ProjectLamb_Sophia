@@ -2,12 +2,14 @@
 using System.Text;
 namespace Sophia.DataSystem.Functional
 {
-    using Sophia.DataSystem.Modifiers.NewConcreteAffector;
+    using Sophia.DataSystem.Modifiers.ConcreteAffector;
+    using Sophia.Entitys;
     using Sophia.Instantiates;
     using UnityEngine;
 
-    public class ConveyAffect
+    public class ConveyAffectCommand
     {
+
         public class FactoryBurnAffectCommand : IFunctionalCommand<Entitys.Entity>
         {
             public readonly SerialAffectorData serialAffectorDataRef;
