@@ -9,6 +9,23 @@ namespace Sophia.DataSystem
 
     namespace Modifiers.ConcreteAffector
     {
+        public static class FactoryConcreteAffect {
+            public static Affector GetAffectByID(in SerialAffectorData affectData, Entitys.Entity entity) {
+                switch(affectData._affectType)
+                {
+                    case E_AFFECT_TYPE.Burn         :   {return new BurnAffect(in affectData);}
+                    case E_AFFECT_TYPE.Poisoned     :   {return new PoisonedAffect(in affectData);}
+                    case E_AFFECT_TYPE.Bleed        :   {return new BleedAffect(in affectData);}
+                    case E_AFFECT_TYPE.Cold         :   {return new ColdAffect(in affectData);}
+                    case E_AFFECT_TYPE.Stern        :   {return new SternAffect(in affectData);}
+                    case E_AFFECT_TYPE.Bounded      :   {return new BoundedAffect(in affectData);}
+                    case E_AFFECT_TYPE.Knockback    :   {return new KnockbackAffect(in affectData, entity.GetGameObject().transform);}
+                    case E_AFFECT_TYPE.BlackHole    :   {return new BlackHoleAffect(in affectData, entity.GetGameObject().transform);}
+                    case E_AFFECT_TYPE.Airborne    :    {return new AirborneAffect(in affectData);}
+                    default : {return null;}
+                }
+            }
+        }
         public class BurnAffect : Affector
         {
             private DamageAtomics DamageAffector;

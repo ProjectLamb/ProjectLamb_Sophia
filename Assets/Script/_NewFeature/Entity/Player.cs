@@ -17,8 +17,8 @@ namespace Sophia.Entitys
     {
 
 #region SerializeMember 
-        //      [SerializeField] private ModelManger  _modelManger;
-        //      [SerializeField] private VisualFXBucket  _visualFXBucket;
+//      [SerializeField] private ModelManger  _modelManger;
+//      [SerializeField] private VisualFXBucket  _visualFXBucket;
         [SerializeField] private SerialBasePlayerData   _basePlayerData;
         [SerializeField] private ProjectileBucket       _projectileBucket;
         [SerializeField] private WeaponManager          _weaponManager;
@@ -29,24 +29,14 @@ namespace Sophia.Entitys
 #endregion
 
 #region Members
-        //      [HideInInspector] public Collider entityCollider;
-        //      [HideInInspector] public Rigidbody entityRigidbody;
+//      [HideInInspector] public Collider entityCollider;
+//      [HideInInspector] public Rigidbody entityRigidbody;
+//      [HideInInspector] protected List<IDataSettable> Settables = new();
 
-        public PlayerStatReferer StatReferer            { get; private set; }
-        public PlayerExtrasReferer ExtrasReferer        { get; private set; }
         public LifeComposite Life                       { get; private set; }
         public MovementComposite Movement               { get; private set; }
         public DashSkill DashSkillAbility               { get; private set; }
         public Stat Power                               { get; private set; }
-
-        private List<IDataSetable> Setables = new();
-        private void SetDataToReferer(){
-            StatReferer.SetRefStat(Power);
-            Setables.ForEach(E => {
-                E.SetStatDataToReferer(StatReferer);
-                E.SetExtrasDataToReferer(ExtrasReferer);
-            });
-        }
 
 #endregion
 
@@ -71,7 +61,9 @@ namespace Sophia.Entitys
 #endregion
 
 #region Data Accessible
+
         public override EntityStatReferer GetStatReferer() => this.StatReferer;
+        
         public override Stat GetStat(E_NUMERIC_STAT_TYPE numericType) => StatReferer.GetStat(numericType);
 
         [ContextMenu("GetStatsInfo")]
@@ -86,13 +78,16 @@ namespace Sophia.Entitys
         }
 
         public override EntityExtrasReferer GetExtrasReferer() => ExtrasReferer;
+        
         public override Extras<T> GetExtras<T>(E_FUNCTIONAL_EXTRAS_TYPE functionalType) => ExtrasReferer.GetExtras<T>(functionalType);
+
 #endregion
 
 #region Movement
 
         public MovementComposite GetMovementComposite() => this.Movement;
         public bool GetMoveState() => this.Movement.IsMovable;
+        
         public void SetMoveState(bool movableState) => this.Movement.SetMovableState(movableState);
 
         public void OnMove(InputValue _value)
@@ -105,7 +100,8 @@ namespace Sophia.Entitys
         {
             if (DashSkillAbility.GetIsDashState(GetStat(E_NUMERIC_STAT_TYPE.MoveSpeed))) return;
             // GetAnimator().SetFloat("Move", this.entityRigidbody.velocity.magnitude);
-            if (!Movement.IsBorder(this.transform)) Movement.MoveTick(this.transform);
+            if (!Movement.IsBorder(this.transform)) 
+                Movement.MoveTick(this.transform);
         }
 
         public async UniTask Turning() { await Movement.Turning(transform, Input.mousePosition); }
@@ -114,16 +110,37 @@ namespace Sophia.Entitys
 #endregion
 
 #region Dash
+        
         public FMODAudioSource DashSource;
+        
         public void Dash() => DashSkillAbility.Use();/*m*/
 
 #endregion
 
-        private void Awake()
+        protected override void SetDataToReferer()
         {
+            StatReferer.SetRefStat(Power);
+            this.Settables.ForEach(E => {
+                E.SetStatDataToReferer(StatReferer);
+                E.SetExtrasDataToReferer(ExtrasReferer);
+            });
+        }
+
+        protected override void CollectSettable()
+        {
+            this.Settables.Add(Life);
+            this.Settables.Add(Movement);
+            this.Settables.Add(DashSkillAbility);
+            this.Settables.Add(_projectileBucket);
+            this.Settables.Add(_weaponManager);
+            this.Settables.Add(_affectorManager);
+        }
+
+        protected override void Awake()
+        {
+            /**/
             TryGetComponent<Collider>(out entityCollider);
             TryGetComponent<Rigidbody>(out entityRigidbody);
-
             StatReferer = new PlayerStatReferer();
             ExtrasReferer = new PlayerExtrasReferer();
 
@@ -132,25 +149,19 @@ namespace Sophia.Entitys
             DashSkillAbility = new DashSkill(this.entityRigidbody, Movement.GetMovemenCompositetData);
             Power = new Stat(_basePlayerData.Power, E_NUMERIC_STAT_TYPE.Power, E_STAT_USE_TYPE.Natural, OnPowerUpdated );
             _affectorManager.Init(_basePlayerData.Tenacity);
-            
-
-            Setables.Add(Life);
-            Setables.Add(Movement);
-            Setables.Add(DashSkillAbility);
-            Setables.Add(_projectileBucket);
-            Setables.Add(_weaponManager);
-            Setables.Add(_affectorManager);
-        }
-        private void Start()
-        {
-            SetDataToReferer();
-            DashSkillAbility.SetAudioSource(DashSource);
+        
         }
         
-        public void Skill() { throw new System.NotImplementedException(); }
+        protected override void Start()
+        {
+            base.Start();
+            DashSkillAbility.SetAudioSource(DashSource);
+        }
 
 #region Weapon Hanlder
+
         public void OnPowerUpdated() { Debug.Log("공격력 변경"); }
+
         public async void Attack()
         {
             try
@@ -163,6 +174,13 @@ namespace Sophia.Entitys
 
             }
         }
+
+#endregion
+
+#region Skill Handler
+
+        public void Skill() { throw new System.NotImplementedException(); }
+
 #endregion
 
 #region Equip Handler
@@ -178,16 +196,6 @@ namespace Sophia.Entitys
         public override AffectorManager GetAffectorManager() => this._affectorManager ??= GetComponentInChildren<AffectorManager>();
         public override void Affect(Affector affector) => this._affectorManager.Affect(affector);
         public override void Recover(Affector affector) => this._affectorManager.Recover(affector);
-
-        public void SetStatDataToReferer(EntityStatReferer statReferer)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SetStatDataToReferer(EntityExtrasReferer extrasReferer)
-        {
-            throw new NotImplementedException();
-        }
 
 #endregion
 
