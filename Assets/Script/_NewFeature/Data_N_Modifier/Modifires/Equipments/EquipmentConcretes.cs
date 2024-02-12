@@ -11,7 +11,7 @@ namespace Sophia.DataSystem
     namespace Modifiers.ConcreteEquipment
     {
         public static class FactoryConcreteEquipment {
-            public static Equipment GetEquipmentByID(ref SerialEquipmentData equipmentData, Entitys.Entity entity) {
+            public static Equipment GetEquipmentByID(in SerialEquipmentData equipmentData, Entitys.Entity entity) {
                 Equipment equipmentRes = null;
                 switch(equipmentData._equipmentID) {
                     case 9 :  {equipmentRes = new Equipment_009_LightFlash(equipmentData);          break;}
@@ -38,7 +38,7 @@ namespace Sophia.DataSystem
                 };
 
                 ExtrasModifier<DamageInfo> ExtrasModifier = new ExtrasModifier<DamageInfo> (
-                    new CalculateDamageCommand.DodgeHit(DamageConverterData),
+                    new CalculateDamageCommand.DodgeHit(in DamageConverterData),
                     E_EXTRAS_PERFORM_TYPE.Start,
                     E_FUNCTIONAL_EXTRAS_TYPE.Damaged
                 );
@@ -80,7 +80,7 @@ namespace Sophia.DataSystem
                     _hitType = HitType.Critical
                 };
                 ExtrasModifier<DamageInfo> ExtrasModifier = new ExtrasModifier<DamageInfo> (
-                    new CalculateDamageCommand.CriticalHit(DamageConverterData),
+                    new CalculateDamageCommand.CriticalHit(in DamageConverterData),
                     E_EXTRAS_PERFORM_TYPE.Start,
                     E_FUNCTIONAL_EXTRAS_TYPE.WeaponUse
                 );
@@ -136,7 +136,7 @@ namespace Sophia.DataSystem
             {
                 ExtrasModifier<Entity> ExtrasModifier = new ExtrasModifier<Entity>(
                     new ConveyAffectCommand.FactoryKnockbackAffectCommand(
-                        equipmentData._extrasCalculateDatas.OnConveyAffect._affectData, 
+                        in equipmentData._extrasCalculateDatas.OnConveyAffect._affectData, 
                         entity.GetGameObject().transform
                     ),
                     E_EXTRAS_PERFORM_TYPE.Start,

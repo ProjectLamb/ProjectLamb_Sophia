@@ -31,7 +31,7 @@ namespace Sophia.Composite
         public Extras<DamageInfo>   WeaponUseExtras         {get; private set;}
         public Extras<object>       ProjectileRestoreExtras {get; private set;}
 
-        public void Init(ref SerialBaseWeaponData baseWeaponData) {
+        public void Init(in SerialBaseWeaponData baseWeaponData) {
             PoolSize = new Stat(baseWeaponData.PoolSize,
                 E_NUMERIC_STAT_TYPE.PoolSize,
                 E_STAT_USE_TYPE.Natural,
@@ -57,7 +57,7 @@ namespace Sophia.Composite
 #endregion
 
         private void Awake() {   
-            Init(ref _baseWeaponData);
+            Init(in _baseWeaponData);
         }
 
         private void Start() {

@@ -6,9 +6,9 @@ namespace Sophia.DataSystem.Modifiers
 {
     
     public class LayerChangeAtomics {
-        private GameObject gameObjectRef;
-        private int prevLayer;
-        private int changeLayer;
+        public readonly GameObject gameObjectRef;
+        public readonly int prevLayer;
+        public readonly int changeLayer;
         
         public LayerChangeAtomics(GameObject gameObject, LayerMask layerMask) {
             gameObjectRef = gameObject;
@@ -20,8 +20,8 @@ namespace Sophia.DataSystem.Modifiers
     }
 
     public class VisualFXAtomics {
-        private E_AFFECT_TYPE AffectType;
-        private VisualFXObject visualFX;
+        public readonly E_AFFECT_TYPE AffectType;
+        public readonly VisualFXObject visualFX;
 
         public VisualFXAtomics(E_AFFECT_TYPE affectType, SerialVisualAffectData serialVisualAffectData) {
             AffectType = affectType;

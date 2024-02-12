@@ -12,7 +12,7 @@ namespace Sophia.Instantiates
         public Equipment equipment {get; private set;}
 
         private void Awake() {
-            equipment = FactoryConcreteEquipment.GetEquipmentByID(ref _equipmentData, GameManager.Instance.PlayerGameObject.GetComponent<Player>());
+            equipment = FactoryConcreteEquipment.GetEquipmentByID(in _equipmentData, GameManager.Instance.PlayerGameObject.GetComponent<Player>());
         }
 
         protected override void OnTriggerLogic(Collider entity)

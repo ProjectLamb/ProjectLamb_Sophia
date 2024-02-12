@@ -7,7 +7,7 @@ using TMPro;
 namespace Sophia.Instantiates
 {
     using Sophia.Entitys;
-    using Unity.VisualScripting;
+    
 
     public class VisualFXBucket : MonoBehaviour
     {

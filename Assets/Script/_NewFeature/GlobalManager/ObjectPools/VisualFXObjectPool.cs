@@ -6,7 +6,7 @@ namespace Sophia
 {    
     using Entitys;
     using Instantiates;
-    using Unity.VisualScripting;
+    
 
     public class VisualFXObjectPool : MonoBehaviour {
         

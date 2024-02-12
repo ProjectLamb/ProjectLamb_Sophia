@@ -3,7 +3,7 @@ namespace Sophia.DataSystem.Modifiers
     using Sophia.Composite;
 
     public class HealAtomics {
-        private LifeComposite lifeRef; 
+        public readonly LifeComposite lifeRef; 
         float healAmount;
         public HealAtomics(LifeComposite life, float amount) {
             lifeRef = life;

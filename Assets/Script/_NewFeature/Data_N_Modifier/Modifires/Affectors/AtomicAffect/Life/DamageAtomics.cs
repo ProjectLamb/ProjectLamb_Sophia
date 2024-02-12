@@ -7,7 +7,7 @@ namespace Sophia.DataSystem.Modifiers
     public class DamageAtomics {
         public readonly DamageInfo baseTickDamage;
         public readonly float intervalTime;
-        public DamageAtomics(SerialTickDamageAffectData damageAffectData) {
+        public DamageAtomics(in SerialTickDamageAffectData damageAffectData) {
             baseTickDamage  = damageAffectData._baseTickDamage;
             intervalTime    = damageAffectData._intervalTime;
         }

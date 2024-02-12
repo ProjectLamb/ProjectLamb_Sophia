@@ -32,10 +32,10 @@ namespace Sophia.Instantiates
         public Extras<object> ForwardingExtras      {get; protected set;}
 
         private void Awake() {
-            Init(ref _baseInstantiatorData);
+            Init(in _baseInstantiatorData);
         }
 
-        public void Init(ref SerialBaseInstantiatorData baseInstantiatorData) {
+        public void Init(in SerialBaseInstantiatorData baseInstantiatorData) {
             InstantiableDurateLifeTimeMultiplyRatio = new Stat(baseInstantiatorData.InstantiableDurateLifeTimeMultiplyRatio,
                 E_NUMERIC_STAT_TYPE.InstantiableDurateLifeTimeMultiplyRatio,
                 E_STAT_USE_TYPE.Ratio, OnDurateLifeTimeUpdated
