@@ -31,18 +31,28 @@ namespace Sophia.Entitys
 #region Members
 //      [HideInInspector] public Collider entityCollider;
 //      [HideInInspector] public Rigidbody entityRigidbody;
+//      [HideInInspector] protected List<IDataSettable> Settables = new();
 
         public LifeComposite Life {get; private set;}
-        public EntityStatReferer StatReferer { get; private set; }
-        public EntityExtrasReferer ExtrasReferer { get; private set; }
 
-        private void Awake() {
-            TryGetComponent<Collider>(out entityCollider);
-            TryGetComponent<Rigidbody>(out entityRigidbody);
-            
-            StatReferer = new EntityStatReferer();
-            ExtrasReferer = new EntityExtrasReferer();
+#endregion
 
+        protected override void SetDataToReferer()
+        {
+            StatReferer.SetRefStat(Power);
+            this.Settables.ForEach(E => {
+                E.SetStatDataToReferer(StatReferer);
+                E.SetExtrasDataToReferer(ExtrasReferer);
+            });
+        }
+        protected override void CollectSettable()
+        {
+            this.Settables.Add(Life);
+            this.Settables.Add(_affectorManager);
+        }
+
+        protected override void Awake() {
+            base.Awake();
             Life = new LifeComposite(_baseEntityData.MaxHp, _baseEntityData.Defence);
             Life.OnDamaged  += OnSandbagDamaged;
             Life.OnEnterDie += OnSandBagDead;
@@ -52,11 +62,8 @@ namespace Sophia.Entitys
             _affectorManager.Init(_baseEntityData.Tenacity);
         }
 
-        private void Start() {
-            StatReferer.SetRefStat(Life.MaxHp);
-            StatReferer.SetRefStat(Life.Defence);
-
-            StatReferer.SetRefStat(Power);
+        protected override void Start() {
+            base.Start();
             ObjectiveTransform = _objectiveEntity.GetGameObject().transform;
         }
 
@@ -70,7 +77,6 @@ namespace Sophia.Entitys
             Life.OnEnterDie -= OnSandBagDead;
         }
 
-#endregion
 
 #region Life Accessible
         public override LifeComposite GetLifeComposite() => Life;
@@ -166,6 +172,6 @@ namespace Sophia.Entitys
             throw new System.NotImplementedException();
         }
 
-#endregion
+        #endregion
     }
 }

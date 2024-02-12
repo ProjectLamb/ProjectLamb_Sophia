@@ -2,6 +2,7 @@ using System;
 
 namespace Sophia
 {
+    using System.Collections.Generic;
     using DataSystem;
     using DataSystem.Referer;
 
@@ -81,7 +82,7 @@ namespace Sophia
         public EntityExtrasReferer GetExtrasReferer();
     }
 
-    public interface IDataSetable
+    public interface IDataSettable
     {
         public void SetStatDataToReferer(EntityStatReferer statReferer);
         public void SetExtrasDataToReferer(EntityExtrasReferer extrasReferer);
