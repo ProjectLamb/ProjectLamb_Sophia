@@ -54,7 +54,6 @@ namespace Sophia.UserInterface
                     StakingText.SetPosition(transform.position)
                                 .ReactivateTextUI(_damageInfo);
                 }
-                Debug.Log("Gen");
         }
     }
 }

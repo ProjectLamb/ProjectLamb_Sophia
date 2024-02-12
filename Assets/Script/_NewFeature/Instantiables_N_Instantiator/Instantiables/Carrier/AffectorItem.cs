@@ -18,14 +18,14 @@ namespace Sophia.Instantiates
             if(entity.TryGetComponent(out Player player))
             {
                 if(EquipUserInterface()){
-                    player.Affect(AffectFactory(_affectData));
+                    player.Affect(AffectFactory(_affectData, player));
                     //Destroy(this.gameObject);
                 }
             }
         }
         public bool EquipUserInterface() { return true; }
 
-        public Affector AffectFactory(SerialAffectorData affectData) {
+        public Affector AffectFactory(SerialAffectorData affectData, Entitys.Entity entity) {
             switch(affectData._affectType) 
             {
                 case E_AFFECT_TYPE.Burn         :   {return new BurnAffect(_affectData);}
@@ -34,8 +34,8 @@ namespace Sophia.Instantiates
                 case E_AFFECT_TYPE.Cold         :   {return new ColdAffect(_affectData);}
                 case E_AFFECT_TYPE.Stern        :   {return new SternAffect(_affectData);}
                 case E_AFFECT_TYPE.Bounded      :   {return new BoundedAffect(_affectData);}
-                case E_AFFECT_TYPE.Knockback    :   {return new KnockbackAffect(_affectData);}
-                case E_AFFECT_TYPE.BlackHole    :   {return new BlackHoleAffect(_affectData);}
+                case E_AFFECT_TYPE.Knockback    :   {return new KnockbackAffect(_affectData, entity.GetGameObject().transform);}
+                case E_AFFECT_TYPE.BlackHole    :   {return new BlackHoleAffect(_affectData, entity.GetGameObject().transform);}
                 case E_AFFECT_TYPE.Airborne    :    {return new AirborneAffect(_affectData);}
                 default : {return null;}
             }

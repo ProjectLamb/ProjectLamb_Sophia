@@ -11,13 +11,13 @@ namespace Sophia.DataSystem
     namespace Modifiers.ConcreteEquipment
     {
         public static class FactoryConcreteEquipment {
-            public static Equipment GetEquipmentByID(ref SerialEquipmentData equipmentData) {
+            public static Equipment GetEquipmentByID(ref SerialEquipmentData equipmentData, Entitys.Entity entity) {
                 Equipment equipmentRes = null;
                 switch(equipmentData._equipmentID) {
                     case 9 :  {equipmentRes = new Equipment_009_LightFlash(equipmentData);          break;}
                     case 12 : {equipmentRes = new Equipment_012_YellowLegoBrick(equipmentData);     break;}
                     case 13 : {equipmentRes = new Equipment_013_PinkDumbell(equipmentData);         break;}
-                    case 14 : {equipmentRes = new Equipment_014_CommunistsHammer(equipmentData);    break;}
+                    case 14 : {equipmentRes = new Equipment_014_CommunistsHammer(equipmentData, entity);    break;}
                     default : {equipmentRes = new Equipment(equipmentData); break;}
                 }
                 return equipmentRes;
@@ -132,12 +132,15 @@ namespace Sophia.DataSystem
         public class Equipment_014_CommunistsHammer : Equipment
         {
             readonly List<ExtrasModifier<Entity>> ConveyAffectExtrasModifiers = new();
-            public Equipment_014_CommunistsHammer(SerialEquipmentData equipmentData) : base(equipmentData)
+            public Equipment_014_CommunistsHammer(SerialEquipmentData equipmentData, Entitys.Entity entity) : base(equipmentData)
             {
                 ExtrasModifier<Entity> ExtrasModifier = new ExtrasModifier<Entity>(
-                    new ConveyAffectCommand.FactoryKnockbackAffectCommand(equipmentData._extrasCalculateDatas.OnConveyAffect._affectData),
+                    new ConveyAffectCommand.FactoryKnockbackAffectCommand(
+                        equipmentData._extrasCalculateDatas.OnConveyAffect._affectData, 
+                        entity.GetGameObject().transform
+                    ),
                     E_EXTRAS_PERFORM_TYPE.Start,
-                    E_FUNCTIONAL_EXTRAS_TYPE.Damaged
+                    E_FUNCTIONAL_EXTRAS_TYPE.ConveyAffect
                 );
                 ConveyAffectExtrasModifiers.Add(ExtrasModifier);
             }

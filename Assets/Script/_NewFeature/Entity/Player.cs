@@ -150,7 +150,7 @@ namespace Sophia.Entitys
         public void Skill() { throw new System.NotImplementedException(); }
 
 #region Weapon Hanlder
-        public void OnPowerUpdated() { throw new System.NotImplementedException(); }
+        public void OnPowerUpdated() { Debug.Log("공격력 변경"); }
         public async void Attack()
         {
             try
