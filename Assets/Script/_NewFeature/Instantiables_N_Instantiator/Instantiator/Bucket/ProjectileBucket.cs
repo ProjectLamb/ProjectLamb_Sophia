@@ -8,7 +8,7 @@ namespace Sophia.Instantiates
     using Sophia.DataSystem.Referer;
     using Sophia.Composite;
 
-    public class ProjectileBucket : MonoBehaviour, IDataSetable
+    public class ProjectileBucket : MonoBehaviour, IDataSettable
     {        
 
 #region SerializeMember

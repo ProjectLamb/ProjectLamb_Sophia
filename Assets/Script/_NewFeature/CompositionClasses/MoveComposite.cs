@@ -10,7 +10,7 @@ using Sophia.DataSystem.Referer;
 
 namespace Sophia.Composite
 {
-    public class MovementComposite : IDataSetable
+    public class MovementComposite : IDataSettable
     {
 
 #region Data

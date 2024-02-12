@@ -3,6 +3,7 @@ using UnityEngine.Events;
 using Sophia.DataSystem;
 
 using Sophia.DataSystem.Referer;
+using System.Collections.Generic;
 
 
 namespace Sophia
@@ -56,7 +57,7 @@ namespace Sophia
 
         *********************************************************************************/
 
-        public class LifeComposite : IDataSetable
+        public class LifeComposite : IDataSettable
         {
 
 #region Members 
@@ -186,6 +187,7 @@ namespace Sophia
 #endregion
 
 #region Data Referer 
+
             public void SetStatDataToReferer(EntityStatReferer statReferer)
             {
                 statReferer.SetRefStat(MaxHp);

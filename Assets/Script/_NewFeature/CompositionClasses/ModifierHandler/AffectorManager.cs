@@ -9,7 +9,7 @@ namespace Sophia.Composite
     using Sophia.DataSystem.Modifiers;
     using Sophia.DataSystem.Referer;
 
-    public class AffectorManager : MonoBehaviour, IDataSetable
+    public class AffectorManager : MonoBehaviour, IDataSettable
     {
         
 #region SerializeMember

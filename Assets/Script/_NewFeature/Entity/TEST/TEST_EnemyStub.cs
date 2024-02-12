@@ -16,19 +16,50 @@ namespace Sophia.Entitys
 #region SerializeMember 
         [SerializeField] protected SerialBaseEntityData _baseEntityData;
         [SerializeField] public AffectorManager _affectorManager;
-        // [SerializeField] protected ModelManger _modelManger;
-        // [SerializeField] protected VisualFXBucket _visualFXBucket;
+//      [SerializeField] protected ModelManger _modelManger;
+//      [SerializeField] protected VisualFXBucket _visualFXBucket;
 #endregion
 
 #region Members
-        //  [HideInInspector] public Collider entityCollider;
-        //  [HideInInspector] public Rigidbody entityRigidbody;
+//      [HideInInspector] public Collider entityCollider;
+//      [HideInInspector] public Rigidbody entityRigidbody;
+//      [HideInInspector] protected List<IDataSettable> Settables = new();
 
         public LifeComposite Life { get; private set; }
-        public EntityStatReferer StatReferer { get; private set; }
-        public EntityExtrasReferer ExtrasReferer { get; private set; }
 
 #endregion
+
+        protected override void SetDataToReferer()
+        {
+            StatReferer.SetRefStat(MoveSpeed);
+            this.Settables.ForEach(E => {
+                E.SetStatDataToReferer(StatReferer);
+                E.SetExtrasDataToReferer(ExtrasReferer);
+            });
+        }
+        protected override void CollectSettable()
+        {
+            Settables.Add(Life);
+            Settables.Add(_affectorManager);
+        }
+
+        protected override void Awake()
+        {
+            base.Awake();
+            Life = new LifeComposite(_baseEntityData.MaxHp, _baseEntityData.Defence);
+            MoveSpeed = new Stat(_baseEntityData.MoveSpeed, E_NUMERIC_STAT_TYPE.MoveSpeed, E_STAT_USE_TYPE.Natural);
+            _affectorManager.Init(_baseEntityData.Tenacity);
+        }
+
+        protected override void Start()
+        {
+            base.Start();
+        }
+
+        private void FixedUpdate() {
+            MoveTick();
+        }
+
 
 #region Life Accessible
 
@@ -70,36 +101,6 @@ namespace Sophia.Entitys
 
 #endregion
 
-        public ExtrasModifier<DamageInfo> floatReferenceExtrasModifier;
-        private void Awake()
-        {
-            TryGetComponent<Collider>(out entityCollider);
-            TryGetComponent<Rigidbody>(out entityRigidbody);
-
-            StatReferer = new EntityStatReferer();
-            ExtrasReferer = new EntityExtrasReferer();
-            Life = new LifeComposite(_baseEntityData.MaxHp, _baseEntityData.Defence);
-            
-            MoveSpeed = new Stat(_baseEntityData.MoveSpeed, E_NUMERIC_STAT_TYPE.MoveSpeed, E_STAT_USE_TYPE.Natural);
-            _affectorManager.Init(_baseEntityData.Tenacity);
-        }
-
-        private void Start()
-        {
-            StatReferer.SetRefStat(Life.MaxHp);
-            StatReferer.SetRefStat(Life.Defence);
-            StatReferer.SetRefStat(MoveSpeed);
-
-            ExtrasReferer.SetRefExtras(Life.DamagedExtras);
-            ExtrasReferer.SetRefExtras(Life.DeadExtras);
-
-            StatReferer.SetRefStat(_affectorManager.Tenacity);
-        }
-
-        private void FixedUpdate() {
-            MoveTick();
-        }
-
 #region Movement
 
         public bool IsMovable = false;
@@ -125,6 +126,5 @@ namespace Sophia.Entitys
         public override AffectorManager GetAffectorManager() => this._affectorManager ??= GetComponentInChildren<AffectorManager>();
         public override void Affect(Affector affector) => this._affectorManager.Affect(affector);
         public override void Recover(Affector affector) => this._affectorManager.Recover(affector);
-
     }
 }
