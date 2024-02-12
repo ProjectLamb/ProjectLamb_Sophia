@@ -146,8 +146,12 @@ namespace Sophia.DataSystem.Functional
         public class FactoryKnockbackAffectCommand : IFunctionalCommand<Entitys.Entity>
         {
             public readonly SerialAffectorData serialAffectorDataRef;
-            public FactoryKnockbackAffectCommand(SerialAffectorData serialAffectorData) { serialAffectorDataRef = serialAffectorData; }
-            public void Invoke(ref Entitys.Entity referer) => referer.Affect(new KnockbackAffect(serialAffectorDataRef));
+            public readonly Transform OwnerTransformRef;
+            public FactoryKnockbackAffectCommand(SerialAffectorData serialAffectorData, Transform owner) { 
+                serialAffectorDataRef = serialAffectorData; 
+                OwnerTransformRef = owner;
+            }
+            public void Invoke(ref Entitys.Entity referer) => referer.Affect(new KnockbackAffect(serialAffectorDataRef, OwnerTransformRef));
 
             #region UI Access
             public string GetName() => "넉백";
@@ -163,8 +167,12 @@ namespace Sophia.DataSystem.Functional
         public class FactoryBlackHoleAffectCommand : IFunctionalCommand<Entitys.Entity>
         {
             public readonly SerialAffectorData serialAffectorDataRef;
-            public FactoryBlackHoleAffectCommand(SerialAffectorData serialAffectorData) { serialAffectorDataRef = serialAffectorData; }
-            public void Invoke(ref Entitys.Entity referer) => referer.Affect(new BlackHoleAffect(serialAffectorDataRef));
+            public readonly Transform OwnerTransformRef;
+            public FactoryBlackHoleAffectCommand(SerialAffectorData serialAffectorData, Transform owner) { 
+                serialAffectorDataRef = serialAffectorData; 
+                OwnerTransformRef = owner;
+            }
+            public void Invoke(ref Entitys.Entity referer) => referer.Affect(new BlackHoleAffect(serialAffectorDataRef, OwnerTransformRef));
 
             #region UI Access
             public string GetName() => "이끌림";

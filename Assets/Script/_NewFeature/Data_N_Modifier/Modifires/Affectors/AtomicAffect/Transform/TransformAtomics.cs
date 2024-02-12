@@ -38,14 +38,14 @@ namespace Sophia.DataSystem.Modifiers
     }
 
     public class RigidGradualAtomics {
-        private Transform    targetTransformRef;
+        private Transform    OwnerTransformRef;
         private Vector3    targetVector;
         private float intervalTimeAmount;
         private float forceAmount;
 
 
         public RigidGradualAtomics(Transform transform, float force, float intervalTime) {
-            targetTransformRef = transform;
+            OwnerTransformRef = transform;
             forceAmount = force;
             intervalTimeAmount = intervalTime;
 
@@ -61,7 +61,7 @@ namespace Sophia.DataSystem.Modifiers
             entityRef.entityRigidbody.velocity = Vector3.zero;
         }
         public void Run(Entitys.Entity entityRef) {
-            if(targetTransformRef != null) {
+            if(OwnerTransformRef != null) {
                 entityRef.entityRigidbody.AddForce(
                     Vector3.Normalize(targetVector) * forceAmount * intervalTimeAmount, 
                     ForceMode.VelocityChange
@@ -69,7 +69,7 @@ namespace Sophia.DataSystem.Modifiers
             }
             else {
                 entityRef.entityRigidbody.AddForce(
-                    Vector3.Normalize(targetTransformRef.position) * forceAmount * intervalTimeAmount, 
+                    Vector3.Normalize(OwnerTransformRef.position) * forceAmount * intervalTimeAmount, 
                     ForceMode.VelocityChange
                 );
             }
@@ -80,13 +80,13 @@ namespace Sophia.DataSystem.Modifiers
     }
 
     public class RigidImpulseAtomics {
-        private Transform    targetTransformRef;
+        private Transform    OwnerTransformRef;
         private Vector3    targetVector;
         private float forceAmount;
 
 
         public RigidImpulseAtomics(Transform transform, float force) {
-            targetTransformRef = transform;
+            OwnerTransformRef = transform;
             forceAmount = force;
 
         }
@@ -97,9 +97,10 @@ namespace Sophia.DataSystem.Modifiers
         }
 
         public void Invoke(Entitys.Entity entityRef) {
-            if(targetTransformRef != null) {
+            if(OwnerTransformRef != null) {
+                Vector3 vector3 = Vector3.Normalize(entityRef.GetGameObject().transform.position - OwnerTransformRef.position);
                 entityRef.entityRigidbody.AddForce(
-                    Vector3.Normalize(targetVector) * forceAmount,
+                    vector3 * forceAmount,
                     ForceMode.Impulse
                 );
             }

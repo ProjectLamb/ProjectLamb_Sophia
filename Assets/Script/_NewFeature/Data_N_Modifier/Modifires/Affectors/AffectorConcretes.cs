@@ -5,6 +5,7 @@ namespace Sophia.DataSystem
     using System.Numerics;
     using Sophia.Composite.NewTimer;
     using Sophia.Entitys;
+    using UnityEngine;
 
     namespace Modifiers.ConcreteAffector
     {
@@ -244,8 +245,9 @@ namespace Sophia.DataSystem
             public RigidImpulseAtomics RigidImpulseAffector { get; private set; }
             public HoldAtomics HoldAffector { get; private set; }
 
-            public KnockbackAffect(SerialAffectorData affectData) : base(affectData)
+            public KnockbackAffect(SerialAffectorData affectData, Transform ownerTransform) : base(affectData)
             {
+                RigidImpulseAffector = new RigidImpulseAtomics(ownerTransform, affectData._physicsAffectData._physicsForce);
             }
 
             public override void Enter(Entity entity)
@@ -269,7 +271,6 @@ namespace Sophia.DataSystem
             {
                 AffectType = E_AFFECT_TYPE.Knockback;
                 Name = affectData._equipmentName;
-                RigidImpulseAffector = new RigidImpulseAtomics(UnityEngine.Vector3.right, affectData._physicsAffectData._physicsForce);
                 HoldAffector = new HoldAtomics();
 
                 Timer = new TimerComposite(0.5f);
@@ -283,8 +284,13 @@ namespace Sophia.DataSystem
         {
             public RigidGradualAtomics RigidGradualAffector { get; private set; }
             public HoldAtomics HoldAffector { get; private set; }
-            public BlackHoleAffect(SerialAffectorData affectData) : base(affectData)
+            public BlackHoleAffect(SerialAffectorData affectData,Transform ownerTransform) : base(affectData)
             {
+                RigidGradualAffector = new RigidGradualAtomics(
+                    ownerTransform,
+                    affectData._physicsAffectData._physicsForce,
+                    affectData._physicsAffectData._intervalTime
+                );
             }
 
             public override void Enter(Entity entity)
@@ -310,11 +316,7 @@ namespace Sophia.DataSystem
                 Name = affectData._equipmentName;
                 Description = affectData._description;
                 Icon = affectData._icon;
-                RigidGradualAffector = new RigidGradualAtomics(
-                    UnityEngine.Vector3.right,
-                    affectData._physicsAffectData._physicsForce,
-                    affectData._physicsAffectData._intervalTime
-                );
+
                 HoldAffector = new HoldAtomics();
 
                 Timer = new TimerComposite(affectData._baseDurateTime);
