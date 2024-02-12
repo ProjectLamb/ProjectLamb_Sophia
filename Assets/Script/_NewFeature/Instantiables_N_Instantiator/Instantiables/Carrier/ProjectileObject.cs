@@ -340,8 +340,8 @@ namespace Sophia.Instantiates
             {
 
                 if(targetEntity.GetDamaged(CurrentProjectileDamage)) {
-                    // Extras<Entity> targetAffectedExtras = OwnerRef.GetExtras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.TargetAffected);
-                    // targetAffectedExtras.PerformStartFunctionals(ref targetEntity);
+                    Extras<Entity> targetAffectedExtras = OwnerRef.GetExtras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.ConveyAffect);
+                    targetAffectedExtras.PerformStartFunctionals(ref targetEntity);
 
                     VisualFXObject visualFX = VisualFXObjectPool.GetObject(_hitEffect).Init();
                     targetEntity.GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
