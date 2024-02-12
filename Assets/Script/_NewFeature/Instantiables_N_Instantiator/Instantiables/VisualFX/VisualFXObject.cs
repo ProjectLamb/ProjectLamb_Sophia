@@ -9,7 +9,7 @@ namespace Sophia.Instantiates
     using System.Globalization;
     using Sophia.Entitys;
     using Unity.Splines.Examples;
-    using Unity.VisualScripting;
+    
 
     /// <summary>
     /// VisualFXObject 생명주기
