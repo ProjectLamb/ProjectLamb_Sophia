@@ -21,7 +21,7 @@ public class ComboBarStateController : MonoBehaviour
 
     public void OnHitEventInLoop() {
         if(gameObject.activeSelf == false) {
-            StartCoroutine(DoAndRenderUI(OnHitStart));
+            StartCoroutine(DoAndRenderUI(OnHitStart)); return;
         }
         if (!styleManager.styleAnimator.GetCurrentAnimatorStateInfo(0).IsName("Finished")){
             CurrentHitCounts++;

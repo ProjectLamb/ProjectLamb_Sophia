@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace Sophia.Entitys
 {
@@ -7,7 +8,6 @@ namespace Sophia.Entitys
     using Sophia.Instantiates;
     using Sophia.Composite;
     using Sophia.DataSystem.Referer;
-    
 
     public abstract class Entity : MonoBehaviour, ILifeAccessible, IDataAccessible, IVisualAccessible, IAffectable
     {
@@ -19,8 +19,24 @@ namespace Sophia.Entitys
 #region Members
         [HideInInspector] public Collider entityCollider;
         [HideInInspector] public Rigidbody entityRigidbody;
+        [HideInInspector] protected List<IDataSettable> Settables = new();
 
 #endregion
+
+        protected abstract void SetDataToReferer();
+        protected abstract void CollectSettable();
+
+        protected virtual void Awake() {
+            TryGetComponent<Collider>(out entityCollider);
+            TryGetComponent<Rigidbody>(out entityRigidbody);
+            StatReferer = new EntityStatReferer();
+            ExtrasReferer = new EntityExtrasReferer();
+        }
+
+        protected virtual void Start() {
+            CollectSettable();
+            SetDataToReferer();
+        }
 
 #region Life Accessible
         public abstract LifeComposite GetLifeComposite();
@@ -30,11 +46,11 @@ namespace Sophia.Entitys
 #endregion
 
 #region Data Accessible
+        public EntityStatReferer StatReferer { get; protected set; }
+        public EntityExtrasReferer ExtrasReferer { get; protected set; }
         public abstract EntityStatReferer GetStatReferer();
         public abstract Stat GetStat(E_NUMERIC_STAT_TYPE numericType);
-        
         public abstract string GetStatsInfo();
-
         public abstract EntityExtrasReferer GetExtrasReferer();
         public abstract Extras<T> GetExtras<T>(E_FUNCTIONAL_EXTRAS_TYPE functionalType);
 

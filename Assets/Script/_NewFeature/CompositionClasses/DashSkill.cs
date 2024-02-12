@@ -10,7 +10,7 @@ using Sophia.DataSystem.Referer;
 
 namespace Sophia.Composite
 {
-    public class DashSkill : IUpdatorBindable, IDataSetable {
+    public class DashSkill : IUpdatorBindable, IDataSettable {
 
 #region Members 
 

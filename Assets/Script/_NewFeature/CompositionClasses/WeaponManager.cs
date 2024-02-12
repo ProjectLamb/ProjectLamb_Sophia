@@ -11,7 +11,7 @@ namespace Sophia.Composite
     using Sophia.Entitys;
     using Sophia.DataSystem.Referer;
 
-    public class WeaponManager : MonoBehaviour, IDataSetable
+    public class WeaponManager : MonoBehaviour, IDataSettable
     {
 #region SerializeMember
 
