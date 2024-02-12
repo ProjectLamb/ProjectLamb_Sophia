@@ -18,13 +18,13 @@ namespace Sophia.DataSystem.Modifiers
         public Sprite Icon {get; protected set;}
         protected TimerComposite Timer;
 
-        public Affector(SerialAffectorData affectData)
+        public Affector(in SerialAffectorData affectData)
         {
-            this.Init(affectData);
+            this.Init(in affectData);
             OnClear += ResetState;
         }
 
-        protected abstract void Init(SerialAffectorData affectData);
+        protected abstract void Init(in SerialAffectorData affectData);
 #endregion
 
 #region Event

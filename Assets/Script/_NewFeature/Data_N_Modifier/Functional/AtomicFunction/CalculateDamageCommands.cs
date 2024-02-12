@@ -11,7 +11,7 @@ namespace Sophia.DataSystem.Functional
         {
             public SerialDamageConverterData converterData;
             public System.Random random;
-            public DodgeHit(SerialDamageConverterData serialDamageConverterData) {
+            public DodgeHit(in SerialDamageConverterData serialDamageConverterData) {
                 random = new System.Random();
                 converterData = serialDamageConverterData;
             }
@@ -27,6 +27,7 @@ namespace Sophia.DataSystem.Functional
             public string GetName() =>"회피 한다";
             public string GetDescription() => "회피 한다";
             public Sprite GetSprite() => null;
+            
             #endregion
         }
 
@@ -34,7 +35,7 @@ namespace Sophia.DataSystem.Functional
         {
             public SerialDamageConverterData converterData;
             public System.Random random;
-            public CriticalHit(SerialDamageConverterData serialDamageConverterData) {
+            public CriticalHit(in SerialDamageConverterData serialDamageConverterData) {
                 random = new System.Random();
                 converterData = serialDamageConverterData;
             }
