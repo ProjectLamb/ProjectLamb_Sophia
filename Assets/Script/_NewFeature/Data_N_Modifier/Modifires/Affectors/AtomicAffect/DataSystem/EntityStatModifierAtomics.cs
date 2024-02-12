@@ -7,7 +7,7 @@ namespace Sophia.DataSystem.Modifiers
 
     public class EntityStatModifyAtomics {
         public readonly Dictionary<E_NUMERIC_STAT_TYPE, StatModifier> StatModifiers = new();
-        public EntityStatModifyAtomics(SerialStatCalculateDatas SerialStatCalculateDatas) {
+        public EntityStatModifyAtomics(in SerialStatCalculateDatas SerialStatCalculateDatas) {
             foreach (E_NUMERIC_STAT_TYPE statType in Enum.GetValues(typeof(E_NUMERIC_STAT_TYPE)))
             {
                 SerialStatModifireDatas statValue = SerialStatCalculateDatas.GetModifireDatas(statType);

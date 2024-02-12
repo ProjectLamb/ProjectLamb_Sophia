@@ -4,17 +4,17 @@ using DG.Tweening;
 namespace Sophia.DataSystem.Modifiers
 {
     using Sophia.Entitys;
-    using Unity.VisualScripting;
+    
 
     public class ResizeScaleAtomics {
-        public Vector3 originScale;
+        private Vector3 originScale;
         public float afterScaleAmountRef;
 
-        public ResizeScaleAtomics(float scaleAmount) {
+        public ResizeScaleAtomics(float scaleAmount, Entity entity) {
+            originScale = entity.GetModelManger().GetModelObject().transform.localScale;
             afterScaleAmountRef = scaleAmount;
         }
         public void Invoke(IVisualAccessible modelAccessible) {
-            originScale = modelAccessible.GetModelManger().GetModelObject().transform.localScale;
             modelAccessible.GetModelManger().GetModelObject().transform.localScale = modelAccessible.GetModelManger().GetModelObject().transform.localScale * afterScaleAmountRef;
         }
         public void Revert(IVisualAccessible modelAccessible) {
@@ -23,8 +23,8 @@ namespace Sophia.DataSystem.Modifiers
     }
 
     public class TeleportAtomics {
-        public Transform transformRef;
-        public Vector3 teleportPos;
+        public readonly Transform transformRef;
+        public readonly Vector3 teleportPos;
         public TeleportAtomics(Transform transform, ref Vector3 teleportPos) {
             transformRef = transform;
             this.teleportPos = teleportPos;
@@ -38,10 +38,10 @@ namespace Sophia.DataSystem.Modifiers
     }
 
     public class RigidGradualAtomics {
-        private Transform    OwnerTransformRef;
-        private Vector3    targetVector;
-        private float intervalTimeAmount;
-        private float forceAmount;
+        public readonly Transform    OwnerTransformRef;
+        public readonly Vector3    targetVector;
+        public readonly float intervalTimeAmount;
+        public readonly float forceAmount;
 
 
         public RigidGradualAtomics(Transform transform, float force, float intervalTime) {
@@ -80,9 +80,9 @@ namespace Sophia.DataSystem.Modifiers
     }
 
     public class RigidImpulseAtomics {
-        private Transform    OwnerTransformRef;
-        private Vector3    targetVector;
-        private float forceAmount;
+        public readonly Transform    OwnerTransformRef;
+        public readonly Vector3    targetVector;
+        public readonly float forceAmount;
 
 
         public RigidImpulseAtomics(Transform transform, float force) {
@@ -96,7 +96,7 @@ namespace Sophia.DataSystem.Modifiers
             forceAmount = force;
         }
 
-        public void Invoke(Entitys.Entity entityRef) {
+        public void Invoke(Entity entityRef) {
             if(OwnerTransformRef != null) {
                 Vector3 vector3 = Vector3.Normalize(entityRef.GetGameObject().transform.position - OwnerTransformRef.position);
                 entityRef.entityRigidbody.AddForce(
@@ -120,7 +120,7 @@ namespace Sophia.DataSystem.Modifiers
             forceAmount = force;
             airingTime  = durateTime;
         }
-        public void Invoke(Entitys.Entity entityRef) {
+        public void Invoke(Entity entityRef) {
             GameObject entityModel = entityRef.GetModelManger().GetModelObject();
             entityModel.transform.DOLocalJump(UnityEngine.Vector3.zero, forceAmount, 1, airingTime);
         } 
