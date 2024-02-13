@@ -46,7 +46,6 @@ namespace Sophia.DataSystem
 
     public class Extras<T> {
         public readonly E_FUNCTIONAL_EXTRAS_TYPE FunctionalType;
-
         private readonly FunctionalPerforms<T> FunctionalLists = new FunctionalPerforms<T>();
 
         public static implicit operator FunctionalPerforms<T> (Extras<T> extras) {

@@ -1,6 +1,6 @@
 
 using System.Text;
-namespace Sophia.DataSystem.Functional
+namespace Sophia.DataSystem.Functional.AtomFunctions
 {
     using Sophia.DataSystem.Modifiers.ConcreteAffector;
     using Sophia.Entitys;

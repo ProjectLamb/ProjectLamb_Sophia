@@ -8,7 +8,7 @@ namespace Sophia.DataSystem.Modifiers
     using Sophia.Entitys;
     using Sophia.State;
 
-    public abstract class Affector : IUserInterfaceAccessible, IStateMachine<AffectorState, Entitys.Entity>, ITimerAccessible<Entity>
+    public abstract class Affector : IStateMachine<AffectorState, Entitys.Entity>, ITimerAccessible<Entity>
     {
 #region Members
 
@@ -35,13 +35,16 @@ namespace Sophia.DataSystem.Modifiers
 #endregion
 
 #region State Machine
+
         protected AffectorState CurrentState;
         public AffectorState GetCurrentState() => CurrentState;
         public void ChangeState(AffectorState newState) {
             if(newState == null) return;
             if(GetIstransferableState(newState)) CurrentState = newState;
         }
+        
         public void ExecuteState(Entity entity) => CurrentState.Affect(this, entity);
+
         public bool GetIstransferableState(AffectorState transState) {
             return (CurrentState.GetTransitionBit() & transState.GetCurrentBit()) == transState.GetCurrentBit();
         }
@@ -61,14 +64,6 @@ namespace Sophia.DataSystem.Modifiers
         public abstract void Exit(Entity entity);
 #endregion
 
-#region User Interface 
-        
-        public string GetName() => Name;
-        public string GetDescription() => Description;
-        public Sprite GetSprite() => Icon;
-
-
-        #endregion
     }
 
     public interface AffectorState : ITransitionAccessible{
