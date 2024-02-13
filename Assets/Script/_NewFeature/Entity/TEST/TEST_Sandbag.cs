@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace Sophia.Entitys
 {
+    using System.Linq;
     using Cysharp.Threading.Tasks;
     using Sophia.Composite;
     using Sophia.Composite.RenderModels;
@@ -21,7 +22,7 @@ namespace Sophia.Entitys
 //      [SerializeField] protected VisualFXBucket  _visualFXBucket;
         [SerializeField] private SerialBaseEntityData       _baseEntityData;
         [SerializeField] private AffectorManager            _affectorManager;
-        [SerializeField] private ProjectileBucket[]           _projectileBucket;
+        [SerializeField] private ProjectileBucketManager    _projectileBucketManager;
         [SerializeField] public  ProjectileObject[]          _attckProjectiles;
         [SerializeField] private VisualFXObject             _dieParticleRef;
         [SerializeField] public Entity                      _objectiveEntity;
@@ -49,6 +50,7 @@ namespace Sophia.Entitys
         {
             this.Settables.Add(Life);
             this.Settables.Add(_affectorManager);
+            this.Settables.Add(_projectileBucketManager);
         }
 
         protected override void Awake() {
@@ -141,11 +143,11 @@ namespace Sophia.Entitys
         }
         public void AI_AnimationMarker_NormalAttack(){
             ProjectileObject projectileFromPool = ProjectilePool.GetObject(_attckProjectiles[(int)ANIME_STATE.ATTACK]).Init(this);
-            this._projectileBucket[(int)ANIME_STATE.ATTACK].InstantablePositioning(projectileFromPool).Activate();
+            this._projectileBucketManager.InstantablePositioning((int)ANIME_STATE.ATTACK,projectileFromPool).Activate();
         }
         public void AI_AnimationMarker_JumpAttack(){
             ProjectileObject projectileFromPool = ProjectilePool.GetObject(_attckProjectiles[(int)ANIME_STATE.JUMP]).Init(this);
-            this._projectileBucket[(int)ANIME_STATE.JUMP].InstantablePositioning(projectileFromPool).Activate();
+            this._projectileBucketManager.InstantablePositioning((int)ANIME_STATE.JUMP, projectileFromPool).Activate();
         }
         public void AI_AnimationMarker_DestroySelf() => Destroy(gameObject);
         [ContextMenu("평타", false, int.MaxValue)]
