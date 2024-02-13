@@ -1,13 +1,13 @@
 
 using System.Text;
-namespace Sophia.DataSystem.Functional
+namespace Sophia.DataSystem.Functional.AtomFunctions
 {
     using Sophia.Composite;
     using UnityEngine;
     
     public static class CalculateDamageCommand
     {
-        public class DodgeHit : IFunctionalCommand<DamageInfo>
+        public class DodgeHit : IFunctionalCommand<DamageInfo>, IRandomlyActivatable
         {
             public SerialDamageConverterData converterData;
             public System.Random random;
@@ -17,21 +17,24 @@ namespace Sophia.DataSystem.Functional
             }
             public void Invoke(ref DamageInfo referer)
             {
-                if(converterData._activatePercentage <= random.Next(101)) return;
+                if(GetIsActivated()) return;
                 referer.damageHandleType = DamageHandleType.Dodge;
                 referer.damageAmount = 0;
                 referer.damageRatio = 0;
             }
 
-            #region UI Access
+#region UI Access
+
             public string GetName() =>"회피 한다";
             public string GetDescription() => "회피 한다";
             public Sprite GetSprite() => null;
-            
-            #endregion
+
+#endregion
+
+            public bool GetIsActivated() => converterData._activatePercentage <= random.Next(101);
         }
 
-        public class CriticalHit : IFunctionalCommand<DamageInfo>
+        public class CriticalHit : IFunctionalCommand<DamageInfo>, IRandomlyActivatable
         {
             public SerialDamageConverterData converterData;
             public System.Random random;
@@ -41,18 +44,19 @@ namespace Sophia.DataSystem.Functional
             }
             public void Invoke(ref DamageInfo referer)
             {
-                if(converterData._activatePercentage <= random.Next(101)) return;
+                if(GetIsActivated()) return;
                 referer.hitType = HitType.Critical;
                 referer.damageRatio *= converterData._damageRatio;
             }
 
-            #region UI Access
+#region UI Access
 
             public string GetName() =>"럭키 치명타";
             public string GetDescription() => "럭키 치명타";
             public Sprite GetSprite() => null;
 
-            #endregion
+#endregion
+            public bool GetIsActivated() => converterData._activatePercentage <= random.Next(100);
         }
     }
 }

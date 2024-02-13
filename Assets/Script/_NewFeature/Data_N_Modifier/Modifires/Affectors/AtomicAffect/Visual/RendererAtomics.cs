@@ -7,7 +7,6 @@ namespace Sophia.DataSystem.Modifiers
 {
     using Sophia.Composite.RenderModels;
     using Sophia.Entitys;
-    
 
     public class MaterialChangeAtomics {
         public CancellationToken cancellationToken;

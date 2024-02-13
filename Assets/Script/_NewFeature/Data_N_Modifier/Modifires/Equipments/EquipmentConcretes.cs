@@ -2,12 +2,9 @@
 namespace Sophia.DataSystem
 {
     using System.Collections.Generic;
-    using System.Numerics;
     using Sophia.Entitys;
-    using Sophia.DataSystem.Functional;
-    using System.Linq.Expressions;
-    using System.Diagnostics;
-
+    using Sophia.DataSystem.Functional.AtomFunctions;
+    
     namespace Modifiers.ConcreteEquipment
     {
         public static class FactoryConcreteEquipment {
@@ -23,6 +20,7 @@ namespace Sophia.DataSystem
                 return equipmentRes;
             }
         }
+        
         public class Equipment_009_LightFlash : Equipment
         {
             readonly SerialDamageConverterData DamageConverterData;
@@ -30,7 +28,7 @@ namespace Sophia.DataSystem
             public Equipment_009_LightFlash(SerialEquipmentData equipmentData) : base(equipmentData)
             {
                 DamageConverterData = new SerialDamageConverterData {
-                    _activatePercentage = 5,
+                    _activatePercentage = 100,
                     _affectType = E_AFFECT_TYPE.None,
                     _damageRatio = 0,
                     _damageHandleType = DamageHandleType.Dodge,
@@ -38,7 +36,7 @@ namespace Sophia.DataSystem
                 };
 
                 ExtrasModifier<DamageInfo> ExtrasModifier = new ExtrasModifier<DamageInfo> (
-                    new CalculateDamageCommand.DodgeHit(in DamageConverterData),
+                    new Functional.AtomFunctions.CalculateDamageCommand.DodgeHit(in DamageConverterData),
                     E_EXTRAS_PERFORM_TYPE.Start,
                     E_FUNCTIONAL_EXTRAS_TYPE.Damaged
                 );
@@ -73,7 +71,7 @@ namespace Sophia.DataSystem
             public Equipment_012_YellowLegoBrick(SerialEquipmentData equipmentData) : base(equipmentData)
             {
                 DamageConverterData = new SerialDamageConverterData {
-                    _activatePercentage = 5,
+                    _activatePercentage = 100,
                     _affectType = E_AFFECT_TYPE.None,
                     _damageRatio = 5,
                     _damageHandleType = DamageHandleType.None,

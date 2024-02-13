@@ -26,7 +26,8 @@ namespace Sophia.DataSystem
                 }
             }
         }
-        public class BurnAffect : Affector
+        
+        public class BurnAffect : Affector, IUserInterfaceAccessible
         {
             private DamageAtomics DamageAffector;
 
@@ -60,9 +61,25 @@ namespace Sophia.DataSystem
                             .SetInterval(DamageAffector.intervalTime);
                 CurrentState = AffectorReadyState.Instance;
             }
+#region User Interface
+            public string GetDescription()
+            {
+                throw new System.NotImplementedException();
+            }
+
+            public string GetName()
+            {
+                throw new System.NotImplementedException();
+            }
+
+            public Sprite GetSprite()
+            {
+                throw new System.NotImplementedException();
+            }
+#endregion
         }
 
-        public class PoisonedAffect : Affector
+        public class PoisonedAffect : Affector, IUserInterfaceAccessible
         {
             public PoisonedAffect(in SerialAffectorData affectData) : base(in affectData)
             {
@@ -103,9 +120,25 @@ namespace Sophia.DataSystem
                             .SetInterval(DamageAffector.intervalTime);
                 CurrentState = AffectorReadyState.Instance;
             }
+#region User Interface
+            public string GetDescription()
+            {
+                throw new System.NotImplementedException();
+            }
+
+            public string GetName()
+            {
+                throw new System.NotImplementedException();
+            }
+
+            public Sprite GetSprite()
+            {
+                throw new System.NotImplementedException();
+            }
+#endregion
         }
 
-        public class BleedAffect : Affector
+        public class BleedAffect : Affector, IUserInterfaceAccessible
         {
             private DamageAtomics DamageAffector;
             public BleedAffect(in SerialAffectorData affectData) : base(in affectData)
@@ -138,9 +171,25 @@ namespace Sophia.DataSystem
                             .SetInterval(DamageAffector.intervalTime);
                 CurrentState = AffectorReadyState.Instance;
             }
+#region User Interface
+            public string GetDescription()
+            {
+                throw new System.NotImplementedException();
+            }
+
+            public string GetName()
+            {
+                throw new System.NotImplementedException();
+            }
+
+            public Sprite GetSprite()
+            {
+                throw new System.NotImplementedException();
+            }
+#endregion
         }
 
-        public class ColdAffect : Affector
+        public class ColdAffect : Affector, IUserInterfaceAccessible
         {
             private EntityStatModifyAtomics EntityStatModifyAffector;
             private MaterialChangeAtomics MaterialChangeAffector;
@@ -176,9 +225,25 @@ namespace Sophia.DataSystem
                 Timer = new TimerComposite(affectData._baseDurateTime);
                 CurrentState = AffectorReadyState.Instance;
             }
+#region User Interface
+            public string GetDescription()
+            {
+                throw new System.NotImplementedException();
+            }
+
+            public string GetName()
+            {
+                throw new System.NotImplementedException();
+            }
+
+            public Sprite GetSprite()
+            {
+                throw new System.NotImplementedException();
+            }
+#endregion
         }
 
-        public class SternAffect : Affector
+        public class SternAffect : Affector, IUserInterfaceAccessible
         {
             private HoldAtomics HoldAffector;
             private MaterialChangeAtomics MaterialChangeAffector;
@@ -219,9 +284,25 @@ namespace Sophia.DataSystem
                 Timer = new TimerComposite(affectData._baseDurateTime);
                 CurrentState = AffectorReadyState.Instance;
             }
+#region User Interface
+            public string GetDescription()
+            {
+                throw new System.NotImplementedException();
+            }
+
+            public string GetName()
+            {
+                throw new System.NotImplementedException();
+            }
+
+            public Sprite GetSprite()
+            {
+                throw new System.NotImplementedException();
+            }
+#endregion
         }
 
-        public class BoundedAffect : Affector
+        public class BoundedAffect : Affector, IUserInterfaceAccessible
         {
             private HoldAtomics HoldAffector;
 
@@ -256,9 +337,25 @@ namespace Sophia.DataSystem
                 Description = affectData._description;
                 Icon = affectData._icon;
             }
+#region User Interface
+            public string GetDescription()
+            {
+                throw new System.NotImplementedException();
+            }
+
+            public string GetName()
+            {
+                throw new System.NotImplementedException();
+            }
+
+            public Sprite GetSprite()
+            {
+                throw new System.NotImplementedException();
+            }
+#endregion
         }
 
-        public class KnockbackAffect : Affector
+        public class KnockbackAffect : Affector, IUserInterfaceAccessible
         {
             private RigidImpulseAtomics RigidImpulseAffector;
             private HoldAtomics HoldAffector;
@@ -296,9 +393,25 @@ namespace Sophia.DataSystem
                 Description = affectData._description;
                 Icon = affectData._icon;
             }
+#region User Interface
+            public string GetDescription()
+            {
+                throw new System.NotImplementedException();
+            }
+
+            public string GetName()
+            {
+                throw new System.NotImplementedException();
+            }
+
+            public Sprite GetSprite()
+            {
+                throw new System.NotImplementedException();
+            }
+#endregion
         }
 
-        public class BlackHoleAffect : Affector
+        public class BlackHoleAffect : Affector, IUserInterfaceAccessible
         {
             private RigidGradualAtomics RigidGradualAffector;
             private HoldAtomics HoldAffector;
@@ -340,9 +453,25 @@ namespace Sophia.DataSystem
                 Timer = new TimerComposite(affectData._baseDurateTime);
                 CurrentState = AffectorReadyState.Instance;
             }
+#region User Interface
+            public string GetDescription()
+            {
+                throw new System.NotImplementedException();
+            }
+
+            public string GetName()
+            {
+                throw new System.NotImplementedException();
+            }
+
+            public Sprite GetSprite()
+            {
+                throw new System.NotImplementedException();
+            }
+#endregion
         }
 
-        public class AirborneAffect : Affector
+        public class AirborneAffect : Affector, IUserInterfaceAccessible
         {
             private TweenJumpTransformAtomics TweenJumpAffector;
             private HoldAtomics HoldAffector;
@@ -377,6 +506,22 @@ namespace Sophia.DataSystem
                 Timer = new TimerComposite(affectData._baseDurateTime);
                 CurrentState = AffectorReadyState.Instance;
             }
+#region User Interface
+            public string GetDescription()
+            {
+                throw new System.NotImplementedException();
+            }
+
+            public string GetName()
+            {
+                throw new System.NotImplementedException();
+            }
+
+            public Sprite GetSprite()
+            {
+                throw new System.NotImplementedException();
+            }
+#endregion
         }
     }
 }
