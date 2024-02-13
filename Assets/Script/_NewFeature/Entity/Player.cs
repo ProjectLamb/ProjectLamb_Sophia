@@ -19,12 +19,12 @@ namespace Sophia.Entitys
 #region SerializeMember 
 //      [SerializeField] private ModelManger  _modelManger;
 //      [SerializeField] private VisualFXBucket  _visualFXBucket;
-        [SerializeField] private SerialBasePlayerData   _basePlayerData;
-        [SerializeField] private ProjectileBucket       _projectileBucket;
-        [SerializeField] private WeaponManager          _weaponManager;
-        [SerializeField] private EquipmentManager       _equipmentManager;
-        [SerializeField] private AffectorManager        _affectorManager;
-        [SerializeField] public  Wealths                _PlayerWealth;
+        [SerializeField] private SerialBasePlayerData       _basePlayerData;
+        [SerializeField] private ProjectileBucketManager    _projectileBucketManager;
+        [SerializeField] private WeaponManager              _weaponManager;
+        [SerializeField] private EquipmentManager           _equipmentManager;
+        [SerializeField] private AffectorManager            _affectorManager;
+        [SerializeField] public  Wealths                    _PlayerWealth;
 
 #endregion
 
@@ -33,10 +33,10 @@ namespace Sophia.Entitys
 //      [HideInInspector] public Rigidbody entityRigidbody;
 //      [HideInInspector] protected List<IDataSettable> Settables = new();
 
-        public LifeComposite Life                       { get; private set; }
-        public MovementComposite Movement               { get; private set; }
-        public DashSkill DashSkillAbility               { get; private set; }
-        public Stat Power                               { get; private set; }
+        private LifeComposite Life;
+        private MovementComposite Movement;
+        private DashSkill DashSkillAbility;
+        private Stat Power;
 
 #endregion
 
@@ -131,7 +131,7 @@ namespace Sophia.Entitys
             this.Settables.Add(Life);
             this.Settables.Add(Movement);
             this.Settables.Add(DashSkillAbility);
-            this.Settables.Add(_projectileBucket);
+            this.Settables.Add(_projectileBucketManager);
             this.Settables.Add(_weaponManager);
             this.Settables.Add(_affectorManager);
         }

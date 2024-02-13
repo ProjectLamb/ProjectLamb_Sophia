@@ -71,7 +71,7 @@ namespace Sophia.DataSystem.Referer
                     case E_FUNCTIONAL_EXTRAS_TYPE.Move :                {res = this.OnMove as Extras<T>;                break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Damaged :             {res = this.OnDamaged as Extras<T>;             break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Attack :              {res = this.OnAttack as Extras<T>;              break;}
-                    case E_FUNCTIONAL_EXTRAS_TYPE.ConveyAffect :        {res = this.OnConveyAffect as Extras<T>;              break;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.ConveyAffect :        {res = this.OnConveyAffect as Extras<T>;        break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Dead :                {res = this.OnDead as Extras<T>;                break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Idle :                {res = this.OnIdle as Extras<T>;                break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.PhyiscTriggered :     {res = this.OnPhyiscTriggered as Extras<T>;     break;}

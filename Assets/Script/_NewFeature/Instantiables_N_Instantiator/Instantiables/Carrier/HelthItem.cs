@@ -13,7 +13,7 @@ namespace Sophia.Instantiates
         protected override void OnTriggerLogic(Collider entity)
         {
             if(entity.TryGetComponent<Player>(out Player player)){
-                player.Life.Healed(Health);
+                player.GetLifeComposite().Healed(Health);
             }
         }
     }

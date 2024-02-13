@@ -24,6 +24,7 @@ namespace Sophia.DataSystem.Modifiers
             this.FunctionalType = functionalType;
             Order = order;  
         }
+
         public ExtrasModifier(IFunctionalCommand<T> value, E_EXTRAS_PERFORM_TYPE perfType, E_FUNCTIONAL_EXTRAS_TYPE functionalType) : this(value, perfType, functionalType, 999){}
 
         public string GetName() => Value.GetName();
@@ -32,7 +33,6 @@ namespace Sophia.DataSystem.Modifiers
 
     }
 }
-
 /*
 
 */
