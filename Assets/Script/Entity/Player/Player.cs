@@ -12,6 +12,15 @@ using Component = UnityEngine.Component;
 using Random = UnityEngine.Random;
 using Feature_NewData;
 
+public enum PlayerStates // 플레이어 상태 
+    {
+        Idle = 0,
+        Move,
+        Attack,
+        GetDamaged,
+        Die,
+    }   
+
 public class Player : Entity {
 
     /* 아래 4줄은 절때 활성화 하지마라. 상속받은 Entity에 이미 정의 되어 있다. */
@@ -83,6 +92,9 @@ public class Player : Entity {
     IEnumerator mCoWaitDash;        // StopCorutine을 사용하기 위해서는 코루틴 변수가 필요하다. 
     public ParticleSystem DieParticle;
 
+    private State [] states; // 상태 배열
+    private State    currentState; // 현재 상태
+
     protected override void Awake(){
         /*아래 3줄은 절때 활성화 하지마라. base.Awake() 에서 이미 이걸 하고 있다.*/
         //if (!TryGetComponent<Collider>(out entityCollider)) { Debug.Log("컴포넌트 로드 실패 : Collider"); }
@@ -92,6 +104,17 @@ public class Player : Entity {
         base.Awake();
         model.TryGetComponent<Animator>(out anim);
         model.TryGetComponent<AttackAnim>(out attackAnim);
+
+        states                         = new State[5];
+        states[(int)PlayerStates.Idle] = new PlayerState.Idle();
+        states[(int)PlayerStates.Move] = new PlayerState.Move();
+        states[(int)PlayerStates.Attack] = new PlayerState.Attack();
+        states[(int)PlayerStates.GetDamaged] = new PlayerState.GetDamaged();
+        states[(int)PlayerStates.Die] = new PlayerState.Die();
+        
+
+        //시작할 때 플레이어 상태 idle 상태로 지정
+        currentState = states[(int)PlayerStates.Idle];
     }
 
     private void Start() {
@@ -102,6 +125,14 @@ public class Player : Entity {
         DashSkillAbility = new DashSkill(entityRigidbody);
         DashSkillAbility.SetAudioSource(DashSource);
         MasterData.MaxStaminaInject(DashSkillAbility.MaxStamina);
+    }
+
+    //매 프레임마다 플레이어 현재 상태의 Update 함수 호출
+    public void Update(){
+        if(currentState != null)
+        {
+            currentState.Update(this);
+        }
     }
     
     public override void GetDamaged(int _amount){
@@ -191,8 +222,10 @@ public class Player : Entity {
 
     public void Attack()
     {
-        if(!resetAtkTrigger)
+        if(!resetAtkTrigger){
+            ChangeState(PlayerStates.Attack);
             anim.SetTrigger("DoAttack");
+        }
         //Turning(() => weaponManager.weapon.Use(PlayerDataManager.GetEntityData().Power));
     }
     
@@ -295,5 +328,24 @@ public class Player : Entity {
 
         if(resetAtkTrigger) // 세번째 공격 종료시점에 선입력되어있는 DoAttack 트리거 reset
             anim.ResetTrigger("DoAttack");
+    }
+
+    public void ChangeState(PlayerStates newState)
+    {
+        //새로 바꾸려는 상태가 비어있으면 그냥 return;
+        if(states[(int)newState] == null) {
+            Debug.Log("텅 비엇내");
+            return;
+        }
+
+        // 현재 재생중인 상태 있으면 exit 호출
+        if(currentState != null)
+        {
+            currentState.Exit(this);
+        }
+
+        //새로운 상태로 변경, 새로 바뀐 상태의 enter 호출
+        currentState = states[(int)newState];
+        currentState.Enter(this);
     }
 }
