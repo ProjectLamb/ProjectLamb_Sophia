@@ -14,7 +14,7 @@ namespace Sophia
 
     public enum E_STAT_CALC_TYPE
     {
-        None, Add, Mul
+        None = 0, Add = 1 , Mul = 2
     }
 
     public enum E_NUMERIC_STAT_TYPE {

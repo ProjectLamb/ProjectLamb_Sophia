@@ -11,9 +11,12 @@ namespace Sophia.Entitys
 
     public abstract class Entity : MonoBehaviour, ILifeAccessible, IDataAccessible, IVisualAccessible, IAffectable
     {
+
 #region SerializeMember 
+        
         [SerializeField] protected ModelManger  _modelManger;
         [SerializeField] protected VisualFXBucket  _visualFXBucket;
+
 #endregion
 
 #region Members
@@ -24,6 +27,7 @@ namespace Sophia.Entitys
 #endregion
 
         protected abstract void SetDataToReferer();
+        
         protected abstract void CollectSettable();
 
         protected virtual void Awake() {
@@ -46,6 +50,7 @@ namespace Sophia.Entitys
 #endregion
 
 #region Data Accessible
+
         public EntityStatReferer StatReferer { get; protected set; }
         public EntityExtrasReferer ExtrasReferer { get; protected set; }
         public abstract EntityStatReferer GetStatReferer();
@@ -65,6 +70,7 @@ namespace Sophia.Entitys
 #endregion
 
 #region Visual Accessible
+
         public ModelManger GetModelManger() => this._modelManger;
         public GameObject GetGameObject() => this._modelManger.GetModelObject();
         public VisualFXBucket GetVisualFXBucket() => this._visualFXBucket;

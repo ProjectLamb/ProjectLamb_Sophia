@@ -129,7 +129,6 @@ namespace Sophia.DataSystem.Modifiers
         public int GetTransitionBit() => (int)TimerStateBit.Terminate + (int)TimerStateBit.Run;
     }
 
-
     public class AffectorTerminateState : AffectorState
     {
         private static AffectorTerminateState _instance = new AffectorTerminateState();
@@ -142,5 +141,5 @@ namespace Sophia.DataSystem.Modifiers
         public int GetCurrentBit() => (int)TimerStateBit.Terminate;
         public int GetTransitionBit() => 0;
     }
-
+    
 }
