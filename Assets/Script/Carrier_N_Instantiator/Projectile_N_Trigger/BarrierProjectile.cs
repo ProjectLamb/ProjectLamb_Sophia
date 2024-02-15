@@ -81,7 +81,7 @@ namespace Sophia_Carriers
             if(!IsInitialized) return;
             ProjectileParticle.Play();
             HitState = () => {WatchBarrierAmount();};
-            GameManager.Instance.PlayerGameObject.GetComponent<Player>().BarrierAmount = BarrierHealth;
+            GameManager.Instance.PlayerGameObject.GetComponent<Player>().Life.BarrierCoverd(BarrierHealth);
             PlayerDataManager.GetEntityData().HitState += HitState;
         }
 
@@ -105,7 +105,7 @@ namespace Sophia_Carriers
 
         private void SetPlayerHitIgnore(ref int _amount){ Debug.Log("탱탱 막아버리기"); _amount = 0; }
         private void WatchBarrierAmount(){
-            if(GameManager.Instance.PlayerGameObject.GetComponent<Player>().BarrierAmount <= 0){
+            if(GameManager.Instance.PlayerGameObject.GetComponent<Player>().Life.CurrentBarrier <= 0){
                 DisableSelf();
             }
         }
@@ -114,7 +114,7 @@ namespace Sophia_Carriers
             if(!IsInitialized) return;
             Debug.Log("베리어 비 활성화");
             PlayerDataManager.GetEntityData().HitState -= HitState;
-            GameManager.Instance.PlayerGameObject.GetComponent<Player>().BarrierAmount = 0;
+            GameManager.Instance.PlayerGameObject.GetComponent<Player>().Life.SetBarrier(0);
         }
     }
 }

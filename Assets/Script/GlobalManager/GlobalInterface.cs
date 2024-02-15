@@ -34,10 +34,6 @@ public interface IModifier
 /*
 데이터 변환이 이루어 진다.
 */
-public interface IAffectable
-{
-    public void AffectHandler(AffectorPackage affectorPackage);
-}
 
 public interface IEntityDataAddressable
 {
@@ -51,6 +47,12 @@ public interface ITimeAffectable
     public void Pause();
     public void Play();
 }
+
+public interface IAffectable{
+    public void AffectHandler(AffectorPackage _affectorPackage);
+
+}
+
 
 public interface IPurchase {
     
