@@ -9,6 +9,7 @@ namespace Sophia.DataSystem
 
     namespace Modifiers.ConcreteAffector
     {
+        
         public static class FactoryConcreteAffect {
             public static Affector GetAffectByID(in SerialAffectorData affectData, Entitys.Entity entity) {
                 switch(affectData._affectType)

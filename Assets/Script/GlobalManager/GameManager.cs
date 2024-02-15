@@ -22,7 +22,6 @@ public class GameManager : MonoBehaviour
             return _instance;
         }
     }
-    
 
     public GlobalEvent GlobalEvent;
     public Sophia.GlobalEvent                  NewFeatureGlobalEvent;
