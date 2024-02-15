@@ -5,7 +5,6 @@ using UnityEngine.Analytics;
 
 namespace Sophia.DataSystem.Modifiers
 {
-    using Sophia.DataSystem.Numerics;
     public class StatModifier
     {
         public readonly E_STAT_CALC_TYPE CalcType = E_STAT_CALC_TYPE.None;

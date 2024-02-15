@@ -22,13 +22,13 @@ public class GameManager : MonoBehaviour
             return _instance;
         }
     }
-    
 
     public GlobalEvent GlobalEvent;
+    public Sophia.GlobalEvent                  NewFeatureGlobalEvent;
     public GlobalAudioManager                  GlobalAudioManager;
     public GlobalCarrierManger                 GlobalCarrierManager;
     public GlobalSceneLoader                   GlobalSceneLoader;
-    public Sophia.GlobalTimeUpdator                   GlobalTimeUpdator;
+    public Sophia.GlobalTimeUpdator            GlobalTimeUpdator;
     public GameObject                          PlayerGameObject;
     public GameObject                          ChapterGenerator;
     public GameObject                          Shop;
