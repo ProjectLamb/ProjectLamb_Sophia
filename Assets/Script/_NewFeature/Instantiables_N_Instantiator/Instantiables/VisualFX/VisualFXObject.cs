@@ -206,7 +206,7 @@ namespace Sophia.Instantiates
         /// Monobehaviour 함수다.
         /// </summary>
         private void OnParticleSystemStopped() => DeActivate();
-    
+
         private void SetParticleLoopRecursivly(Transform parent, bool isLoop) {
             if(parent.TryGetComponent<ParticleSystem>(out ParticleSystem particle)) {
                 var mainModule = particle.main;
