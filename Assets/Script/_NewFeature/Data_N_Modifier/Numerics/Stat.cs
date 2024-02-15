@@ -6,7 +6,6 @@ using UnityEngine.Events;
 
 namespace Sophia.DataSystem
 {
-    using Numerics;
     using Modifiers;
 
     public class Stat
@@ -88,8 +87,9 @@ namespace Sophia.DataSystem
 
         public void RemoveModifier(StatModifier StatModifier)
         {
-            statModifierList.Remove(StatModifier);
-            isDirty = true;
+            if(statModifierList.Remove(StatModifier)) {
+                isDirty = true;
+            }
         }
 
         public void ResetModifiers()
@@ -118,7 +118,7 @@ namespace Sophia.DataSystem
             else {value = (float) Math.Round(value, 3);}
             isDirty = false;
 
-            OnStatChanged.Invoke();
+            OnStatChanged?.Invoke();
         }
 
         private void CalculateWithUseAndCalcType(E_STAT_USE_TYPE useType, StatModifier calc, ref float adder, ref float multiplier) {
@@ -142,3 +142,4 @@ namespace Sophia.DataSystem
         }
     }
 }
+

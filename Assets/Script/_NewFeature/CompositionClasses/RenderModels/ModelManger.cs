@@ -22,14 +22,24 @@ namespace Sophia.Composite.RenderModels
     *********************************************************************************/
     
     public class ModelManger : MonoBehaviour {
+#region SerializeMember
+
         [SerializeField] private GameObject _model;
         [SerializeField] private ModelHands _modelHands;
         [SerializeField] private Animator _modelAnimator;
         
+
         [Tooltip("SkinMaterial 스킨을 입힐 대상들이다.")]
-        [SerializeField]private List<Renderer> _renderers = new List<Renderer>();
+        [SerializeField] private List<Renderer> _renderers = new List<Renderer>();
         [SerializeField] private List<Material> _materials = new List<Material>();
+
+#endregion
+
+#region Member
+        
         public Material TransMaterial;
+
+#endregion
 
         private void Awake() {
             _model = this.gameObject;
@@ -41,6 +51,7 @@ namespace Sophia.Composite.RenderModels
             if(_materials.Count == 0) throw new System.Exception("Skin리스트가 없어서 설정하고싶은 스킨이 없음");
         }
 
+#region Skin
         public async UniTask ChangeSkin(CancellationToken cancellationToken, Material skin) {
             _materials[1] = skin;
             foreach (Renderer renderer in _renderers) {
@@ -58,14 +69,23 @@ namespace Sophia.Composite.RenderModels
             await UniTask.WaitForEndOfFrame(this, cancellationToken);
             cancellationToken.ThrowIfCancellationRequested();
         }
+#endregion
 
+#region 3D Model
+        public GameObject GetModelObject() => _model;
         public void HoldObject(GameObject go, E_MODEL_HAND handPos) => _modelHands.HoldObject(go, handPos);
         public void DropObject(E_MODEL_HAND handPos) => _modelHands.DropObject(handPos);
 
         IEnumerator DoAndRenderModel(UnityAction action){
             action.Invoke(); yield return new WaitForEndOfFrame();
         }
-        
+
+#endregion
+
+#region Animation
+
         public Animator GetAnimator() {return this._modelAnimator;}
+
+#endregion
     }
 }

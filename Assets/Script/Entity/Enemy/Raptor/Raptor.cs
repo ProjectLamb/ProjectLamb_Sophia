@@ -22,7 +22,6 @@ public class Raptor : Enemy
     public Projectile[] AttackProjectiles;
     public AudioClip[] audioClips;
     public bool IsSmallRaptor;
-    Collider collider;
 
     float animationWalkSpeed;
 
@@ -191,7 +190,7 @@ public class Raptor : Enemy
     protected override void Awake()
     {
         base.Awake();
-        collider = GetComponent<CapsuleCollider>();
+        entityCollider = GetComponent<CapsuleCollider>();
         IsCollider = false;
         if (IsSmallRaptor)
         {
