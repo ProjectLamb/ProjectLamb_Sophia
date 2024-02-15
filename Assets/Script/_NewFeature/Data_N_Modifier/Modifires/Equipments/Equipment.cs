@@ -22,7 +22,7 @@ namespace Sophia.DataSystem.Modifiers
 
             foreach (E_NUMERIC_STAT_TYPE statType in Enum.GetValues(typeof(E_NUMERIC_STAT_TYPE)))
             {
-                SerialStatModifireDatas statValue = equipmentData._statCalculateDatas.GetModifireDatas(statType);
+                SerialStatModifierDatas statValue = equipmentData._statCalculateDatas.GetModifierDatas(statType);
                 if (statValue.calType != E_STAT_CALC_TYPE.None)
                 {
                     StatModifiers.Add(statType, new StatModifier(statValue.amount, statValue.calType, statType));
@@ -30,7 +30,7 @@ namespace Sophia.DataSystem.Modifiers
             }
 
             // foreach(E_FUNCTIONAL_EXTRAS_TYPE funcType in Enum.GetValues(typeof(E_FUNCTIONAL_EXTRAS_TYPE))) {
-            //     SerialExtrasModifireDatas extrasValue = equipmentData._extraDatas.GetModifireDatas(funcType);
+            //     SerialExtrasModifierDatas extrasValue = equipmentData._extraDatas.GetModifierDatas(funcType);
             //     if(funcType....)
             //     
             //     
