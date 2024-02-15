@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEditor;
-using Feature_NewData;
+
 
 public class GameManager : MonoBehaviour
 {
@@ -28,7 +28,7 @@ public class GameManager : MonoBehaviour
     public GlobalAudioManager                  GlobalAudioManager;
     public GlobalCarrierManger                 GlobalCarrierManager;
     public GlobalSceneLoader                   GlobalSceneLoader;
-    public GlobalTimeUpdator                   GlobalTimeUpdator;
+    public Sophia.GlobalTimeUpdator                   GlobalTimeUpdator;
     public GameObject                          PlayerGameObject;
     public GameObject                          ChapterGenerator;
     public GameObject                          Shop;

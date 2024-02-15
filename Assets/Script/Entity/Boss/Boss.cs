@@ -5,13 +5,12 @@ using Sophia_Carriers;
 
 public class Boss : Enemy
 {
-    protected BehaviorTree behaviorTree;
     protected FieldOfView fov;
+    protected int phase = 1;
 
     protected override void Awake()
     {
         base.Awake();
-        TryGetComponent<BehaviorTree>(out behaviorTree);
         TryGetComponent<FieldOfView>(out fov);
     }
     void Start()

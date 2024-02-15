@@ -62,4 +62,14 @@ public class BlackHoleState : EntityAffector {
         yield return YieldInstructionCache.WaitForSeconds(slowDurateTime);
         this.targetEntity.GetFinalData().MoveSpeed = originMoveSpeed;
     }
+    IEnumerator DotDamage(){
+        float passedTime = 0;
+        float tenacity =this.targetEntity.GetFinalData().Tenacity;
+        float dotDamageDurateTime = DurationTime * (1 - tenacity);
+        while(dotDamageDurateTime > passedTime){
+            passedTime += 0.5f;
+            this.targetEntity.GetDamaged((int)(this.ownerEntity.GetFinalData().Power * 0.25f) + 1);
+            yield return YieldInstructionCache.WaitForSeconds(0.5f);
+        }
+    }
 }

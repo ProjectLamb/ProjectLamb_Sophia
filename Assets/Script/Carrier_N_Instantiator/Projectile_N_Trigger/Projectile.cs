@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Sophia_Carriers;
+using System.Collections;
 
 /// <summary>
 /// Instantiate().Initialize(int amount, Entity owner)를 꼭 설정해야함 <br/>
@@ -99,7 +100,7 @@ namespace Sophia_Carriers {
         // public virtual void SetScale(float _sizeRatio){transform.localScale *= _sizeRatio;}
         // https://www.youtube.com/watch?v=t4y2XJ7L4DM : 자식의 콜라이더도 마치 자신의 것으로 판정을 한다. 유의할것
         protected virtual void OnTriggerEnter(Collider _other) {
-            
+            Debug.Log(_other.name);
             CheckException();
             
             if(!CheckIsOwnerCollider(_other)) {
@@ -124,11 +125,20 @@ namespace Sophia_Carriers {
 
         protected void HitTarget(Collider _other) {
             if(ProjecttileDamage == 0) {return;}
-            IDamagable damagableTarget;
             if(transform.CompareTag(_other.transform.tag)) {return;}
-            if(_other.TryGetComponent<IDamagable>(out damagableTarget)){
-                damagableTarget.GetDamaged((int)ProjecttileDamage, this.HitEffect); 
+            IDamagable target = _other.GetComponent<IDamagable>();
+            if(_other.TryGetComponent<IDamagable>(out IDamagable damagableTarget)){
+                damagableTarget.GetDamaged((int)ProjecttileDamage, HitEffect);
+                //StartCoroutine(TEST_CoHitFiveTime(damagableTarget));
             }
+        }
+
+        IEnumerator TEST_CoHitFiveTime(IDamagable damagableTarget) {
+            for(int i = 0; i < 5; i++){
+                damagableTarget.GetDamaged((int)ProjecttileDamage, HitEffect);
+                yield return YieldInstructionCache.WaitForSeconds(0.05f);
+            }
+            yield break;
         }
 
         protected void ConveyAffectorToTarget(Collider _other){
