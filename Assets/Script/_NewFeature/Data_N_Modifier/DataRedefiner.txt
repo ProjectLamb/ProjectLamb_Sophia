@@ -1,0 +1,111 @@
+
+EntityFixedAmounts
+    FixedMaxHp; 
+    FixedDefence;
+    FixedPower;
+    FixedTenacity;
+
+EntityReferingRatioAmounts
+    ReferingRatioMaxHp; 
+    ReferingRatioDefence;
+    ReferingRatioPower;
+    ReferingRatioAttackSpeed;
+    ReferingRatioMoveSpeed;
+    ReferingRatioTenacity;
+
+EntityAdditionalFunctionals
+    AddedMove;
+    AddedDamaged;
+    AddedAttack;
+    AddedAffected;
+    AddedDead;
+    AddedStanding;
+    AddedPhyiscTriggered;
+
+
+PlayerFixedAmounts
+    FixedMaxHp; 
+    FixedDefence;
+    FixedPower;
+    FixedTenacity;
+    FixedMaxStamina;
+    FixedLuck;
+
+
+PlayerReferingRatioAmounts
+    ReferingRatioMaxHp; 
+    ReferingRatioDefence;
+    ReferingRatioPower;
+    ReferingRatioAttackSpeed;
+    ReferingRatioMoveSpeed;
+    ReferingRatioTenacity;
+    ReferingRatioStaminaRestoreSpeed;
+
+PlayerAdditionalFunctionals
+    AddedMove;
+    AddedDamaged;
+    AddedAttack;
+    AddedAffected;
+    AddedDead;
+    AddedStanding;
+    AddedPhyiscTriggered;
+    AddedSkill;
+
+
+
+InstantiatorReferingRatioAmounts
+    ReferingRatioMaxDistance;
+    ReferingRatioMaxDuration;
+    ReferingRatioSize;
+    ReferingRatioSpeed;
+
+InstantiatorAdditionalFunctionals
+    AddedCreated;
+    AddedInteracted;
+    AddedReleased;
+    AddedForwarding;
+
+
+WeaponReferingRatioAmount
+    MaxProjectilePoolSize;
+    RestoreSpeed;
+    MeleeDamageRatio;
+    RangeDamageRatio;
+    TechDamageRatio;
+
+WeaponAdditionalFunctionals
+    AddedWeaponUse;
+    AddedWeaponChange;
+    AddedProjectileRestore;
+
+
+SkillReferingRatioAmont
+    ReferingRatioEfficienceMultiplyer;
+    ReferingRatioAccecerate;
+
+
+SkillAddtionalFunctionals
+    AddedUse;
+    AddedSkillChange;
+    AddedSkillRefilled;
+
+
+NonTemporalCalculatedAddings
+    playerFixedAmounts;
+    playerReferingRatioAmounts;
+    playerAdditionalFunctional;
+
+
+NonTemporalOnUsePostWeaponAddin
+
+    weaponReferingRatioAmount;
+    weaponAdditionalFunctionals;
+
+NonTemporalOnUsePostSkillAddings
+    skillReferingRatioAmonts;
+    skillAddtionalFunctionals;
+
+
+TemporalAddings
+    entityReferingRatioAmounts;
+    entityAdditionalFunctionals;

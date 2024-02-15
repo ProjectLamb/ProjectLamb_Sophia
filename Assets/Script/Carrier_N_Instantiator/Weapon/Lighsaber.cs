@@ -42,9 +42,7 @@ public class Lighsaber : MonoBehaviour
     public UnityAction drawOn;
     public UnityAction drawOff;
     
-
-    void Awake()
-    {
+    private void Start() {
         _mesh = new Mesh();
         meshParent.TryGetComponent<MeshFilter>(out meshFilter);
         meshParent.TryGetComponent<MeshRenderer>(out meshRenderer);
@@ -52,8 +50,7 @@ public class Lighsaber : MonoBehaviour
 
         vertices = new Vector3[trailFrameLength * NUMvertices];
         triangles = new int[vertices.Length];
-    }
-    private void Start() {
+
         //Set starting position for tip and base
         previousTipPosition = tipTransform.position;
         previousBasePosition = baseTransform.position;

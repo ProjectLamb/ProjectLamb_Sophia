@@ -1,27 +1,49 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class HealthBar : MonoBehaviour
 {
-    public Entity       ownerEntity;
+    public Sophia.Composite.LifeComposite LifeCompositeRef;
     public Slider       slider;
     public Image        fill;
     public Gradient     gradient;
 
-    private void Awake() {
-        ownerEntity ??= GetComponentInParent<Entity>();
-        fill.color  = gradient.Evaluate(1f);
-    }
-    
-    private void Update() {
-        SetSlider();
+    private void Start() {
+        LifeCompositeRef ??= GetComponentInParent<Entity>().Life;
+        int intValue = LifeCompositeRef.MaxHp;
+        slider.maxValue = (float)intValue;
+
+        LifeCompositeRef.OnHpUpdated += UpdateFillAmount;
+        LifeCompositeRef.OnEnterDie += TurnOffUI;
+
+        StartCoroutine(DoAndRenderUI(() => { fill.color = gradient.Evaluate(1f); }));
     }
 
-    public void SetSlider(){
-        slider.value = (((float)ownerEntity.CurrentHealth / (float)ownerEntity.GetFinalData().MaxHP) * slider.maxValue);
-        fill.color = gradient.Evaluate(slider.normalizedValue);
+    private void OnDestroy() {
+        LifeCompositeRef.OnHpUpdated -= UpdateFillAmount;
+        LifeCompositeRef.OnEnterDie  -= TurnOffUI;
+    }
+
+    private void UpdateFillAmount(float currentHp)
+    {
+        // Debug.Log(currentHp);
+        StartCoroutine(DoAndRenderUI(() =>
+        {
+            slider.value = currentHp;
+            fill.color = gradient.Evaluate(slider.normalizedValue);
+        }));
+    }
+
+    IEnumerator DoAndRenderUI(UnityAction action)
+    {
+        action.Invoke(); yield return new WaitForEndOfFrame();
+    }
+
+    public void TurnOffUI()
+    {
+        this.StopAllCoroutines();
+        slider.gameObject.SetActive(false);
     }
 }
