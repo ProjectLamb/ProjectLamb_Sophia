@@ -1,16 +1,10 @@
-using System;
-using System.Linq;
 using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using FMODPlus;
 
-using Component = UnityEngine.Component;
-using Random = UnityEngine.Random;
-
+using Sophia;
 
 public enum PlayerStates // 플레이어 상태 
     {
@@ -29,7 +23,7 @@ public class Player : Entity {
     //VisualModulator visualModulator;
     //GameObject model;
 
-#region SerializeMembeer
+#region SerializeMember
     [SerializeField] public ScriptableObjPlayerData ScriptablePD;
     [SerializeField] private int mBarrierAmount;
 
@@ -135,14 +129,20 @@ public class Player : Entity {
 #region 
     public override void GetDamaged(int _amount){
         if(Life.IsDie) {return;}
-        Life.Damaged(_amount);
+        DamageInfo damageInfo = new DamageInfo();
+        damageInfo.damageAmount = _amount;
+        damageInfo.damageRatio = 1;
+        Life.Damaged(damageInfo);
         PlayerDataManager.GetEntityData().HitState.Invoke();
         anim.SetTrigger("GetDamaged");
     }
 
     public override void GetDamaged(int _amount, VFXObject obj){
         if(Life.IsDie) {return;}
-        Life.Damaged(_amount);
+        DamageInfo damageInfo = new DamageInfo();
+        damageInfo.damageAmount = _amount;
+        damageInfo.damageRatio = 1;
+        Life.Damaged(damageInfo);
         PlayerDataManager.GetEntityData().HitState.Invoke();
         anim.SetTrigger("GetDamaged");
         visualModulator.InteractByVFX(obj);
@@ -315,7 +315,7 @@ public class Player : Entity {
         if(resetAtkTrigger) // 세번째 공격 종료시점에 선입력되어있는 DoAttack 트리거 reset
             anim.ResetTrigger("DoAttack");
     }
-
+  
     public void ChangeState(PlayerStates newState)
     {
         //새로 바꾸려는 상태가 비어있으면 그냥 return;

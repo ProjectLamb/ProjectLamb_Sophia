@@ -100,7 +100,6 @@ namespace Sophia_Carriers {
         // public virtual void SetScale(float _sizeRatio){transform.localScale *= _sizeRatio;}
         // https://www.youtube.com/watch?v=t4y2XJ7L4DM : 자식의 콜라이더도 마치 자신의 것으로 판정을 한다. 유의할것
         protected virtual void OnTriggerEnter(Collider _other) {
-            Debug.Log(_other.name);
             CheckException();
             
             if(!CheckIsOwnerCollider(_other)) {
