@@ -29,8 +29,8 @@ public class DefenceState :  EntityAffector{
         return Instance;
     }
 
-    public void Defence(ref int _amount){
-        _amount += (int)(_amount * Ratio); // 디펜스의 반대는 더 많이 맞는다는것으로
+    public void Defence(ref float _amount){
+        _amount += (float)(_amount * Ratio); // 디펜스의 반대는 더 많이 맞는다는것으로
     }
 
     IEnumerator VisualActivate(){
