@@ -1,19 +1,39 @@
+using Cysharp.Threading.Tasks;
 using Sophia.Composite;
 using Sophia.Instantiates;
 
 namespace Sophia
 {
     public interface IDamagable {
-        public void GetDamaged(int damage);
-        public void GetDamaged(int damage, VisualFXObject vfx);
+        public bool GetDamaged(DamageInfo damage);
     }
     
     public interface IDieable {
-        public void Die();
+        public bool Die();
 
     }
 
     public interface ILifeAccessible : IDamagable, IDieable{
         public LifeComposite GetLifeComposite();
+    }
+
+    public interface IMovable {
+        public bool GetMoveState();
+        public void SetMoveState(bool movableState);
+        public void MoveTick();
+        public UniTask Turning();
+    }
+
+    public interface IMovementAccessible :IMovable {
+        public MovementComposite GetMovementComposite();
+    }
+
+    public interface IAffectable {
+        public void Affect(DataSystem.Modifiers.Affector affector);
+        public void Recover(DataSystem.Modifiers.Affector affector);
+    }
+
+    public interface IAffectManagerAccessible : IAffectable {
+        public AffectorManager GetAffectorManager();
     }
 }

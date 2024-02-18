@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.Events;
 using System.Collections;
@@ -5,9 +6,7 @@ using System.Collections.Generic;
 
 namespace Sophia.Composite
 {
-    using Timer;
     using Stacks;
-    using System;
 
     public class CoolTimeComposite : IDisposable
     {
