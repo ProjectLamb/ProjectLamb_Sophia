@@ -25,22 +25,13 @@ namespace Sophia.Instantiates
             {
                 if (EquipUserInterface())
                 {
-                    player.Equip(equipment);
+                    player.EquipEquipment(equipment);
                     Destroy(this.gameObject);
                 }
             }
         }
 
         public bool EquipUserInterface() { return true; }
-        [ContextMenu("Strcut To Json")]
-        public void SerialEquipmentDataToJson()
-        {
-            SerialEquipmentData DataForm = new SerialEquipmentData();
-            string json = JsonConvert.SerializeObject(DataForm);
-
-            // JSON 문자열을 파일로 쓰기
-            File.WriteAllText("SerialEquipmentData.json", json);
-        }
     }
 
 }

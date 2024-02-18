@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using Cysharp.Threading.Tasks;
 using System.Threading;
+using Unity.VisualScripting.Antlr3.Runtime.Tree;
 
 namespace Sophia.Composite.RenderModels
 {    
@@ -25,6 +26,8 @@ namespace Sophia.Composite.RenderModels
 #region SerializeMember
 
         [SerializeField] private GameObject _model;
+        [SerializeField] private GameObject _skins;
+        [SerializeField] private MotionTrail _motionTrail;
         [SerializeField] private ModelHands _modelHands;
         [SerializeField] private Animator _modelAnimator;
         
@@ -45,7 +48,7 @@ namespace Sophia.Composite.RenderModels
             _model = this.gameObject;
             
             _model.TryGetComponent<Animator>(out _modelAnimator);
-            foreach(Transform skinTransform in transform.Find("skins")) {
+            foreach(Transform skinTransform in _skins.transform) {
                 _renderers.Add(skinTransform.GetComponent<Renderer>());
             }
             if(_materials.Count == 0) throw new System.Exception("Skin리스트가 없어서 설정하고싶은 스킨이 없음");
@@ -68,6 +71,17 @@ namespace Sophia.Composite.RenderModels
             }
             await UniTask.WaitForEndOfFrame(this, cancellationToken);
             cancellationToken.ThrowIfCancellationRequested();
+        }
+#endregion
+
+#region Motion Trail
+        public void EnableTrail() {
+            _motionTrail.gameObject.SetActive(true);
+            _motionTrail.TargetSkinMesh.SetActive(true);
+        }
+        public void DisableTrail() {
+            _motionTrail.gameObject.SetActive(false);
+            _motionTrail.TargetSkinMesh.SetActive(false);
         }
 #endregion
 

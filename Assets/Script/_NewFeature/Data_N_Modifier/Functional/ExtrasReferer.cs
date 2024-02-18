@@ -169,6 +169,8 @@ namespace Sophia.DataSystem.Referer
 #region Affect
             
             private Extras<Entity> OnConveyAffect = null;
+            private Extras<Entity> OnWeaponConveyAffect = null;
+            private Extras<Entity> OnSkillConveyAffect = null;
 
 #endregion
 
@@ -212,7 +214,9 @@ namespace Sophia.DataSystem.Referer
                     case E_FUNCTIONAL_EXTRAS_TYPE.Move :                {this.OnMove = extrasRef as Extras<Vector3>;                return;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Damaged :             {this.OnDamaged = extrasRef as Extras<DamageInfo>;          return;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Attack :              {this.OnAttack = extrasRef as Extras<object>;               return;}
-                    case E_FUNCTIONAL_EXTRAS_TYPE.ConveyAffect :        {this.OnConveyAffect = extrasRef as Extras<Entity>;         return;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.ConveyAffect :        {this.OnWeaponConveyAffect = extrasRef as Extras<Entity>;         return;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.WeaponConveyAffect :        {this.OnWeaponConveyAffect = extrasRef as Extras<Entity>;         return;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.SkillConveyAffect :        {this.OnSkillConveyAffect = extrasRef as Extras<Entity>;         return;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Dead :                {this.OnDead = extrasRef as Extras<object>;                 return;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Idle :                {this.OnIdle = extrasRef as Extras<object>;                 return;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.PhyiscTriggered :     {this.OnPhyiscTriggered = extrasRef as Extras<Vector3>;     return;}
@@ -242,6 +246,8 @@ namespace Sophia.DataSystem.Referer
                     case E_FUNCTIONAL_EXTRAS_TYPE.Damaged :             {res = this.OnDamaged as Extras<T>;             break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Attack :              {res = this.OnAttack as Extras<T>;              break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.ConveyAffect :        {res = this.OnConveyAffect as Extras<T>;        break;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.WeaponConveyAffect :        {res = this.OnWeaponConveyAffect as Extras<T>;        break;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.SkillConveyAffect :        {res = OnSkillConveyAffect as Extras<T>;        break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Dead :                {res = this.OnDead as Extras<T>;                break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Idle :                {res = this.OnIdle as Extras<T>;                break;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.PhyiscTriggered :     {res = this.OnPhyiscTriggered as Extras<T>;     break;}
@@ -308,6 +314,8 @@ namespace Sophia.DataSystem.Referer
                 Extras<Entity> res = null;
                 switch(functionalType) {
                     case E_FUNCTIONAL_EXTRAS_TYPE.ConveyAffect :    {res = this.OnConveyAffect; break;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.WeaponConveyAffect :    {res = this.OnWeaponConveyAffect; break;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.SkillConveyAffect :    {res = OnSkillConveyAffect; break;}
                     default: {
                         throw new System.Exception($"이 Entity 멤버에는 {functionalType.ToString()} 없음");
                     }

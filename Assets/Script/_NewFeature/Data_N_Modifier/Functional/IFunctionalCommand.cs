@@ -4,7 +4,7 @@ using UnityEngine.Events;
 
 namespace Sophia
 {
-    public interface IFunctionalCommand<T> : IUserInterfaceAccessible{
+    public interface IFunctionalCommand<T> : IUserInterfaceAccessible {
         public void Invoke(ref T referer);
     }
 

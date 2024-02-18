@@ -68,6 +68,7 @@ namespace Sophia.Composite
             }
             StartAffector(affector);
             UpdateDebugAffectList();
+            Debug.Log($"{_entity.name} : {affector.Name}");
         }
 
         public void Recover(Affector affector)
@@ -89,6 +90,7 @@ namespace Sophia.Composite
         }
         
 #region Helper
+
         private void StartAffector(Affector affector) {
             affector.ChangeState(AffectorStartState.Instance);
             AffectingStacks.Add(affector.AffectType, affector);

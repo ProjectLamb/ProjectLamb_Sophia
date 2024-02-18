@@ -74,7 +74,6 @@ public class Sandbag : Entity
     public override void GetDamaged(int _amount){
         if(Life.IsDie == true) {return;}
         DamageInfo info = new DamageInfo();
-        info.affectType = Sophia.E_AFFECT_TYPE.None;
         info.damageAmount = _amount;
         info.damageRatio = 1;
         Life.Damaged(info);
@@ -83,7 +82,6 @@ public class Sandbag : Entity
     public override void GetDamaged(int _amount, VFXObject _vfx){
         if(Life.IsDie == true) {return;}
         DamageInfo info = new DamageInfo();
-        info.affectType = Sophia.E_AFFECT_TYPE.None;
         info.damageAmount = _amount;
         info.damageRatio = 1;
         Life.Damaged(info);

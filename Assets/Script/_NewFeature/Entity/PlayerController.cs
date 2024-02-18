@@ -12,16 +12,19 @@ using UnityEngine.InputSystem;
 
 namespace Sophia.Entitys
 {
+    using Sophia.Instantiates;
+    using Sophia.UserInterface;
+
     public class PlayerController : MonoBehaviour
     {
-        Player playerRef;
+        [SerializeField] Player playerRef;
+        [SerializeField] ModelDebugger modelDebuggerRef;
 
         static public bool IsMoveAllow = true; //인풋을 받을수 있는지 없는지
         static public bool IsAttackAllow = true; //인풋을 받을수 있는지 없는지
         static public bool IsReversedInput = false; //인풋을 받을수 있는지 없는지
 
         private void Awake() {
-            if (!TryGetComponent<Player>(out playerRef)) { Debug.Log("컴포넌트 로드 실패 : Player"); }
             IsMoveAllow = true;
         }
 
@@ -32,15 +35,16 @@ namespace Sophia.Entitys
         private void Update() {
             //playerRef.AimAssist();
             //playerRef.CheckAttack();
+            if(Input.GetKeyDown(KeyCode.Tab)) modelDebuggerRef.ToggleMenu();
 
             if(IsMoveAllow){ 
                 if(Input.GetKeyDown(KeyCode.Space)){playerRef.Dash();}
             }
             
             if(IsAttackAllow){
-                // if(Input.GetKeyDown(KeyCode.Q)){playerRef.Skill(SKILL_KEY.Q);}
-                // if(Input.GetKeyDown(KeyCode.E)){playerRef.Skill(SKILL_KEY.E);}
-                // if(Input.GetKeyDown(KeyCode.R)){playerRef.Skill(SKILL_KEY.R);}
+                // if(Input.GetKeyDown(KeyCode.Q)){playerRef.Skill(E_SKILL_KEY.QKey);}
+                // if(Input.GetKeyDown(KeyCode.E)){playerRef.Skill(E_SKILL_KEY.EKey);}
+                // if(Input.GetKeyDown(KeyCode.R)){playerRef.Skill(E_SKILL_KEY.RKey);}
                 if(Input.GetMouseButtonDown(0)){playerRef.Attack();}
             }
         }

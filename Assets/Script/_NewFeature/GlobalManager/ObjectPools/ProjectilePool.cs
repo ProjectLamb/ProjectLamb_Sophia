@@ -4,6 +4,7 @@ using UnityEngine.Pool;
 
 namespace Sophia
 {
+    using System;
     using Entitys;
     using Instantiates;
     
@@ -22,39 +23,44 @@ namespace Sophia
         }
 
         public static ProjectileObject GetObject(ProjectileObject projectileReferernce) {
-            return Instance.ProPool[projectileReferernce.gameObject.name].Get();
+            return Instance.ProPool[projectileReferernce.ProjectileID].Get();
         }
 
         [SerializeField] private List<ProjectileObject> _creatableProjectiles;
-        public Dictionary<string, IObjectPool<ProjectileObject>> ProPool {get; private set;}
+        public IObjectPool<ProjectileObject>[] ProPool {get; private set;}
+        private List<Func<ProjectileObject>> OnCreateFuncs = new();
         public int MaxPoolSize;
 
         private void Awake() {
-            ProPool = new Dictionary<string, IObjectPool<ProjectileObject>>();
+            ProPool = new IObjectPool<ProjectileObject>[_creatableProjectiles.Count];
+            for(int i = 0 ; i < _creatableProjectiles.Count; i++) {
+                var idCount = i;
+                _creatableProjectiles[idCount].SetIndex(idCount);
+                OnCreateFuncs.Add(() => {
+                    ProjectileObject concrete = Instantiate(_creatableProjectiles[idCount]);
+                    concrete.SetByPool(this.ProPool[_creatableProjectiles[idCount].ProjectileID]);
+                    return concrete;
+                });
+            }
+            
         }
         
         /*⚠️ Instantiate(E)라면.. 같이 달린 컴포넌트도 같이 생성되나? 이거 버그 조심할것*/
 
         private void Start() {
-            _creatableProjectiles.ForEach((E) => {
-                ProPool.Add(E.gameObject.name, null);
-
-                ProPool[E.gameObject.name] = new ObjectPool<ProjectileObject>(
-                    createFunc: () => {
-                        ProjectileObject concrete = Instantiate(E);
-                        concrete.SetByPool(this.ProPool[E.gameObject.name]);
-                        return concrete;
-                    },
-                    actionOnGet: OnGetObject,
-                    actionOnRelease: OnReleaseObject,
-                    actionOnDestroy: OnDestroyObject,
-                    maxSize: MaxPoolSize
-                );
-            });
+            for(int i = 0; i < _creatableProjectiles.Count; i++) {
+                ProPool[_creatableProjectiles[i].ProjectileID] = new ObjectPool<ProjectileObject>(
+                                                                    createFunc: OnCreateFuncs[i],
+                                                                    actionOnGet: OnGetObject,
+                                                                    actionOnRelease: OnReleaseObject,
+                                                                    actionOnDestroy: OnDestroyObject,
+                                                                    maxSize: MaxPoolSize
+                                                                );
+            }
         }
 
 #region ObjectPool
-
+        
         private void OnGetObject(ProjectileObject projectile) {
             projectile.transform.parent = null;
             projectile.GetByPool();

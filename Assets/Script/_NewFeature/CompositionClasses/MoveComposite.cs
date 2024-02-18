@@ -107,23 +107,7 @@ namespace Sophia.Composite
             MoveExtras.PerformTickFunctionals(ref ForwardingVector);
             OnMoveForward?.Invoke(ForwardingVector);
         }
-
-        public async UniTask TurningWithCallback(Transform transform, Vector3 mousePosition, UnityAction _turningCallback)
-        {
-            if(!IsMovable) {return;}
-            Ray camRay = Camera.main.ScreenPointToRay(mousePosition);
-
-            // 레이캐스트 시작
-            if (Physics.Raycast(camRay, out RaycastHit groundHit, CamRayLength, GroundMask)) // 공격 도중에는 방향 전환 금지
-            {
-                Vector3 PlayerToPointerVector = groundHit.point - transform.position;
-                PlayerToPointerVector.y = 0f;
-                this.RbRef.MoveRotation(Quaternion.LookRotation(PlayerToPointerVector));
-                await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);
-                _turningCallback?.Invoke();
-            }
-        }
-
+        
         public async UniTask Turning(Transform transform, Vector3 mousePosition) {
             if(!IsMovable) {return;}
 

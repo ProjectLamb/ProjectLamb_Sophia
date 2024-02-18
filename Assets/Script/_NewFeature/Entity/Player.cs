@@ -12,6 +12,10 @@ namespace Sophia.Entitys
     using Sophia.DataSystem.Referer;
     using Sophia.DataSystem.Modifiers;
     using System.Collections.Generic;
+    using Sophia.UserInterface;
+    using Sophia.Composite.RenderModels;
+    using System.Collections;
+    using UnityEngine.Events;
 
     public class Player : Entity, IMovementAccessible, IAffectManagerAccessible
     {
@@ -24,6 +28,7 @@ namespace Sophia.Entitys
         [SerializeField] private WeaponManager              _weaponManager;
         [SerializeField] private EquipmentManager           _equipmentManager;
         [SerializeField] private AffectorManager            _affectorManager;
+        [SerializeField] private SkillManager               _skillManager;
         [SerializeField] public  Wealths                    _PlayerWealth;
 
 #endregion
@@ -110,7 +115,7 @@ namespace Sophia.Entitys
 #endregion
 
 #region Dash
-        
+        public DashSkill GetDashAbility() => DashSkillAbility;
         public FMODAudioSource DashSource;
         
         public void Dash() => DashSkillAbility.Use();/*m*/
@@ -146,16 +151,27 @@ namespace Sophia.Entitys
 
             Life = new LifeComposite(_basePlayerData.MaxHp, _basePlayerData.Defence);
             Movement = new MovementComposite(entityRigidbody, _basePlayerData.MoveSpeed);
-            DashSkillAbility = new DashSkill(this.entityRigidbody, Movement.GetMovemenCompositetData);
+            DashSkillAbility = new DashSkill(this.entityRigidbody, Movement.GetMovemenCompositetData, _basePlayerData.DashForce);
             Power = new Stat(_basePlayerData.Power, E_NUMERIC_STAT_TYPE.Power, E_STAT_USE_TYPE.Natural, OnPowerUpdated );
             _affectorManager.Init(_basePlayerData.Tenacity);
-        
         }
-        
+
         protected override void Start()
         {
             base.Start();
+            Life.SetDependUI(InGameScreenUI.Instance._playerHealthBarUI);
+            Life.OnDamaged += InGameScreenUI.Instance._hitCanvasShadeScript.Invoke;
+            
+            DashSkillAbility.SetDependUI(InGameScreenUI.Instance._playerStaminaBarUI);
+            DashSkillAbility.Timer.AddOnUseEvent(() => {
+                this.GetModelManger().EnableTrail();
+                StartCoroutine(actionDelay(this.GetModelManger().DisableTrail));
+            });
             DashSkillAbility.SetAudioSource(DashSource);
+        }
+        IEnumerator actionDelay(UnityAction action) {
+            yield return YieldInstructionCache.WaitForSeconds(0.5f);
+            action.Invoke(); 
         }
 
 #region Weapon Hanlder
@@ -167,7 +183,7 @@ namespace Sophia.Entitys
             try
             {
                 await Turning();
-                _weaponManager.GetCurrentWeapon().Use(this);
+                _weaponManager.Use();
             }
             catch (OperationCanceledException)
             {
@@ -177,17 +193,11 @@ namespace Sophia.Entitys
 
 #endregion
 
-#region Skill Handler
-
-        public void Skill() { throw new System.NotImplementedException(); }
-
-#endregion
-
 #region Equip Handler
 
         public EquipmentManager GetEquipmentManager() => this._equipmentManager;
-        public void Equip(Equipment equipment) => this._equipmentManager.Equip(equipment);
-        public void Drop(Equipment equipment) => this._equipmentManager.Drop(equipment);
+        public void EquipEquipment(Equipment equipment) => this._equipmentManager.Equip(equipment);
+        public void DropEquipment(Equipment equipment) => this._equipmentManager.Drop(equipment);
 
 #endregion
 

@@ -28,15 +28,13 @@ namespace Sophia.DataSystem
             public Equipment_009_LightFlash(SerialEquipmentData equipmentData) : base(equipmentData)
             {
                 DamageConverterData = new SerialDamageConverterData {
-                    _activatePercentage = 100,
-                    _affectType = E_AFFECT_TYPE.None,
                     _damageRatio = 0,
                     _damageHandleType = DamageHandleType.Dodge,
                     _hitType = HitType.None
                 };
 
                 ExtrasModifier<DamageInfo> ExtrasModifier = new ExtrasModifier<DamageInfo> (
-                    new Functional.AtomFunctions.CalculateDamageCommand.DodgeHit(in DamageConverterData),
+                    new Functional.AtomFunctions.CalculateDamageCommand.DodgeHit(in DamageConverterData, 100),
                     E_EXTRAS_PERFORM_TYPE.Start,
                     E_FUNCTIONAL_EXTRAS_TYPE.Damaged
                 );
@@ -71,14 +69,12 @@ namespace Sophia.DataSystem
             public Equipment_012_YellowLegoBrick(SerialEquipmentData equipmentData) : base(equipmentData)
             {
                 DamageConverterData = new SerialDamageConverterData {
-                    _activatePercentage = 100,
-                    _affectType = E_AFFECT_TYPE.None,
                     _damageRatio = 5,
                     _damageHandleType = DamageHandleType.None,
                     _hitType = HitType.Critical
                 };
                 ExtrasModifier<DamageInfo> ExtrasModifier = new ExtrasModifier<DamageInfo> (
-                    new CalculateDamageCommand.CriticalHit(in DamageConverterData),
+                    new CalculateDamageCommand.HardHit(in DamageConverterData, 100),
                     E_EXTRAS_PERFORM_TYPE.Start,
                     E_FUNCTIONAL_EXTRAS_TYPE.WeaponUse
                 );
