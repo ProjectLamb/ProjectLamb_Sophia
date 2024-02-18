@@ -18,12 +18,13 @@ namespace Sophia.Entitys
     {
 
 #region SerializeMember
+
 //      [SerializeField] protected ModelManger  _modelManger;
 //      [SerializeField] protected VisualFXBucket  _visualFXBucket;
         [SerializeField] private SerialBaseEntityData       _baseEntityData;
         [SerializeField] private AffectorManager            _affectorManager;
         [SerializeField] private ProjectileBucketManager    _projectileBucketManager;
-        [SerializeField] public  ProjectileObject[]          _attckProjectiles;
+        [SerializeField] private ProjectileObject[]         _attckProjectiles;
         [SerializeField] private VisualFXObject             _dieParticleRef;
         [SerializeField] public Entity                      _objectiveEntity;
 
@@ -141,6 +142,7 @@ namespace Sophia.Entitys
         public void AITickTime() {
             if(!Life.IsDie) transform.LookAt(ObjectiveTransform);
         }
+        
         public void AI_AnimationMarker_NormalAttack(){
             ProjectileObject projectileFromPool = ProjectilePool.GetObject(_attckProjectiles[(int)ANIME_STATE.ATTACK]).Init(this);
             this._projectileBucketManager.InstantablePositioning((int)ANIME_STATE.ATTACK,projectileFromPool).Activate();
