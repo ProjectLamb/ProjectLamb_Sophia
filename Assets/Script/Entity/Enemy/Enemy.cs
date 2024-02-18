@@ -17,20 +17,20 @@ public class Enemy : Entity
     //public GameObject model;
 
     [field: SerializeField]
-    public ScriptableObjEnemyData ScriptableED;
-    protected EntityData BaseEnemyData;
-    [SerializeField] protected EntityData FinalData;
+    public ScriptableObjEnemyData ScriptableED; // private SerialBaseEntityData       _baseEntityData;
+    protected EntityData BaseEnemyData;  // StatReferer
+    [SerializeField] protected EntityData FinalData; // StatReferer
 
-    public override void ResetData()
+    public override void ResetData() //❌
     {
         FinalData = BaseEnemyData;
     }
 
-    public override ref EntityData GetFinalData() { return ref this.FinalData; }
-    public override EntityData GetOriginData() { return this.BaseEnemyData; }
+    public override ref EntityData GetFinalData() { return ref this.FinalData; } // ❌
+    public override EntityData GetOriginData() { return this.BaseEnemyData; } // ❌
 
     public UnityEngine.AI.NavMeshAgent nav;
-    public Transform objectiveTarget;
+    public Transform objectiveTarget; //public  Entity                     _objectiveEntity;
     public bool isRecog;
     public bool isDie;
     public bool isOffensive;    //!isOffensive = Defensive
