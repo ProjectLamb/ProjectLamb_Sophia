@@ -13,9 +13,9 @@ namespace Sophia.Instantiates
     {      
 #region SerializeMember
 
-        [SerializeField] private SerialBaseInstantiatorData _baseInstantiatorData;
-        [SerializeField] private Entity _ownerRef;
-        [SerializeField] private ProjectileBucket[] _projectileBuckets;
+        [SerializeField] protected SerialBaseInstantiatorData _baseInstantiatorData;
+        [SerializeField] protected Entity _ownerRef;
+        [SerializeField] protected ProjectileBucket[] _projectileBuckets;
 
 #endregion
 
@@ -34,11 +34,11 @@ namespace Sophia.Instantiates
 
 #endregion
 
-        private void Awake() {
+        protected void Awake() {
             Init(in _baseInstantiatorData);
         }
 
-        public void Init(in SerialBaseInstantiatorData baseInstantiatorData) {
+        public virtual void Init(in SerialBaseInstantiatorData baseInstantiatorData) {
             InstantiableDurateLifeTimeMultiplyRatio = new Stat(baseInstantiatorData.InstantiableDurateLifeTimeMultiplyRatio,
                 E_NUMERIC_STAT_TYPE.InstantiableDurateLifeTimeMultiplyRatio,
                 E_STAT_USE_TYPE.Ratio, OnDurateLifeTimeUpdated
@@ -65,7 +65,7 @@ namespace Sophia.Instantiates
             OnForwarding    ??= () => {};
         }
 
-        private void Start() {
+        protected void Start() {
             for(int i = 0 ; i < _projectileBuckets.Count(); i ++) {
                 _projectileBuckets[i]?.SetProjectileBucketManamger(this);
             }
@@ -94,14 +94,14 @@ namespace Sophia.Instantiates
         
 #endregion
 
-        public void SetStatDataToReferer(EntityStatReferer statReferer)
+        public virtual void SetStatDataToReferer(EntityStatReferer statReferer)
         {
             statReferer.SetRefStat(InstantiableDurateLifeTimeMultiplyRatio);
             statReferer.SetRefStat(InstantiableSizeMultiplyRatio);
             statReferer.SetRefStat(InstantiableForwardingSpeedMultiplyRatio);
         }
 
-        public void SetExtrasDataToReferer(EntityExtrasReferer extrasReferer)
+        public virtual void SetExtrasDataToReferer(EntityExtrasReferer extrasReferer)
         {
             extrasReferer.SetRefExtras<Entity>(ConveyAffectExtras);
             extrasReferer.SetRefExtras<object>(AttackExtras);

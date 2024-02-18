@@ -107,11 +107,14 @@ namespace Sophia.DataSystem.Functional.AtomFunctions
             #endregion
         }
         
-        public class FactorySternAffectCommand : IFunctionalCommand<Entity>
+        public class FactoryStunAffectCommand : IFunctionalCommand<Entity>
         {
             private SerialAffectorData serialAffectorDataRef;
-            public FactorySternAffectCommand(in SerialAffectorData serialAffectorData) { serialAffectorDataRef = serialAffectorData; }
-            public void Invoke(ref Entity referer) => referer.Affect(new SternAffect(in serialAffectorDataRef));
+            public FactoryStunAffectCommand(in SerialAffectorData serialAffectorData) { serialAffectorDataRef = serialAffectorData; }
+            public void Invoke(ref Entity referer) {
+                Debug.Log(referer.name);
+                referer.Affect(new StunAffect(in serialAffectorDataRef));
+            }
 
             #region UI Access
             public string GetName() => "스턴";

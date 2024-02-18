@@ -3,8 +3,9 @@ namespace Sophia
 {
     using Instantiates;
     using Sophia.Composite;
+    using Sophia.Instantiates.Skills;
 
-#region Stat Modifier
+    #region Stat Modifier
     [System.Serializable]
     public struct SerialStatModifierDatas
     {
@@ -86,50 +87,54 @@ namespace Sophia
 #region Affector
 
     [System.Serializable]
-    public struct SerialSkinAffectData
+    public struct SerialSkinData
     {
         [SerializeField] public float _intervalTime;
         [SerializeField] public Material _materialRef;
     }
+    
     [System.Serializable]
-    public struct SerialVisualAffectData
+    public struct SerialVisualData
     {
         [SerializeField] public float _intervalTime;
         [SerializeField] public VisualFXObject _visualFxRef;
     }
 
     [System.Serializable]
-    public struct SerialTickDamageAffectData
+    public struct SerialTickDamageData
     {
         [SerializeField] public DamageInfo _baseTickDamage;
         [SerializeField] public float _intervalTime;
     }
 
     [System.Serializable]
-    public struct SerialPhysicsAffectData
+    public struct SerialPhysicsData
     {
         [SerializeField] public float _intervalTime;
         [SerializeField] public float _physicsForce;
     }
 
     [System.Serializable]
+    public struct SerialBarrierData {
+        [SerializeField] public float     _barrierRatio;
+    }
+
+    [System.Serializable]
     public struct SerialAffectorData
     {
-        [SerializeField] public string _equipmentName;
-        [SerializeField] public string _description;
-        [SerializeField] public Sprite _icon;
+        [SerializeField] public SerialUserInterfaceData _uiData;
         [SerializeField] public E_AFFECT_TYPE _affectType;
         [SerializeField] public float _baseDurateTime;
-        [SerializeField] public SerialSkinAffectData _skinAffectData;
-        [SerializeField] public SerialVisualAffectData _visualAffectData;
-        [SerializeField] public SerialTickDamageAffectData _tickDamageAffectData;
-        [SerializeField] public SerialPhysicsAffectData _physicsAffectData;
-        [SerializeField] public SerialStatCalculateDatas _calculateAffectData;
+        [SerializeField] public SerialSkinData                _skinData;
+        [SerializeField] public SerialVisualData              _visualData;
+        [SerializeField] public SerialBarrierData             _barrierData;
+        [SerializeField] public SerialTickDamageData          _tickDamageData;
+        [SerializeField] public SerialPhysicsData             _physicsData;
+        [SerializeField] public SerialStatCalculateDatas      _calculateData;
     }
 
 
 #endregion
-
     [System.Serializable]
     public struct SerialOnDamageExtrasModifierDatas
     {
@@ -137,6 +142,7 @@ namespace Sophia
         public E_EXTRAS_PERFORM_TYPE _performType;
         public SerialDamageConverterData _damageConverterData;
     }
+    
     [System.Serializable]
     public struct SerialOnConveyAffectExtrasModifierDatas 
     {
@@ -148,10 +154,9 @@ namespace Sophia
     [System.Serializable]
     public struct SerialDamageConverterData
     {
-        [SerializeField] public float _activatePercentage;
-        [SerializeField] public E_AFFECT_TYPE _affectType;
         [SerializeField] public float _damageRatio;
         [SerializeField] public DamageHandleType _damageHandleType;
         [SerializeField] public HitType _hitType;
     }
+    
 }

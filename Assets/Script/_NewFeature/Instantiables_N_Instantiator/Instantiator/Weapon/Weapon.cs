@@ -170,6 +170,7 @@ namespace Sophia.Instantiates {
             if(NormalQueue.Count == 0) { _weaponProjectiles.ForEach(E => NormalQueue.Enqueue(E)); }
             ProjectileObject useProjectile = ProjectilePool.GetObject(NormalQueue.Dequeue()).Init(player);
             mInstantiatorRef.InstantablePositioning(useProjectile)
+                            .SetInstantiateType(E_INSTANTIATE_TYPE.Weapon)
                             .SetProjectilePower(player.GetStat(E_NUMERIC_STAT_TYPE.Power))
                             .SetProjectileDamageInfoByWaepon(player.GetExtras<DamageInfo>(E_FUNCTIONAL_EXTRAS_TYPE.WeaponUse))
                             .Activate();

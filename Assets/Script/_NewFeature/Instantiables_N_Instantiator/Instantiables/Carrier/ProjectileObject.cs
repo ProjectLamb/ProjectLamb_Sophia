@@ -13,10 +13,15 @@ namespace Sophia.Instantiates
     using Sophia.Entitys;   
     /*변하는 녀석*/
 
-    public class ProjectileObject : Carrier, IPoolAccesable
+    public enum E_INSTANTIATE_TYPE {
+        None, Enemy, Weapon, Skill
+    }
+
+    public class ProjectileObject : MonoBehaviour, IPoolAccesable
     {
 
 #region SerializeMember
+
         [SerializeField] private E_AFFECT_TYPE _affectType = E_AFFECT_TYPE.None;
         [SerializeField] private E_INSTANTIATE_STACKING_TYPE _stackingType = E_INSTANTIATE_STACKING_TYPE.Stack;
         [SerializeField] private E_INSTANTIATE_POSITION_TYPE _positioningType = E_INSTANTIATE_POSITION_TYPE.Outer;
@@ -34,10 +39,12 @@ namespace Sophia.Instantiates
 #endregion
 
 #region Member
+        public int ProjectileID {get; private set;}
 
         public E_AFFECT_TYPE AffectType { get {return this._affectType;} private set{} }
         public E_INSTANTIATE_STACKING_TYPE StackingType { get {return this._stackingType;} private set{} }
         public E_INSTANTIATE_POSITION_TYPE PositioningType { get {return this._positioningType;} private set{} }
+        public E_INSTANTIATE_TYPE instantiateType {get; private set;}
         public Entity OwnerRef { get; private set; }
         public Affector     NaturallyInherentAffector;
 
@@ -106,19 +113,11 @@ namespace Sophia.Instantiates
 #region ObjectPool
 
         private IObjectPool<ProjectileObject> poolRefer { get; set; }
+        public void SetIndex(int id) => ProjectileID = id;
 
-        public void SetByPool<T>(IObjectPool<T> pool) where T : MonoBehaviour
+        public void SetByPool(IObjectPool<ProjectileObject> pool)
         {
-            try
-            {
-                if(typeof(T).Equals(typeof(ProjectileObject))){
-                    poolRefer = pool as IObjectPool<ProjectileObject>;
-                    return;
-                }
-            }
-            catch (System.Exception)
-            {
-            }
+            poolRefer = pool;
         }
 
         public void GetByPool()
@@ -172,6 +171,11 @@ namespace Sophia.Instantiates
             ClearEvents();
             transform.tag = owner.transform.tag + "Projectile";
             IsInitialized = true;
+            return this;
+        }
+
+        public ProjectileObject SetInstantiateType(E_INSTANTIATE_TYPE type) {
+            instantiateType = type;
             return this;
         }
 
@@ -232,6 +236,7 @@ namespace Sophia.Instantiates
             CurrentProjectileDamage = _baseProjectileDamage;
             CurrentForwardingSpeed = _baseForwardingSpeed;
             AffectType = E_AFFECT_TYPE.None;
+            instantiateType = E_INSTANTIATE_TYPE.None;
 
             ClearEvents();
 
@@ -334,21 +339,18 @@ namespace Sophia.Instantiates
         
         private void OnParticleSystemStopped() => DeActivate();
 
-        protected override void OnTriggerLogic(Collider entity) {
-            if(CheckIsOwnerCollider(entity)) {return;}
-            if (entity.TryGetComponent<Entity>(out Entity targetEntity))
+        private void OnTriggerEnter(Collider other) {
+            if(CheckIsOwnerCollider(other)) {return;}
+            if (other.TryGetComponent<Entity>(out Entity targetEntity))
             {
-
                 if(targetEntity.GetDamaged(CurrentProjectileDamage)) {
-                    Extras<Entity> targetAffectedExtras = OwnerRef.GetExtras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.ConveyAffect);
-                    targetAffectedExtras.PerformStartFunctionals(ref targetEntity);
-
+                    GetExtrasWithProjectileInstantiatedType(ref targetEntity);
                     VisualFXObject visualFX = VisualFXObjectPool.GetObject(_hitEffect).Init();
                     targetEntity.GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
 
                     OnProjectileTriggerd.Invoke();
                 }
-            }
+            }      
         }
 
         private void Update()
@@ -369,7 +371,28 @@ namespace Sophia.Instantiates
         {
             return OwnerRef.entityCollider.Equals(target);
         }
-        #endregion
+
+        public void GetExtrasWithProjectileInstantiatedType(ref Entity targetEntity) {
+            Extras<Entity> targetAffectedExtras;
+            switch(instantiateType) {
+                case E_INSTANTIATE_TYPE.Weapon  : {
+                    targetAffectedExtras = OwnerRef.GetExtras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.WeaponConveyAffect);
+                    break;
+                }
+                case E_INSTANTIATE_TYPE.Skill   : {
+                    targetAffectedExtras = OwnerRef.GetExtras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.SkillConveyAffect);
+                    break;
+                }
+                default : {
+                    targetAffectedExtras = OwnerRef.GetExtras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.ConveyAffect);
+                    break;
+                }
+            }
+            Debug.Log(targetEntity.name);
+            targetAffectedExtras?.PerformStartFunctionals(ref targetEntity);
+        }
+
+#endregion
 
     }
 }

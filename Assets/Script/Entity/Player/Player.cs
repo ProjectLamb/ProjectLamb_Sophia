@@ -113,7 +113,7 @@ public class Player : Entity {
         isAttack = false;
         //isThrAttack = false;
 
-        DashSkillAbility = new Sophia.Composite.DashSkill(entityRigidbody, DashDataSender);
+        DashSkillAbility = new Sophia.Composite.DashSkill(entityRigidbody, DashDataSender, 50);
         DashSkillAbility.SetAudioSource(DashSource);
         MasterData.MaxStaminaInject(DashSkillAbility.MaxStamina);
     }

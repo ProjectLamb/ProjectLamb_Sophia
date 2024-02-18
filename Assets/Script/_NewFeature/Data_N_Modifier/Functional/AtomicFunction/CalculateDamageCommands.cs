@@ -9,11 +9,14 @@ namespace Sophia.DataSystem.Functional.AtomFunctions
     {
         public class DodgeHit : IFunctionalCommand<DamageInfo>, IRandomlyActivatable
         {
-            public SerialDamageConverterData converterData;
-            public System.Random random;
-            public DodgeHit(in SerialDamageConverterData serialDamageConverterData) {
+            private Atomics.DamageConverterAtomics damageConverter;
+            private System.Random random;
+            private float percentage;
+
+            public DodgeHit(in SerialDamageConverterData serialDamageConverterData, float activatePercentage) {
+                damageConverter = new Atomics.DamageConverterAtomics(serialDamageConverterData);
                 random = new System.Random();
-                converterData = serialDamageConverterData;
+                percentage = activatePercentage;
             }
             public void Invoke(ref DamageInfo referer)
             {
@@ -31,22 +34,22 @@ namespace Sophia.DataSystem.Functional.AtomFunctions
 
 #endregion
 
-            public bool GetIsActivated() => converterData._activatePercentage <= random.Next(101);
+            public bool GetIsActivated() => percentage <= random.Next(100);
         }
 
-        public class CriticalHit : IFunctionalCommand<DamageInfo>, IRandomlyActivatable
+        public class HardHit : IFunctionalCommand<DamageInfo>, IRandomlyActivatable
         {
-            public SerialDamageConverterData converterData;
-            public System.Random random;
-            public CriticalHit(in SerialDamageConverterData serialDamageConverterData) {
+            private SerialDamageConverterData converterData;
+            private System.Random random;
+            private float percentage;
+            public HardHit(in SerialDamageConverterData serialDamageConverterData, float activatePercentage) {
                 random = new System.Random();
-                converterData = serialDamageConverterData;
+                percentage = activatePercentage;
             }
             public void Invoke(ref DamageInfo referer)
             {
                 if(GetIsActivated()) return;
-                referer.hitType = HitType.Critical;
-                referer.damageRatio *= converterData._damageRatio;
+                referer.damageRatio *= 5;
             }
 
 #region UI Access
@@ -56,7 +59,7 @@ namespace Sophia.DataSystem.Functional.AtomFunctions
             public Sprite GetSprite() => null;
 
 #endregion
-            public bool GetIsActivated() => converterData._activatePercentage <= random.Next(100);
+            public bool GetIsActivated() => percentage <= random.Next(100);
         }
     }
 }

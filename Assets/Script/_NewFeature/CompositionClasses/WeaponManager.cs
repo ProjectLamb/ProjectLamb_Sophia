@@ -16,7 +16,7 @@ namespace Sophia.Composite
 #region SerializeMember
 
         [SerializeField] private SerialBaseWeaponData _baseWeaponData;
-        [SerializeField] private Entity _ownerRef;
+        [SerializeField] private Player _playerRef;
         [SerializeField] private ProjectileBucket _projectileBucket;
         [SerializeField] private Weapon _currentWeapon;
 
@@ -113,5 +113,7 @@ namespace Sophia.Composite
             newWeapon.WeaponConstructor(this._projectileBucket, PoolSize.GetValueByNature(), AttackSpeed.GetValueByRatio(), MeleeRatio.GetValueByRatio() );
             OnWeaponChanged?.Invoke();
         }
+
+        public void Use() => _currentWeapon.Use(_playerRef);
     }
 }

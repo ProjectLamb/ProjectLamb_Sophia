@@ -18,12 +18,12 @@ public class NeutralSkill_002 : AbstractSkill {
 //  public SerializedDictionary<SKILL_RANK, float>  coolTime = new SerializedDictionary<SKILL_RANK, float>();
 
     public OnHitState   onHitState;
-    public SternState   sternState;
+    public StunState   StunState;
     public Weapon       weapon;
     public List<float>  NumericQ = new List<float> {1.2f, 1.4f, 1.6f};
     public List<float>  NumericE = new List<float> {0.5f, 1f, 1.5f};
     public List<float>  NumericAttackRatioR = new List<float> {1.1f, 1.2f, 1.3f};
-    public List<float>  NumericSternR = new List<float> {0.3f, 0.5f, 0.7f};
+    public List<float>  NumericStunR = new List<float> {0.3f, 0.5f, 0.7f};
 
 //  public void Use(SKILL_KEY key){
 //      switch(key) {
@@ -62,12 +62,12 @@ public class NeutralSkill_002 : AbstractSkill {
     }
 
     protected override void UseE(){
-        sternState.DurationTime = NumericE[(int)skillRank];
+        StunState.DurationTime = NumericE[(int)skillRank];
         onHitState.Ratio = 1;
         onHitState.Init(player, player);
         Projectile onHitProjectile = onHitState.ActivateOnHitByAffectors(
             weapon.AttackProjectiles[0], 
-            new List<EntityAffector>{sternState}
+            new List<EntityAffector>{StunState}
         );
         ParticleSystem.MainModule particleModule = onHitProjectile.ProjectileParticle.main;
         particleModule.startColor = Color.yellow;
@@ -75,12 +75,12 @@ public class NeutralSkill_002 : AbstractSkill {
         weapon.ChangeState(WEAPON_STATE.ON_HIT);
     }
     protected override void UseR(){
-        sternState.DurationTime     = NumericSternR[(int)skillRank];
+        StunState.DurationTime     = NumericStunR[(int)skillRank];
         onHitState.Ratio            = NumericAttackRatioR[(int)skillRank];
         onHitState.Init(player, player);
         Projectile onHitProjectile = onHitState.ActivateOnHitByAffectors(
             weapon.AttackProjectiles[0], 
-            new List<EntityAffector>{sternState}
+            new List<EntityAffector>{StunState}
         );
         ParticleSystem.MainModule particleModule = onHitProjectile.ProjectileParticle.main;
         particleModule.startColor = Color.magenta;

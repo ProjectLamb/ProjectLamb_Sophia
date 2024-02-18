@@ -4,6 +4,7 @@ using Sophia.DataSystem;
 
 using Sophia.DataSystem.Referer;
 using System.Collections.Generic;
+using Sophia.UserInterface;
 
 
 namespace Sophia
@@ -14,7 +15,6 @@ namespace Sophia
     [System.Serializable]
     public struct DamageInfo
     {
-        [SerializeField] public E_AFFECT_TYPE affectType;
         [SerializeField] public int damageAmount;
         [SerializeField] public float damageRatio;
         [SerializeField] public DamageHandleType damageHandleType;
@@ -83,8 +83,8 @@ namespace Sophia
                 }
             }
 
-            private float mCurrentBarrier;
-            public float CurrentBarrier
+            private int mCurrentBarrier;
+            public int CurrentBarrier
             {
                 get { return mCurrentBarrier; }
                 protected set
@@ -144,6 +144,8 @@ namespace Sophia
 
 #region Setter 
 
+            public void SetDependUI(IHealthBarUI<LifeComposite> healthBar) => healthBar.SetReferenceComposite(this);
+
 #endregion
 
 #region Event
@@ -202,21 +204,21 @@ namespace Sophia
 #endregion
             public void Healed(float amount)
             {
-                OnHeal.Invoke(amount);
+                OnHeal?.Invoke(amount);
                 CurrentHealth += amount;
-                OnHpUpdated.Invoke(CurrentHealth);
+                OnHeal?.Invoke(CurrentHealth);
             }
 
-            public void BarrierCoverd(float amount)
+            public void BarrierCoverd(int amount)
             {
-                OnBarrier.Invoke(amount);
                 CurrentBarrier += amount;
-                OnBarrierUpdated.Invoke(CurrentBarrier);
+                OnBarrier?.Invoke(amount);
             }
 
-            public void SetBarrier(float amount)
+            public void SetBarrier(int amount)
             {
                 CurrentBarrier = amount;
+                OnBarrier?.Invoke(amount);
             }
 
             public bool Damaged(DamageInfo damageInfo)
@@ -241,6 +243,7 @@ namespace Sophia
                                 CurrentBarrier -= InputDamage;
                                 InputDamage = 0;
                                 damageInfo.damageHandleType = DamageHandleType.BarrierCoved;
+                                OnBarrierUpdated?.Invoke(CurrentBarrier);
                             }
                             else
                             {
@@ -253,8 +256,8 @@ namespace Sophia
                         }
                 }
 
-                OnDamaged.Invoke(damageInfo);
-                OnHpUpdated.Invoke(CurrentHealth);
+                OnDamaged?.Invoke(damageInfo);
+                OnHpUpdated?.Invoke(CurrentHealth);
 
                 DamagedExtras.PerformExitFunctionals(ref damageInfo);
                 if (CurrentHealth <= 0) { this.Died(); }
@@ -264,17 +267,17 @@ namespace Sophia
             public void BreakBarrier()
             {
                 CurrentBarrier = 0;
-                OnBreakBarrier.Invoke();
+                OnBreakBarrier?.Invoke();
             }
 
             public void Died()
             {
                 object nullObject = null;
                 DeadExtras.PerformStartFunctionals(ref nullObject);
-                OnEnterDie.Invoke();
+                OnEnterDie?.Invoke();
                 IsDie = true;
                 DeadExtras.PerformExitFunctionals(ref nullObject);
-                OnExitDie.Invoke();
+                OnExitDie?.Invoke();
             }
         }
     }
