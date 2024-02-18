@@ -4,8 +4,9 @@ using UnityEngine;
 using MonsterLove.StateMachine;
 using DG.Tweening;
 using Unity.VisualScripting;
+using Sophia.Composite;
 
-public class ElderOne : Boss
+public class ElderOne : Boss, IRecogStateAccessible
 {
     List<string> animBoolParamList;
     List<string> animTriggerParamList;
@@ -223,7 +224,7 @@ public class ElderOne : Boss
 
     void Idle_Update()
     {
-        if (!fov.IsRecog)
+        if (this.recognize.GetCurrentRecogState() == Sophia.Composite.E_RECOG_TYPE.None)
         {
             PlayRandomIdleAnimation(3);
         }
@@ -248,11 +249,28 @@ public class ElderOne : Boss
 
     void Move_Update()
     {
-        float dist = Vector3.Distance(transform.position, objectiveTarget.position);
-        if (!fov.IsRecog)
-            fsm.ChangeState(States.Idle);
-        if (dist <= attackRange)
-            fsm.ChangeState(States.Attack);
+        switch (recognize.GetCurrentRecogState()) 
+        {
+            case  Sophia.Composite.E_RECOG_TYPE.None : {
+                fsm.ChangeState(States.Idle);
+                break;
+            }
+            case  Sophia.Composite.E_RECOG_TYPE.FirstRecog : {
+                float dist = Vector3.Distance(transform.position, objectiveTarget.position);
+                if (dist <= attackRange)
+                    fsm.ChangeState(States.Attack);
+                break;
+            }
+            case  Sophia.Composite.E_RECOG_TYPE.Lose : {
+                break;
+            }
+            case  Sophia.Composite.E_RECOG_TYPE.ReRecog : {
+                float dist = Vector3.Distance(transform.position, objectiveTarget.position);
+                if (dist <= attackRange)
+                    fsm.ChangeState(States.Attack);
+                break;
+            }
+        }
     }
 
     void Move_FixedUpdate()
@@ -334,4 +352,6 @@ public class ElderOne : Boss
     {
         DestroySelf();
     }
+    
+    public RecognizeEntityComposite GetRecognizeComposite() => this.recognize;
 }
