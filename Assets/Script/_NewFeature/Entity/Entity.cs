@@ -4,10 +4,10 @@ using System.Collections.Generic;
 namespace Sophia.Entitys
 {
     using Sophia.DataSystem;
+    using Sophia.DataSystem.Referer;
     using Sophia.Composite.RenderModels;
     using Sophia.Instantiates;
     using Sophia.Composite;
-    using Sophia.DataSystem.Referer;
 
     public abstract class Entity : MonoBehaviour, ILifeAccessible, IDataAccessible, IVisualAccessible, IAffectable
     {
@@ -41,6 +41,7 @@ namespace Sophia.Entitys
             CollectSettable();
             SetDataToReferer();
         }
+
 
 #region Life Accessible
         public abstract LifeComposite GetLifeComposite();
