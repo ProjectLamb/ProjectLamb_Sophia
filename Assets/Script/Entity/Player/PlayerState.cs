@@ -9,12 +9,12 @@ namespace PlayerState
     {
         public override void Enter(Player player)
         {
-
+            Debug.Log("Idle state 진입");
         }
 
         public override void Update(Player player)
         {
-            Debug.Log("현재 idle 상태");
+
         }
 
         public override void Exit(Player player)
@@ -28,7 +28,7 @@ namespace PlayerState
     {
         public override void Enter(Player player)
         {
-
+            Debug.Log("Move state 진입");
         }
 
         public override void Update(Player player)
@@ -47,7 +47,7 @@ namespace PlayerState
     {
         public override void Enter(Player player)
         {
-            Debug.Log("attack state 진입");
+            Debug.Log("Attack state 진입");
         }
 
         public override void Update(Player player)
@@ -66,7 +66,7 @@ namespace PlayerState
     {
         public override void Enter(Player player)
         {
-
+            Debug.Log("GetDamaged state 진입");
         }
 
         public override void Update(Player player)
@@ -85,7 +85,7 @@ namespace PlayerState
     {
         public override void Enter(Player player)
         {
-
+            Debug.Log("Die state 진입");
         }
 
         public override void Update(Player player)

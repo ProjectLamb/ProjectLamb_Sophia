@@ -12,7 +12,7 @@ using Component = UnityEngine.Component;
 using Random = UnityEngine.Random;
 
 
-public enum PlayerStates // 플레이어 상태 
+public enum PLAYERSTATES // 플레이어 상태 
     {
         Idle = 0,
         Move,
@@ -88,8 +88,8 @@ public class Player : Entity {
     IEnumerator mCoWaitDash;        // StopCorutine을 사용하기 위해서는 코루틴 변수가 필요하다. 
     public ParticleSystem DieParticle;
 
-    private State [] states; // 상태 배열
-    private State    currentState; // 현재 상태
+    public State [] states; // 상태 배열
+    public State    currentState; // 현재 상태
 
     protected override void Awake(){
         /*아래 3줄은 절때 활성화 하지마라. base.Awake() 에서 이미 이걸 하고 있다.*/
@@ -103,14 +103,14 @@ public class Player : Entity {
       
         //kabocha
         states                         = new State[5];
-        states[(int)PlayerStates.Idle] = new PlayerState.Idle();
-        states[(int)PlayerStates.Move] = new PlayerState.Move();
-        states[(int)PlayerStates.Attack] = new PlayerState.Attack();
-        states[(int)PlayerStates.GetDamaged] = new PlayerState.GetDamaged();
-        states[(int)PlayerStates.Die] = new PlayerState.Die();
+        states[(int)PLAYERSTATES.Idle] = new PlayerState.Idle();
+        states[(int)PLAYERSTATES.Move] = new PlayerState.Move();
+        states[(int)PLAYERSTATES.Attack] = new PlayerState.Attack();
+        states[(int)PLAYERSTATES.GetDamaged] = new PlayerState.GetDamaged();
+        states[(int)PLAYERSTATES.Die] = new PlayerState.Die();
  
         //시작할 때 플레이어 상태 idle 상태로 지정
-        currentState = states[(int)PlayerStates.Idle];
+        currentState = states[(int)PLAYERSTATES.Idle];
       
         Life = new Sophia.Composite.LifeComposite(PlayerDataManager.GetEntityData().MaxHP);
     }
@@ -138,6 +138,8 @@ public class Player : Entity {
         Life.Damaged(_amount);
         PlayerDataManager.GetEntityData().HitState.Invoke();
         anim.SetTrigger("GetDamaged");
+        ChangeState(PLAYERSTATES.GetDamaged);
+        if(Life.CurrentHealth <= 0) Die(); // 체력이 0 이하면 사망 처리
     }
 
     public override void GetDamaged(int _amount, VFXObject obj){
@@ -149,9 +151,8 @@ public class Player : Entity {
     }
 
     public override void Die() {
-        Debug.Log("체력 없음!");
+        ChangeState(PLAYERSTATES.Die);
         anim.SetTrigger("Die");
-        mIsDie = true;
     }
 
     public void OnMove(InputValue value) // new input system 사용
@@ -182,9 +183,9 @@ public class Player : Entity {
             Vector3 rbVel = mMoveVec * moveSpeed;
             this.entityRigidbody.velocity = rbVel;
             if(mMoveVec != Vector3.zero){
+                ChangeState(PLAYERSTATES.Move);
                 mRotate = Quaternion.LookRotation(mMoveVec);
                 transform.rotation = Quaternion.Slerp(transform.rotation,mRotate, 0.6f);
-                
             }
             PlayerDataManager.GetEntityData().MoveState?.Invoke();
         }
@@ -235,7 +236,7 @@ public class Player : Entity {
     public void Attack()
     {
         if(!resetAtkTrigger){
-            ChangeState(PlayerStates.Attack);
+            ChangeState(PLAYERSTATES.Attack);
             anim.SetTrigger("DoAttack");
         }
         //Turning(() => weaponManager.weapon.Use(PlayerDataManager.GetEntityData().Power));
@@ -316,7 +317,7 @@ public class Player : Entity {
             anim.ResetTrigger("DoAttack");
     }
 
-    public void ChangeState(PlayerStates newState)
+    public void ChangeState(PLAYERSTATES newState)
     {
         //새로 바꾸려는 상태가 비어있으면 그냥 return;
         if(states[(int)newState] == null) {
