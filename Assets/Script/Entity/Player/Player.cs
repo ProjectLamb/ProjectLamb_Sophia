@@ -55,7 +55,7 @@ public class Player : Entity {
     public EquipmentManager         equipmentManager;
     public ImageGenerator           imageGenerator;
     public LayerMask                groundMask; // 바닥을 인식하는 마스크
-    public AttackAnim               attackAnim;
+    public PlayerAnim               playerAnim;
     /// <summary>
     /// RoomGenerator.cs에서 참조하는 변수 (리펙토링 필요해 보인다.) <br/>
     /// * 포탈을 사용할수 있는지 없는지는 Map이 책임을 가져아 한다. <br/>
@@ -74,11 +74,8 @@ public class Player : Entity {
     private bool                    mIsBorder;
     private bool                    mIsDashed;
     
-    public  bool                    mIsDie;
-    public  bool                    isAttack; // 일반 공격(1,2,3타) 여부
-    public  bool                    canExitAttack; // 공격 중 탈출가능시점
+    public  bool                    IsExitAttack; // 공격 중 탈출가능시점
     //[merge] 0125중 TA_escatrgot branch의 attackTrigger가 변수명이 겹쳐서 resetAtkTrigger로 합쳤음
-    public  bool                    resetAtkTrigger; // 선입력되어있는 attack 트리거를 해제하기 위한 변수
     public  bool                    attackProTime; // 공격 이펙트 출현시점
 
     [HideInInspector] Animator anim;
@@ -99,7 +96,7 @@ public class Player : Entity {
         //CurrentHealth = 마스터 데이터
         base.Awake();
         model.TryGetComponent<Animator>(out anim);
-        model.TryGetComponent<AttackAnim>(out attackAnim);
+        model.TryGetComponent<PlayerAnim>(out playerAnim);
       
         //kabocha
         states                         = new State[5];
@@ -116,8 +113,6 @@ public class Player : Entity {
     }
 
     private void Start() {
-        isAttack = false;
-        //isThrAttack = false;
 
         DashSkillAbility = new Sophia.Composite.DashSkill(entityRigidbody, DashDataSender);
         DashSkillAbility.SetAudioSource(DashSource);
@@ -178,7 +173,7 @@ public class Player : Entity {
 
         bool IsBorder(){return Physics.Raycast(transform.position, mMoveVec.normalized, 2, LayerMask.GetMask("Wall"));}
         
-        if (!IsBorder() && !isAttack) // 벽으로 막혀있지 않고 공격중이 아닐때만 이동 가능
+        if (!IsBorder()) // 벽으로 막혀있지 않고 공격중이 아닐때만 이동 가능
         {
             Vector3 rbVel = mMoveVec * moveSpeed;
             this.entityRigidbody.velocity = rbVel;
@@ -235,10 +230,8 @@ public class Player : Entity {
 
     public void Attack()
     {
-        if(!resetAtkTrigger){
-            ChangeState(PLAYERSTATES.Attack);
-            anim.SetTrigger("DoAttack");
-        }
+        //ChangeState(PLAYERSTATES.Attack);
+        anim.SetTrigger("DoAttack");
         //Turning(() => weaponManager.weapon.Use(PlayerDataManager.GetEntityData().Power));
     }
     
@@ -281,7 +274,7 @@ public class Player : Entity {
             // 마우스가 "Enemy" 태그를 가진 collider와 충돌했을때
             if(hit.collider.tag == "Enemy"){
                 // 공격중이라면
-                if(isAttack){
+                if(currentState == states[(int)PLAYERSTATES.Attack]){
                     // RAYCASTHIT가 닿은 대상의 중심을 바라본다
                     transform.rotation = Quaternion.LookRotation(hit.collider.transform.position - this.transform.position);
                     }
@@ -291,12 +284,10 @@ public class Player : Entity {
     
     public void CheckAttack()
     {
-        isAttack = AttackAnim.isAttack;
-        canExitAttack = AttackAnim.canExitAttack;
-        resetAtkTrigger = AttackAnim.resetAtkTrigger;
+        IsExitAttack = PlayerAnim.IsExitAttack;
 
         // 공격중이라면
-        if(isAttack){
+        if(currentState == states[(int)PLAYERSTATES.Attack]){
             anim.SetBool("isAttack",true);
         }
         else{
@@ -304,16 +295,16 @@ public class Player : Entity {
         }
 
         //공격 중 이동이 감지되었다면
-        if(canExitAttack && inputVec != Vector2.zero)
+        if(IsExitAttack && inputVec != Vector2.zero)
         {
-            anim.SetBool("canExitAttack",true);
+            anim.SetBool("IsExitAttacK",true);
         }
-        else if(!canExitAttack)
+        else if(!IsExitAttack)
         {
-            anim.SetBool("canExitAttack",false);
+            anim.SetBool("IsExitAttack",false);
         }
 
-        if(resetAtkTrigger) // 세번째 공격 종료시점에 선입력되어있는 DoAttack 트리거 reset
+        if(currentState == states[(int)PLAYERSTATES.Idle]) // Idle 상태면 Attack 트리거 reset
             anim.ResetTrigger("DoAttack");
     }
 
