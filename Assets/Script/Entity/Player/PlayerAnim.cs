@@ -31,11 +31,6 @@ public class PlayerAnim : MonoBehaviour
     }
 
     // Start is called before the first frame update
-    
-    void AttackStart() // 공격 시작 시점
-    {
-        player.ChangeState(PLAYERSTATES.Attack);
-    }
 
     void AttackEnd() // 공격 종료 시점
     {
@@ -50,7 +45,6 @@ public class PlayerAnim : MonoBehaviour
     void IdleStart() // idle 상태 돌입 시 변수 초기화
     {
         IsExitAttack = false;
-        player.ChangeState(PLAYERSTATES.Idle);
     }
 
     void AttackPro()

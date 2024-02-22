@@ -165,7 +165,7 @@ public class Player : Entity {
         float moveSpeed = PlayerDataManager.GetEntityData().MoveSpeed;
         
         if(DashSkillAbility.GetIsDashState((int)moveSpeed)) { return; }
-         
+        
         anim.SetFloat("Move", entityRigidbody.velocity.magnitude);
 
         mMoveVec = AngleToVector(Camera.main.transform.eulerAngles.y + 90f) * inputVec.x + AngleToVector(Camera.main.transform.eulerAngles.y) * inputVec.y; // vaxis : inputvec.y , haxis : inputvec.x
@@ -173,7 +173,7 @@ public class Player : Entity {
 
         bool IsBorder(){return Physics.Raycast(transform.position, mMoveVec.normalized, 2, LayerMask.GetMask("Wall"));}
         
-        if (!IsBorder()) // 벽으로 막혀있지 않고 공격중이 아닐때만 이동 가능
+        if (!IsBorder()/*currentState != states[(int)PLAYERSTATES.Attack]*/) // 벽으로 막혀있지 않고 공격중이 아닐때만 이동 가능
         {
             Vector3 rbVel = mMoveVec * moveSpeed;
             this.entityRigidbody.velocity = rbVel;
@@ -230,7 +230,7 @@ public class Player : Entity {
 
     public void Attack()
     {
-        //ChangeState(PLAYERSTATES.Attack);
+        ChangeState(PLAYERSTATES.Attack);
         anim.SetTrigger("DoAttack");
         //Turning(() => weaponManager.weapon.Use(PlayerDataManager.GetEntityData().Power));
     }
@@ -297,7 +297,8 @@ public class Player : Entity {
         //공격 중 이동이 감지되었다면
         if(IsExitAttack && inputVec != Vector2.zero)
         {
-            anim.SetBool("IsExitAttacK",true);
+            ChangeState(PLAYERSTATES.Idle);
+            anim.SetBool("IsExitAttack",true);
         }
         else if(!IsExitAttack)
         {
