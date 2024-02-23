@@ -6,6 +6,7 @@ using Sophia_Carriers;
 
 public class StageGenerator : MonoBehaviour
 {
+    public enum SIZE { SMALL = 1, MIDDLE, BIG, };
     //  StageGenerator //Stage[10];
     //  Stage[(int).Enum.Boss];
     //  Stage[(int).Enum.Boss];
@@ -25,8 +26,9 @@ public class StageGenerator : MonoBehaviour
 
     public GameObject[] portal;
     public GameObject tile;
-    public GameObject wall;
+    public GameObject[] WallSet;
     public GameObject transWall;
+    public GameObject obstacle;
     public GameObject shop;
     public int[,] tileArray;    //0: empty, 1: tile, 2: wall
     public GameObject[,] tileGameObjectArray;
@@ -425,7 +427,7 @@ public class StageGenerator : MonoBehaviour
                     tileGameObjectArray[i, j] = instance;
                 }
 
-                if (i == 1 || j == 1 || i == width || j == width)    //Instantiate Wall
+                /*if (i == 1 || j == 1 || i == width || j == width)    //Instantiate Wall
                 {
                     GameObject wallInstance;
                     Vector3 wallPos = pos;
@@ -487,38 +489,58 @@ public class StageGenerator : MonoBehaviour
                         wallInstance = Instantiate(transWall, wallPos, Quaternion.identity);
                         wallInstance.transform.parent = transform.GetChild((int)Stage.STAGE_CHILD.WALL);
                     }
-                }
+                }*/
             }
         }
     }
 
+    public void InstantiateWall()
+    {
+        GameObject instance = null;
+        switch (stageSizeRandom)
+        {
+            case 1:
+                instance = Instantiate(WallSet[(int)SIZE.SMALL - 1], transform.position, Quaternion.identity);
+                break;
+            case 2:
+                instance = Instantiate(WallSet[(int)SIZE.MIDDLE - 1], transform.position + new Vector3(30, 0, -20), Quaternion.identity);
+                break;
+            case 3:
+                instance = Instantiate(WallSet[(int)SIZE.BIG - 1], transform.position + new Vector3(49, 0, -49), Quaternion.identity);
+                break;
+            default:
+                instance = Instantiate(WallSet[(int)SIZE.MIDDLE - 1], transform.position, Quaternion.identity);
+                break;
+        }
+        instance.transform.parent = transform.GetChild((int)Stage.STAGE_CHILD.WALL);
+    }
     public void InstantiatePortal()
     {
         GameObject instance;
         if (mPortalE)
         {
-            instance = Instantiate(portal[(int)Stage.PORTAL_TYPE.NORMAL], tileGameObjectArray[1, height / 2 + 1].transform.position, Quaternion.Euler(0, 90, 0));
+            instance = Instantiate(portal[(int)Stage.PORTAL_TYPE.NORMAL], tileGameObjectArray[1, height / 2].transform.position, Quaternion.Euler(0, 90, 0));
             instance.GetComponent<Portal>().PortalType = "east";
             instance.transform.parent = transform.GetChild((int)Stage.STAGE_CHILD.PORTAL);
             portalArray[0] = instance;
         }
         if (mPortalW)
         {
-            instance = Instantiate(portal[(int)Stage.PORTAL_TYPE.NORMAL], tileGameObjectArray[width, height / 2 + 1].transform.position, Quaternion.Euler(0, -90, 0));
+            instance = Instantiate(portal[(int)Stage.PORTAL_TYPE.NORMAL], tileGameObjectArray[width, height / 2].transform.position, Quaternion.Euler(0, -90, 0));
             instance.GetComponent<Portal>().PortalType = "west";
             instance.transform.parent = transform.GetChild((int)Stage.STAGE_CHILD.PORTAL);
             portalArray[1] = instance;
         }
         if (mPortalN)
         {
-            instance = Instantiate(portal[(int)Stage.PORTAL_TYPE.NORMAL], tileGameObjectArray[width / 2 + 1, 1].transform.position, Quaternion.identity);
+            instance = Instantiate(portal[(int)Stage.PORTAL_TYPE.NORMAL], tileGameObjectArray[width / 2, 1].transform.position, Quaternion.identity);
             instance.GetComponent<Portal>().PortalType = "north";
             instance.transform.parent = transform.GetChild((int)Stage.STAGE_CHILD.PORTAL);
             portalArray[2] = instance;
         }
         if (mPortalS)
         {
-            instance = Instantiate(portal[(int)Stage.PORTAL_TYPE.NORMAL], tileGameObjectArray[width / 2 + 1, height].transform.position, Quaternion.Euler(0, 180, 0));
+            instance = Instantiate(portal[(int)Stage.PORTAL_TYPE.NORMAL], tileGameObjectArray[width / 2, height].transform.position, Quaternion.Euler(0, 180, 0));
             instance.GetComponent<Portal>().PortalType = "south";
             instance.transform.parent = transform.GetChild((int)Stage.STAGE_CHILD.PORTAL);
             portalArray[3] = instance;
@@ -545,7 +567,7 @@ public class StageGenerator : MonoBehaviour
             if (i == width / 2 + 1 && j == height / 2 + 1)  //중앙일 경우 -> 클리어 보상 소환 위치
                 continue;
             GameObject instance;
-            instance = Instantiate(wall, tileGameObjectArray[i, j].transform.position, Quaternion.identity);
+            instance = Instantiate(obstacle, tileGameObjectArray[i, j].transform.position, Quaternion.identity);
             instance.transform.parent = transform.GetChild((int)Stage.STAGE_CHILD.OBSTACLE);
             temp--;
         }
