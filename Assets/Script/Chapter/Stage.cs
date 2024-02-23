@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using Sophia_Carriers;
+using System.Drawing;
 
 public class Stage : MonoBehaviour
 {
@@ -48,9 +49,11 @@ public class Stage : MonoBehaviour
     public bool IsClear
     {
         get { return mIsClear; }
-        set { 
-            mIsClear = value; 
-            if(value == true) {
+        set
+        {
+            mIsClear = value;
+            if (value == true)
+            {
                 GameManager.Instance.GlobalEvent.OnStageClear.ForEach(e => e.Invoke(this));
             }
         }
@@ -110,7 +113,7 @@ public class Stage : MonoBehaviour
                 continue;
             stageGenerator.portalArray[i].GetComponent<Portal>().animator.SetBool("IsOpen", true);
         }
-        if(Type == "normal")
+        if (Type == "normal")
         {
             gachaComponent.instantPivot.position = transform.position;
             gachaComponent.InstantiateReward(gachaComponent.instantPivot);
@@ -134,15 +137,19 @@ public class Stage : MonoBehaviour
     }
     void Start()
     {
+        var stageSizeRandom = 1;
         stageGenerator.width = stageGenerator.initWidth;
         stageGenerator.increase = stageGenerator.initIncrease;
+
         if (Type == "normal")
         {
-            stageGenerator.stageSizeRandom = Random.Range(1, 4);   //1, 2, 3
+            var randomVal = new System.Random();
+            stageSizeRandom += (int)(randomVal.NextDouble() * 3);
         }
-        else
-            stageGenerator.stageSizeRandom = 1;
 
+
+
+        stageGenerator.stageSizeRandom = stageSizeRandom;
         stageGenerator.width += stageGenerator.increase * stageGenerator.stageSizeRandom;
         stageGenerator.height = stageGenerator.width;
         stageGenerator.tileArray = new int[stageGenerator.width + 1, stageGenerator.height + 1];
@@ -158,6 +165,7 @@ public class Stage : MonoBehaviour
 
         stageGenerator.tileGameObjectArray = new GameObject[stageGenerator.width + 1, stageGenerator.height + 1];
         stageGenerator.InstantiateTile(stageGenerator.width, stageGenerator.height);
+        stageGenerator.InstantiateWall();
         stageGenerator.InstantiatePortal();
         stageGenerator.size = stageGenerator.width * stageGenerator.height;
         stageGenerator.GenerateNevMesh();
