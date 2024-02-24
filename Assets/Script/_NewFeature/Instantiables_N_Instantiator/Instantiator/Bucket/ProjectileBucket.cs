@@ -30,7 +30,6 @@ namespace Sophia.Instantiates
 
 #region Setter
         public void SetProjectileBucketManamger(ProjectileBucketManager projectileBucketManager) => projectileBucketManagerRef = projectileBucketManager;
-
 #endregion
 
         public ProjectileObject InstantablePositioning(ProjectileObject instantiatedProjectile, Vector3 _offset)

@@ -49,7 +49,6 @@ namespace Sophia.Composite
                 OnDashExtrasUpdated
             );
 
-
             BindMovementData = movementDataSender;
             
             Timer = new Sophia.Composite.CoolTimeComposite(3f, MaxStamina.GetValueByNature())
