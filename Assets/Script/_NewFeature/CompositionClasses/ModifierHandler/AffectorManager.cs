@@ -90,7 +90,6 @@ namespace Sophia.Composite
         }
         
 #region Helper
-
         private void StartAffector(Affector affector) {
             affector.ChangeState(AffectorStartState.Instance);
             AffectingStacks.Add(affector.AffectType, affector);
