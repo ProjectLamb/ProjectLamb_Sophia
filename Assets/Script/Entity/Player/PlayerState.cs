@@ -9,7 +9,7 @@ namespace PlayerState
     {
         public override void Enter(Player player)
         {
-            
+        
         }
 
         public override void Update(Player player)
@@ -52,7 +52,8 @@ namespace PlayerState
 
         public override void Update(Player player)
         {
-            Debug.Log("현재 상태 : Attack");
+            if(player.DoAttackDash)
+                player.AttackDash();
         }
 
         public override void Exit(Player player)

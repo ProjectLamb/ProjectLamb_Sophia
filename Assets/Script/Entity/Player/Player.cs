@@ -75,7 +75,7 @@ public class Player : Entity {
     private bool                    mIsDashed;
     
     public  bool                    IsExitAttack; // 공격 중 탈출가능시점
-    //[merge] 0125중 TA_escatrgot branch의 attackTrigger가 변수명이 겹쳐서 resetAtkTrigger로 합쳤음
+    public  bool                    DoAttackDash; // 공격하면서 앞으로 조금 대쉬하는 시점
     public  bool                    attackProTime; // 공격 이펙트 출현시점
 
     [HideInInspector] Animator anim;
@@ -205,7 +205,6 @@ public class Player : Entity {
     }
 
     IEnumerator AsyncTurning(RaycastHit _groundHit, UnityAction _action){
-        
         yield return new WaitForEndOfFrame();
         Vector3 playerToMouse = _groundHit.point - transform.position;
         playerToMouse.y = 0f;
@@ -215,7 +214,6 @@ public class Player : Entity {
         yield return new WaitForEndOfFrame();
         _action.Invoke();
         yield return new WaitForEndOfFrame();
-
     }
 
 #endregion
@@ -230,11 +228,21 @@ public class Player : Entity {
 
     public void Attack()
     {
-        ChangeState(PLAYERSTATES.Attack);
         anim.SetTrigger("DoAttack");
+        ChangeState(PLAYERSTATES.Attack);
         //Turning(() => weaponManager.weapon.Use(PlayerDataManager.GetEntityData().Power));
     }
     
+    public void AttackDash()
+    {
+        float camRayLength = 200f;
+        Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);   
+        if (Physics.Raycast(camRay, out RaycastHit hit, camRayLength)){
+            Vector3 attackDash = hit.transform.position - this.transform.position;
+            this.entityRigidbody.AddForce(attackDash*2.0f);
+            }
+        DoAttackDash = false; // 변수 초기화
+        }
     /// <summary>
     /// Equipment_010과 의존 관계다 <br/>
     /// 슈슈슉 충전공격후 여러번 때리는것 <br/>
@@ -285,6 +293,7 @@ public class Player : Entity {
     public void CheckAttack()
     {
         IsExitAttack = PlayerAnim.IsExitAttack;
+        DoAttackDash = PlayerAnim.DoAttackDash;
 
         // 공격중이라면
         if(currentState == states[(int)PLAYERSTATES.Attack]){
