@@ -13,6 +13,7 @@ public class PlayerAnim : MonoBehaviour
     
     static public bool IsExitAttack = false; // 공격 모션 도중 탈출 여부
     static public bool attackProTime = false;
+    static public bool DoAttackDash = false;
 
     private void OnEnable() {
         weapon = (Weapon_Melee_Mace) player.weaponManager.weapon;
@@ -35,6 +36,7 @@ public class PlayerAnim : MonoBehaviour
     void AttackEnd() // 공격 종료 시점
     {
         player.ChangeState(PLAYERSTATES.Idle);
+        DoAttackDash = false;
     }
 
     void ExitAttack() // 공격 애니메이션 중 이동 입력 시 탈출
@@ -50,5 +52,10 @@ public class PlayerAnim : MonoBehaviour
     void AttackPro()
     {
         attackProTime = true;
+    }
+
+    void AttackDash()
+    {
+        DoAttackDash = true;
     }
 }
