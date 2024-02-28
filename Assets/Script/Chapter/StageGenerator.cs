@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.AI.Navigation;
 using UnityEngine;
-using UnityEngine.AI;
 using Sophia_Carriers;
 
 public class StageGenerator : MonoBehaviour
