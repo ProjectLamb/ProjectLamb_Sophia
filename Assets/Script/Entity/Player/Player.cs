@@ -77,6 +77,7 @@ public class Player : Entity {
     public  bool                    IsExitAttack; // 공격 중 탈출가능시점
     public  bool                    DoAttackDash; // 공격하면서 앞으로 조금 대쉬하는 시점
     public  bool                    attackProTime; // 공격 이펙트 출현시점
+    public  bool                    IsThirdAttack;
 
     [HideInInspector] Animator anim;
     
@@ -205,7 +206,7 @@ public class Player : Entity {
     }
 
     IEnumerator AsyncTurning(RaycastHit _groundHit, UnityAction _action){
-        yield return new WaitForEndOfFrame();
+        //yield return new WaitForEndOfFrame();
         Vector3 playerToMouse = _groundHit.point - transform.position;
         playerToMouse.y = 0f;
         Quaternion newRotatation = Quaternion.LookRotation(playerToMouse);
@@ -294,6 +295,7 @@ public class Player : Entity {
     {
         IsExitAttack = PlayerAnim.IsExitAttack;
         DoAttackDash = PlayerAnim.DoAttackDash;
+        IsThirdAttack = PlayerAnim.IsThirdAttack;
 
         // 공격중이라면
         if(currentState == states[(int)PLAYERSTATES.Attack]){
