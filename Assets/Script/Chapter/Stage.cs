@@ -7,15 +7,20 @@ using System.Drawing;
 
 public class Stage : MonoBehaviour
 {
+    #region Enum Members
     public enum PORTAL_TYPE { NORMAL, BOSS, }
     public enum STAGE_CHILD { TILE, WALL, PORTAL, OBSTACLE, MOB, }
+    #endregion
     //  StageGenerator //Stage[10];
     //  Stage[(int).Enum.Boss];
     //  Stage[(int).Enum.Boss];
+
+    //private화 하기
     public StageGenerator stageGenerator;
     public MobGenerator mobGenerator;
     GachaComponent gachaComponent;
 
+    #region Serial Member
     [SerializeField]
     private int mStageNumber;
     public int StageNumber
@@ -55,6 +60,96 @@ public class Stage : MonoBehaviour
             if (value == true)
             {
                 GameManager.Instance.GlobalEvent.OnStageClear.ForEach(e => e.Invoke(this));
+            }
+        }
+    }
+    #endregion
+
+    void Awake()
+    {
+        TryGetComponent<StageGenerator>(out stageGenerator);
+        TryGetComponent<MobGenerator>(out mobGenerator);
+        TryGetComponent<GachaComponent>(out gachaComponent);
+        IsClear = false;
+    }
+
+    void Start()
+    {
+        stageGenerator.InitStageGenerator();
+
+        if (Type == "normal")
+        {
+            stageGenerator.SetFloorType();
+        }
+
+        stageGenerator.InstantiateTile();
+        stageGenerator.InstantiateWall();
+        stageGenerator.InstantiatePortal();
+        stageGenerator.GenerateNevMesh();
+
+        if (Type == "normal")
+        {
+            stageGenerator.InstantiateObstacle(stageGenerator.obstacleAmount);
+            mobGenerator.InstantiateMob(mobGenerator.mobCount);
+        }
+        else if (Type == "shop")
+        {
+            float x = 0;
+            float y = 0;
+            float z = 0;
+            GameObject instance;
+            if (stageGenerator.PortalE)
+            {
+                y = 180f;
+            }
+            else if (stageGenerator.PortalW)
+            {
+
+            }
+            else if (stageGenerator.PortalN)
+            {
+                y = 90f;
+            }
+            else if (stageGenerator.PortalS)
+            {
+                y = 270f;
+            }
+            instance = Instantiate(stageGenerator.shop, transform.position, Quaternion.Euler(x, y, z));
+            instance.transform.parent = transform;
+            StageClear();
+        }
+        else if (Type == "hidden")
+        {
+
+        }
+        else if (Type == "boss")
+        {
+            GameObject instance;
+            instance = Instantiate(mobGenerator.ElderOne, transform.position, Quaternion.identity);
+            instance.transform.parent = transform.GetChild((int)Stage.STAGE_CHILD.MOB);
+        }
+        mobGenerator.CurrentMobCount = mobGenerator.mobArray.Count;
+        if (mType == "start")
+        {
+            GameObject character = GameManager.Instance.PlayerGameObject;
+            GameManager.Instance.CurrentStage = gameObject;
+            StageClear();
+            character.transform.position = new Vector3(transform.position.x, character.transform.position.y, transform.position.z);
+        }
+        else
+        {
+            SetOffStage();
+        }
+        transform.parent.GetComponent<ChapterGenerator>().LoadingStage++;   //�ε� �Ϸ�
+    }
+    void Update()
+    {
+        //update 없애기
+        if (!IsClear)
+        {
+            if (mobGenerator.CurrentMobCount == 0 && GameManager.Instance.CurrentStage == this.gameObject)
+            {
+                StageClear();
             }
         }
     }
@@ -125,126 +220,6 @@ public class Stage : MonoBehaviour
         else if (Type == "hidden")
         {
 
-        }
-    }
-
-    void Awake()
-    {
-        stageGenerator = GetComponent<StageGenerator>();
-        mobGenerator = GetComponent<MobGenerator>();
-        gachaComponent = GetComponent<GachaComponent>();
-        IsClear = false;
-    }
-    void Start()
-    {
-        var stageSizeRandom = 1;
-        stageGenerator.width = stageGenerator.initWidth;
-        stageGenerator.increase = stageGenerator.initIncrease;
-
-        if (Type == "normal")
-        {
-            var randomVal = new System.Random();
-            stageSizeRandom += (int)(randomVal.NextDouble() * 3);
-        }
-
-
-
-        stageGenerator.stageSizeRandom = stageSizeRandom;
-        stageGenerator.width += stageGenerator.increase * stageGenerator.stageSizeRandom;
-        stageGenerator.height = stageGenerator.width;
-        stageGenerator.tileArray = new int[stageGenerator.width + 1, stageGenerator.height + 1];
-
-        for (int i = 1; i <= stageGenerator.width; i++)
-            for (int j = 1; j <= stageGenerator.height; j++)
-                stageGenerator.tileArray[i, j] = 1;
-
-        if (Type == "normal")
-        {
-            stageGenerator.SetFloorType();
-        }
-
-        stageGenerator.tileGameObjectArray = new GameObject[stageGenerator.width + 1, stageGenerator.height + 1];
-        stageGenerator.InstantiateTile(stageGenerator.width, stageGenerator.height);
-        stageGenerator.InstantiateWall();
-        stageGenerator.InstantiatePortal();
-        stageGenerator.size = stageGenerator.width * stageGenerator.height;
-        stageGenerator.GenerateNevMesh();
-        switch (stageGenerator.stageSizeRandom)    //��ֹ� ����
-        {
-            case 1:
-                stageGenerator.obstacleAmount = Random.Range(0, 11);
-                break;
-            case 2:
-                stageGenerator.obstacleAmount = Random.Range(0, 21);
-                break;
-            case 3:
-                stageGenerator.obstacleAmount = Random.Range(10, 31);
-                break;
-        }
-
-        if (Type == "normal")
-        {
-            stageGenerator.InstantiateObstacle(stageGenerator.obstacleAmount);
-            mobGenerator.InstantiateMob(mobGenerator.mobCount);
-        }
-        else if (Type == "shop")
-        {
-            float x = 0;
-            float y = 0;
-            float z = 0;
-            GameObject instance;
-            if (stageGenerator.PortalE)
-            {
-                y = 180f;
-            }
-            else if (stageGenerator.PortalW)
-            {
-
-            }
-            else if (stageGenerator.PortalN)
-            {
-                y = 90f;
-            }
-            else if (stageGenerator.PortalS)
-            {
-                y = 270f;
-            }
-            instance = Instantiate(stageGenerator.shop, transform.position, Quaternion.Euler(x, y, z));
-            instance.transform.parent = transform;
-            StageClear();
-        }
-        else if (Type == "hidden")
-        {
-
-        }
-        else if (Type == "boss")
-        {
-            GameObject instance;
-            instance = Instantiate(mobGenerator.ElderOne, transform.position, Quaternion.identity);
-            instance.transform.parent = transform.GetChild((int)Stage.STAGE_CHILD.MOB);
-        }
-        mobGenerator.CurrentMobCount = mobGenerator.mobArray.Count;
-        if (mType == "start")
-        {
-            GameObject character = GameManager.Instance.PlayerGameObject;
-            GameManager.Instance.CurrentStage = gameObject;
-            StageClear();
-            character.transform.position = new Vector3(transform.position.x, character.transform.position.y, transform.position.z);
-        }
-        else
-        {
-            SetOffStage();
-        }
-        transform.parent.GetComponent<ChapterGenerator>().LoadingStage++;   //�ε� �Ϸ�
-    }
-    void Update()
-    {
-        if (!IsClear)
-        {
-            if (mobGenerator.CurrentMobCount == 0 && GameManager.Instance.CurrentStage == this.gameObject)
-            {
-                StageClear();
-            }
         }
     }
 }

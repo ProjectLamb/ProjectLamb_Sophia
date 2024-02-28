@@ -32,5 +32,8 @@ namespace Sophia.Entitys
 
         public abstract RecognizeEntityComposite GetRecognizeComposite();
 
+        #region Override Function
+
+        #endregion
     }
 }

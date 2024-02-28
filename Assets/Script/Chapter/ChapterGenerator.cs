@@ -171,7 +171,7 @@ public class ChapterGenerator : MonoBehaviour
             {
                 int num = startNumber;
                 directionNum++;
-                if (Randomizer.random())
+                if (Randomizer.GetRandomBool())
                     continue;
                 switch (directionNum % 4)
                 {
@@ -237,7 +237,7 @@ public class ChapterGenerator : MonoBehaviour
                     continue;
                 if (stage[num].CheckAdjacency(stage))   //To avoid circulating stage array
                     continue;
-                if (Randomizer.random())    //50% chance to pass
+                if (Randomizer.GetRandomBool())    //50% chance to pass
                     continue;
                 if (num >= 1 && num <= maxStage && stage[num].Vacancy)
                 {
@@ -351,7 +351,9 @@ public class ChapterGenerator : MonoBehaviour
                 SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
 
-        int bossRandom = Random.Range(0, bossL.Count);
+        System.Random rand = new System.Random();
+
+        int bossRandom = rand.Next(0, bossL.Count);
         stage[bossL[bossRandom]].Type = "boss";
         BossStageNumber = bossL[bossRandom];
         bossDirection = stage[bossL[bossRandom]].directionFromStart;
@@ -386,7 +388,7 @@ public class ChapterGenerator : MonoBehaviour
             if (hiddenL.Count < 1)
                 SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 
-            int hiddenRandom = Random.Range(0, hiddenL.Count);
+            int hiddenRandom = rand.Next(0, hiddenL.Count);
             stage[hiddenL[hiddenRandom]].Type = "hidden";
             HiddenStageNumber = hiddenL[hiddenRandom];
 
@@ -407,7 +409,7 @@ public class ChapterGenerator : MonoBehaviour
         }
 
         bossL.Clear();
-        int endRandom = Random.Range(0, endL.Count);
+        int endRandom = rand.Next(0, endL.Count);
         stage[endL[endRandom]].Type = "shop";
         ShopStageNumber = endL[endRandom];
 
@@ -452,8 +454,9 @@ public class ChapterGenerator : MonoBehaviour
     }
     void Awake()
     {
+        System.Random rand = new System.Random();
         waitingTime = 0.5f;
-        stageAmount = Random.Range(stageAmount, stageAmount + 6);
+        stageAmount = rand.Next(stageAmount, stageAmount + 6);
         minimumDistanceOfEndStage = 2;
         GenerateStage(stageAmount);
     }
