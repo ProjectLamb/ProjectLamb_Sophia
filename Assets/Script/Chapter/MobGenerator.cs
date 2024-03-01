@@ -6,27 +6,18 @@ public class MobGenerator : MonoBehaviour
 {
     Stage stage;
 
-    public GameObject[] Mobs;
+    public GameObject[] Mobs;   //Enemy로 통일시키고 spawnRate 변수 추가
     public GameObject ElderOne;
-    public List<GameObject> mobArray;
-    public int mobCount;
-    private int mCurrentMobCount;
-    public int CurrentMobCount
-    {
-        set
-        {
-            mCurrentMobCount = value;
-        }
-        get
-        {
-            return mCurrentMobCount;
-        }
-    }
 
-    public void InstantiateMob(int amount)
+    [SerializeField]
+    public List<GameObject> mobList;
+    public int InitMobAmount = 3;
+    private int mobAmount;
+
+    public void InstantiateMob()
     {
         System.Random rand = new System.Random();
-        while (amount > 0)
+        while (mobAmount > 0)
         {
             int i = rand.Next(1, stage.stageGenerator.width + 1);
             int j = rand.Next(1, stage.stageGenerator.height + 1);
@@ -36,28 +27,69 @@ public class MobGenerator : MonoBehaviour
             if (stage.stageGenerator.tileGameObjectArray[i, j].tag == "Portal")
                 continue;
 
-            int randomValue = rand.Next(0, Mobs.Length);
+            int randomValue = RandomMobPercent();
             GameObject instance;
             instance = Instantiate(Mobs[randomValue], new Vector3(stage.stageGenerator.tileGameObjectArray[i, j].transform.position.x, transform.position.y, stage.stageGenerator.tileGameObjectArray[i, j].transform.position.z), Quaternion.identity);
-            mobArray.Add(instance);
+            AddMob(instance);
             instance.transform.parent = transform.GetChild(4);
 
             switch (randomValue)
             {
-                case (int)Enemy_TYPE.Enemy_Template:
-                    instance.GetComponent<Enemy>().stage = stage;
-                    break;
                 case (int)Enemy_TYPE.Raptor:
                     instance.GetComponent<RaptorFlocks>().stage = stage;
                     break;
+                default:
+                    instance.GetComponent<Enemy>().stage = stage;
+                    break;
             }
-            amount--;
+            mobAmount--;
         }
     }
-    void Awake()
+
+    public void AddMob(GameObject mob)
+    {
+        mobList.Add(mob);
+    }
+
+    public void RemoveMob(GameObject mob)
+    {
+        mobList.Remove(mob);            
+    }
+
+    public void InitMobGenerator()
     {
         System.Random rand = new System.Random();
         stage = GetComponent<Stage>();
-        mobCount = rand.Next(3, 3 + 3);
+
+        InitMobAmount *= stage.stageSizeRandom;
+        mobAmount = rand.Next(InitMobAmount, InitMobAmount + 3);
+    }
+
+    public int RandomMobPercent()
+    {
+        System.Random random = new System.Random();
+        int returnValue = 0;
+        float randomValue = (float)random.NextDouble() * 100.0f;
+
+        float temp = 0.0f;
+
+        for (int i = 0; i < Mobs.Length; i++)
+        {
+            Enemy enemy = Mobs[i].GetComponent<Enemy>();
+            RaptorFlocks rf = Mobs[i].GetComponent<RaptorFlocks>();
+
+            if(enemy != null)
+                temp += Mobs[i].GetComponent<Enemy>().spawnRate;
+            else
+                temp += Mobs[i].GetComponent<RaptorFlocks>().spawnRate;
+                
+            if (randomValue <= temp)
+            {
+                returnValue = i;
+                break;
+            }
+        }
+
+        return returnValue;
     }
 }

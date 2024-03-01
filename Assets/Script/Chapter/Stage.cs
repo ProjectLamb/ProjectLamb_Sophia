@@ -63,6 +63,8 @@ public class Stage : MonoBehaviour
             }
         }
     }
+
+    public int stageSizeRandom;
     #endregion
 
     void Awake()
@@ -75,7 +77,18 @@ public class Stage : MonoBehaviour
 
     void Start()
     {
-        stageGenerator.InitStageGenerator();
+        System.Random rand = new System.Random();
+
+        if (Type == "normal")
+        {
+            stageSizeRandom = rand.Next(1, 4);
+        }
+        else
+        {
+            stageSizeRandom = 1;
+        }
+
+        stageGenerator.InitStageGenerator(stageSizeRandom);
 
         if (Type == "normal")
         {
@@ -90,7 +103,8 @@ public class Stage : MonoBehaviour
         if (Type == "normal")
         {
             stageGenerator.InstantiateObstacle(stageGenerator.obstacleAmount);
-            mobGenerator.InstantiateMob(mobGenerator.mobCount);
+            mobGenerator.InitMobGenerator();
+            mobGenerator.InstantiateMob();
         }
         else if (Type == "shop")
         {
@@ -128,7 +142,6 @@ public class Stage : MonoBehaviour
             instance = Instantiate(mobGenerator.ElderOne, transform.position, Quaternion.identity);
             instance.transform.parent = transform.GetChild((int)Stage.STAGE_CHILD.MOB);
         }
-        mobGenerator.CurrentMobCount = mobGenerator.mobArray.Count;
         if (mType == "start")
         {
             GameObject character = GameManager.Instance.PlayerGameObject;
@@ -142,12 +155,12 @@ public class Stage : MonoBehaviour
         }
         transform.parent.GetComponent<ChapterGenerator>().LoadingStage++;   //�ε� �Ϸ�
     }
+
     void Update()
     {
-        //update 없애기
         if (!IsClear)
         {
-            if (mobGenerator.CurrentMobCount == 0 && GameManager.Instance.CurrentStage == this.gameObject)
+            if (mobGenerator.mobList.Count == 0 && GameManager.Instance.CurrentStage == this.gameObject)
             {
                 StageClear();
             }
@@ -157,7 +170,7 @@ public class Stage : MonoBehaviour
     public void SetOnStage()
     {
         //GameManager.Instance.CurrentStage = this.gameObject;
-        foreach (var m in mobGenerator.mobArray)
+        foreach (var m in mobGenerator.mobList)
         {
             if (m != null)
             {
@@ -179,7 +192,7 @@ public class Stage : MonoBehaviour
 
     public void SetOffStage()
     {
-        foreach (var m in mobGenerator.mobArray)
+        foreach (var m in mobGenerator.mobList)
         {
             if (m != null)
             {
@@ -199,7 +212,7 @@ public class Stage : MonoBehaviour
         }
     }
 
-    void StageClear()
+    public void StageClear()
     {
         IsClear = true;
         for (int i = 0; i < stageGenerator.portalArray.Length; i++)

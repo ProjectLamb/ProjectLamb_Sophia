@@ -511,20 +511,12 @@ public class StageGenerator : MonoBehaviour
         }
     }
 
-    public void InitStageGenerator()
+    public void InitStageGenerator(int random)
     {
         System.Random rand = new System.Random();
         width = initWidth;
         increase = initIncrease;
-
-        if (stage.Type == "normal")
-        {
-            stageSizeRandom = rand.Next(1, 4);
-        }
-        else
-        {
-            stageSizeRandom = 1;
-        }
+        stageSizeRandom = random;
 
         width += increase * stageSizeRandom;
         height = width;
