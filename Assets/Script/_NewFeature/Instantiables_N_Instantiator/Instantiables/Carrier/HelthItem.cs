@@ -9,7 +9,9 @@ namespace Sophia.Instantiates
         [SerializeField] public int Health;
 
         public void SetHelth(int data) => Health = data;
-
+        protected override void Awake() {
+            base.Awake();
+        }
         protected override void OnTriggerLogic(Collider entity)
         {
             if(entity.TryGetComponent<Player>(out Player player)){

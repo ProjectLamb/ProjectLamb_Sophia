@@ -20,7 +20,7 @@ namespace Sophia.UserInterface
         public static InGameScreenUI Instance {
             get {
                 if(_instance == null) {
-                    _instance = FindObjectOfType(typeof(InGameScreenUI)) as InGameScreenUI;
+                    _instance = FindFirstObjectByType(typeof(InGameScreenUI)) as InGameScreenUI;
                     if(_instance == null)
                         throw new System.NullReferenceException("InGameScreenUI 게임 오브젝트를 찾을 수 없음");
                 }

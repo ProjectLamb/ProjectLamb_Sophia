@@ -17,7 +17,7 @@ namespace Sophia.Entitys
     using System.Collections;
     using UnityEngine.Events;
 
-    public class Player : Entity, IMovementAccessible, IAffectManagerAccessible
+    public class Player : Entity, IMovementAccessible, IAffectManagerAccessible, IInstantiatorAccessible
     {
 
 #region SerializeMember 
@@ -103,10 +103,11 @@ namespace Sophia.Entitys
 
         public void MoveTick()
         {
-            if (DashSkillAbility.GetIsDashState(GetStat(E_NUMERIC_STAT_TYPE.MoveSpeed))) return;
+            if(DashSkillAbility.GetIsDashState()) return;
             // GetAnimator().SetFloat("Move", this.entityRigidbody.velocity.magnitude);
-            if (!Movement.IsBorder(this.transform)) 
+            if (!Movement.IsBorder(this.transform)) {
                 Movement.MoveTick(this.transform);
+            }
         }
 
         public async UniTask Turning() { await Movement.Turning(transform, Input.mousePosition); }
@@ -174,8 +175,8 @@ namespace Sophia.Entitys
             action.Invoke(); 
         }
 
-#region Weapon Hanlder
-
+#region Weapon Handler
+        public ProjectileBucketManager GetProjectileBucketManager() => _projectileBucketManager;
         public void OnPowerUpdated() { Debug.Log("공격력 변경"); }
 
         public async void Attack()
@@ -190,6 +191,15 @@ namespace Sophia.Entitys
 
             }
         }
+
+#endregion
+
+#region Skill Handler 
+
+        public SkillManager GetSkillManager() => this._skillManager;
+        public void CollectSkill(Skill skill, KeyCode key) => this._skillManager.Collect(skill, key);
+        public void DropSkill(KeyCode key) => this._skillManager.Drop(key);
+        public void Use(KeyCode key) => this._skillManager.GetSkillByKey(key)?.Use();
 
 #endregion
 
@@ -211,4 +221,3 @@ namespace Sophia.Entitys
 
     }
 }
-

@@ -64,13 +64,12 @@ namespace Sophia.Composite.RenderModels
             cancellationToken.ThrowIfCancellationRequested();
         }
 
-        public async UniTask RevertSkin(CancellationToken cancellationToken) {
+        public async UniTask RevertSkin() {
             _materials[1] = TransMaterial;
             foreach (Renderer renderer in _renderers) {
                 renderer.sharedMaterials = _materials.ToArray();
             }
-            await UniTask.WaitForEndOfFrame(this, cancellationToken);
-            cancellationToken.ThrowIfCancellationRequested();
+            await UniTask.WaitForEndOfFrame(this);
         }
 #endregion
 

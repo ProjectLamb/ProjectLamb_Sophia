@@ -17,7 +17,7 @@ namespace Sophia
     *********************************************************************************/
     public interface IUpdatorBindable : IUpdatable {
         public bool GetUpdatorBind();
-        public void AddToUpator();
+        public void AddToUpdator();
         public void RemoveFromUpdator();
     }
 
@@ -39,7 +39,7 @@ namespace Sophia
 //     }
 
     public interface IInstantiatorAccessible {
-
+        public ProjectileBucketManager GetProjectileBucketManager();
     }
 
 //     public interface IWeaponStatAccessible {

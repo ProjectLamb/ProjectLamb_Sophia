@@ -214,7 +214,7 @@ namespace Sophia.DataSystem.Referer
                     case E_FUNCTIONAL_EXTRAS_TYPE.Move :                {this.OnMove = extrasRef as Extras<Vector3>;                return;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Damaged :             {this.OnDamaged = extrasRef as Extras<DamageInfo>;          return;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Attack :              {this.OnAttack = extrasRef as Extras<object>;               return;}
-                    case E_FUNCTIONAL_EXTRAS_TYPE.ConveyAffect :        {this.OnWeaponConveyAffect = extrasRef as Extras<Entity>;         return;}
+                    case E_FUNCTIONAL_EXTRAS_TYPE.ConveyAffect :        {this.OnConveyAffect = extrasRef as Extras<Entity>;         return;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.WeaponConveyAffect :        {this.OnWeaponConveyAffect = extrasRef as Extras<Entity>;         return;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.SkillConveyAffect :        {this.OnSkillConveyAffect = extrasRef as Extras<Entity>;         return;}
                     case E_FUNCTIONAL_EXTRAS_TYPE.Dead :                {this.OnDead = extrasRef as Extras<object>;                 return;}

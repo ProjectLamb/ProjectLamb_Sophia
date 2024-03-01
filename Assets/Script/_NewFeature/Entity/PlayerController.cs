@@ -42,9 +42,9 @@ namespace Sophia.Entitys
             }
             
             if(IsAttackAllow){
-                // if(Input.GetKeyDown(KeyCode.Q)){playerRef.Skill(E_SKILL_KEY.QKey);}
-                // if(Input.GetKeyDown(KeyCode.E)){playerRef.Skill(E_SKILL_KEY.EKey);}
-                // if(Input.GetKeyDown(KeyCode.R)){playerRef.Skill(E_SKILL_KEY.RKey);}
+                if(Input.GetKeyDown(KeyCode.Q)){playerRef.Use(KeyCode.Q);}
+                if(Input.GetKeyDown(KeyCode.E)){playerRef.Use(KeyCode.E);}
+                if(Input.GetKeyDown(KeyCode.R)){playerRef.Use(KeyCode.R);}
                 if(Input.GetMouseButtonDown(0)){playerRef.Attack();}
             }
         }

@@ -14,7 +14,7 @@ public class AlignChildObjects : MonoBehaviour
         for(int i = 0; i < Table.x; i++) {
             for(int j = 0; j < Table.y; j++){
                 if(chillds.Count != 0) 
-                    chillds.Dequeue().position = new Vector3Int(Gap * i, 0, Gap * j);
+                    chillds.Dequeue().SetPositionAndRotation(new Vector3Int(Gap * i, 0, Gap * j), Quaternion.identity);
             }
         }
     }

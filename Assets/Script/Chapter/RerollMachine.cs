@@ -32,6 +32,7 @@ public class RerollMachine : MonoBehaviour
     }
     public async UniTaskVoid AsyncWaitUse(float _waitSecondTime)
     {
+        if(!IsReady) return;
         IsReady = false;
         await UniTask.Delay(TimeSpan.FromSeconds(_waitSecondTime));
         IsReady = true;

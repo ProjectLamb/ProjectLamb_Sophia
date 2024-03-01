@@ -1,11 +1,15 @@
 using System.Threading;
+using System;
+using Cysharp.Threading.Tasks;
+using System.Numerics;
 
 namespace Sophia.DataSystem
 {
-    using System.Numerics;
+
     using Sophia.Composite.NewTimer;
     using Sophia.Entitys;
     using UnityEngine;
+    using UnityEngine.InputSystem.Utilities;
 
     namespace Modifiers.ConcreteAffector
     {
@@ -18,16 +22,83 @@ namespace Sophia.DataSystem
                     case E_AFFECT_TYPE.Poisoned     :   {return new PoisonedAffect(in affectData);}
                     case E_AFFECT_TYPE.Bleed        :   {return new BleedAffect(in affectData);}
                     case E_AFFECT_TYPE.Cold         :   {return new ColdAffect(in affectData);}
-                    case E_AFFECT_TYPE.Stun        :   {return new StunAffect(in affectData);}
+                    case E_AFFECT_TYPE.Stun         :   {return new StunAffect(in affectData);}
                     case E_AFFECT_TYPE.Bounded      :   {return new BoundedAffect(in affectData);}
                     case E_AFFECT_TYPE.Knockback    :   {return new KnockbackAffect(in affectData, entity.GetGameObject().transform);}
                     case E_AFFECT_TYPE.BlackHole    :   {return new BlackHoleAffect(in affectData, entity.GetGameObject().transform);}
-                    case E_AFFECT_TYPE.Airborne    :    {return new AirborneAffect(in affectData);}
+                    case E_AFFECT_TYPE.Airborne     :   {return new AirborneAffect(in affectData);}
+                    case E_AFFECT_TYPE.Execution    :   {return new BurnAffect(in affectData);}
                     default : {return null;}
                 }
             }
         }
-        
+
+        public class ExecutionStrike : Affector, IUserInterfaceAccessible
+        {
+
+            private Atomics.GetHitAtomics           DamageAffector;
+            private Atomics.MaterialChangeAtomics   MaterialChangeAffector;
+            private Atomics.VisualFXAtomics         VisualFXAffector;
+
+            public ExecutionStrike(in SerialAffectorData affectData) : base(in affectData)
+            {
+            }
+
+            public override void Enter(Entity entity)
+            {
+                DamageAffector.Invoke(entity);
+                MaterialChangeAffector.material.SetFloat("_Activate", 1);
+                MaterialChangeAffector.Invoke(entity);
+                VisualFXAffector.Invoke(entity);
+            }
+
+            public override void Exit(Entity entity)
+            {
+                MaterialChangeAffector.Revert(entity);
+                VisualFXAffector.Revert(entity);
+                base.Exit(entity);
+            }
+            public override void Run(Entity entity)
+            {
+                float ActivateNum = 0;
+                if(1 - Timer.GetProgressAmount()*4 > 0) { ActivateNum = 1 - Timer.GetProgressAmount(); }
+                Debug.Log("ActivateNum");
+                MaterialChangeAffector.material.SetFloat("_Activate", ActivateNum);
+                return;
+            }
+            protected override void Init(in SerialAffectorData affectData)
+            {
+
+                AffectType = E_AFFECT_TYPE.Execution;
+                Name = affectData._uiData._name;
+                Description = affectData._uiData._description;
+                Icon = affectData._uiData._icon;
+                DamageAffector          = new Atomics.GetHitAtomics(in affectData._tickDamageData);
+                MaterialChangeAffector  = new Atomics.MaterialChangeAtomics(in affectData._skinData);
+                VisualFXAffector        = new Atomics.VisualFXAtomics(E_AFFECT_TYPE.None, in affectData._visualData);
+                
+                Timer = new TimerComposite(affectData._baseDurateTime);
+                CurrentState = AffectorReadyState.Instance;
+            }
+            
+#region User Interface
+            public string GetDescription()
+            {
+                throw new System.NotImplementedException();
+            }
+
+            public string GetName()
+            {
+                throw new System.NotImplementedException();
+            }
+
+            public Sprite GetSprite()
+            {
+                throw new System.NotImplementedException();
+            }
+            #endregion
+        }
+
         public class BurnAffect : Affector, IUserInterfaceAccessible
         {
             private Atomics.GetHitAtomics DamageAffector;
@@ -495,7 +566,7 @@ namespace Sophia.DataSystem
 
             protected override void Init(in SerialAffectorData affectData)
             {
-                AffectType = E_AFFECT_TYPE.BlackHole;
+                AffectType = E_AFFECT_TYPE.Airborne;
                 Name = affectData._uiData._name;
                 Description = affectData._uiData._description;
                 Icon = affectData._uiData._icon;

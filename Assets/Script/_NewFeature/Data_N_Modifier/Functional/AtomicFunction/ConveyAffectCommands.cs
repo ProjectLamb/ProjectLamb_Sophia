@@ -9,7 +9,16 @@ namespace Sophia.DataSystem.Functional.AtomFunctions
 
     public class ConveyAffectCommand
     {
-
+        public class FactoryExecuteCommand : IFunctionalCommand<Entity>
+        {
+            private SerialAffectorData serialAffectorDataRef;
+            public string GetDescription() => "처형";
+            public string GetName() => "처형";
+            public Sprite GetSprite() => null;
+            public FactoryExecuteCommand(in SerialAffectorData serialAffectorData) { serialAffectorDataRef = serialAffectorData; }
+            public void Invoke(ref Entity referer) => referer.Affect(new ExecutionStrike(in serialAffectorDataRef));
+        }
+        
         public class FactoryBurnAffectCommand : IFunctionalCommand<Entity>
         {
             private SerialAffectorData serialAffectorDataRef;

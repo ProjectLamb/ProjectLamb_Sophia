@@ -23,11 +23,11 @@ namespace Sophia.Composite
         private FMODAudioSource DashSource;
 
         public CoolTimeComposite Timer {get; private set;}
-        public Func<(Vector3, int)> BindMovementData;
+        public DataSystem.Atomics.DashAtomics DashAtomics {get; private set;}
 
         public DashSkill(Rigidbody rb, Func<(Vector3, int)> movementDataSender, float forceAmount){
             rigidbodyRef = rb;
-            MaxStamina = new Stat(3,
+            MaxStamina = new Stat(10,
                 E_NUMERIC_STAT_TYPE.MaxStamina, 
                 E_STAT_USE_TYPE.Natural, 
                 OnMaxStaminaUpdated
@@ -49,13 +49,13 @@ namespace Sophia.Composite
                 OnDashExtrasUpdated
             );
 
-            BindMovementData = movementDataSender;
+            DashAtomics = new DataSystem.Atomics.DashAtomics(rigidbodyRef, movementDataSender, DashForce.GetValueForce);
             
             Timer = new Sophia.Composite.CoolTimeComposite(3f, MaxStamina.GetValueByNature())
                 .SetAcceleratrion(StaminaRestoreSpeed)
                 .AddBindingAction(Dash);
                         
-            AddToUpator();
+            AddToUpdator();
         }
         
 
@@ -63,9 +63,7 @@ namespace Sophia.Composite
 
 #region Getter
         
-        public bool GetIsDashState(int moveSpeed) {
-            return (rigidbodyRef.velocity.magnitude - 0.05f * moveSpeed) > moveSpeed;
-        }
+        public bool GetIsDashState() => DashAtomics.CheckIsDashState();
 
 #endregion
 
@@ -124,7 +122,7 @@ namespace Sophia.Composite
         bool IsUpdatorBinded = false;
         public bool GetUpdatorBind() => IsUpdatorBinded;
 
-        public void AddToUpator() {
+        public void AddToUpdator() {
             GlobalTimeUpdator.CheckAndAdd(this);
             IsUpdatorBinded = true;
         }
@@ -137,24 +135,15 @@ namespace Sophia.Composite
 #endregion
 
         private void Dash() {
-            (Vector3 moveVec, int moveSpeed) data = this.BindMovementData.Invoke();
-            Vector3 dashPower = SetDashPower(data.moveVec);
-            this.rigidbodyRef.AddForce(dashPower, ForceMode.VelocityChange);
+            DashAtomics.Invoke();
             DashSource.Play();
         }
 
         public void Use() {
-            (Vector3 moveVec, int moveSpeed) data = this.BindMovementData.Invoke();
-            if(!GetIsDashState(data.moveSpeed) && rigidbodyRef.velocity.magnitude > 0.01f && Timer.GetIsReadyToUse() ){
-                Timer.ActionStart();
-            }
+            if(!GetIsDashState() && Timer.GetIsReadyToUse() ){ Timer.ActionStart();}
         }
 
         public void RecoverOneDash() => Timer.stackCounter.RecoverStack();
 
-        private Vector3 SetDashPower(Vector3 moveVec) {
-            Vector3 temp = moveVec * - Mathf.Log(1 / this.rigidbodyRef.drag);
-            return temp.normalized * DashForce.GetValueForce();
-        }
     }
 }
