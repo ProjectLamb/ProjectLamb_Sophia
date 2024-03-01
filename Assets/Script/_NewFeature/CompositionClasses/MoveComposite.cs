@@ -23,7 +23,7 @@ namespace Sophia.Composite
 
 #region Member
 
-        public  Rigidbody RbRef {get; protected set;}
+        public Rigidbody RbRef {get; protected set;}
         public bool IsMovable {get; protected set;}
 
         public  Vector3     ForwardingVector;

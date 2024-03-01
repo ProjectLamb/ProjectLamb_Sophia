@@ -238,19 +238,21 @@ namespace Sophia
                     default:
                         {
                             int InputDamage = damageInfo.GetAmount();
-                            if (CurrentBarrier - InputDamage >= 0)
-                            {
-                                CurrentBarrier -= InputDamage;
-                                InputDamage = 0;
-                                damageInfo.damageHandleType = DamageHandleType.BarrierCoved;
-                                OnBarrierUpdated?.Invoke(CurrentBarrier);
-                            }
-                            else
-                            {
-                                InputDamage -= (int)CurrentBarrier;
-                                BreakBarrier();
-                                damageInfo.damageHandleType = DamageHandleType.None;
-                            }
+                            if(CurrentBarrier > 0) {
+                                if (CurrentBarrier - InputDamage >= 0)
+                                {
+                                    CurrentBarrier -= InputDamage;
+                                    InputDamage = 0;
+                                    damageInfo.damageHandleType = DamageHandleType.BarrierCoved;
+                                    OnBarrierUpdated?.Invoke(CurrentBarrier);
+                                }
+                                else
+                                {
+                                    InputDamage -= (int)CurrentBarrier;
+                                    BreakBarrier();
+                                    damageInfo.damageHandleType = DamageHandleType.None;
+                                }
+                            } 
                             CurrentHealth -= InputDamage;
                             break;
                         }

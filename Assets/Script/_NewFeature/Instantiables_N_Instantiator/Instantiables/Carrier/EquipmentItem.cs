@@ -14,8 +14,9 @@ namespace Sophia.Instantiates
         [SerializeField] SerialEquipmentData _equipmentData;
         public Equipment equipment { get; private set; }
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             equipment = FactoryConcreteEquipment.GetEquipmentByID(in _equipmentData, GameManager.Instance.PlayerGameObject.GetComponent<Player>());
         }
 

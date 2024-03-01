@@ -28,7 +28,7 @@ namespace Sophia.Composite
     }
 
     public class RecognizeEntityComposite {
-        private E_RECOG_TYPE RecogType;
+        public E_RECOG_TYPE RecogType;
         private FieldOfView FOV;
         private bool RecogOnce;
         public RecognizeEntityComposite(GameObject gameObject, in SerialFieldOfViewData serialFieldOfViewData) {

@@ -39,30 +39,30 @@ namespace Sophia.Instantiates
         }
 
         public virtual void Init(in SerialBaseInstantiatorData baseInstantiatorData) {
-            InstantiableDurateLifeTimeMultiplyRatio = new Stat(baseInstantiatorData.InstantiableDurateLifeTimeMultiplyRatio,
+            this.InstantiableDurateLifeTimeMultiplyRatio = new Stat(baseInstantiatorData.InstantiableDurateLifeTimeMultiplyRatio,
                 E_NUMERIC_STAT_TYPE.InstantiableDurateLifeTimeMultiplyRatio,
                 E_STAT_USE_TYPE.Ratio, OnDurateLifeTimeUpdated
             );
-            InstantiableSizeMultiplyRatio = new Stat(baseInstantiatorData.InstantiableSizeMultiplyRatio,
+            this.InstantiableSizeMultiplyRatio = new Stat(baseInstantiatorData.InstantiableSizeMultiplyRatio,
                 E_NUMERIC_STAT_TYPE.InstantiableSizeMultiplyRatio,
                 E_STAT_USE_TYPE.Ratio, OnRatioSizeUpdated
             );
-            InstantiableForwardingSpeedMultiplyRatio = new Stat(baseInstantiatorData.InstantiableForwardingSpeedMultiplyRatio,
+            this.InstantiableForwardingSpeedMultiplyRatio = new Stat(baseInstantiatorData.InstantiableForwardingSpeedMultiplyRatio,
                 E_NUMERIC_STAT_TYPE.InstantiableForwardingSpeedMultiplyRatio,
                 E_STAT_USE_TYPE.Ratio, OnForwardingSpeedUpdated
             );
 
-            ConveyAffectExtras  = new Extras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.ConveyAffect, OnConveyAffectUpdated);
-            AttackExtras        = new Extras<object>(E_FUNCTIONAL_EXTRAS_TYPE.Attack, OnAttackUpdated);
-            CreatedExtras       = new Extras<object>(E_FUNCTIONAL_EXTRAS_TYPE.Created, OnCreatedUpdated);
-            TriggerdExtras      = new Extras<object>(E_FUNCTIONAL_EXTRAS_TYPE.Triggerd, OnTriggerdUpdated);
-            ReleasedExtras      = new Extras<object>(E_FUNCTIONAL_EXTRAS_TYPE.Released, OnReleasedUpdated);
-            ForwardingExtras    = new Extras<object>(E_FUNCTIONAL_EXTRAS_TYPE.Forwarding, OnForwardingUpdated);
+            this.ConveyAffectExtras  = new Extras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.ConveyAffect, OnConveyAffectUpdated);
+            this.AttackExtras        = new Extras<object>(E_FUNCTIONAL_EXTRAS_TYPE.Attack, OnAttackUpdated);
+            this.CreatedExtras       = new Extras<object>(E_FUNCTIONAL_EXTRAS_TYPE.Created, OnCreatedUpdated);
+            this.TriggerdExtras      = new Extras<object>(E_FUNCTIONAL_EXTRAS_TYPE.Triggerd, OnTriggerdUpdated);
+            this.ReleasedExtras      = new Extras<object>(E_FUNCTIONAL_EXTRAS_TYPE.Released, OnReleasedUpdated);
+            this.ForwardingExtras    = new Extras<object>(E_FUNCTIONAL_EXTRAS_TYPE.Forwarding, OnForwardingUpdated);
 
-            OnCreated       ??= () => {};
-            OnTriggerd      ??= () => {};
-            OnReleased      ??= () => {};
-            OnForwarding    ??= () => {};
+            this.OnCreated       ??= () => {};
+            this.OnTriggerd      ??= () => {};
+            this.OnReleased      ??= () => {};
+            this.OnForwarding    ??= () => {};
         }
 
         protected void Start() {
@@ -70,6 +70,10 @@ namespace Sophia.Instantiates
                 _projectileBuckets[i]?.SetProjectileBucketManamger(this);
             }
         }
+
+#region Get
+        public ProjectileBucket GetProjectileBucket(int idx) => _projectileBuckets[idx];
+#endregion
 
 #region Event
         /*

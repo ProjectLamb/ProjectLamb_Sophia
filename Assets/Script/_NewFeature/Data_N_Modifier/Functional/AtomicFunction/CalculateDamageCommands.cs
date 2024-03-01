@@ -61,5 +61,26 @@ namespace Sophia.DataSystem.Functional.AtomFunctions
 #endregion
             public bool GetIsActivated() => percentage <= random.Next(100);
         }
+
+        public class MulHit : IFunctionalCommand<DamageInfo>
+        {
+            private SerialDamageConverterData converterData;
+            private System.Random random;
+            public MulHit(in SerialDamageConverterData serialDamageConverterData) {
+                converterData = serialDamageConverterData;
+            }
+            public void Invoke(ref DamageInfo referer)
+            {
+                referer.damageRatio *= converterData._damageRatio;
+            }
+
+#region UI Access
+
+            public string GetName() =>"럭키 치명타";
+            public string GetDescription() => "럭키 치명타";
+            public Sprite GetSprite() => null;
+
+#endregion
+        }
     }
 }

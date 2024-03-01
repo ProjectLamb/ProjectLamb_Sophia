@@ -33,7 +33,6 @@ namespace Sophia.DataSystem.Modifiers
         public event UnityAction<Affector> OnClear;
         public void ClearAffect(Affector affector) => OnClear?.Invoke(affector);
 
-
 #endregion
 
 #region State Machine
@@ -83,6 +82,7 @@ namespace Sophia.DataSystem.Modifiers
 
         public int GetCurrentBit() => (int)TimerStateBit.Ready;
         public int GetTransitionBit() => (int)TimerStateBit.Start;
+ 
     }
 
     public class AffectorStartState : AffectorState

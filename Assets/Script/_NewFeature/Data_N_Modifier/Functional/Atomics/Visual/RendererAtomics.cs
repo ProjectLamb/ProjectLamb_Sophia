@@ -9,18 +9,19 @@ namespace Sophia.DataSystem.Atomics
     using Sophia.Entitys;
 
     public class MaterialChangeAtomics {
-        public CancellationToken cancellationToken;
+        public CancellationTokenSource cancellationTokenSource;
         public Material material;
         public MaterialChangeAtomics(in SerialSkinData skinAffectData) {
             material = skinAffectData._materialRef;
-            cancellationToken = new CancellationToken();
+            cancellationTokenSource = new CancellationTokenSource();
         }
 
         public async void Invoke(IVisualAccessible visualAccessible) {
-            await visualAccessible.GetModelManger().ChangeSkin(cancellationToken, material);
+            await visualAccessible.GetModelManger().ChangeSkin(cancellationTokenSource.Token, material);
         }
         public async void Revert(IVisualAccessible visualAccessible) {
-            await visualAccessible.GetModelManger().RevertSkin(cancellationToken);
+            cancellationTokenSource.Cancel();
+            await visualAccessible.GetModelManger().RevertSkin();
         }
     }   
 }

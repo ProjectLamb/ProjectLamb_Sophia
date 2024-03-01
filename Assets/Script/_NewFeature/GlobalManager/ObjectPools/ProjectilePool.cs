@@ -14,7 +14,7 @@ namespace Sophia
         public static ProjectilePool Instance {
             get {
                 if(_instance == null) {
-                    _instance = FindObjectOfType(typeof(ProjectilePool)) as ProjectilePool;
+                    _instance = FindFirstObjectByType(typeof(ProjectilePool)) as ProjectilePool;
                     if(_instance == null) Debug.Log("no Singleton obj");
                 }
                 return _instance;
