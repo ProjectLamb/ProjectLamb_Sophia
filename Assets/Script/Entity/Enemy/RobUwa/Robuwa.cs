@@ -11,15 +11,18 @@ public class Robuwa : Enemy
     [Header("Mob Settings")]
     public int AttackRange;
     public int TurnSpeed;
-    public int WanderingCoolTime;
+    public float WanderingCoolTime;
     #endregion
 
     #region Private
 
+    private Vector3 wanderPosition;
     List<string> animBoolParamList;
     List<string> animTriggerParamList;
     private bool IsFirstRecog = true;
     private bool IsDie = false;
+    private bool IsWandering = false;
+    private float originViewRadius;
 
     #endregion
     // Start is called before the first frame update
@@ -29,6 +32,7 @@ public class Robuwa : Enemy
         Init,
         Idle,
         Move,
+        Wander,
         Threat,
         Attack,
         Death,
@@ -76,7 +80,7 @@ public class Robuwa : Enemy
     public override void Die()
     {
         base.Die();
-        stage.mobGenerator.CurrentMobCount--;
+        stage.mobGenerator.RemoveMob(this.gameObject);
         Invoke("DestroySelf", 0.5f);
     }
 
@@ -125,19 +129,33 @@ public class Robuwa : Enemy
 
     void DoWander()
     {
-        float range = GetComponent<FieldOfView>().viewRadius;
-        Vector3 randomDirection = UnityEngine.Random.insideUnitSphere * range;
+        EQS();
 
-        randomDirection += transform.position;
+        float range = fov.viewRadius * 2;
+        float minDistance = fov.viewRadius;
+        Vector3 randomVector = Random.insideUnitSphere * range;
+        NavMeshHit hit;
 
-        NavMeshHit navHit;
+        randomVector += transform.position;
 
-        NavMesh.SamplePosition(randomDirection, out navHit, range, -1);
+        if (minDistance > Vector3.Distance(randomVector, transform.position))
+            DoWander();
 
-        nav.destination = navHit.position;
+        if (NavMesh.SamplePosition(randomVector, out hit, range, NavMesh.AllAreas))
+        {
+            wanderPosition = hit.position;
+            IsWandering = true;
+            fsm.ChangeState(States.Wander);
+        }
+        else
+        {
+            DoWander();
+        }
+    }
 
-        // currentTimer = 0;
-        // IsWandering = true;
+    void EQS()
+    {
+        //Environmental Query System
     }
 
     void SetCarrierBucketPosition()
@@ -150,14 +168,19 @@ public class Robuwa : Enemy
         this.carrierBucket.CarrierInstantiatorByObjects(this, projectiles[0], new object[] { FinalData.Power * 1 });
     }
 
+    #region FSM Functions
     ////////////////////////////////////////FSM Functions////////////////////////////////////////
     /** Init State */
     void Init_Enter()
     {
         Debug.Log("Init_Enter");
+
         //Init Settings
         InitAnimParamList();
         SetCarrierBucketPosition();
+        originViewRadius = fov.viewRadius;
+        IsFirstRecog = true;
+        spawnRate = 80.0f;
 
         fsm.ChangeState(States.Idle);
     }
@@ -165,6 +188,7 @@ public class Robuwa : Enemy
     void Idle_Enter()
     {
         Debug.Log("Idle_Enter");
+        fov.viewRadius = originViewRadius;
         Freeze();
     }
 
@@ -173,8 +197,8 @@ public class Robuwa : Enemy
         if (!fov.IsRecog)
         {
             //Play Idle
-            //DoWandering
-
+            if (!IsWandering)
+                fsm.ChangeState(States.Wander);
         }
         else
         {
@@ -197,20 +221,24 @@ public class Robuwa : Enemy
         Debug.Log("Threat Enter");
 
         Freeze();
-
+        fov.viewRadius *= 2;
         animator.SetTrigger("DoThreat");
     }
 
     void Threat_Update()
     {
-        if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f)
+        //animator bool 바꾸기
+        if (animator.GetBool("IsThreatEnd"))
         {
             IsFirstRecog = false;
             if (!fov.IsRecog)
+            {
                 fsm.ChangeState(States.Idle);
+            }
             else
             {
                 float dist = Vector3.Distance(transform.position, objectiveTarget.position);
+
                 if (dist <= AttackRange)
                     fsm.ChangeState(States.Attack);
                 else
@@ -224,8 +252,12 @@ public class Robuwa : Enemy
         transform.DOLookAt(objectiveTarget.position, TurnSpeed);
     }
 
-    /**Move State*/
+    void Threat_Exit()
+    {
+        animator.SetBool("IsThreatEnd", false);
+    }
 
+    /**Move State*/
     void Move_Enter()
     {
         Debug.Log("Move_Enter");
@@ -236,6 +268,7 @@ public class Robuwa : Enemy
     void Move_Update()
     {
         float dist = Vector3.Distance(transform.position, objectiveTarget.position);
+
         if (!fov.IsRecog)
             fsm.ChangeState(States.Idle);
         else if (dist <= AttackRange)
@@ -254,6 +287,45 @@ public class Robuwa : Enemy
 
     void Move_Exit()
     {
+        animator.SetBool("IsWalk", false);
+    }
+
+    /**Wander State*/
+    void Wander_Enter()
+    {
+        System.Random random = new System.Random();
+        Debug.Log("Wander_Enter");
+
+        Invoke("DoWander", random.Next(0, 4));
+        UnFreeze();
+    }
+
+    void Wander_Update()
+    {
+        if (fov.IsRecog)
+        {
+            CancelInvoke();
+            fsm.ChangeState(States.Threat);
+        }
+        else if (IsWandering && nav.remainingDistance <= nav.stoppingDistance)
+        {
+            fsm.ChangeState(States.Idle);
+        }
+    }
+
+    void Wander_FixedUpdate()
+    {
+        if (IsWandering)
+        {
+            animator.SetBool("IsWalk", true);
+            transform.DOLookAt(wanderPosition, TurnSpeed);
+            nav.SetDestination(wanderPosition);
+        }
+    }
+
+    void Wander_Exit()
+    {
+        IsWandering = false;
         animator.SetBool("IsWalk", false);
     }
 
@@ -292,4 +364,5 @@ public class Robuwa : Enemy
     {
         DestroySelf();
     }
+    #endregion
 }

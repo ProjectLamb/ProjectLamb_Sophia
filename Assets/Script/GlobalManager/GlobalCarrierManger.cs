@@ -20,19 +20,20 @@ public class GlobalCarrierManger : MonoBehaviour
     public Carrier GetRandomItem(string text)
     {
         Carrier tmp = null;
+        System.Random random = new System.Random();
         int randomValue = 0;
         switch (text)
         {
             case "Equipment":
-                randomValue = Random.Range(0, EquipmentList.Count);
+                randomValue = random.Next(0, EquipmentList.Count);
                 tmp = EquipmentList[randomValue];
                 break;
             case "Gear":
-                randomValue = Random.Range(0, GearList.Count);
+                randomValue = random.Next(0, GearList.Count);
                 tmp = GearList[randomValue];
                 break;
             case "Skill":
-                randomValue = Random.Range(0, SkillList.Count);
+                randomValue = random.Next(0, SkillList.Count);
                 tmp = SkillList[randomValue];
                 break;
         }
