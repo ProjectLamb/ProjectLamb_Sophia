@@ -40,18 +40,17 @@ namespace Sophia
     {
         None = 0,
         ENTITY_TYPE = 10,
-            Move, Damaged, Attack, ConveyAffect, Dead, Idle, PhyiscTriggered,
-        
+            Move, Damaged, Attack, ConveyAffect, Dead, Idle, PhysicTriggered,
         PLAYER_TYPE = 20,
-            Dash, Skill,
+            Dash, Skill, GearcoinTriggered, HealthTriggered,
         WEAPON_TYPE = 30, 
             WeaponUse, ProjectileRestore, WeaponConveyAffect, 
-        
         SKILL_TYPE = 40,
             SkillUse, SkillRefilled, SkillConveyAffect,
-
         PROJECTILE_TYPE = 50,
             Created, Triggerd, Released, Forwarding,
+        GLOBAL_TYPE = 60,
+            EnemyHit, EnemyDie, StageClear, StageEnter
     }
 
     public enum E_AFFECT_TYPE {

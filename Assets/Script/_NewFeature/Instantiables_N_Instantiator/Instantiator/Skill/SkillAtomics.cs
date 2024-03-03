@@ -6,7 +6,10 @@ using System;
 
 namespace Sophia.Instantiates.Skills {
     public enum E_SKILL_INDEX {
-        None, ProjectileInstantiation, ImpulseForward, AddExcution, AddDamageInfo, AddStunConveyer, Barrier, MoveFaster, PowerUp
+        _Neutral_ = 0,
+            Barrier, MoveFaster, WeaponStun, WeaponAdditionalDamage, PowerUp, Lava, BlackWhiteHole,
+        _Melee_ = 100,
+            DoubleShot, Piercing, RotateSlash, ThrowSlash, DashSlash
     }
 
     public class FactoryConcreteSkill {
@@ -18,59 +21,80 @@ namespace Sophia.Instantiates.Skills {
             in SerialProjectileInstantiateData projectileInstantiateData
         )
         {
-                switch (index) {
-                case E_SKILL_INDEX.ProjectileInstantiation : {
-                    return new ProjectileInstantiationSkill(in userInterfaceData)
-                                    .SetInstantiationData(in projectileInstantiateData)
-                                    .SetOwnerEntity(player);
+            switch (index) {
+                case E_SKILL_INDEX.Barrier : {
+                    return new Neutral.Barrier(in userInterfaceData)
+                                .SetBarrierData(in affectorData)
+                                .SetOwnerEntity(player);
                 }
-                case E_SKILL_INDEX.ImpulseForward       : {
-                    return new ImpulseForwardSkill(in userInterfaceData)
-                                    .SetOwnerEntity(player);
+                case E_SKILL_INDEX.MoveFaster : {
+                    return new Neutral.MoveFaster(in userInterfaceData)
+                                .SetMoveFasterAffect(in affectorData)
+                                .SetOwnerEntity(player)
+;
+                }
+                case E_SKILL_INDEX.WeaponStun : {
+                    return new Neutral.WeaponStun(in userInterfaceData)
+                                .SetStunData(in conveyAffectExtrasModifierData._affectData)
+                                .SetOwnerEntity(player);
+                }
+                case E_SKILL_INDEX.WeaponAdditionalDamage : {
+                    return new Neutral.WeaponAdditionalDamage(in userInterfaceData)
+                                .SetDamageInfoData(in damageExtrasModifierData)
+                                .SetOwnerEntity(player);
+                }
+                case E_SKILL_INDEX.PowerUp : {
+                    return new Neutral.PowerUp(in userInterfaceData)
+                                .SetPowerUpAffect(in affectorData)
+                                .SetOwnerEntity(player);
+                }
+                case E_SKILL_INDEX.Lava : {
+                    return new Neutral.Lava(in userInterfaceData)
+                                .SetInstantiationData(in projectileInstantiateData)
+                                .SetOwnerEntity(player);
+                }
+                case E_SKILL_INDEX.BlackWhiteHole : {
+                    return new Neutral.BlackWhiteHole(in userInterfaceData)
+                                .SetInstantiationData(in projectileInstantiateData)
+                                .SetOwnerEntity(player);
+                }
+                case E_SKILL_INDEX.DoubleShot : {
+                    return new Melee.DoubleShot(in userInterfaceData)
+                                .SetInstantiationData(in projectileInstantiateData)
+                                .SetOwnerEntity(player);
+                }
+                case E_SKILL_INDEX.Piercing : {
+                    return new Melee.Piercing(in userInterfaceData)
+                                .SetInstantiationData(in projectileInstantiateData)
+                                .SetPhysics(in affectorData)
+                                .SetOwnerEntity(player);
+                }
+                case E_SKILL_INDEX.RotateSlash : {
+                    return new Melee.RotateSlash(in userInterfaceData)
+                                .SetInstantiationData(in projectileInstantiateData)
+                                .SetOwnerEntity(player);
 
+  
                 }
-                case E_SKILL_INDEX.AddExcution          : {
-                    return new AddExcutionSkill(in userInterfaceData)
-                                     .SetExcuteData(in conveyAffectExtrasModifierData)
-                                     .SetOwnerEntity(player);
+                case E_SKILL_INDEX.ThrowSlash : {
+                    return new Melee.ThrowSlash(in userInterfaceData)
+                                .SetInstantiationData(in projectileInstantiateData)
+                                .SetOwnerEntity(player);
 
+  
                 }
-                case E_SKILL_INDEX.AddDamageInfo        : {
-                    return new AddDamageInfoSkill(in userInterfaceData)
-                                     .SetDamageInfoData(in damageExtrasModifierData)
-                                     .SetOwnerEntity(player);
-
+                case E_SKILL_INDEX.DashSlash : {
+                    return new Melee.DashSlash(in userInterfaceData)
+                                .SetInstantiationData(in projectileInstantiateData)
+                                .SetPhysics(in affectorData)
+                                .SetOwnerEntity(player);
                 }
-                case E_SKILL_INDEX.AddStunConveyer      : {
-                    return new AddStunConveyerSkill(in userInterfaceData)
-                                        .SetStunData(affectorData)
-                                        .SetOwnerEntity(player);
-
-                }
-                case E_SKILL_INDEX.Barrier              : {
-                    return new BarrierSkill(in userInterfaceData)
-                                        .SetBarrierData(affectorData)
-                                        .SetOwnerEntity(player);
-
-                }
-                case E_SKILL_INDEX.MoveFaster           : {
-                    return new MoveFasterSkill(in userInterfaceData)
-                                        .SetMoveFasterAffect(in affectorData)
-                                        .SetOwnerEntity(player);
-
-                }
-                case E_SKILL_INDEX.PowerUp              : {
-                    return new PowerUpSkill(in userInterfaceData)
-                                        .SetPowerUpAffect(in affectorData)
-                                        .SetOwnerEntity(player);
-
-                }
-                default                 : {
-                    throw new System.Exception("인덱스가 None 이거나 없는 값을 주입함");
+                default : {
+                    throw new System.Exception("올바르지 않은 인덱스 접근");
                 }
             }
+            }
         
-        }
     }
 
     public class ProjectileInstantiationSkill : Skill  {
@@ -79,7 +103,6 @@ namespace Sophia.Instantiates.Skills {
         private Sprite icon;
         public CoolTimeComposite TimerComposite {get; private set;}
         ProjectileBucket instantiatorRef;
-        
         SerialProjectileInstantiateData projectileInstantiateData;
         
         public Entitys.Entity ownerEntity;
@@ -92,6 +115,7 @@ namespace Sophia.Instantiates.Skills {
                                     .AddBindingAction(Activate);
         }
 #region Setter
+        
         public ProjectileInstantiationSkill SetInstantiationData(in SerialProjectileInstantiateData serialProjectileInstantiateData) {
             projectileInstantiateData = serialProjectileInstantiateData;
             return this;
@@ -104,6 +128,7 @@ namespace Sophia.Instantiates.Skills {
         }
 
 #endregion
+
 #region User Interface
         
         public override string GetName()         => name;
@@ -158,6 +183,7 @@ namespace Sophia.Instantiates.Skills {
         private Sprite icon;
         public CoolTimeComposite TimerComposite {get; private set;}
         public DataSystem.Atomics.DashAtomics DashAtomics;
+        public SerialPhysicsData PhysicsData;
         public ImpulseForwardSkill(in SerialUserInterfaceData userInterfaceData) {
             name = userInterfaceData._name;
             description = userInterfaceData._description;
@@ -165,17 +191,26 @@ namespace Sophia.Instantiates.Skills {
             TimerComposite = new CoolTimeComposite(15f, 1)
                                     .AddBindingAction(DashAtomics.Invoke);
         }
+        public float GetPhisicsForce() => PhysicsData._physicsForce;
 
 #region Setter
+
+        public ImpulseForwardSkill SetPhysics(in SerialAffectorData affectorData) {
+            PhysicsData = affectorData._physicsData;
+            return this;
+        }
+
         public ImpulseForwardSkill SetOwnerEntity(Entitys.Player entity) {
             DashAtomics = new DataSystem.Atomics.DashAtomics(
                 entity.entityRigidbody, 
                 entity.GetMovementComposite().GetMovemenCompositetData,
-                entity.GetStat(E_NUMERIC_STAT_TYPE.DashForce).GetValueForce
+                GetPhisicsForce
             );
             return this;
         }
+
 #endregion
+
 #region User Interface
         
         public override string GetName()         => name;
@@ -296,10 +331,10 @@ namespace Sophia.Instantiates.Skills {
         private Sprite icon;
         public CoolTimeComposite TimerComposite {get; private set;}
         public float durateTime = 5f;
+        private Entitys.Entity ownerEntity;          
+
         private ExtrasModifier<DamageInfo> extrasModifier;
         private IFunctionalCommand<DamageInfo> damageInfoCommand;
-
-        private Entitys.Entity ownerEntity;          
         private DataSystem.Extras<DamageInfo> extrasRef;
         
         public AddDamageInfoSkill(in SerialUserInterfaceData userInterfaceData) {
@@ -376,10 +411,10 @@ namespace Sophia.Instantiates.Skills {
         private Sprite icon;
         public CoolTimeComposite TimerComposite {get; private set;}
         public float durateTime = 5f;
-        private ExtrasModifier<Entitys.Entity> extrasModifier;
-        private IFunctionalCommand<Entitys.Entity> stunAffectCommand;
-        
         private Entitys.Entity ownerEntity;          
+
+        private ExtrasModifier<Entitys.Entity> extrasModifier;
+        private IFunctionalCommand<Entitys.Entity> stunAffectCommand;        
         private DataSystem.Extras<Entitys.Entity> extrasRef;
         
         public AddStunConveyerSkill( in SerialUserInterfaceData userInterfaceData) {
@@ -449,6 +484,7 @@ namespace Sophia.Instantiates.Skills {
 
     public class BarrierSkill : Skill
     {
+
 #region Member
         private string name;
         private string description;
@@ -470,6 +506,7 @@ namespace Sophia.Instantiates.Skills {
             TimerComposite = new CoolTimeComposite(15f, 1)
                             .AddBindingAction(Activate);
         }
+
 #endregion
 
 #region Setter
@@ -558,6 +595,7 @@ namespace Sophia.Instantiates.Skills {
             moveFasterAffect = new DataSystem.Modifiers.ConcreteAffector.MoveFasterAffect(affectorData);
             return this;
         }
+        
         public MoveFasterSkill SetOwnerEntity(Entitys.Entity entity) {
             ownerEntity = entity; 
             return this;
@@ -609,8 +647,8 @@ namespace Sophia.Instantiates.Skills {
         private string description;
         private Sprite icon;
         public CoolTimeComposite TimerComposite {get; private set;}
-        private DataSystem.Modifiers.ConcreteAffector.PowerUpAffect powerUpAffect;
         private Entitys.Entity ownerEntity;
+        private DataSystem.Modifiers.ConcreteAffector.PowerUpAffect powerUpAffect;
 
         public PowerUpSkill(in SerialUserInterfaceData userInterfaceData) {
             name = userInterfaceData._name;

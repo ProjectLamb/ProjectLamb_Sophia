@@ -16,26 +16,30 @@ public class GlobalAudioManager : MonoBehaviour
 
     public FMODAudioSource SFXAudioSource;
 
-    public string[] Buses;
 
     #endregion
 
     #region Private
 
-    private Bus _masterBus;
-    private Bus _ambBus;
-    private Bus _bgmBus;
-    private Bus _sfxBus;
+    public static readonly string MasterBusPath     = "bus:/Master";
+    public static readonly string AMBBusPath        = "bus:/Master/AMB";
+    public static readonly string BGMBusPath        = "bus:/Master/BGM";
+    public static readonly string SFXBusPath        = "bus:/Master/SFX";
+
+    public static Bus MasterBus    {get; private set;}
+    public static Bus AMBBus       {get; private set;}
+    public static Bus BGMBus       {get; private set;}
+    public static Bus SFXBus       {get; private set;}
 
     #endregion
 
     private void Awake()
     {
         // Get the Bus for the volume.
-        _masterBus = RuntimeManager.GetBus(Buses[0]);
-        _ambBus = RuntimeManager.GetBus(Buses[1]);
-        _bgmBus = RuntimeManager.GetBus(Buses[2]);
-        _sfxBus = RuntimeManager.GetBus(Buses[3]);
+        MasterBus  = RuntimeManager.GetBus(MasterBusPath);
+        AMBBus     = RuntimeManager.GetBus(AMBBusPath);
+        BGMBus     = RuntimeManager.GetBus(BGMBusPath);
+        SFXBus     = RuntimeManager.GetBus(SFXBusPath);
     }
 
     /// <summary>
@@ -151,25 +155,25 @@ public class GlobalAudioManager : MonoBehaviour
     /// Adjust the Master's volume.
     /// </summary>
     /// <param name="value">0~1사이의 값, 0이면 뮤트됩니다.</param>
-    public void SetMasterVolume(float value) => _masterBus.setVolume(value);
+    public void SetMasterVolume(float value) => MasterBus.setVolume(value);
 
     /// <summary>
     /// Adjust the volume of the AMB.
     /// </summary>
     /// <param name="value">0~1사이의 값, 0이면 뮤트됩니다.</param>
-    public void SetAMBVolume(float value) => _ambBus.setVolume(value);
+    public void SetAMBVolume(float value) => AMBBus.setVolume(value);
 
     /// <summary>
     /// Adjust the volume of the BGM.
     /// </summary>
     /// <param name="value">0~1사이의 값, 0이면 뮤트됩니다.</param>
-    public void SetBGMVolume(float value) => _bgmBus.setVolume(value);
+    public void SetBGMVolume(float value) => BGMBus.setVolume(value);
 
     /// <summary>
     /// Adjusts the volume of SFX.
     /// </summary>
     /// <param name="value">0~1사이의 값, 0이면 뮤트됩니다.</param>
-    public void SetSFXVolume(float value) => _sfxBus.setVolume(value);
+    public void SetSFXVolume(float value) => SFXBus.setVolume(value);
 
     /// <summary>
     /// Call Key Off when using Sustain Key Point.

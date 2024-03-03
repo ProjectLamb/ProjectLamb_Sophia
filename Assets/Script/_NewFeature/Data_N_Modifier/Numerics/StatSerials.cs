@@ -81,6 +81,5 @@ namespace Sophia
     public struct Wealths
     {
         public int Gear;
-        public int Frag;
     }
 }

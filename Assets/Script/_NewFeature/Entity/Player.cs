@@ -1,7 +1,9 @@
 using System;
+using System.Collections;
 using UnityEngine;
-using FMODPlus;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using FMODPlus;
 using Cysharp.Threading.Tasks;
 
 namespace Sophia.Entitys
@@ -11,11 +13,7 @@ namespace Sophia.Entitys
     using Sophia.Instantiates;
     using Sophia.DataSystem.Referer;
     using Sophia.DataSystem.Modifiers;
-    using System.Collections.Generic;
     using Sophia.UserInterface;
-    using Sophia.Composite.RenderModels;
-    using System.Collections;
-    using UnityEngine.Events;
 
     public class Player : Entity, IMovementAccessible, IAffectManagerAccessible, IInstantiatorAccessible
     {
@@ -29,7 +27,6 @@ namespace Sophia.Entitys
         [SerializeField] private EquipmentManager           _equipmentManager;
         [SerializeField] private AffectorManager            _affectorManager;
         [SerializeField] private SkillManager               _skillManager;
-        [SerializeField] public  Wealths                    _PlayerWealth;
 
 #endregion
 
@@ -42,7 +39,76 @@ namespace Sophia.Entitys
         private MovementComposite Movement;
         private DashSkill DashSkillAbility;
         private Stat Power;
+        private Extras<int> GearcoinExtras;
+        private int mPlayerWealth;
+        public event UnityAction<int> OnWealthChangeEvent;
+        public int PlayerWealth {
+            get { return mPlayerWealth; }
+            set {
+                mPlayerWealth = value;
+                OnWealthChangeEvent.Invoke(mPlayerWealth);
+            }
+        }
 
+        protected override void SetDataToReferer()
+        {
+            StatReferer.SetRefStat(Power);
+            ExtrasReferer.SetRefExtras<int>(GearcoinExtras);
+            this.Settables.ForEach(E => {
+                E.SetStatDataToReferer(StatReferer);
+                E.SetExtrasDataToReferer(ExtrasReferer);
+            });
+        }
+
+        protected override void CollectSettable()
+        {
+            this.Settables.Add(Life);
+            this.Settables.Add(Movement);
+            this.Settables.Add(DashSkillAbility);
+            this.Settables.Add(_projectileBucketManager);
+            this.Settables.Add(_weaponManager);
+            this.Settables.Add(_affectorManager);
+            this.Settables.Add(GameManager.Instance.NewFeatureGlobalEvent);
+        }
+        
+        protected override void Awake()
+        {
+            /**/
+            TryGetComponent<Collider>(out entityCollider);
+            TryGetComponent<Rigidbody>(out entityRigidbody);
+            StatReferer     = new PlayerStatReferer();
+            ExtrasReferer   = new PlayerExtrasReferer();
+
+            Life = new LifeComposite(_basePlayerData.MaxHp, _basePlayerData.Defence);
+            Movement = new MovementComposite(entityRigidbody, _basePlayerData.MoveSpeed);
+            DashSkillAbility = new DashSkill(this.entityRigidbody, Movement.GetMovemenCompositetData, _basePlayerData.DashForce);
+            Power = new Stat(_basePlayerData.Power, 
+                E_NUMERIC_STAT_TYPE.Power, 
+                E_STAT_USE_TYPE.Natural, 
+                OnPowerUpdated 
+            );
+            GearcoinExtras = new Extras<int>(
+                E_FUNCTIONAL_EXTRAS_TYPE.GearcoinTriggered,
+                () => {Debug.Log("기어 획득");}
+            );
+            _affectorManager.Init(_basePlayerData.Tenacity);
+        }
+
+        protected override void Start()
+        {
+            base.Start();
+            Life.SetDependUI(InGameScreenUI.Instance._playerHealthBarUI);
+            Life.OnDamaged += InGameScreenUI.Instance._hitCanvasShadeScript.Invoke;
+
+            InGameScreenUI.Instance._playerWealthBarUI.SetPlayer(this);
+            
+            DashSkillAbility.SetDependUI(InGameScreenUI.Instance._playerStaminaBarUI);
+            DashSkillAbility.Timer.AddOnUseEvent(() => {
+                this.GetModelManger().EnableTrail();
+                StartCoroutine(actionDelay(this.GetModelManger().DisableTrail));
+            });
+            DashSkillAbility.SetAudioSource(DashSource);
+        }
 #endregion
 
 #region Life Accessible
@@ -123,59 +189,13 @@ namespace Sophia.Entitys
 
 #endregion
 
-        protected override void SetDataToReferer()
-        {
-            StatReferer.SetRefStat(Power);
-            this.Settables.ForEach(E => {
-                E.SetStatDataToReferer(StatReferer);
-                E.SetExtrasDataToReferer(ExtrasReferer);
-            });
-        }
-
-        protected override void CollectSettable()
-        {
-            this.Settables.Add(Life);
-            this.Settables.Add(Movement);
-            this.Settables.Add(DashSkillAbility);
-            this.Settables.Add(_projectileBucketManager);
-            this.Settables.Add(_weaponManager);
-            this.Settables.Add(_affectorManager);
-        }
-
-        protected override void Awake()
-        {
-            /**/
-            TryGetComponent<Collider>(out entityCollider);
-            TryGetComponent<Rigidbody>(out entityRigidbody);
-            StatReferer = new PlayerStatReferer();
-            ExtrasReferer = new PlayerExtrasReferer();
-
-            Life = new LifeComposite(_basePlayerData.MaxHp, _basePlayerData.Defence);
-            Movement = new MovementComposite(entityRigidbody, _basePlayerData.MoveSpeed);
-            DashSkillAbility = new DashSkill(this.entityRigidbody, Movement.GetMovemenCompositetData, _basePlayerData.DashForce);
-            Power = new Stat(_basePlayerData.Power, E_NUMERIC_STAT_TYPE.Power, E_STAT_USE_TYPE.Natural, OnPowerUpdated );
-            _affectorManager.Init(_basePlayerData.Tenacity);
-        }
-
-        protected override void Start()
-        {
-            base.Start();
-            Life.SetDependUI(InGameScreenUI.Instance._playerHealthBarUI);
-            Life.OnDamaged += InGameScreenUI.Instance._hitCanvasShadeScript.Invoke;
-            
-            DashSkillAbility.SetDependUI(InGameScreenUI.Instance._playerStaminaBarUI);
-            DashSkillAbility.Timer.AddOnUseEvent(() => {
-                this.GetModelManger().EnableTrail();
-                StartCoroutine(actionDelay(this.GetModelManger().DisableTrail));
-            });
-            DashSkillAbility.SetAudioSource(DashSource);
-        }
         IEnumerator actionDelay(UnityAction action) {
             yield return YieldInstructionCache.WaitForSeconds(0.5f);
             action.Invoke(); 
         }
 
 #region Weapon Handler
+
         public ProjectileBucketManager GetProjectileBucketManager() => _projectileBucketManager;
         public void OnPowerUpdated() { Debug.Log("공격력 변경"); }
 

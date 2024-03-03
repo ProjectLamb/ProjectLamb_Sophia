@@ -9,23 +9,44 @@ namespace Sophia.DataSystem.Functional.AtomFunctions
 
     public class ConveyAffectCommand
     {
-        public class FactoryExecuteCommand : IFunctionalCommand<Entity>
+        public class FactoryExecuteCommand : IFunctionalCommand<Entity>, IRandomlyActivatable<Entity>
         {
             private SerialAffectorData serialAffectorDataRef;
+
             public string GetDescription() => "처형";
             public string GetName() => "처형";
             public Sprite GetSprite() => null;
             public FactoryExecuteCommand(in SerialAffectorData serialAffectorData) { serialAffectorDataRef = serialAffectorData; }
-            public void Invoke(ref Entity referer) => referer.Affect(new ExecutionStrike(in serialAffectorDataRef));
+            public void Invoke(ref Entity referer){ 
+                if(IsRandomlyActivate && !GetIsActivated()) return;
+                referer.Affect(new ExecutionStrike(in serialAffectorDataRef));
+            }
+
+
+#region Randomly Activate
+            private System.Random random;
+            private float percentage;
+            private bool IsRandomlyActivate = false;
+            public IFunctionalCommand<Entity> SetRandomPercentage(int activatePercentage)  { 
+                random = new System.Random();
+                percentage = activatePercentage;
+                IsRandomlyActivate = true;
+                return this;
+            }
+            public bool GetIsActivated() => percentage > random.Next(100);
+#endregion
         }
         
-        public class FactoryBurnAffectCommand : IFunctionalCommand<Entity>
+        public class FactoryBurnAffectCommand : IFunctionalCommand<Entity>, IRandomlyActivatable<Entity>
         {
             private SerialAffectorData serialAffectorDataRef;
             public FactoryBurnAffectCommand(in SerialAffectorData serialAffectorData) { serialAffectorDataRef = serialAffectorData; }
-            public void Invoke(ref Entity referer) => referer.Affect(new BurnAffect(in serialAffectorDataRef));
+            public void Invoke(ref Entity referer){ 
+                if(IsRandomlyActivate && !GetIsActivated()) return;
+                referer.Affect(new BurnAffect(in serialAffectorDataRef));
+            }
 
-            #region UI Access
+#region UI Access
             public string GetName() => "화상";
             public Sprite GetSprite()
             {
@@ -38,14 +59,30 @@ namespace Sophia.DataSystem.Functional.AtomFunctions
                 stringBuilder.Append($"화염 영역을 벗어나게 되는 경우, 화염 영역 위 존재한 시간과 비례해 효과가 유지 된 후 사라집니다.");
                 return stringBuilder.ToString();
             }
-            #endregion
+#endregion
+
+#region Randomly Activate
+            private System.Random random;
+            private float percentage;
+            private bool IsRandomlyActivate = false;
+            public IFunctionalCommand<Entity> SetRandomPercentage(int activatePercentage)  { 
+                random = new System.Random();
+                percentage = activatePercentage;
+                IsRandomlyActivate = true;
+                return this;
+            }
+            public bool GetIsActivated() => percentage > random.Next(100);
+#endregion
         }
 
-        public class FactoryPoisionAffectCommand : IFunctionalCommand<Entity>
+        public class FactoryPoisionAffectCommand : IFunctionalCommand<Entity>, IRandomlyActivatable<Entity>
         {
             private SerialAffectorData serialAffectorDataRef;
             public FactoryPoisionAffectCommand(in SerialAffectorData serialAffectorData) { serialAffectorDataRef = serialAffectorData; }
-            public void Invoke(ref Entity referer) => referer.Affect(new PoisonedAffect(in serialAffectorDataRef));
+            public void Invoke(ref Entity referer){ 
+                if(IsRandomlyActivate && !GetIsActivated()) return;
+                referer.Affect(new PoisonedAffect(in serialAffectorDataRef));
+            }
 
             #region UI Access
             public string GetName() => "중독";
@@ -66,13 +103,29 @@ namespace Sophia.DataSystem.Functional.AtomFunctions
 
 
             #endregion
+
+#region Randomly Activate
+            private System.Random random;
+            private float percentage;
+            private bool IsRandomlyActivate = false;
+            public IFunctionalCommand<Entity> SetRandomPercentage(int activatePercentage)  { 
+                random = new System.Random();
+                percentage = activatePercentage;
+                IsRandomlyActivate = true;
+                return this;
+            }
+            public bool GetIsActivated() => percentage > random.Next(100);
+#endregion
         }
         
-        public class FactoryBleedAffectCommand : IFunctionalCommand<Entity>
+        public class FactoryBleedAffectCommand : IFunctionalCommand<Entity>, IRandomlyActivatable<Entity>
         {
             private SerialAffectorData serialAffectorDataRef;
             public FactoryBleedAffectCommand(in SerialAffectorData serialAffectorData) { serialAffectorDataRef = serialAffectorData; }
-            public void Invoke(ref Entity referer) => referer.Affect(new BleedAffect(in serialAffectorDataRef));
+            public void Invoke(ref Entity referer){ 
+                if(IsRandomlyActivate && !GetIsActivated()) return;
+                referer.Affect(new BleedAffect(in serialAffectorDataRef));
+            }
             #region UI Access
             public string GetName() => "출혈";
 
@@ -92,13 +145,28 @@ namespace Sophia.DataSystem.Functional.AtomFunctions
             }
 
             #endregion
+#region Randomly Activate
+            private System.Random random;
+            private float percentage;
+            private bool IsRandomlyActivate = false;
+            public IFunctionalCommand<Entity> SetRandomPercentage(int activatePercentage)  { 
+                random = new System.Random();
+                percentage = activatePercentage;
+                IsRandomlyActivate = true;
+                return this;
+            }
+            public bool GetIsActivated() => percentage > random.Next(100);
+#endregion
         }
 
-        public class FactoryColdAffectCommand : IFunctionalCommand<Entity>
+        public class FactoryColdAffectCommand : IFunctionalCommand<Entity>, IRandomlyActivatable<Entity>
         {
             private SerialAffectorData serialAffectorDataRef;
             public FactoryColdAffectCommand(in SerialAffectorData serialAffectorData) { serialAffectorDataRef = serialAffectorData; }
-            public void Invoke(ref Entity referer) => referer.Affect(new ColdAffect(in serialAffectorDataRef));
+            public void Invoke(ref Entity referer){ 
+                if(IsRandomlyActivate && !GetIsActivated()) return;
+                referer.Affect(new ColdAffect(in serialAffectorDataRef));
+            }
             #region UI Access
             public string GetName() => "냉기";
             public string GetDescription()
@@ -114,15 +182,30 @@ namespace Sophia.DataSystem.Functional.AtomFunctions
                 throw new System.NotImplementedException();
             }
             #endregion
+
+#region Randomly Activate
+            private System.Random random;
+            private float percentage;
+            private bool IsRandomlyActivate = false;
+            public IFunctionalCommand<Entity> SetRandomPercentage(int activatePercentage)  { 
+                random = new System.Random();
+                percentage = activatePercentage;
+                IsRandomlyActivate = true;
+                return this;
+            }
+            public bool GetIsActivated() => percentage > random.Next(100);
+#endregion
         }
         
-        public class FactoryStunAffectCommand : IFunctionalCommand<Entity>
+        public class FactoryStunAffectCommand : IFunctionalCommand<Entity>, IRandomlyActivatable<Entity>
         {
             private SerialAffectorData serialAffectorDataRef;
             public FactoryStunAffectCommand(in SerialAffectorData serialAffectorData) { serialAffectorDataRef = serialAffectorData; }
-            public void Invoke(ref Entity referer) {
-                Debug.Log(referer.name);
+            public void Invoke(ref Entity referer){
+
+                if(IsRandomlyActivate && !GetIsActivated()) return;
                 referer.Affect(new StunAffect(in serialAffectorDataRef));
+                Debug.Log(referer.name);
             }
 
             #region UI Access
@@ -134,13 +217,28 @@ namespace Sophia.DataSystem.Functional.AtomFunctions
             }
 
             #endregion
+#region Randomly Activate
+            private System.Random random;
+            private float percentage;
+            private bool IsRandomlyActivate = false;
+            public IFunctionalCommand<Entity> SetRandomPercentage(int activatePercentage)  { 
+                random = new System.Random();
+                percentage = activatePercentage;
+                IsRandomlyActivate = true;
+                return this;
+            }
+            public bool GetIsActivated() => percentage > random.Next(100);
+#endregion
         }
         
-        public class FactoryBoundedAffectCommand : IFunctionalCommand<Entity>
+        public class FactoryBoundedAffectCommand : IFunctionalCommand<Entity>, IRandomlyActivatable<Entity>
         {
             private SerialAffectorData serialAffectorDataRef;
             public FactoryBoundedAffectCommand(in SerialAffectorData serialAffectorData) { serialAffectorDataRef = serialAffectorData; }
-            public void Invoke(ref Entity referer) => referer.Affect(new BoundedAffect(in serialAffectorDataRef));
+            public void Invoke(ref Entity referer){ 
+                if(IsRandomlyActivate && !GetIsActivated()) return;
+                referer.Affect(new BoundedAffect(in serialAffectorDataRef));
+            }
 
             #region UI Access
             public string GetDescription() => "이동불가 상태가 됩니다(조작 가능)";
@@ -153,9 +251,21 @@ namespace Sophia.DataSystem.Functional.AtomFunctions
             }
 
             #endregion
+#region Randomly Activate
+            private System.Random random;
+            private float percentage;
+            private bool IsRandomlyActivate = false;
+            public IFunctionalCommand<Entity> SetRandomPercentage(int activatePercentage)  { 
+                random = new System.Random();
+                percentage = activatePercentage;
+                IsRandomlyActivate = true;
+                return this;
+            }
+            public bool GetIsActivated() => percentage > random.Next(100);
+#endregion
         }
 
-        public class FactoryKnockbackAffectCommand : IFunctionalCommand<Entity>
+        public class FactoryKnockbackAffectCommand : IFunctionalCommand<Entity>, IRandomlyActivatable<Entity>
         {
             private SerialAffectorData serialAffectorDataRef;
             private Transform OwnerTransformRef;
@@ -163,7 +273,10 @@ namespace Sophia.DataSystem.Functional.AtomFunctions
                 serialAffectorDataRef = serialAffectorData; 
                 OwnerTransformRef = owner;
             }
-            public void Invoke(ref Entity referer) => referer.Affect(new KnockbackAffect(in serialAffectorDataRef, OwnerTransformRef));
+            public void Invoke(ref Entity referer){ 
+                if(IsRandomlyActivate && !GetIsActivated()) return;
+                referer.Affect(new KnockbackAffect(in serialAffectorDataRef, OwnerTransformRef));
+            }
 
             #region UI Access
             public string GetName() => "넉백";
@@ -174,9 +287,21 @@ namespace Sophia.DataSystem.Functional.AtomFunctions
             }
 
             #endregion
+#region Randomly Activate
+            private System.Random random;
+            private float percentage;
+            private bool IsRandomlyActivate = false;
+            public IFunctionalCommand<Entity> SetRandomPercentage(int activatePercentage)  { 
+                random = new System.Random();
+                percentage = activatePercentage;
+                IsRandomlyActivate = true;
+                return this;
+            }
+            public bool GetIsActivated() => percentage > random.Next(100);
+#endregion
         }
         
-        public class FactoryBlackHoleAffectCommand : IFunctionalCommand<Entity>
+        public class FactoryBlackHoleAffectCommand : IFunctionalCommand<Entity>, IRandomlyActivatable<Entity>
         {
             private SerialAffectorData serialAffectorDataRef;
             private Transform OwnerTransformRef;
@@ -184,7 +309,10 @@ namespace Sophia.DataSystem.Functional.AtomFunctions
                 serialAffectorDataRef = serialAffectorData; 
                 OwnerTransformRef = owner;
             }
-            public void Invoke(ref Entity referer) => referer.Affect(new BlackHoleAffect(in serialAffectorDataRef, OwnerTransformRef));
+            public void Invoke(ref Entity referer){ 
+                if(IsRandomlyActivate && !GetIsActivated()) return;
+                referer.Affect(new BlackHoleAffect(in serialAffectorDataRef, OwnerTransformRef));
+            }
 
             #region UI Access
             public string GetName() => "이끌림";
@@ -195,13 +323,28 @@ namespace Sophia.DataSystem.Functional.AtomFunctions
             }
 
             #endregion
+#region Randomly Activate
+            private System.Random random;
+            private float percentage;
+            private bool IsRandomlyActivate = false;
+            public IFunctionalCommand<Entity> SetRandomPercentage(int activatePercentage)  { 
+                random = new System.Random();
+                percentage = activatePercentage;
+                IsRandomlyActivate = true;
+                return this;
+            }
+            public bool GetIsActivated() => percentage > random.Next(100);
+#endregion
         }
         
-        public class FactoryAirborneAffectCommand : IFunctionalCommand<Entity>
+        public class FactoryAirborneAffectCommand : IFunctionalCommand<Entity>, IRandomlyActivatable<Entity>
         {
             private SerialAffectorData serialAffectorDataRef;
             public FactoryAirborneAffectCommand(in SerialAffectorData serialAffectorData) { serialAffectorDataRef = serialAffectorData; }
-            public void Invoke(ref Entity referer) => referer.Affect(new AirborneAffect(in serialAffectorDataRef));
+            public void Invoke(ref Entity referer){ 
+                if(IsRandomlyActivate && !GetIsActivated()) return;
+                referer.Affect(new AirborneAffect(in serialAffectorDataRef));
+            }
 
             #region UI Access
             public string GetName() => "에어본";
@@ -211,6 +354,18 @@ namespace Sophia.DataSystem.Functional.AtomFunctions
                 throw new System.NotImplementedException();
             }
             #endregion
+#region Randomly Activate
+            private System.Random random;
+            private float percentage;
+            private bool IsRandomlyActivate = false;
+            public IFunctionalCommand<Entity> SetRandomPercentage(int activatePercentage)  { 
+                random = new System.Random();
+                percentage = activatePercentage;
+                IsRandomlyActivate = true;
+                return this;
+            }
+            public bool GetIsActivated() => percentage > random.Next(100);
+#endregion
         }
 
         

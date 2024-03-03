@@ -131,10 +131,29 @@ namespace Sophia
         [SerializeField] public SerialTickDamageData          _tickDamageData;
         [SerializeField] public SerialPhysicsData             _physicsData;
         [SerializeField] public SerialStatCalculateDatas      _calculateData;
+        [SerializeField] public SerialProjectileVisualDatas   _projectileVisualData;
+    }
+
+    [System.Serializable]
+    public struct SerialProjectileVisualDatas
+    {
+        [ColorUsage(true, true)]
+        [SerializeField] public Color _shaderUnderbarColor;
+        [SerializeField] public float _shaderUnderbarColorPower;
+        [SerializeField] public VisualFXObject _destroyEffect;
+        [SerializeField] public VisualFXObject _hitEffect;
+    }
+
+    public struct ProjectileVisualData {
+        public Color ShaderUnderbarColor;
+        public float ShaderUnderbarColorPower;
+        public VisualFXObject DestroyEffect;
+        public VisualFXObject HitEffect;
+        
     }
 
 
-#endregion
+    #endregion
     [System.Serializable]
     public struct SerialOnDamageExtrasModifierDatas
     {

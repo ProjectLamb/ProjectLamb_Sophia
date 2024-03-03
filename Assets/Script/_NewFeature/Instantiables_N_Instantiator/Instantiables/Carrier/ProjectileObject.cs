@@ -5,6 +5,7 @@ using DG.Tweening;
 
 namespace Sophia.Instantiates
 {
+    using Cysharp.Threading.Tasks.Triggers;
     using Sophia.DataSystem;
     using Sophia.DataSystem.Modifiers;
     using Sophia.Entitys;
@@ -114,11 +115,19 @@ namespace Sophia.Instantiates
         [SerializeField] private SerialProjectileIntervalData _serialProjectileIntervalData;
         [SerializeField] private Collider           _carrierCollider = null;
         [SerializeField] private Rigidbody          _carrierRigidBody = null;
+
+#region Projectile Visual
+
         [SerializeField] private VisualFXObject     _destroyEffect = null;
         [SerializeField] private VisualFXObject     _hitEffect = null;
         [SerializeField] private ParticleSystem     ProjectileParticle = null;
         [SerializeField] private VisualEffect       ProjectileVFXGraph = null;
+        [SerializeField] private Material           ParticleMaterial = null;
+
+#endregion
+
         [SerializeField] private SerialAffectorData _serialAffectorData;
+
 
 #endregion
 
@@ -193,12 +202,26 @@ namespace Sophia.Instantiates
                 if(value >= 0.01f) {
                     mCurrentSimulateSpeed = value;
                     ProjectileMainModule.simulationSpeed  = mCurrentSimulateSpeed;
+                    if(ProjectileVFXGraph!=null)ProjectileVFXGraph.playRate = mCurrentSimulateSpeed;
                     return;
                 }
                 mCurrentSimulateSpeed = 1f;
                 ProjectileMainModule.simulationSpeed  = 1f;
+                if(ProjectileVFXGraph!=null)ProjectileVFXGraph.playRate = 1f;
             }    
         }
+
+        private ProjectileVisualData mCurrentProjectileVisualData;
+        public ProjectileVisualData CurrnetProjectileVisualData {
+            get {return mCurrentProjectileVisualData;}
+            private set 
+            {
+                mCurrentProjectileVisualData = value;
+                ParticleRendererModule.material.SetColor("_Color", mCurrentProjectileVisualData.ShaderUnderbarColor);
+                ParticleRendererModule.material.SetFloat("_ColorPower", mCurrentProjectileVisualData.ShaderUnderbarColorPower);
+            }
+        }
+
         
         public bool IsInitialized { get; private set; }
         public bool IsActivated { get; private set; }
@@ -209,6 +232,7 @@ namespace Sophia.Instantiates
         public      ParticleSystem.EmissionModule   ParticleEmissionModule;
         public      ParticleSystem.TriggerModule    ParticleTriggerModule;
         public      ParticleSystem.CollisionModule  ParticleColliderModule;
+        public      ParticleSystemRenderer          ParticleRendererModule;
 
 
 #endregion
@@ -271,6 +295,16 @@ namespace Sophia.Instantiates
             CurrentProjectileDamage = _baseProjectileDamage;
             CurrentForwardingSpeed = _baseForwardingSpeed;
             CurrentSimulateSpeed = _baseSimulateSpeed;
+            
+            ProjectileVisualData data = new ProjectileVisualData {
+                ShaderUnderbarColor = ParticleMaterial.GetColor("_Color"),
+                ShaderUnderbarColorPower = ParticleMaterial.GetFloat("_ColorPower"),
+                DestroyEffect = _destroyEffect,
+                HitEffect = _hitEffect
+            };
+
+            CurrnetProjectileVisualData = data;
+
 
             ClearEvents();
             transform.tag = owner.transform.tag + "Projectile";
@@ -352,6 +386,11 @@ namespace Sophia.Instantiates
             return this;
         }
 
+        public ProjectileObject SetProjectileVisual(ProjectileVisualData pvd) {
+            CurrnetProjectileVisualData = pvd;
+            return this;
+        }
+
 
         private void ResetSettings()
         {
@@ -362,6 +401,16 @@ namespace Sophia.Instantiates
             CurrentProjectileDamage = _baseProjectileDamage;
             CurrentForwardingSpeed = _baseForwardingSpeed;
             CurrentSimulateSpeed = _baseSimulateSpeed;
+            
+            ProjectileVisualData data = new ProjectileVisualData {
+                ShaderUnderbarColor = ParticleMaterial.GetColor("_Color"),
+                ShaderUnderbarColorPower = ParticleMaterial.GetFloat("_ColorPower"),
+                DestroyEffect = _destroyEffect,
+                HitEffect = _hitEffect
+            };
+
+            CurrnetProjectileVisualData = data;
+
             
             AffectType = E_AFFECT_TYPE.None;
             instantiateType = E_INSTANTIATE_TYPE.None;
@@ -452,10 +501,14 @@ namespace Sophia.Instantiates
 
         private void Awake()
         {
-            ProjectileMainModule    = ProjectileParticle.main;
-            ParticleEmissionModule  = ProjectileParticle.emission;
-            ParticleTriggerModule   = ProjectileParticle.trigger;
-            ParticleColliderModule  = ProjectileParticle.collision;
+            ProjectileMainModule                = ProjectileParticle.main;
+            ParticleEmissionModule              = ProjectileParticle.emission;
+            ParticleTriggerModule               = ProjectileParticle.trigger;
+            ParticleColliderModule              = ProjectileParticle.collision;
+            
+            if(ParticleRendererModule != null && ParticleMaterial != null) {
+                ParticleRendererModule.material     = ParticleMaterial;
+            }
             
             AffectType = _affectType;
             StackingType = _stackingType;
@@ -478,7 +531,7 @@ namespace Sophia.Instantiates
                 if(targetEntity.GetDamaged(CurrentProjectileDamage)) {
                     OwnerRef.GetExtras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.ConveyAffect)?.PerformStartFunctionals(ref targetEntity);
                     GetExtrasWithProjectileInstantiatedType(ref targetEntity);
-                    VisualFXObject visualFX = VisualFXObjectPool.GetObject(_hitEffect).Init();
+                    VisualFXObject visualFX = VisualFXObjectPool.GetObject(CurrnetProjectileVisualData.HitEffect).Init();
                     targetEntity.GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
                     
                     OnProjectileTriggerd.Invoke();
@@ -493,7 +546,7 @@ namespace Sophia.Instantiates
             {
                 if(_serialProjectileIntervalData._isIntervalDamage && targetEntity.GetDamaged(CurrentProjectileDamage)) {
                     if(_serialProjectileIntervalData._isIntervalExtrasConvey) OwnerRef.GetExtras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.ConveyAffect)?.PerformStartFunctionals(ref targetEntity);
-                    VisualFXObject visualFX = VisualFXObjectPool.GetObject(_hitEffect).Init();
+                    VisualFXObject visualFX = VisualFXObjectPool.GetObject(CurrnetProjectileVisualData.HitEffect).Init();
                     targetEntity.GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
                     OnProjectileTriggerd.Invoke();
                 }
