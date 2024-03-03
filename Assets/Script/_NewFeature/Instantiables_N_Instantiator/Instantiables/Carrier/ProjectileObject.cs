@@ -3,7 +3,6 @@ using UnityEngine.Events;
 using Cysharp.Threading.Tasks;
 using UnityEngine.Pool;
 using Sophia_Carriers;
-using Microsoft.SqlServer.Server;
 
 namespace Sophia.Instantiates
 {

@@ -17,7 +17,7 @@ namespace Sophia.Entitys
     public abstract class Enemy : Entity, IRecogStateAccessible {
 
 #region SerializeMember
-        
+        [Header("Mob Settings")]
         [SerializeField] protected SerialBaseEntityData       _baseEntityData;
         [SerializeField] protected SerialFieldOfViewData      _fOVData;
         [SerializeField] protected AffectorManager            _affectorManager;
@@ -30,10 +30,12 @@ namespace Sophia.Entitys
 
 #endregion
 
+#region Stage
+        public Stage CurrentInstantiatedStage;
+
+#endregion
+        protected Transform objectiveTarget;
         public abstract RecognizeEntityComposite GetRecognizeComposite();
 
-        #region Override Function
-
-        #endregion
     }
 }
