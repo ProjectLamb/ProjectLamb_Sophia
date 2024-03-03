@@ -35,9 +35,9 @@ namespace Sophia.UserInterface
 
         private void OnEnable() {
             StartCoroutine(AsyncRender.Instance.PerformAndRenderUIUnScaled(() => {
-                collectedSkillButton[0].SetUserInterfaceData(skillManager.SkillGetSkillInfoByKey(KeyCode.Q), KeyCode.Q);
-                collectedSkillButton[1].SetUserInterfaceData(skillManager.SkillGetSkillInfoByKey(KeyCode.E), KeyCode.E);
-                collectedSkillButton[2].SetUserInterfaceData(skillManager.SkillGetSkillInfoByKey(KeyCode.R), KeyCode.R);
+                collectedSkillButton[0].SetUserInterfaceData(skillManager.GetSkillInfoByKey(KeyCode.Q), KeyCode.Q);
+                collectedSkillButton[1].SetUserInterfaceData(skillManager.GetSkillInfoByKey(KeyCode.E), KeyCode.E);
+                collectedSkillButton[2].SetUserInterfaceData(skillManager.GetSkillInfoByKey(KeyCode.R), KeyCode.R);
                 collectedSkillButton[0].func        = SendSelectData;
                 collectedSkillButton[1].func        = SendSelectData;
                 collectedSkillButton[2].func        = SendSelectData;

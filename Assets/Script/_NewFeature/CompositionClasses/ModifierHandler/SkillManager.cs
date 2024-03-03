@@ -39,7 +39,7 @@ namespace Sophia.Composite
             return null;
         }
 
-        public IUserInterfaceAccessible SkillGetSkillInfoByKey(KeyCode key) {
+        public IUserInterfaceAccessible GetSkillInfoByKey(KeyCode key) {
             IUserInterfaceAccessible res;
             if(!collectedSkillInfo.ContainsKey(key)) 
                 throw new System.Exception("올바른 스킬 키보드 접근이 아님 QER 중 하나로..");
