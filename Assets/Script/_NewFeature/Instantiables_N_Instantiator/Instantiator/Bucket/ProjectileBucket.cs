@@ -32,13 +32,15 @@ namespace Sophia.Instantiates
         public void SetProjectileBucketManamger(ProjectileBucketManager projectileBucketManager) => projectileBucketManagerRef = projectileBucketManager;
 #endregion
 
-        public ProjectileObject InstantablePositioning(ProjectileObject instantiatedProjectile, Vector3 _offset)
+        public ProjectileObject InstantablePositioning(ProjectileObject instantiatedProjectile, Vector3 _positionOffset, Vector3 _rotateOffset)
         {
-            Vector3     offset       = _offset;
+            Vector3     offset       = _positionOffset;
             Vector3     position     = transform.position;
             Quaternion  forwardAngle = GetForwardingAngle(instantiatedProjectile.transform.rotation);
+            Quaternion  rotateAngle  = Quaternion.Euler(_rotateOffset);
+
             instantiatedProjectile.transform.position = position;
-            instantiatedProjectile.transform.rotation = forwardAngle;
+            instantiatedProjectile.transform.rotation = forwardAngle ;
 
             
             switch (instantiatedProjectile.PositioningType)
@@ -80,7 +82,7 @@ namespace Sophia.Instantiates
             return instantiatedProjectile;
         }
 
-        public ProjectileObject InstantablePositioning(ProjectileObject instantiatable) => InstantablePositioning(instantiatable, instantiatable.transform.position);
+        public ProjectileObject InstantablePositioning(ProjectileObject instantiatable) => InstantablePositioning(instantiatable, Vector3.zero, Vector3.zero);
 
         private Quaternion GetForwardingAngle(Quaternion instantiatorQuaternion)
         {

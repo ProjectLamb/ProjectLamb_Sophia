@@ -117,7 +117,7 @@ namespace Sophia.Instantiates
 
 #region Instantiate
 
-        public ProjectileObject InstantablePositioning(int index, ProjectileObject instantiatedProjectile, Vector3 _offset) => _projectileBuckets[index].InstantablePositioning(instantiatedProjectile, _offset);
+        public ProjectileObject InstantablePositioning(int index, ProjectileObject instantiatedProjectile, Vector3 _positionOffset, Vector3 _rotateOffset) => _projectileBuckets[index].InstantablePositioning(instantiatedProjectile, _positionOffset, _rotateOffset);
         public ProjectileObject InstantablePositioning(int index, ProjectileObject instantiatedProjectile) => _projectileBuckets[index].InstantablePositioning(instantiatedProjectile);
 
 #endregion

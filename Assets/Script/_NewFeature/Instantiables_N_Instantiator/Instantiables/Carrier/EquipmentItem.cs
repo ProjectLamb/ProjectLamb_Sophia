@@ -1,6 +1,4 @@
-using System.IO;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Utilities;
+using UnityEngine.VFX;
 using UnityEngine;
 
 namespace Sophia.Instantiates
@@ -9,10 +7,15 @@ namespace Sophia.Instantiates
     using Sophia.DataSystem.Modifiers;
     using Sophia.DataSystem.Modifiers.ConcreteEquipment;
     using Sophia.Entitys;
+
     public class EquipmentItem : Carrier
     {
+        [SerializeField] public GameObject lootObject;
+        [SerializeField] public VisualEffect lootVFX;
         [SerializeField] SerialEquipmentData _equipmentData;
         public Equipment equipment { get; private set; }
+        
+        public bool triggeredOnce = false;
 
         protected override void Awake()
         {
@@ -22,12 +25,17 @@ namespace Sophia.Instantiates
 
         protected override void OnTriggerLogic(Collider entity)
         {
+            if(triggeredOnce) return;
             if (entity.TryGetComponent(out Player player))
             {
                 if (EquipUserInterface())
                 {
                     player.EquipEquipment(equipment);
-                    Destroy(this.gameObject);
+
+                    lootVFX.Stop();
+                    lootObject.SetActive(false);
+                    triggeredOnce = true;
+                    if(this._isDestroyable) Destroy(this.gameObject, 3);
                 }
             }
         }

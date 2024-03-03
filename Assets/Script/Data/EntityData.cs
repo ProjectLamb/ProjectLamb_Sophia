@@ -28,7 +28,7 @@ public struct EntityData
     public UnityAction  HitState;
     public UnityActionRef<float> HitStateRef;
     public UnityAction<Entity, Entity> ProjectileShootState;
-    public UnityAction PhyiscTriggerState;
+    public UnityAction PhysicTriggerState;
     public UnityAction DieState;
     public UnityAction UIAffectState;
     public EntityData(ScriptableObjEntityData _scriptable)
@@ -47,7 +47,7 @@ public struct EntityData
         HitState = _scriptable.HitState;
         HitStateRef = _scriptable.HitStateRef;
         ProjectileShootState = _scriptable.ProjectileShootState;
-        PhyiscTriggerState = _scriptable.PhyiscTriggerState;
+        PhysicTriggerState = _scriptable.PhysicTriggerState;
         DieState = _scriptable.DieState;
         UIAffectState = _scriptable.UIAffectState;
     }
@@ -69,7 +69,7 @@ public struct EntityData
         res.HitState = x.HitState + y.HitState;
         res.HitStateRef = x.HitStateRef + y.HitStateRef;
         res.ProjectileShootState = x.ProjectileShootState + y.ProjectileShootState;
-        res.PhyiscTriggerState = x.PhyiscTriggerState + y.PhyiscTriggerState;
+        res.PhysicTriggerState = x.PhysicTriggerState + y.PhysicTriggerState;
         res.DieState = x.DieState + y.DieState;
         res.UIAffectState = x.UIAffectState + y.UIAffectState;
         return res;
@@ -92,7 +92,7 @@ public struct EntityData
         res.HitState = x.HitState - y.HitState;
         res.HitStateRef = x.HitStateRef - y.HitStateRef;
         res.ProjectileShootState = x.ProjectileShootState - y.ProjectileShootState;
-        res.PhyiscTriggerState = x.PhyiscTriggerState - y.PhyiscTriggerState;
+        res.PhysicTriggerState = x.PhysicTriggerState - y.PhysicTriggerState;
         res.DieState = x.DieState - y.DieState;
         res.UIAffectState = x.UIAffectState - y.UIAffectState;
         return res;

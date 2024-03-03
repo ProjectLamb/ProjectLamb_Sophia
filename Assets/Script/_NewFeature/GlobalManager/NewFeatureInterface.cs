@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Sophia
 {
     using Instantiates;
-    using Composite.RenderModels;
+    using Composite;
     using Sophia.DataSystem.Modifiers;
 
     /*********************************************************************************
@@ -52,7 +52,7 @@ namespace Sophia
 //    }
 
     public interface IVisualAccessible {
-        public ModelManger GetModelManger();
+        public Composite.RenderModels.ModelManger GetModelManger();
         public VisualFXBucket GetVisualFXBucket();
     }
 
@@ -68,5 +68,10 @@ namespace Sophia
 
     public interface IWeaponManagerAccessible : IAffectable {
         public WeaponManager GetWeaponManager();
+    }
+
+    public interface IAudioAccessible
+    {
+        public EntityAudioManager GetAudioManager();
     }
 }

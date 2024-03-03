@@ -23,6 +23,7 @@ namespace Sophia.Instantiates {
         public abstract void    RemoveFromUpdator();
         public abstract void    Use();
     }
+    
     public class EmptySkill : IUserInterfaceAccessible
     {
         private static EmptySkill _instance = new EmptySkill();

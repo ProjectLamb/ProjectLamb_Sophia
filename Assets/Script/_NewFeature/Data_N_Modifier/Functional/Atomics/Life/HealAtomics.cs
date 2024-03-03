@@ -4,8 +4,8 @@ namespace Sophia.DataSystem.Atomics
 
     public class HealAtomics {
         public readonly LifeComposite lifeRef; 
-        float healAmount;
-        public HealAtomics(LifeComposite life, float amount) {
+        int healAmount;
+        public HealAtomics(LifeComposite life, int amount) {
             lifeRef = life;
             healAmount = amount;
         }

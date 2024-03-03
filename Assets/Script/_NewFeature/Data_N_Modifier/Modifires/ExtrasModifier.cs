@@ -35,6 +35,10 @@ namespace Sophia.DataSystem.Modifiers
             this.value = value;
         }
 
+        public ExtrasModifier()
+        {
+        }
+
         public string GetName() => Value.GetName();
         public string GetDescription() => Value.GetDescription();
         public Sprite GetSprite() => Value.GetSprite();

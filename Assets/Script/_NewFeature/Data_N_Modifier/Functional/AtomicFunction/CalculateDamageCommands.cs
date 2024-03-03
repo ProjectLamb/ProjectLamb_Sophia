@@ -7,20 +7,17 @@ namespace Sophia.DataSystem.Functional.AtomFunctions
     
     public static class CalculateDamageCommand
     {
-        public class DodgeHit : IFunctionalCommand<DamageInfo>, IRandomlyActivatable
+        public class DodgeHit : IFunctionalCommand<DamageInfo>, IRandomlyActivatable<DamageInfo>
         {
             private Atomics.DamageConverterAtomics damageConverter;
-            private System.Random random;
-            private float percentage;
 
-            public DodgeHit(in SerialDamageConverterData serialDamageConverterData, float activatePercentage) {
+            public DodgeHit(in SerialDamageConverterData serialDamageConverterData) {
                 damageConverter = new Atomics.DamageConverterAtomics(serialDamageConverterData);
-                random = new System.Random();
-                percentage = activatePercentage;
             }
+
             public void Invoke(ref DamageInfo referer)
             {
-                if(GetIsActivated()) return;
+                if(IsRandomlyActivate && !GetIsActivated()) return;
                 referer.damageHandleType = DamageHandleType.Dodge;
                 referer.damageAmount = 0;
                 referer.damageRatio = 0;
@@ -34,21 +31,31 @@ namespace Sophia.DataSystem.Functional.AtomFunctions
 
 #endregion
 
-            public bool GetIsActivated() => percentage <= random.Next(100);
-        }
-
-        public class HardHit : IFunctionalCommand<DamageInfo>, IRandomlyActivatable
-        {
-            private SerialDamageConverterData converterData;
+#region Randomly Activate
             private System.Random random;
-            private float percentage;
-            public HardHit(in SerialDamageConverterData serialDamageConverterData, float activatePercentage) {
+            private int percentage;
+            private bool IsRandomlyActivate = false;
+
+            public IFunctionalCommand<DamageInfo> SetRandomPercentage(int activatePercentage)  { 
                 random = new System.Random();
                 percentage = activatePercentage;
+                IsRandomlyActivate = true;
+                return this;
             }
+            public bool GetIsActivated() => percentage > random.Next(100);
+#endregion
+        }
+
+        public class HardHit : IFunctionalCommand<DamageInfo>, IRandomlyActivatable<DamageInfo>
+        {
+            private SerialDamageConverterData converterData;
+
+            public HardHit(in SerialDamageConverterData serialDamageConverterData) {
+            }
+
             public void Invoke(ref DamageInfo referer)
             {
-                if(GetIsActivated()) return;
+                if(IsRandomlyActivate && !GetIsActivated()) return;
                 referer.damageRatio *= 5;
             }
 
@@ -59,18 +66,31 @@ namespace Sophia.DataSystem.Functional.AtomFunctions
             public Sprite GetSprite() => null;
 
 #endregion
-            public bool GetIsActivated() => percentage <= random.Next(100);
+
+#region Randomly Activate
+            private System.Random random;
+            private float percentage;
+            private bool IsRandomlyActivate = false;
+            public IFunctionalCommand<DamageInfo> SetRandomPercentage(int activatePercentage)  { 
+                random = new System.Random();
+                percentage = activatePercentage;
+                IsRandomlyActivate = true;
+                return this;
+            }
+            public bool GetIsActivated() => percentage > random.Next(100);
+#endregion
         }
 
-        public class MulHit : IFunctionalCommand<DamageInfo>
+        public class MulHit : IFunctionalCommand<DamageInfo>, IRandomlyActivatable<DamageInfo>
         {
             private SerialDamageConverterData converterData;
-            private System.Random random;
+
             public MulHit(in SerialDamageConverterData serialDamageConverterData) {
                 converterData = serialDamageConverterData;
             }
             public void Invoke(ref DamageInfo referer)
             {
+                if(IsRandomlyActivate && !GetIsActivated()) return;
                 referer.damageRatio *= converterData._damageRatio;
             }
 
@@ -80,6 +100,20 @@ namespace Sophia.DataSystem.Functional.AtomFunctions
             public string GetDescription() => "럭키 치명타";
             public Sprite GetSprite() => null;
 
+#endregion
+
+
+#region Randomly Activate
+            private System.Random random;
+            private float percentage;
+            private bool IsRandomlyActivate = false;
+            public IFunctionalCommand<DamageInfo> SetRandomPercentage(int activatePercentage)  { 
+                random = new System.Random();
+                percentage = activatePercentage;
+                IsRandomlyActivate = true;
+                return this;
+            }
+            public bool GetIsActivated() => percentage > random.Next(100);
 #endregion
         }
     }

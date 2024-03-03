@@ -114,10 +114,10 @@ namespace Sophia.UserInterface
 
             }));
         }
-        private void HealHandler(float input) {
+        private void HealHandler(int input) {
             StartCoroutine(AsyncRender.PerformAndRenderUI(() => {
                 stringBuilder.Clear();
-                healthSlider.value                    = (int)lifeCompositeRef.CurrentHealth;
+                healthSlider.value                    = lifeCompositeRef.CurrentHealth;
                 stringBuilder.Append(healthSlider.value + " / " + healthSlider.maxValue);
                 valueText.text = stringBuilder.ToString();
             }));
