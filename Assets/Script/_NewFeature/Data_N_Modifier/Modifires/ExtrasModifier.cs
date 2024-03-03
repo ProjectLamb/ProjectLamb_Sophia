@@ -17,6 +17,8 @@ namespace Sophia.DataSystem.Modifiers
 
         public readonly IFunctionalCommand<T> Value;
         public readonly int Order;
+        private IFunctionalCommand<DamageInfo> damageInfoCommand;
+        private object value;
 
         public ExtrasModifier(IFunctionalCommand<T> value, E_EXTRAS_PERFORM_TYPE perfType, E_FUNCTIONAL_EXTRAS_TYPE functionalType, int order) {
             this.Value = value;
@@ -26,6 +28,16 @@ namespace Sophia.DataSystem.Modifiers
         }
 
         public ExtrasModifier(IFunctionalCommand<T> value, E_EXTRAS_PERFORM_TYPE perfType, E_FUNCTIONAL_EXTRAS_TYPE functionalType) : this(value, perfType, functionalType, 999){}
+
+        public ExtrasModifier(IFunctionalCommand<DamageInfo> damageInfoCommand, object value)
+        {
+            this.damageInfoCommand = damageInfoCommand;
+            this.value = value;
+        }
+
+        public ExtrasModifier()
+        {
+        }
 
         public string GetName() => Value.GetName();
         public string GetDescription() => Value.GetDescription();

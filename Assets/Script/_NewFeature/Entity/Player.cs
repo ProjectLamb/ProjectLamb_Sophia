@@ -1,7 +1,9 @@
 using System;
+using System.Collections;
 using UnityEngine;
-using FMODPlus;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using FMODPlus;
 using Cysharp.Threading.Tasks;
 
 namespace Sophia.Entitys
@@ -11,9 +13,9 @@ namespace Sophia.Entitys
     using Sophia.Instantiates;
     using Sophia.DataSystem.Referer;
     using Sophia.DataSystem.Modifiers;
-    using System.Collections.Generic;
+    using Sophia.UserInterface;
 
-    public class Player : Entity, IMovementAccessible, IAffectManagerAccessible
+    public class Player : Entity, IMovementAccessible, IAffectManagerAccessible, IInstantiatorAccessible
     {
 
 #region SerializeMember 
@@ -24,7 +26,7 @@ namespace Sophia.Entitys
         [SerializeField] private WeaponManager              _weaponManager;
         [SerializeField] private EquipmentManager           _equipmentManager;
         [SerializeField] private AffectorManager            _affectorManager;
-        [SerializeField] public  Wealths                    _PlayerWealth;
+        [SerializeField] private SkillManager               _skillManager;
 
 #endregion
 
@@ -37,7 +39,76 @@ namespace Sophia.Entitys
         private MovementComposite Movement;
         private DashSkill DashSkillAbility;
         private Stat Power;
+        private Extras<int> GearcoinExtras;
+        private int mPlayerWealth;
+        public event UnityAction<int> OnWealthChangeEvent;
+        public int PlayerWealth {
+            get { return mPlayerWealth; }
+            set {
+                mPlayerWealth = value;
+                OnWealthChangeEvent.Invoke(mPlayerWealth);
+            }
+        }
 
+        protected override void SetDataToReferer()
+        {
+            StatReferer.SetRefStat(Power);
+            ExtrasReferer.SetRefExtras<int>(GearcoinExtras);
+            this.Settables.ForEach(E => {
+                E.SetStatDataToReferer(StatReferer);
+                E.SetExtrasDataToReferer(ExtrasReferer);
+            });
+        }
+
+        protected override void CollectSettable()
+        {
+            this.Settables.Add(Life);
+            this.Settables.Add(Movement);
+            this.Settables.Add(DashSkillAbility);
+            this.Settables.Add(_projectileBucketManager);
+            this.Settables.Add(_weaponManager);
+            this.Settables.Add(_affectorManager);
+            this.Settables.Add(GameManager.Instance.NewFeatureGlobalEvent);
+        }
+        
+        protected override void Awake()
+        {
+            /**/
+            TryGetComponent<Collider>(out entityCollider);
+            TryGetComponent<Rigidbody>(out entityRigidbody);
+            StatReferer     = new PlayerStatReferer();
+            ExtrasReferer   = new PlayerExtrasReferer();
+
+            Life = new LifeComposite(_basePlayerData.MaxHp, _basePlayerData.Defence);
+            Movement = new MovementComposite(entityRigidbody, _basePlayerData.MoveSpeed);
+            DashSkillAbility = new DashSkill(this.entityRigidbody, Movement.GetMovemenCompositetData, _basePlayerData.DashForce);
+            Power = new Stat(_basePlayerData.Power, 
+                E_NUMERIC_STAT_TYPE.Power, 
+                E_STAT_USE_TYPE.Natural, 
+                OnPowerUpdated 
+            );
+            GearcoinExtras = new Extras<int>(
+                E_FUNCTIONAL_EXTRAS_TYPE.GearcoinTriggered,
+                () => {Debug.Log("기어 획득");}
+            );
+            _affectorManager.Init(_basePlayerData.Tenacity);
+        }
+
+        protected override void Start()
+        {
+            base.Start();
+            Life.SetDependUI(InGameScreenUI.Instance._playerHealthBarUI);
+            Life.OnDamaged += InGameScreenUI.Instance._hitCanvasShadeScript.Invoke;
+
+            InGameScreenUI.Instance._playerWealthBarUI.SetPlayer(this);
+            
+            DashSkillAbility.SetDependUI(InGameScreenUI.Instance._playerStaminaBarUI);
+            DashSkillAbility.Timer.AddOnUseEvent(() => {
+                this.GetModelManger().EnableTrail();
+                StartCoroutine(actionDelay(this.GetModelManger().DisableTrail));
+            });
+            DashSkillAbility.SetAudioSource(DashSource);
+        }
 #endregion
 
 #region Life Accessible
@@ -98,10 +169,11 @@ namespace Sophia.Entitys
 
         public void MoveTick()
         {
-            if (DashSkillAbility.GetIsDashState(GetStat(E_NUMERIC_STAT_TYPE.MoveSpeed))) return;
+            if(DashSkillAbility.GetIsDashState()) return;
             // GetAnimator().SetFloat("Move", this.entityRigidbody.velocity.magnitude);
-            if (!Movement.IsBorder(this.transform)) 
+            if (!Movement.IsBorder(this.transform)) {
                 Movement.MoveTick(this.transform);
+            }
         }
 
         public async UniTask Turning() { await Movement.Turning(transform, Input.mousePosition); }
@@ -110,56 +182,21 @@ namespace Sophia.Entitys
 #endregion
 
 #region Dash
-        
+        public DashSkill GetDashAbility() => DashSkillAbility;
         public FMODAudioSource DashSource;
         
         public void Dash() => DashSkillAbility.Use();/*m*/
 
 #endregion
 
-        protected override void SetDataToReferer()
-        {
-            StatReferer.SetRefStat(Power);
-            this.Settables.ForEach(E => {
-                E.SetStatDataToReferer(StatReferer);
-                E.SetExtrasDataToReferer(ExtrasReferer);
-            });
+        IEnumerator actionDelay(UnityAction action) {
+            yield return YieldInstructionCache.WaitForSeconds(0.5f);
+            action.Invoke(); 
         }
 
-        protected override void CollectSettable()
-        {
-            this.Settables.Add(Life);
-            this.Settables.Add(Movement);
-            this.Settables.Add(DashSkillAbility);
-            this.Settables.Add(_projectileBucketManager);
-            this.Settables.Add(_weaponManager);
-            this.Settables.Add(_affectorManager);
-        }
+#region Weapon Handler
 
-        protected override void Awake()
-        {
-            /**/
-            TryGetComponent<Collider>(out entityCollider);
-            TryGetComponent<Rigidbody>(out entityRigidbody);
-            StatReferer = new PlayerStatReferer();
-            ExtrasReferer = new PlayerExtrasReferer();
-
-            Life = new LifeComposite(_basePlayerData.MaxHp, _basePlayerData.Defence);
-            Movement = new MovementComposite(entityRigidbody, _basePlayerData.MoveSpeed);
-            DashSkillAbility = new DashSkill(this.entityRigidbody, Movement.GetMovemenCompositetData);
-            Power = new Stat(_basePlayerData.Power, E_NUMERIC_STAT_TYPE.Power, E_STAT_USE_TYPE.Natural, OnPowerUpdated );
-            _affectorManager.Init(_basePlayerData.Tenacity);
-        
-        }
-        
-        protected override void Start()
-        {
-            base.Start();
-            DashSkillAbility.SetAudioSource(DashSource);
-        }
-
-#region Weapon Hanlder
-
+        public ProjectileBucketManager GetProjectileBucketManager() => _projectileBucketManager;
         public void OnPowerUpdated() { Debug.Log("공격력 변경"); }
 
         public async void Attack()
@@ -167,7 +204,7 @@ namespace Sophia.Entitys
             try
             {
                 await Turning();
-                _weaponManager.GetCurrentWeapon().Use(this);
+                _weaponManager.Use();
             }
             catch (OperationCanceledException)
             {
@@ -177,17 +214,20 @@ namespace Sophia.Entitys
 
 #endregion
 
-#region Skill Handler
+#region Skill Handler 
 
-        public void Skill() { throw new System.NotImplementedException(); }
+        public SkillManager GetSkillManager() => this._skillManager;
+        public void CollectSkill(Skill skill, KeyCode key) => this._skillManager.Collect(skill, key);
+        public void DropSkill(KeyCode key) => this._skillManager.Drop(key);
+        public void Use(KeyCode key) => this._skillManager.GetSkillByKey(key)?.Use();
 
 #endregion
 
 #region Equip Handler
 
         public EquipmentManager GetEquipmentManager() => this._equipmentManager;
-        public void Equip(Equipment equipment) => this._equipmentManager.Equip(equipment);
-        public void Drop(Equipment equipment) => this._equipmentManager.Drop(equipment);
+        public void EquipEquipment(Equipment equipment) => this._equipmentManager.Equip(equipment);
+        public void DropEquipment(Equipment equipment) => this._equipmentManager.Drop(equipment);
 
 #endregion
 
@@ -201,4 +241,3 @@ namespace Sophia.Entitys
 
     }
 }
-

@@ -34,6 +34,7 @@ namespace Sophia
         [Header("Move")]
         public float MoveSpeed;
         public float Accecerate;
+        public float DashForce;
         [Header("Affect")]
         public float Tenacity;
 
@@ -80,6 +81,5 @@ namespace Sophia
     public struct Wealths
     {
         public int Gear;
-        public int Frag;
     }
 }

@@ -1,4 +1,5 @@
 using System.Collections;
+using Sophia.UserInterface;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -18,7 +19,7 @@ public class HealthBar : MonoBehaviour
         LifeCompositeRef.OnHpUpdated += UpdateFillAmount;
         LifeCompositeRef.OnEnterDie += TurnOffUI;
 
-        StartCoroutine(DoAndRenderUI(() => { fill.color = gradient.Evaluate(1f); }));
+        StartCoroutine(AsyncRender.PerformAndRenderUI(() => { fill.color = gradient.Evaluate(1f); }));
     }
 
     private void OnDestroy() {
@@ -28,16 +29,11 @@ public class HealthBar : MonoBehaviour
     private void UpdateFillAmount(float currentHp)
     {
         // Debug.Log(currentHp);
-        StartCoroutine(DoAndRenderUI(() =>
+        StartCoroutine(AsyncRender.PerformAndRenderUI(() =>
         {
             slider.value = currentHp;
             fill.color = gradient.Evaluate(slider.normalizedValue);
         }));
-    }
-
-    IEnumerator DoAndRenderUI(UnityAction action)
-    {
-        action.Invoke(); yield return new WaitForEndOfFrame();
     }
 
     public void TurnOffUI()

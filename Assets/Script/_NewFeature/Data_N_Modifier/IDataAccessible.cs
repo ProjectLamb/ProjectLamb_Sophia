@@ -22,7 +22,7 @@ namespace Sophia
         
         MaxHp = 1, Defence, Power, MoveSpeed, Accecerate, Tenacity, 
 
-        MaxStamina = 11, StaminaRestoreSpeed,
+        MaxStamina = 11, StaminaRestoreSpeed, DashForce,
 
         InstantiableDurateLifeTimeMultiplyRatio = 21, InstantiableSizeMultiplyRatio, InstantiableForwardingSpeedMultiplyRatio,
 
@@ -40,18 +40,17 @@ namespace Sophia
     {
         None = 0,
         ENTITY_TYPE = 10,
-            Move, Damaged, Attack, ConveyAffect, Dead, Idle, PhyiscTriggered,
-        
+            Move, Damaged, Attack, ConveyAffect, Dead, Idle, PhysicTriggered,
         PLAYER_TYPE = 20,
-            Dash, Skill,
+            Dash, Skill, GearcoinTriggered, HealthTriggered,
         WEAPON_TYPE = 30, 
-            WeaponUse, ProjectileRestore,
-        
+            WeaponUse, ProjectileRestore, WeaponConveyAffect, 
         SKILL_TYPE = 40,
-            SkillUse, SkillRefilled,
-
+            SkillUse, SkillRefilled, SkillConveyAffect,
         PROJECTILE_TYPE = 50,
             Created, Triggerd, Released, Forwarding,
+        GLOBAL_TYPE = 60,
+            EnemyHit, EnemyDie, StageClear, StageEnter
     }
 
     public enum E_AFFECT_TYPE {
@@ -60,8 +59,8 @@ namespace Sophia
         // 화상, 독, 출혈, 수축, 냉기, 혼란, 공포, 스턴, 속박, 처형
         // 블랙홀
         Debuff = 100,
-        Burn, Poisoned, Bleed, Contracted, Cold, Confused, Fear, Stern, Bounded, 
-        Knockback, BlackHole, Airborne, 
+        Burn, Poisoned, Bleed, Contracted, Cold, Confused, Fear, Stun, Bounded, 
+        Knockback, BlackHole, Airborne, Execution,
 
         // 이동속도증가, 고유시간가속, 공격력증가, 보호막상태, CC저항, 은신, 무적, 방어/페링, 투사체생성, 회피,
         Buff = 200,
