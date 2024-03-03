@@ -20,7 +20,6 @@ namespace Sophia.Instantiates
     }
 
     public interface IPoolAccesable {
-        public void SetByPool<T>(IObjectPool<T> pool) where T : MonoBehaviour;
         public void GetByPool();
         public void ReleaseByPool();
         public void SetPoolEvents(UnityAction activated, UnityAction release);

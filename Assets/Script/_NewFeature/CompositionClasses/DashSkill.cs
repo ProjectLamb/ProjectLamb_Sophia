@@ -16,18 +16,18 @@ namespace Sophia.Composite
 
         public Stat MaxStamina {get; private set;}
         public Stat StaminaRestoreSpeed {get; private set;}
+        public Stat DashForce   {get; private set;}
         public Extras<object> DashExtras {get; private set;}
 
         private Rigidbody rigidbodyRef;
         private FMODAudioSource DashSource;
 
         public CoolTimeComposite Timer {get; private set;}
-        public DashCoolUI DashUI {get; private set;}
-        public Func<(Vector3, int)> BindMovementData;
+        public DataSystem.Atomics.DashAtomics DashAtomics {get; private set;}
 
-        public DashSkill(Rigidbody rb, Func<(Vector3, int)> movementDataSender){
+        public DashSkill(Rigidbody rb, Func<(Vector3, int)> movementDataSender, float forceAmount){
             rigidbodyRef = rb;
-            MaxStamina = new Stat(3,
+            MaxStamina = new Stat(10,
                 E_NUMERIC_STAT_TYPE.MaxStamina, 
                 E_STAT_USE_TYPE.Natural, 
                 OnMaxStaminaUpdated
@@ -38,21 +38,24 @@ namespace Sophia.Composite
                 OnStaminaRestoreSpeedUpdated
             );
 
+            DashForce = new Stat(forceAmount, 
+                E_NUMERIC_STAT_TYPE.DashForce,
+                E_STAT_USE_TYPE.Natural,
+                OnDashForceUpdate
+            );
+
             DashExtras = new Extras<object>(
                 E_FUNCTIONAL_EXTRAS_TYPE.Dash,
                 OnDashExtrasUpdated
             );
 
-            BindMovementData = movementDataSender;
+            DashAtomics = new DataSystem.Atomics.DashAtomics(rigidbodyRef, movementDataSender, DashForce.GetValueForce);
             
             Timer = new Sophia.Composite.CoolTimeComposite(3f, MaxStamina.GetValueByNature())
                 .SetAcceleratrion(StaminaRestoreSpeed)
                 .AddBindingAction(Dash);
-            
-            DashUI = GameObject.FindObjectOfType<DashCoolUI>();
-            DashUI.SetTimer(Timer);
-            
-            AddToUpator();
+                        
+            AddToUpdator();
         }
         
 
@@ -60,31 +63,31 @@ namespace Sophia.Composite
 
 #region Getter
         
-        public bool GetIsDashState(int moveSpeed) {
-            return (rigidbodyRef.velocity.magnitude - 0.05f * moveSpeed) > moveSpeed;
-        }
+        public bool GetIsDashState() => DashAtomics.CheckIsDashState();
 
 #endregion
 
 #region Setter
 
         public void SetAudioSource(FMODAudioSource source) { DashSource = source; }
-        public void SetDashCoolUIRefer(DashCoolUI UIRef) {
-            DashUI = UIRef;
-            DashUI.SetTimer(Timer);
+        public void SetDependUI(PlayerStaminaBarUI playerStaminaBarUI) {
+            playerStaminaBarUI.SetReferenceComposite(this);
         }
 
 #endregion
 
 #region Event
+
         private void OnMaxStaminaUpdated() {
             Timer.SetMaxStackCounts(this.MaxStamina.GetValueByNature());
-            DashUI.ResetUI();
         }
 
         private void OnStaminaRestoreSpeedUpdated() {
             Timer.SetAcceleratrion(this.StaminaRestoreSpeed.GetValueByNature());
-            DashUI.ResetUI();
+        }
+        
+        private void OnDashForceUpdate() {
+            Debug.Log("대쉬 속도 갱신됨");
         }
 
         private void OnDashExtrasUpdated() {
@@ -94,12 +97,13 @@ namespace Sophia.Composite
 #endregion
 
 #region Data Referer 
+        
         public void SetStatDataToReferer(EntityStatReferer statReferer)
         {
             statReferer.SetRefStat(MaxStamina);
             statReferer.SetRefStat(StaminaRestoreSpeed);
+            statReferer.SetRefStat(DashForce);
         }
-
         public void SetExtrasDataToReferer(EntityExtrasReferer extrasReferer)
         {
             extrasReferer.SetRefExtras<object>(DashExtras);
@@ -111,19 +115,18 @@ namespace Sophia.Composite
 
         public void LateTick() {return;}
 
-        public void FrameTick() {
-            Timer.TickRunning();
-        }
+        public void FrameTick() { Timer.TickRunning();}
 
         public void PhysicsTick() { return; }
 
         bool IsUpdatorBinded = false;
         public bool GetUpdatorBind() => IsUpdatorBinded;
 
-        public void AddToUpator() {
+        public void AddToUpdator() {
             GlobalTimeUpdator.CheckAndAdd(this);
             IsUpdatorBinded = true;
         }
+        
         public void RemoveFromUpdator() {
             GlobalTimeUpdator.CheckAndRemove(this);
             IsUpdatorBinded = false;
@@ -132,22 +135,15 @@ namespace Sophia.Composite
 #endregion
 
         private void Dash() {
-            (Vector3 moveVec, int moveSpeed) data = this.BindMovementData.Invoke();
-            Vector3 dashPower = SetDashPower(data.moveVec, data.moveSpeed);
-            this.rigidbodyRef.AddForce(dashPower, ForceMode.VelocityChange);
+            DashAtomics.Invoke();
             DashSource.Play();
         }
 
         public void Use() {
-            (Vector3 moveVec, int moveSpeed) data = this.BindMovementData.Invoke();
-            if(!GetIsDashState(data.moveSpeed) && rigidbodyRef.velocity.magnitude > 0.01f && Timer.GetIsReadyToUse() ){
-                Timer.ActionStart();
-            }
+            if(!GetIsDashState() && Timer.GetIsReadyToUse() ){ Timer.ActionStart();}
         }
 
-        private Vector3 SetDashPower(Vector3 moveVec, int moveSpeed) {
-            Vector3 temp = moveVec * -Mathf.Log(1 / this.rigidbodyRef.drag);
-            return temp.normalized * moveSpeed * 10;
-        }
+        public void RecoverOneDash() => Timer.stackCounter.RecoverStack();
+
     }
 }

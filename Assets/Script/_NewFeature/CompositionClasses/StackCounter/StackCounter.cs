@@ -36,11 +36,18 @@ namespace Sophia.Composite.Stacks
         #region Event
 
         public event UnityAction OnUseAction = null;
+        public event UnityAction OnRecoverAction = null;
+        public event UnityAction OnResetAction = null;
 
         public void ClearEvents()
         {
-            OnUseAction = null;
-            OnUseAction = () => { };
+            OnUseAction         = null;
+            OnRecoverAction     = null;
+            OnResetAction       = null;
+
+            OnUseAction         = () => {};
+            OnRecoverAction     = () => {};
+            OnResetAction       = () => {};
         }
 
         #endregion
@@ -58,21 +65,25 @@ namespace Sophia.Composite.Stacks
 
         public bool GetIsReadyToUse() => (CurrentStacksCount == 0) ? false : true;
         public bool GetIsUsedOnce() => (CurrentStacksCount < BaseStacksCount) ? true : false;
-        public void ResetStacks() => CurrentStacksCount = BaseStacksCount;
-
+        
         public void UseStack()
         {
             if (GetIsReadyToUse()){
                 CurrentStacksCount--;
-                OnUseAction.Invoke();
+                OnUseAction?.Invoke();
             }
         }
-        public void RestoreStack()
+        public void RecoverStack()
         {
             if (GetIsUsedOnce())
             {
                 CurrentStacksCount++;
+                OnRecoverAction?.Invoke();
             }
+        }
+        public void ResetStacks() {
+            CurrentStacksCount = BaseStacksCount;
+            OnResetAction?.Invoke();
         }
     }
 }

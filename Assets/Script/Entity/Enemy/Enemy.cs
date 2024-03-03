@@ -150,14 +150,14 @@ public class Enemy : Entity
     protected virtual void FixedUpdate()
     {
         /***************************/
-        if (GameManager.Instance?.GlobalEvent.IsGamePaused == true) { return; }
+        // if (GameManager.Instance?.GlobalEvent.IsGamePaused == true) { return; }
         /***************************/
     }
 
     protected virtual void Update()
     {
         /***************************/
-        if (GameManager.Instance?.GlobalEvent.IsGamePaused == true) { return; }
+        // if (GameManager.Instance?.GlobalEvent.IsGamePaused == true) { return; }
         /***************************/
 
         /*if (isRecog) { nav.enabled = true; }

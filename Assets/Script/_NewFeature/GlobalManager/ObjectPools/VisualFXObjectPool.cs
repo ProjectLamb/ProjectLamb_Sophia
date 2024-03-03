@@ -14,7 +14,7 @@ namespace Sophia
         public static VisualFXObjectPool Instance {
             get {
                 if(_instance == null) {
-                    _instance = FindObjectOfType(typeof(VisualFXObjectPool)) as VisualFXObjectPool;
+                    _instance = FindFirstObjectByType(typeof(VisualFXObjectPool)) as VisualFXObjectPool;
                     if(_instance == null) Debug.Log("no Singleton obj");
                 }
                 return _instance;

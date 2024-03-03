@@ -17,27 +17,26 @@ namespace Sophia.Entitys
     public class Robuwa : Enemy, IMovable
     {
         #region Public
-        public Stat MoveSpeed;
         public int AttackRange;
         public int TurnSpeed;   //Stat으로 관리 가능성
-        public float WanderingCoolTime;
         #endregion
 
         #region Private
         private LifeComposite Life { get; set; }
-        private RecognizeEntityComposite Recog { get; set; }
         private Vector3 wanderPosition;
         List<string> animBoolParamList;
         List<string> animTriggerParamList;
-        private bool IsFirstRecog = true;
         private bool IsWandering = false;
+        [SerializeField]
         private bool IsMovable = false;
         private float originViewRadius;
-        private Animator animator;
         private NavMeshAgent nav;
 
         #endregion
-        // Start is called before the first frame update
+
+        #region Serialize Member
+        [SerializeField] protected RecognizeEntityComposite recognize;
+        #endregion
 
         public enum States
         {
@@ -55,8 +54,19 @@ namespace Sophia.Entitys
         {
             base.Awake();
 
+            power = new Stat(_baseEntityData.Power, E_NUMERIC_STAT_TYPE.Power, E_STAT_USE_TYPE.Natural, () => { Debug.Log("공격력 수치 변경"); });
+            moveSpeed = new Stat(_baseEntityData.MoveSpeed, E_NUMERIC_STAT_TYPE.MoveSpeed, E_STAT_USE_TYPE.Natural, () => { Debug.Log("이동속도 수치 변경"); });
+
+            recognize = new RecognizeEntityComposite(this.gameObject, this._fOVData);
+            Life = new LifeComposite(_baseEntityData.MaxHp, _baseEntityData.Defence);
+
+            _affectorManager.Init(_baseEntityData.Tenacity);
+            _objectiveEntity = GameManager.Instance.PlayerGameObject.GetComponent<Entity>();
+
             animBoolParamList = new List<string>();
             animTriggerParamList = new List<string>();
+
+            TryGetComponent<NavMeshAgent>(out nav);
 
             fsm = new StateMachine<States>(this);
             fsm.ChangeState(States.Init);
@@ -65,15 +75,11 @@ namespace Sophia.Entitys
         protected override void Start()
         {
             base.Start();
-            animator = GetModelManger().GetAnimator();
-            SetNavMeshData();
 
             Life.OnEnterDie += OnRobuwaEnterDie;
             Life.OnExitDie += OnRobuwaExitDie;
 
             InitAnimParamList();
-            originViewRadius = GetComponent<FieldOfView>().viewRadius;
-            IsFirstRecog = true;
         }
         // Update is called once per frame
         void Update()
@@ -96,19 +102,20 @@ namespace Sophia.Entitys
         }
         void SetNavMeshData()
         {
-            nav.speed = _baseEntityData.MoveSpeed;
+            nav.speed = moveSpeed.GetValueForce();
             nav.acceleration = nav.speed * 1.5f;
             nav.updateRotation = false;
+            nav.stoppingDistance = AttackRange;
         }
 
         public override bool Die() { Life.Died(); return true; }
 
         void InitAnimParamList()
         {
-            for (int i = 0; i < animator.parameterCount; i++)
+            for (int i = 0; i < this.GetModelManger().GetAnimator().parameterCount; i++)
             {
-                AnimatorControllerParameter acp = animator.GetParameter(i);
-                switch (animator.GetParameter(i).type)
+                AnimatorControllerParameter acp = this.GetModelManger().GetAnimator().GetParameter(i);
+                switch (this.GetModelManger().GetAnimator().GetParameter(i).type)
                 {
                     case AnimatorControllerParameterType.Bool:
                         animBoolParamList.Add(acp.name);
@@ -125,23 +132,23 @@ namespace Sophia.Entitys
         void ResetAnimParam()
         {
             foreach (string b in animBoolParamList)
-                animator.SetBool(b, false);
+                this.GetModelManger().GetAnimator().SetBool(b, false);
             foreach (string t in animTriggerParamList)
-                animator.ResetTrigger(t);
+                this.GetModelManger().GetAnimator().ResetTrigger(t);
         }
 
         void DoAttack()
         {
-            switch (animator.GetInteger("attackCount") % 3)
+            switch (this.GetModelManger().GetAnimator().GetInteger("attackCount") % 3)
             {
                 case 0:
-                    animator.SetTrigger("DoAttackLeft");
+                    this.GetModelManger().GetAnimator().SetTrigger("DoAttackLeft");
                     break;
                 case 1:
-                    animator.SetTrigger("DoAttackRight");
+                    this.GetModelManger().GetAnimator().SetTrigger("DoAttackRight");
                     break;
                 case 2:
-                    animator.SetTrigger("DoAttackJump");
+                    this.GetModelManger().GetAnimator().SetTrigger("DoAttackJump");
                     break;
             }
         }
@@ -150,8 +157,8 @@ namespace Sophia.Entitys
         {
             EQS();
 
-            float range = GetComponent<FieldOfView>().viewRadius * 2;
-            float minDistance = GetComponent<FieldOfView>().viewRadius;
+            float range = recognize.CurrentViewRadius * 2;
+            float minDistance = recognize.CurrentViewRadius;
             Vector3 randomVector = Random.insideUnitSphere * range;
             NavMeshHit hit;
 
@@ -177,27 +184,17 @@ namespace Sophia.Entitys
             //Environmental Query System
         }
 
-        // void SetCarrierBucketPosition()
-        // {
-        //     carrierBucket.transform.position = transform.position + new Vector3(0, carrierBucket.GetComponent<CarrierBucket>().BucketScale / 2, AttackRange);
-        // }
+        #region Attack
+        private Stat power;
+        public void UseProjectile_NormalAttack()
+        {
+            Sophia.Instantiates.ProjectileObject useProjectile = ProjectilePool.GetObject(_attckProjectiles[(int)ANIME_STATE.ATTACK]).Init(this);
 
-        // public void Use(Player player) {
-        //     ProjectileObject useProjectile = ProjectilePool.GetObject(ProjectileObject).Init(player);
-        //     mInstantiatorRef.InstantablePositioning(useProjectile)
-        //                     .SetProjectilePower(player.GetStat(E_NUMERIC_STAT_TYPE.Power))
-        //                     .Activate();
-        // }
-
-        // public void UseProjectile_NormalAttack()
-        // {
-        //     Sophia.Instantiates.ProjectileObject useProjectile = ProjectilePool.GetObject().Init(this);
-
-        //     _projectileBucketManager.InstantablePositioning(0, useProjectile)
-        //                             .SetProjectilePower(GetStat(E_NUMERIC_STAT_TYPE.Power))
-        //                             .Activate();
-        //     //this.carrierBucket.CarrierInstantiatorByObjects(this, projectiles[0], new object[] { _baseEntityData.Power * 1 });
-        // }
+            _projectileBucketManager.InstantablePositioning((int)ANIME_STATE.ATTACK, useProjectile)
+                                    .SetProjectilePower(GetStat(E_NUMERIC_STAT_TYPE.Power))
+                                    .Activate();
+        }
+        #endregion
 
         #region FSM Functions
         ////////////////////////////////////////FSM Functions////////////////////////////////////////
@@ -207,7 +204,8 @@ namespace Sophia.Entitys
             Debug.Log("Init_Enter");
 
             //Init Settings
-            //SetCarrierBucketPosition();
+            originViewRadius = recognize.CurrentViewRadius;
+            SetNavMeshData();
 
             fsm.ChangeState(States.Idle);
         }
@@ -215,25 +213,24 @@ namespace Sophia.Entitys
         void Idle_Enter()
         {
             Debug.Log("Idle_Enter");
-            GetComponent<FieldOfView>().viewRadius = originViewRadius;
+            recognize.CurrentViewRadius = originViewRadius;
             SetMoveState(false);
         }
 
         void Idle_Update()
         {
-            if (!GetComponent<FieldOfView>().IsRecog)
+            if (recognize.GetCurrentRecogState() == E_RECOG_TYPE.None || recognize.GetCurrentRecogState() == E_RECOG_TYPE.Lose)
             {
-                //Play Idle
                 if (!IsWandering)
                     fsm.ChangeState(States.Wander);
             }
             else
             {
-                if (IsFirstRecog)
+                if (recognize.GetCurrentRecogState() == E_RECOG_TYPE.FirstRecog)
                     fsm.ChangeState(States.Threat);
                 else
                 {
-                    float dist = Vector3.Distance(transform.position, objectiveTarget.position);
+                    float dist = Vector3.Distance(transform.position, _objectiveEntity.transform.position);
                     if (dist <= AttackRange)
                         fsm.ChangeState(States.Attack);
                     else
@@ -248,24 +245,21 @@ namespace Sophia.Entitys
             Debug.Log("Threat Enter");
 
             SetMoveState(false);
-            GetComponent<FieldOfView>().viewRadius *= 2;
-            objectiveTarget = GameManager.Instance.PlayerGameObject.transform;
-            animator.SetTrigger("DoThreat");
+            recognize.CurrentViewRadius *= 2;
+            this.GetModelManger().GetAnimator().SetTrigger("DoThreat");
         }
 
         void Threat_Update()
         {
-            //animator bool 바꾸기
-            if (animator.GetBool("IsThreatEnd"))
+            if (this.GetModelManger().GetAnimator().GetBool("IsThreatEnd"))
             {
-                IsFirstRecog = false;
-                if (!GetComponent<FieldOfView>().IsRecog)
+                if (recognize.GetCurrentRecogState() == E_RECOG_TYPE.Lose)
                 {
                     fsm.ChangeState(States.Idle);
                 }
                 else
                 {
-                    float dist = Vector3.Distance(transform.position, objectiveTarget.position);
+                    float dist = Vector3.Distance(transform.position, _objectiveEntity.transform.position);
 
                     if (dist <= AttackRange)
                         fsm.ChangeState(States.Attack);
@@ -277,45 +271,47 @@ namespace Sophia.Entitys
 
         void Threat_FixedUpdate()
         {
-            transform.DOLookAt(objectiveTarget.position, TurnSpeed);
+            transform.DOLookAt(_objectiveEntity.transform.position, TurnSpeed);
         }
 
         void Threat_Exit()
         {
-            animator.SetBool("IsThreatEnd", false);
+            this.GetModelManger().GetAnimator().SetBool("IsThreatEnd", false);
         }
 
         /**Move State*/
         void Move_Enter()
         {
             Debug.Log("Move_Enter");
-            animator.SetBool("IsWalk", true);
+            this.GetModelManger().GetAnimator().SetBool("IsWalk", true);
             SetMoveState(true);
         }
 
         void Move_Update()
         {
-            float dist = Vector3.Distance(transform.position, objectiveTarget.position);
+            float dist = Vector3.Distance(transform.position, _objectiveEntity.transform.position);
 
-            if (!GetComponent<FieldOfView>().IsRecog)
+            if (recognize.GetCurrentRecogState() == E_RECOG_TYPE.Lose)
                 fsm.ChangeState(States.Idle);
             else if (dist <= AttackRange)
+            {
                 fsm.ChangeState(States.Attack);
+            }
 
         }
 
         void Move_FixedUpdate()
         {
-            if (GetComponent<FieldOfView>().IsRecog)
+            if (recognize.GetCurrentRecogState() == E_RECOG_TYPE.FirstRecog || recognize.GetCurrentRecogState() == E_RECOG_TYPE.ReRecog)
             {
-                transform.DOLookAt(objectiveTarget.position, TurnSpeed);
-                nav.SetDestination(objectiveTarget.position);
+                transform.DOLookAt(_objectiveEntity.transform.position, TurnSpeed);
+                nav.SetDestination(_objectiveEntity.transform.position);
             }
         }
 
         void Move_Exit()
         {
-            animator.SetBool("IsWalk", false);
+            this.GetModelManger().GetAnimator().SetBool("IsWalk", false);
         }
 
         /**Wander State*/
@@ -330,7 +326,7 @@ namespace Sophia.Entitys
 
         void Wander_Update()
         {
-            if (GetComponent<FieldOfView>().IsRecog)
+            if (recognize.GetCurrentRecogState() == E_RECOG_TYPE.FirstRecog || recognize.GetCurrentRecogState() == E_RECOG_TYPE.ReRecog)
             {
                 CancelInvoke();
                 fsm.ChangeState(States.Threat);
@@ -345,7 +341,7 @@ namespace Sophia.Entitys
         {
             if (IsWandering)
             {
-                animator.SetBool("IsWalk", true);
+                this.GetModelManger().GetAnimator().SetBool("IsWalk", true);
                 transform.DOLookAt(wanderPosition, TurnSpeed);
                 nav.SetDestination(wanderPosition);
             }
@@ -354,7 +350,7 @@ namespace Sophia.Entitys
         void Wander_Exit()
         {
             IsWandering = false;
-            animator.SetBool("IsWalk", false);
+            this.GetModelManger().GetAnimator().SetBool("IsWalk", false);
         }
 
         /**Attack State*/
@@ -364,13 +360,13 @@ namespace Sophia.Entitys
 
             SetMoveState(false);
 
-            transform.DOLookAt(objectiveTarget.position, TurnSpeed / 2);
+            transform.DOLookAt(_objectiveEntity.transform.position, TurnSpeed / 2);
             DoAttack();
         }
 
         void Attack_Update()
         {
-            if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f)
+            if (this.GetModelManger().GetAnimator().GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f)
             {
                 fsm.ChangeState(States.Idle);
             }
@@ -392,7 +388,8 @@ namespace Sophia.Entitys
         #region Inherited Functions From Enemy Class
         protected override void SetDataToReferer()
         {
-            StatReferer.SetRefStat(MoveSpeed);
+            StatReferer.SetRefStat(power);
+            StatReferer.SetRefStat(moveSpeed);
             this.Settables.ForEach(E =>
             {
                 E.SetStatDataToReferer(StatReferer);
@@ -400,19 +397,16 @@ namespace Sophia.Entitys
             });
         }
 
-        public override EntityStatReferer GetStatReferer()
-        {
-            throw new System.NotImplementedException();
-        }
-
+        public override EntityStatReferer GetStatReferer() => this.StatReferer;
         protected override void CollectSettable()
         {
             Settables.Add(Life);
+            Settables.Add(_projectileBucketManager);
             Settables.Add(_affectorManager);
         }
 
         public override LifeComposite GetLifeComposite() => this.Life;
-        public override RecognizeEntityComposite GetRecognizeComposite() => this.Recog;
+        public override RecognizeEntityComposite GetRecognizeComposite() => this.recognize;
 
         public override bool GetDamaged(DamageInfo damage)
         {
@@ -445,13 +439,21 @@ namespace Sophia.Entitys
         public override void Recover(Affector affector) => this._affectorManager.Recover(affector);
         #endregion
 
-        #region IMovable
+        #region Move
+        private Stat moveSpeed;
         public bool GetMoveState() => IsMovable;
 
         public void SetMoveState(bool movableState)
         {
             IsMovable = movableState;
-            nav.enabled = IsMovable;
+            if (movableState)
+                nav.enabled = true;
+            nav.isStopped = !movableState;
+            if (!movableState)
+            {
+                nav.enabled = false;
+                transform.DOKill();
+            }
         }
 
         public void MoveTick()
