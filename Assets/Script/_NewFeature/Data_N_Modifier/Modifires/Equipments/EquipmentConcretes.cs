@@ -64,7 +64,7 @@ namespace Sophia.DataSystem
                 ExtrasModifier<Entity> extrasModifier = new ExtrasModifier<Entity>(
                     new ConveyAffectCommand.FactoryStunAffectCommand(
                         in equipmentData._extrasCalculateDatas.OnConveyAffect._affectData
-                    ),
+                    ).SetRandomPercentage(5),
                     E_EXTRAS_PERFORM_TYPE.Start,
                     E_FUNCTIONAL_EXTRAS_TYPE.ConveyAffect
                 );
@@ -234,11 +234,11 @@ namespace Sophia.DataSystem
         public class Equipment_2004_CrudeGoldenBadge : Equipment {
             ExtrasModifier<object> EnemyDieExtrasModifier;
             Entitys.Entity entityRef;
-            private DataSystem.Modifiers.ConcreteAffector.MoveFasterAffect moveFasterAffect;
+            private readonly SerialAffectorData serialAffectorData;
 
             public Equipment_2004_CrudeGoldenBadge(in SerialEquipmentData equipmentData, Entitys.Entity entity) : base(equipmentData) {
                 entityRef = entity;
-                moveFasterAffect = new DataSystem.Modifiers.ConcreteAffector.MoveFasterAffect(equipmentData._extrasCalculateDatas.OnConveyAffect._affectData);
+                serialAffectorData = equipmentData._extrasCalculateDatas.OnConveyAffect._affectData;
                 EnemyDieExtrasModifier = new ExtrasModifier<object>(
                     new GeneralCommand.NoneParameterCommand(MoveFasterAction),
                     E_EXTRAS_PERFORM_TYPE.Start,
@@ -247,7 +247,7 @@ namespace Sophia.DataSystem
             }
             
             public void MoveFasterAction() {
-                entityRef.Affect(moveFasterAffect);
+                entityRef.Affect(new ConcreteAffector.MoveFasterAffect(serialAffectorData));
             }
 
             public override void Invoke(IDataAccessible dataAccessible)
@@ -331,7 +331,8 @@ namespace Sophia.DataSystem
             public Equipment_4005_MovementDirective(in SerialEquipmentData equipmentData) : base(equipmentData)
             {
                 ConveyAffectExtrasModifier = new ExtrasModifier<Entity>(
-                    new ConveyAffectCommand.FactoryExecuteCommand(in equipmentData._extrasCalculateDatas.OnConveyAffect._affectData),
+                    new ConveyAffectCommand.FactoryExecuteCommand(in equipmentData._extrasCalculateDatas.OnConveyAffect._affectData)
+                        .SetRandomPercentage(5),
                     E_EXTRAS_PERFORM_TYPE.Start,
                     E_FUNCTIONAL_EXTRAS_TYPE.ConveyAffect
                 );

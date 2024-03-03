@@ -77,10 +77,13 @@ namespace Sophia
                     int floatToIntHp = MaxHp;
                     if (value > (float)floatToIntHp)
                     {
-                        mCurrentHealth = (float)floatToIntHp; return;
+                        mCurrentHealth = (float)floatToIntHp; 
+                        OnHpUpdated?.Invoke(mCurrentHealth);
+                        return;
                     }
                     if (value < 0) { mCurrentHealth = 0; return; }
                     mCurrentHealth = value;
+                    OnHpUpdated?.Invoke(mCurrentHealth);
                 }
             }
 
@@ -263,7 +266,6 @@ namespace Sophia
                 }
 
                 OnDamaged?.Invoke(damageInfo);
-                OnHpUpdated?.Invoke(CurrentHealth);
 
                 DamagedExtras.PerformExitFunctionals(ref damageInfo);
                 if (CurrentHealth <= 0) { this.Died(); }

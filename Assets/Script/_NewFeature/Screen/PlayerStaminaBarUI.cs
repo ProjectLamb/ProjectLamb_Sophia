@@ -34,7 +34,7 @@ namespace Sophia.UserInterface
                 existsliders.Push(Instantiate(_dashSliderPrefeb, transform));
             } 
         }
-        private void MaxStaminaUpdatedHandler() {
+        public void MaxStaminaUpdatedHandler() {
             int maxStamina = dashSkillRef.MaxStamina;
             foreach(Transform child in transform){ Destroy(child.gameObject); }
             for(int i = 0 ; i < maxStamina; i++) {
@@ -43,34 +43,34 @@ namespace Sophia.UserInterface
         }
 
         private void InitializedHandler() {
-            StartCoroutine(AsyncRender.PerformAndRenderUI(() => {
+            StartCoroutine(AsyncRender.Instance.PerformAndRenderUI(() => {
                 sliders.ForEach(E => E.value = 1f);
             }));
         }
         
         private void StartCooldownEventHandler() {
-            StartCoroutine(AsyncRender.PerformAndRenderUI(() => {}));
+            StartCoroutine(AsyncRender.Instance.PerformAndRenderUI(() => {}));
         }
         
         // UpdateFillAmount
         private void TickingEventHandler(float input) {
-            StartCoroutine(AsyncRender.PerformAndRenderUI(() => {
+            StartCoroutine(AsyncRender.Instance.PerformAndRenderUI(() => {
                 progressOneSlider = dashSkillRef.Timer.GetProgressAmount();
                 chargingSlider.Peek().value = progressOneSlider;
             }));
         }
         
         private void IntervalEventHandler() {
-            StartCoroutine(AsyncRender.PerformAndRenderUI(() => {}));
+            StartCoroutine(AsyncRender.Instance.PerformAndRenderUI(() => {}));
         }
         
         private void FinishedEventHandler() {
-            StartCoroutine(AsyncRender.PerformAndRenderUI(() => {}));
+            StartCoroutine(AsyncRender.Instance.PerformAndRenderUI(() => {}));
         }
         
         // UseStack
         private void UseEventHandler() {
-            StartCoroutine(AsyncRender.PerformAndRenderUI(() => {
+            StartCoroutine(AsyncRender.Instance.PerformAndRenderUI(() => {
                 if(chargingSlider.Count != 0) 
                     chargingSlider.Peek().value = 0;
                 chargingSlider.Push(existsliders.Pop());
@@ -81,7 +81,7 @@ namespace Sophia.UserInterface
         
         // OnRecoverOnce
         private void RecoverEventHandler() {
-            StartCoroutine(AsyncRender.PerformAndRenderUI(() => {
+            StartCoroutine(AsyncRender.Instance.PerformAndRenderUI(() => {
                 chargingSlider.Peek().value = 1f;
                 existsliders.Push(chargingSlider.Pop());
                 existsliders.Peek().image.color = _existColor;

@@ -7,6 +7,7 @@ namespace Sophia.Instantiates
     using Sophia.DataSystem.Modifiers;
     using Sophia.DataSystem.Modifiers.ConcreteEquipment;
     using Sophia.Entitys;
+    using Sophia.UserInterface;
 
     public class EquipmentItem : Carrier
     {
@@ -20,14 +21,15 @@ namespace Sophia.Instantiates
         protected override void Awake()
         {
             base.Awake();
-            equipment = FactoryConcreteEquipment.GetEquipmentByID(in _equipmentData, GameManager.Instance.PlayerGameObject.GetComponent<Player>());
         }
+
 
         protected override void OnTriggerLogic(Collider entity)
         {
             if(triggeredOnce) return;
             if (entity.TryGetComponent(out Player player))
             {
+                equipment = FactoryConcreteEquipment.GetEquipmentByID(in _equipmentData, GameManager.Instance.PlayerGameObject.GetComponent<Player>());
                 if (EquipUserInterface())
                 {
                     player.EquipEquipment(equipment);

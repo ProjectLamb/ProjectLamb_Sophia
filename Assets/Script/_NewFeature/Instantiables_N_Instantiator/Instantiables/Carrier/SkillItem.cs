@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace Sophia.Instantiates
 {
+    using System.Diagnostics;
     using Sophia.DataSystem;
     using Sophia.DataSystem.Modifiers;
     using Sophia.DataSystem.Modifiers.ConcreteEquipment;
@@ -52,10 +53,7 @@ namespace Sophia.Instantiates
                         lootVFX.Stop();
                         lootObject.SetActive(false);
                         triggeredOnce = true;
-                        if(this._isDestroyable){
-                            Instantiate(DestroyEffect, transform.position, Quaternion.identity);
-                            Destroy (gameObject, 3);
-                        }
+                        Destroy (gameObject, 2);
                     }
                 });
             }

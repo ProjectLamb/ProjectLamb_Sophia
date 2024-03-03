@@ -34,7 +34,7 @@ namespace Sophia.UserInterface
         [SerializeField] UnityAction<bool, KeyCode> actionFromItem;
 
         private void OnEnable() {
-            StartCoroutine(AsyncRender.PerformAndRenderUIUnScaled(() => {
+            StartCoroutine(AsyncRender.Instance.PerformAndRenderUIUnScaled(() => {
                 collectedSkillButton[0].SetUserInterfaceData(skillManager.SkillGetSkillInfoByKey(KeyCode.Q), KeyCode.Q);
                 collectedSkillButton[1].SetUserInterfaceData(skillManager.SkillGetSkillInfoByKey(KeyCode.E), KeyCode.E);
                 collectedSkillButton[2].SetUserInterfaceData(skillManager.SkillGetSkillInfoByKey(KeyCode.R), KeyCode.R);
@@ -52,7 +52,7 @@ namespace Sophia.UserInterface
             GameManager.Instance.GlobalEvent.IsGamePaused = true;
             actionFromItem = action;
             gameObject.SetActive(true);
-            StartCoroutine(AsyncRender.PerformAndRenderUIUnScaled(() => {
+            StartCoroutine(AsyncRender.Instance.PerformAndRenderUIUnScaled(() => {
                 currentSkillButton.SetUserInterfaceData(skill, KeyCode.None);
                 currentSkillButton.transform.localPosition = Vector3.zero;
             }));
@@ -63,7 +63,7 @@ namespace Sophia.UserInterface
             KeyCode AssignedKey = assignedKey;
             Debug.Log($"{IsSelected} {AssignedKey}");
             actionFromItem.Invoke(IsSelected, AssignedKey);
-            StartCoroutine(AsyncRender.PerformUnScaled(0.5f, CloseSkillSelector));
+            StartCoroutine(AsyncRender.Instance.PerformUnScaled(0.5f, CloseSkillSelector));
         }
 
         public void CloseSkillSelector() {

@@ -27,7 +27,7 @@ namespace Sophia.Composite
 
         public DashSkill(Rigidbody rb, Func<(Vector3, int)> movementDataSender, float forceAmount){
             rigidbodyRef = rb;
-            MaxStamina = new Stat(10,
+            MaxStamina = new Stat(3,
                 E_NUMERIC_STAT_TYPE.MaxStamina, 
                 E_STAT_USE_TYPE.Natural, 
                 OnMaxStaminaUpdated
@@ -80,6 +80,7 @@ namespace Sophia.Composite
 
         private void OnMaxStaminaUpdated() {
             Timer.SetMaxStackCounts(this.MaxStamina.GetValueByNature());
+            InGameScreenUI.Instance._playerStaminaBarUI.MaxStaminaUpdatedHandler();
         }
 
         private void OnStaminaRestoreSpeedUpdated() {

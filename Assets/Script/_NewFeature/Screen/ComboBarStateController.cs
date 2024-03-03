@@ -29,7 +29,7 @@ namespace Sophia.UserInterface
         {
             if (gameObject.activeSelf == false)
             {
-                StartCoroutine(AsyncRender.PerformAndRenderUI(OnHitStart)); return;
+                StartCoroutine(AsyncRender.Instance.PerformAndRenderUI(OnHitStart)); return;
             }
             if (!styleManager.styleAnimator.GetCurrentAnimatorStateInfo(0).IsName("Finished"))
             {

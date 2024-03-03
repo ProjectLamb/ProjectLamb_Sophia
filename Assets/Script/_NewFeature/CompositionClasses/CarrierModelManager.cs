@@ -12,7 +12,7 @@ public class CarrierModelManager : MonoBehaviour
 
     public void SetBySkill() {
         SkillItem carrier = GetComponent<SkillItem>();
-        StartCoroutine(AsyncRender.PerformAndRenderUI(() => {
+        StartCoroutine(AsyncRender.Instance.PerformAndRenderUI(() => {
             _spriteRenderer.sprite = carrier._userInterfaceData._icon;
             _spriteRenderer.color = new Color(0,0,0,1);
         }));

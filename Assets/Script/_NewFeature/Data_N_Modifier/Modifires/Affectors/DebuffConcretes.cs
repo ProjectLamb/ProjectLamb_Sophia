@@ -58,6 +58,7 @@ namespace Sophia.DataSystem
                 VisualFXAffector.Revert(entity);
                 base.Exit(entity);
             }
+            
             public override void Run(Entity entity)
             {
                 float ActivateNum = 0;

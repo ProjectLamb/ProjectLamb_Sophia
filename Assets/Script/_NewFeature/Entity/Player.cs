@@ -19,6 +19,7 @@ namespace Sophia.Entitys
     {
 
 #region SerializeMember 
+        [Header("None")]
 //      [SerializeField] private ModelManger  _modelManger;
 //      [SerializeField] private VisualFXBucket  _visualFXBucket;
         [SerializeField] private SerialBasePlayerData       _basePlayerData;
