@@ -20,7 +20,7 @@ EntityAdditionalFunctionals
     AddedAffected;
     AddedDead;
     AddedStanding;
-    AddedPhyiscTriggered;
+    AddedPhysicTriggered;
 
 
 PlayerFixedAmounts
@@ -48,7 +48,7 @@ PlayerAdditionalFunctionals
     AddedAffected;
     AddedDead;
     AddedStanding;
-    AddedPhyiscTriggered;
+    AddedPhysicTriggered;
     AddedSkill;
 
 

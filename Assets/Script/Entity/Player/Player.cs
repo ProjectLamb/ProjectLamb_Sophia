@@ -113,7 +113,7 @@ public class Player : Entity {
         isAttack = false;
         //isThrAttack = false;
 
-        DashSkillAbility = new Sophia.Composite.DashSkill(entityRigidbody, DashDataSender);
+        DashSkillAbility = new Sophia.Composite.DashSkill(entityRigidbody, DashDataSender, 500);
         DashSkillAbility.SetAudioSource(DashSource);
         MasterData.MaxStaminaInject(DashSkillAbility.MaxStamina);
     }
@@ -168,7 +168,7 @@ public class Player : Entity {
 
         float moveSpeed = PlayerDataManager.GetEntityData().MoveSpeed;
         
-        if(DashSkillAbility.GetIsDashState((int)moveSpeed)) { return; }
+        if(DashSkillAbility.GetIsDashState()) { return; }
          
         anim.SetFloat("Move", entityRigidbody.velocity.magnitude);
 

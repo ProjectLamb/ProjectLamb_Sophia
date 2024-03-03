@@ -19,6 +19,7 @@ public class SMB_EO_PhaseSkill : StateMachineBehaviour
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         animator.SetInteger("phaseSkill", animator.GetInteger("phaseSkill") + 1);
+        animator.SetBool("IsSkillEnd", true);
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()

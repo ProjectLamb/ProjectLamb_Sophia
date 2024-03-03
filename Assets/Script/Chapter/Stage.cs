@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using Sophia_Carriers;
 using System.Drawing;
+using Sophia.Entitys;
 
 public class Stage : MonoBehaviour
 {
@@ -160,7 +161,7 @@ public class Stage : MonoBehaviour
     {
         if (!IsClear)
         {
-            if (mobGenerator.mobList.Count == 0 && GameManager.Instance.CurrentStage == this.gameObject)
+            if (mobGenerator.CurrentMobList.Count == 0 && GameManager.Instance.CurrentStage == this.gameObject)
             {
                 StageClear();
             }
@@ -170,40 +171,18 @@ public class Stage : MonoBehaviour
     public void SetOnStage()
     {
         //GameManager.Instance.CurrentStage = this.gameObject;
-        foreach (var m in mobGenerator.mobList)
-        {
-            if (m != null)
-            {
-                if (m.tag != "Enemy")
-                {
-                    m.GetComponent<RaptorFlocks>().Chase(true);
-                }
-                else
-                    m.GetComponent<Enemy>().isRecog = true;
-            }
-        }
         for (int i = 0; i < transform.childCount; i++)
         {
             if (i == (int)STAGE_CHILD.PORTAL)
                 continue;
             transform.GetChild(i).gameObject.SetActive(true);
         }
+        mobGenerator.SetMobsMovementOn();
     }
 
     public void SetOffStage()
     {
-        foreach (var m in mobGenerator.mobList)
-        {
-            if (m != null)
-            {
-                if (m.tag != "Enemy")
-                {
-                    m.GetComponent<RaptorFlocks>().Chase(false);
-                }
-                else
-                    m.GetComponent<Enemy>().isRecog = false;
-            }
-        }
+        mobGenerator.SetMobsMovementOff();
         for (int i = 0; i < transform.childCount; i++)
         {
             if (i == (int)STAGE_CHILD.PORTAL)

@@ -15,7 +15,7 @@ namespace Sophia.DataSystem.Modifiers
         public readonly Sprite Icon;
         public readonly Dictionary<E_NUMERIC_STAT_TYPE, StatModifier> StatModifiers = new();
 
-        public Equipment(SerialEquipmentData equipmentData) {
+        public Equipment(in SerialEquipmentData equipmentData) {
             Name            = equipmentData._equipmentName;
             Description     = equipmentData._description;
             Icon            = equipmentData._icon;

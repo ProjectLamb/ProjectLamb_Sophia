@@ -52,6 +52,7 @@ public class NeutralSkill_001 : AbstractSkill {
         barrierState.Ratio = NumericQ[(int)skillRank];
         barrierState.Init(player,player).Modifiy();
     }
+    
     protected override void UseE(){
         moveFasterState.DurationTime = DurationE;
         moveFasterState.Ratio = NumericE[(int)skillRank];

@@ -18,10 +18,10 @@ public class SMB_EO_Skill : StateMachineBehaviour
     // }
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
-    // override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    // {
-    //    animator.SetBool("IsAttack", false);
-    // }
+    override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+       animator.SetBool("IsAttackEnd", true);
+    }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()
     //override public void OnStateMove(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

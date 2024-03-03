@@ -3,6 +3,7 @@ using UnityEngine.Events;
 
 namespace Sophia.DataSystem.Modifiers
 {
+    using System;
     using System.Threading;
     using Sophia.Composite.NewTimer;
     using Sophia.Entitys;
@@ -28,8 +29,8 @@ namespace Sophia.DataSystem.Modifiers
 #endregion
 
 #region Event
+
         public event UnityAction<Affector> OnClear;
-        protected void InvokeOnClearAffect(Affector affector) => OnClear?.Invoke(affector);
         public void ClearAffect(Affector affector) => OnClear?.Invoke(affector);
 
 #endregion
@@ -42,9 +43,7 @@ namespace Sophia.DataSystem.Modifiers
             if(newState == null) return;
             if(GetIstransferableState(newState)) CurrentState = newState;
         }
-        
         public void ExecuteState(Entity entity) => CurrentState.Affect(this, entity);
-
         public bool GetIstransferableState(AffectorState transState) {
             return (CurrentState.GetTransitionBit() & transState.GetCurrentBit()) == transState.GetCurrentBit();
         }
@@ -58,10 +57,12 @@ namespace Sophia.DataSystem.Modifiers
 #endregion
         
 #region Timer
+
         public TimerComposite GetTimerComposite() => Timer;
         public abstract void Enter(Entity entity);
         public abstract void Run(Entity entity);
-        public abstract void Exit(Entity entity);
+        public virtual void Exit(Entity entity) { OnClear?.Invoke(this); }
+
 #endregion
 
     }
@@ -81,6 +82,7 @@ namespace Sophia.DataSystem.Modifiers
 
         public int GetCurrentBit() => (int)TimerStateBit.Ready;
         public int GetTransitionBit() => (int)TimerStateBit.Start;
+ 
     }
 
     public class AffectorStartState : AffectorState
@@ -105,9 +107,9 @@ namespace Sophia.DataSystem.Modifiers
 
         public void Affect(Affector affector, Entity entity)
         {
-            if(affector.GetTimerComposite().IsBlocked) {affector.ChangeState(AffectorPauseState.Instance); return;}
-            if(affector.GetTimerComposite().GetIsTimesUp()) { affector.ChangeState(AffectorTerminateState.Instance); return;}
-            if(affector.GetTimerComposite().GetIsActivateInterval()) {
+            if(affector.GetTimerComposite().IsBlocked)      { affector.ChangeState(AffectorPauseState.Instance);        return;}
+            if(affector.GetTimerComposite().GetIsTimesUp()) { affector.ChangeState(AffectorTerminateState.Instance);    return;}
+            if(affector.GetTimerComposite().GetIsActivateInterval()) { 
                 affector.Run(entity);
             }
         }

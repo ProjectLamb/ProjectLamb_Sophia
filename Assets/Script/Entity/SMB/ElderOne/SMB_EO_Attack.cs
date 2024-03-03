@@ -15,14 +15,14 @@ public class SMB_EO_Attack : StateMachineBehaviour
     // override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     // {
     //     if(animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f)
-    //         animator.SetBool("IsAttack", false);  
+    //         animator.SetBool("IsAttack", false);
     // }
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
-    // override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    // {
-    //     animator.SetBool("IsAttack", false);
-    // }
+    override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        animator.SetBool("IsAttackEnd", true);
+    }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()
     //override public void OnStateMove(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

@@ -6,6 +6,7 @@ using UnityEngine.Events;
 
 namespace Sophia.DataSystem
 {
+    using Cysharp.Threading.Tasks;
     using Modifiers;
 
     public class Stat
@@ -15,7 +16,7 @@ namespace Sophia.DataSystem
         public readonly E_NUMERIC_STAT_TYPE NumericType;
         private float value;
         private bool isDirty = false;
-        public readonly UnityEvent OnStatChanged;
+        public readonly UnityEvent OnStatChanged = new();
 
         private readonly List<StatModifier> statModifierList = new();
 
@@ -25,7 +26,6 @@ namespace Sophia.DataSystem
             this.NumericType = NumericType;
             this.UseType = UseType;
             if(statChangedHandler != null) {
-                OnStatChanged = new UnityEvent();
                 OnStatChanged.AddListener(statChangedHandler);
             }
         }

@@ -18,9 +18,9 @@ public class Enemy_Template : Enemy
     // Update is called once per frame
     protected override void FixedUpdate()
     {
-        transform.LookAt(objectiveTarget);
-        if(nav.enabled == true) {
-            nav?.SetDestination(objectiveTarget.position);
-        }
+//        transform.LookAt(objectiveTarget);
+//        if(nav.enabled == true) {
+//            nav?.SetDestination(objectiveTarget.position);
+//        }
     }
 }

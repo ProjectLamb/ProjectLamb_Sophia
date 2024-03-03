@@ -13,9 +13,9 @@ namespace Sophia.Instantiates
     {      
 #region SerializeMember
 
-        [SerializeField] private SerialBaseInstantiatorData _baseInstantiatorData;
-        [SerializeField] private Entity _ownerRef;
-        [SerializeField] private ProjectileBucket[] _projectileBuckets;
+        [SerializeField] protected SerialBaseInstantiatorData _baseInstantiatorData;
+        [SerializeField] protected Entity _ownerRef;
+        [SerializeField] protected ProjectileBucket[] _projectileBuckets;
 
 #endregion
 
@@ -34,42 +34,46 @@ namespace Sophia.Instantiates
 
 #endregion
 
-        private void Awake() {
+        protected void Awake() {
             Init(in _baseInstantiatorData);
         }
 
-        public void Init(in SerialBaseInstantiatorData baseInstantiatorData) {
-            InstantiableDurateLifeTimeMultiplyRatio = new Stat(baseInstantiatorData.InstantiableDurateLifeTimeMultiplyRatio,
+        public virtual void Init(in SerialBaseInstantiatorData baseInstantiatorData) {
+            this.InstantiableDurateLifeTimeMultiplyRatio = new Stat(baseInstantiatorData.InstantiableDurateLifeTimeMultiplyRatio,
                 E_NUMERIC_STAT_TYPE.InstantiableDurateLifeTimeMultiplyRatio,
                 E_STAT_USE_TYPE.Ratio, OnDurateLifeTimeUpdated
             );
-            InstantiableSizeMultiplyRatio = new Stat(baseInstantiatorData.InstantiableSizeMultiplyRatio,
+            this.InstantiableSizeMultiplyRatio = new Stat(baseInstantiatorData.InstantiableSizeMultiplyRatio,
                 E_NUMERIC_STAT_TYPE.InstantiableSizeMultiplyRatio,
                 E_STAT_USE_TYPE.Ratio, OnRatioSizeUpdated
             );
-            InstantiableForwardingSpeedMultiplyRatio = new Stat(baseInstantiatorData.InstantiableForwardingSpeedMultiplyRatio,
+            this.InstantiableForwardingSpeedMultiplyRatio = new Stat(baseInstantiatorData.InstantiableForwardingSpeedMultiplyRatio,
                 E_NUMERIC_STAT_TYPE.InstantiableForwardingSpeedMultiplyRatio,
                 E_STAT_USE_TYPE.Ratio, OnForwardingSpeedUpdated
             );
 
-            ConveyAffectExtras  = new Extras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.ConveyAffect, OnConveyAffectUpdated);
-            AttackExtras        = new Extras<object>(E_FUNCTIONAL_EXTRAS_TYPE.Attack, OnAttackUpdated);
-            CreatedExtras       = new Extras<object>(E_FUNCTIONAL_EXTRAS_TYPE.Created, OnCreatedUpdated);
-            TriggerdExtras      = new Extras<object>(E_FUNCTIONAL_EXTRAS_TYPE.Triggerd, OnTriggerdUpdated);
-            ReleasedExtras      = new Extras<object>(E_FUNCTIONAL_EXTRAS_TYPE.Released, OnReleasedUpdated);
-            ForwardingExtras    = new Extras<object>(E_FUNCTIONAL_EXTRAS_TYPE.Forwarding, OnForwardingUpdated);
+            this.ConveyAffectExtras  = new Extras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.ConveyAffect, OnConveyAffectUpdated);
+            this.AttackExtras        = new Extras<object>(E_FUNCTIONAL_EXTRAS_TYPE.Attack, OnAttackUpdated);
+            this.CreatedExtras       = new Extras<object>(E_FUNCTIONAL_EXTRAS_TYPE.Created, OnCreatedUpdated);
+            this.TriggerdExtras      = new Extras<object>(E_FUNCTIONAL_EXTRAS_TYPE.Triggerd, OnTriggerdUpdated);
+            this.ReleasedExtras      = new Extras<object>(E_FUNCTIONAL_EXTRAS_TYPE.Released, OnReleasedUpdated);
+            this.ForwardingExtras    = new Extras<object>(E_FUNCTIONAL_EXTRAS_TYPE.Forwarding, OnForwardingUpdated);
 
-            OnCreated       ??= () => {};
-            OnTriggerd      ??= () => {};
-            OnReleased      ??= () => {};
-            OnForwarding    ??= () => {};
+            this.OnCreated       ??= () => {};
+            this.OnTriggerd      ??= () => {};
+            this.OnReleased      ??= () => {};
+            this.OnForwarding    ??= () => {};
         }
 
-        private void Start() {
+        protected void Start() {
             for(int i = 0 ; i < _projectileBuckets.Count(); i ++) {
                 _projectileBuckets[i]?.SetProjectileBucketManamger(this);
             }
         }
+
+#region Get
+        public ProjectileBucket GetProjectileBucket(int idx) => _projectileBuckets[idx];
+#endregion
 
 #region Event
         /*
@@ -94,14 +98,14 @@ namespace Sophia.Instantiates
         
 #endregion
 
-        public void SetStatDataToReferer(EntityStatReferer statReferer)
+        public virtual void SetStatDataToReferer(EntityStatReferer statReferer)
         {
             statReferer.SetRefStat(InstantiableDurateLifeTimeMultiplyRatio);
             statReferer.SetRefStat(InstantiableSizeMultiplyRatio);
             statReferer.SetRefStat(InstantiableForwardingSpeedMultiplyRatio);
         }
 
-        public void SetExtrasDataToReferer(EntityExtrasReferer extrasReferer)
+        public virtual void SetExtrasDataToReferer(EntityExtrasReferer extrasReferer)
         {
             extrasReferer.SetRefExtras<Entity>(ConveyAffectExtras);
             extrasReferer.SetRefExtras<object>(AttackExtras);
@@ -113,7 +117,7 @@ namespace Sophia.Instantiates
 
 #region Instantiate
 
-        public ProjectileObject InstantablePositioning(int index, ProjectileObject instantiatedProjectile, Vector3 _offset) => _projectileBuckets[index].InstantablePositioning(instantiatedProjectile, _offset);
+        public ProjectileObject InstantablePositioning(int index, ProjectileObject instantiatedProjectile, Vector3 _positionOffset, Vector3 _rotateOffset) => _projectileBuckets[index].InstantablePositioning(instantiatedProjectile, _positionOffset, _rotateOffset);
         public ProjectileObject InstantablePositioning(int index, ProjectileObject instantiatedProjectile) => _projectileBuckets[index].InstantablePositioning(instantiatedProjectile);
 
 #endregion

@@ -3,355 +3,461 @@ using System.Collections.Generic;
 using UnityEngine;
 using MonsterLove.StateMachine;
 using DG.Tweening;
-using Unity.VisualScripting;
+using Sophia.DataSystem;
 using Sophia.Composite;
+using Cysharp.Threading.Tasks;
+using UnityEngine.AI;
 
-public class ElderOne : Boss, IRecogStateAccessible
+
+namespace Sophia.Entitys
 {
-    List<string> animBoolParamList;
-    List<string> animTriggerParamList;
-    public CarrierBucket attackCarrierBucket;
-
-    [Header("Stats")]
-    public int attackRange = 30;
-    public int attackCount = 3;
-
-    private int turnSpeed = 2;
-    private bool isPhaseChanged = false;
-
-
-    // Start is called before the first frame update
-    public enum States
+    public class ElderOne : Boss, IMovable
     {
-        Init,
-        Idle,
-        Move,
-        Attack,
-        Skill,
-        Invincible,
-        Death,
-    }
+        List<string> animBoolParamList;
+        List<string> animTriggerParamList;
 
-    StateMachine<States> fsm;
-    // Start is called before the first frame update
-    protected override void Awake()
-    {
-        base.Awake();
+        [Header("Stats")]
+        public int attackRange = 30;
+        public int attackCount = 3;
 
-        animBoolParamList = new List<string>();
-        animTriggerParamList = new List<string>();
+        private int turnSpeed = 2;
+        private bool isPhaseChanged = false;
+        private bool IsMovable;
+        private bool IsInvincible;
+        private NavMeshAgent nav;
 
-        fsm = new StateMachine<States>(this);
-        fsm.ChangeState(States.Init);
-    }
-
-    protected override void Update()
-    {
-        base.Update();
-
-        CheckDeath();
-        if (!isPhaseChanged)
-            CheckPhase();
-
-        fsm.Driver.Update.Invoke();
-    }
-
-    protected override void FixedUpdate()
-    {
-        base.FixedUpdate();
-
-        fsm.Driver.FixedUpdate.Invoke();
-    }
-
-    void InitAnimParamList()
-    {
-        for (int i = 0; i < animator.parameterCount; i++)
+        // Start is called before the first frame update
+        public enum States
         {
-            AnimatorControllerParameter acp = animator.GetParameter(i);
-            switch (animator.GetParameter(i).type)
+            Init,
+            Idle,
+            Move,
+            Attack,
+            Skill,
+            Death,
+        }
+
+        StateMachine<States> fsm;
+        // Start is called before the first frame update
+        protected override void Awake()
+        {
+            base.Awake();
+
+            power = new Stat(_baseEntityData.Power, E_NUMERIC_STAT_TYPE.Power, E_STAT_USE_TYPE.Natural, () => { Debug.Log("공격력 수치 변경"); });
+            moveSpeed = new Stat(_baseEntityData.MoveSpeed, E_NUMERIC_STAT_TYPE.MoveSpeed, E_STAT_USE_TYPE.Natural, () => { Debug.Log("이동속도 수치 변경"); });
+
+            recognize = new RecognizeEntityComposite(this.gameObject, this._fOVData);
+            Life = new LifeComposite(_baseEntityData.MaxHp, _baseEntityData.Defence);
+
+            _affectorManager.Init(_baseEntityData.Tenacity);
+
+            animBoolParamList = new List<string>();
+            animTriggerParamList = new List<string>();
+
+            TryGetComponent<NavMeshAgent>(out nav);
+            _objectiveEntity = GameManager.Instance.PlayerGameObject.GetComponent<Entitys.Entity>();
+
+            fsm = new StateMachine<States>(this);
+            fsm.ChangeState(States.Init);
+        }
+
+        protected override void Start()
+        {
+            base.Start();
+
+            Life.OnEnterDie += OnElderOneEnterDie;
+            Life.OnExitDie += OnElderOneExitDie;
+
+            InitAnimParamList();
+        }
+
+        void Update()
+        {
+            if (!isPhaseChanged)
+                CheckPhase();
+
+            fsm.Driver.Update.Invoke();
+        }
+
+        void FixedUpdate()
+        {
+            fsm.Driver.FixedUpdate.Invoke();
+        }
+
+        void InitAnimParamList()
+        {
+            for (int i = 0; i < this.GetModelManger().GetAnimator().parameterCount; i++)
             {
-                case AnimatorControllerParameterType.Bool:
-                    animBoolParamList.Add(acp.name);
-                    break;
-                case AnimatorControllerParameterType.Trigger:
-                    animTriggerParamList.Add(acp.name);
-                    break;
-                default:
-                    continue;
+                AnimatorControllerParameter acp = this.GetModelManger().GetAnimator().GetParameter(i);
+                switch (this.GetModelManger().GetAnimator().GetParameter(i).type)
+                {
+                    case AnimatorControllerParameterType.Bool:
+                        animBoolParamList.Add(acp.name);
+                        break;
+                    case AnimatorControllerParameterType.Trigger:
+                        animTriggerParamList.Add(acp.name);
+                        break;
+                    default:
+                        continue;
+                }
             }
         }
-    }
 
-    void ResetAnimParam()
-    {
-        foreach (string b in animBoolParamList)
-            animator.SetBool(b, false);
-        foreach (string t in animTriggerParamList)
-            animator.ResetTrigger(t);
-    }
-
-    void CheckDeath()
-    {
-        if (Life.CurrentHealth <= 0)
-            fsm.ChangeState(States.Death);
-    }
-
-    void CheckPhase()
-    {
-        if (Life.CurrentHealth <= Life.MaxHp / 2)
+        void ResetAnimParam()
         {
-            phase = 2;
-            isPhaseChanged = true;
+            foreach (string b in animBoolParamList)
+                this.GetModelManger().GetAnimator().SetBool(b, false);
+            foreach (string t in animTriggerParamList)
+                this.GetModelManger().GetAnimator().ResetTrigger(t);
         }
-    }
 
-    void PlayRandomIdleAnimation(int idleAmount)
-    {
-        int random = Random.Range(0, idleAmount);
-        switch (random)
+        void SetNavMeshData()
         {
-            case 0:
-                animator.ResetTrigger(animTriggerParamList[0]);
-                animator.ResetTrigger(animTriggerParamList[1]);
-                break;
-            case 1:
-                animator.ResetTrigger(animTriggerParamList[1]);
-                animator.SetTrigger(animTriggerParamList[0]);
-                break;
-            case 2:
-                animator.ResetTrigger(animTriggerParamList[0]);
-                animator.SetTrigger(animTriggerParamList[1]);
-                break;
-            default:
-                ResetAnimParam();
-                break;
+            nav.speed = moveSpeed.GetValueForce();
+            nav.acceleration = nav.speed * 1.5f;
+            nav.updateRotation = false;
+            nav.stoppingDistance = attackRange;
         }
-    }
 
-    void DoAttack(int phase)
-    {
-        for (int i = 2; i <= 5; i++)
-            animator.ResetTrigger(animTriggerParamList[i]);
-
-        if (phase == 1)
+        void CheckPhase()
         {
-            int random = Random.Range(0, 3);
+            if (Life.CurrentHealth <= Life.MaxHp / 2)
+            {
+                phase = 2;
+                isPhaseChanged = true;
+            }
+        }
+
+        void PlayRandomIdleAnimation(int idleAmount)
+        {
+            int random = Random.Range(0, idleAmount);
             switch (random)
             {
                 case 0:
-                    animator.SetTrigger(animTriggerParamList[2]);
+                    this.GetModelManger().GetAnimator().ResetTrigger(animTriggerParamList[0]);
+                    this.GetModelManger().GetAnimator().ResetTrigger(animTriggerParamList[1]);
                     break;
                 case 1:
-                    animator.SetTrigger(animTriggerParamList[3]);
+                    this.GetModelManger().GetAnimator().ResetTrigger(animTriggerParamList[1]);
+                    this.GetModelManger().GetAnimator().SetTrigger(animTriggerParamList[0]);
                     break;
                 case 2:
-                    animator.SetTrigger(animTriggerParamList[4]);
+                    this.GetModelManger().GetAnimator().ResetTrigger(animTriggerParamList[0]);
+                    this.GetModelManger().GetAnimator().SetTrigger(animTriggerParamList[1]);
+                    break;
+                default:
+                    ResetAnimParam();
                     break;
             }
         }
-        else if (phase == 2)
-        {
-            animator.SetTrigger(animTriggerParamList[5]);
-        }
-        else
-        {
-            Debug.Log("Normal Attack Error");
-        }
-    }
 
-    void DoSkill(int phase)
-    {
-        for (int i = 2; i < animTriggerParamList.Count; i++)
-            animator.ResetTrigger(animTriggerParamList[i]);
+        void DoAttack(int phase)
+        {
+            for (int i = 2; i <= 5; i++)
+                this.GetModelManger().GetAnimator().ResetTrigger(animTriggerParamList[i]);
 
-        if (phase == 1)
-        {
-            animator.SetTrigger(animTriggerParamList[6]);
-        }
-        else if (phase == 2)
-        {
-            if (animator.GetInteger("phaseSkill") % 2 == 0)
+            if (phase == 1)
             {
-                animator.SetTrigger(animTriggerParamList[7]);
+                int random = Random.Range(0, 3);
+                switch (random)
+                {
+                    case 0:
+                        this.GetModelManger().GetAnimator().SetTrigger(animTriggerParamList[2]);
+                        break;
+                    case 1:
+                        this.GetModelManger().GetAnimator().SetTrigger(animTriggerParamList[3]);
+                        break;
+                    case 2:
+                        this.GetModelManger().GetAnimator().SetTrigger(animTriggerParamList[4]);
+                        break;
+                }
+            }
+            else if (phase == 2)
+            {
+                this.GetModelManger().GetAnimator().SetTrigger(animTriggerParamList[5]);
             }
             else
             {
-                animator.SetTrigger(animTriggerParamList[8]);
+                Debug.Log("Normal Attack Error");
             }
         }
-    }
 
-    public override void Die()
-    {
-        base.Die();
-        //Death animation
-    }
-
-    void SetCarrierBucketPosition()
-    {
-        carrierBucket.transform.position = new Vector3(transform.position.x, 0, transform.position.z);
-        attackCarrierBucket.transform.position = transform.position + new Vector3(0, attackCarrierBucket.GetComponent<CarrierBucket>().BucketScale / 2, attackRange);
-    }
-
-    public void UseProjectile_NormalAttack()
-    {
-        this.attackCarrierBucket.CarrierInstantiatorByObjects(this, projectiles[0], new object[] { FinalData.Power * 1 });
-    }
-    public void UseProjectile_JumpAttack()
-    {
-        this.carrierBucket.CarrierInstantiatorByObjects(this, projectiles[1], new object[] { FinalData.Power * 2 });
-    }
-
-    ////////////////////////////////////////FSM Functions////////////////////////////////////////
-    /** Init State */
-    void Init_Enter()
-    {
-        Debug.Log("Init_Enter");
-        //Init Settings
-        SetCarrierBucketPosition();
-        InitAnimParamList();
-
-        fsm.ChangeState(States.Idle);
-    }
-
-    /** Idle State */
-    void Idle_Enter()
-    {
-        Debug.Log("Idle_Enter");
-        ResetAnimParam();
-        Freeze();
-    }
-
-    void Idle_Update()
-    {
-        if (this.recognize.GetCurrentRecogState() == Sophia.Composite.E_RECOG_TYPE.None)
+        void DoSkill(int phase)
         {
-            PlayRandomIdleAnimation(3);
+            for (int i = 2; i < animTriggerParamList.Count; i++)
+                this.GetModelManger().GetAnimator().ResetTrigger(animTriggerParamList[i]);
+
+            if (phase == 1)
+            {
+                this.GetModelManger().GetAnimator().SetTrigger(animTriggerParamList[6]);
+            }
+            else if (phase == 2)
+            {
+                if (this.GetModelManger().GetAnimator().GetInteger("phaseSkill") % 2 == 0)
+                {
+                    this.GetModelManger().GetAnimator().SetTrigger(animTriggerParamList[7]);
+                }
+                else
+                {
+                    IsInvincible = true;
+                    this.GetModelManger().GetAnimator().SetTrigger(animTriggerParamList[8]);
+                }
+            }
         }
-        //If HasTarget
-        else
+
+        void OnElderOneEnterDie()
         {
-            float dist = Vector3.Distance(transform.position, objectiveTarget.position);
-            if (dist <= attackRange)
-                fsm.ChangeState(States.Attack);
+            CurrentInstantiatedStage.mobGenerator.RemoveMob(this.gameObject);
+        }
+        public override bool Die() { Life.Died(); return true; }
+
+        void OnElderOneExitDie()
+        {
+            Destroy(gameObject, 0.5f);
+        }
+
+        #region Attack
+        private Stat power;
+        public void UseProjectile_NormalAttack()
+        {
+            Sophia.Instantiates.ProjectileObject useProjectile = ProjectilePool.GetObject(_attckProjectiles[(int)ANIME_STATE.ATTACK]).Init(this);
+
+            _projectileBucketManager.InstantablePositioning((int)ANIME_STATE.ATTACK, useProjectile)
+                                    .SetProjectilePower(GetStat(E_NUMERIC_STAT_TYPE.Power))
+                                    .Activate();
+        }
+        public void UseProjectile_JumpAttack()
+        {
+            Sophia.Instantiates.ProjectileObject useProjectile = ProjectilePool.GetObject(_attckProjectiles[(int)ANIME_STATE.JUMP]).Init(this);
+
+            _projectileBucketManager.InstantablePositioning((int)ANIME_STATE.JUMP, useProjectile)
+                                    .SetProjectilePower(GetStat(E_NUMERIC_STAT_TYPE.Power) * 2)
+                                    .Activate();
+        }
+
+        #endregion
+
+        ////////////////////////////////////////FSM Functions////////////////////////////////////////
+        /** Init State */
+        void Init_Enter()
+        {
+            Debug.Log("Init_Enter");
+            //Init Settings
+            InitAnimParamList();
+            SetNavMeshData();
+
+            fsm.ChangeState(States.Idle);
+        }
+
+        /** Idle State */
+        void Idle_Enter()
+        {
+            Debug.Log("Idle_Enter");
+            ResetAnimParam();
+            SetMoveState(false);
+        }
+
+        void Idle_Update()
+        {
+            if (this.recognize.GetCurrentRecogState() == E_RECOG_TYPE.None)
+            {
+                PlayRandomIdleAnimation(3);
+            }
+            //If HasTarget
             else
-                fsm.ChangeState(States.Move);
-        }
-    }
-
-    /** Move State */
-    void Move_Enter()
-    {
-        Debug.Log("Move_Enter");
-        animator.SetBool("IsWalk", true);
-        UnFreeze();
-    }
-
-    void Move_Update()
-    {
-        switch (recognize.GetCurrentRecogState()) 
-        {
-            case  Sophia.Composite.E_RECOG_TYPE.None : {
-                fsm.ChangeState(States.Idle);
-                break;
-            }
-            case  Sophia.Composite.E_RECOG_TYPE.FirstRecog : {
-                float dist = Vector3.Distance(transform.position, objectiveTarget.position);
+            {
+                float dist = Vector3.Distance(transform.position, _objectiveEntity.transform.position);
                 if (dist <= attackRange)
                     fsm.ChangeState(States.Attack);
-                break;
-            }
-            case  Sophia.Composite.E_RECOG_TYPE.Lose : {
-                break;
-            }
-            case  Sophia.Composite.E_RECOG_TYPE.ReRecog : {
-                float dist = Vector3.Distance(transform.position, objectiveTarget.position);
-                if (dist <= attackRange)
-                    fsm.ChangeState(States.Attack);
-                break;
+                else
+                    fsm.ChangeState(States.Move);
             }
         }
-    }
 
-    void Move_FixedUpdate()
-    {
-        transform.DOLookAt(objectiveTarget.position, turnSpeed);
-        nav.SetDestination(objectiveTarget.position);
-    }
-    void Move_Exit()
-    {
-        animator.SetBool("IsWalk", false);
-    }
-
-    /** Attack State */
-    void Attack_Enter()
-    {
-        Debug.Log("Attack_Enter");
-        //Skill
-        if (animator.GetInteger("attackCount") == attackCount)
-            DoSkill(phase);
-        //Normal Attack
-        else
-            DoAttack(phase);
-
-        Freeze();
-
-        transform.DOLookAt(objectiveTarget.position, turnSpeed / 2);
-    }
-
-    void Attack_Update()
-    {
-        if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f)
+        /** Move State */
+        void Move_Enter()
         {
-            if (animator.GetCurrentAnimatorStateInfo(0).IsTag("skill"))
-                fsm.ChangeState(States.Skill);
+            Debug.Log("Move_Enter");
+            this.GetModelManger().GetAnimator().SetBool("IsWalk", true);
+            SetMoveState(true);
+        }
+
+        void Move_Update()
+        {
+            switch (recognize.GetCurrentRecogState())
+            {
+                case E_RECOG_TYPE.None:
+                    {
+                        fsm.ChangeState(States.Idle);
+                        break;
+                    }
+                case E_RECOG_TYPE.FirstRecog:
+                    {
+                        float dist = Vector3.Distance(transform.position, _objectiveEntity.transform.position);
+                        if (dist <= attackRange)
+                            fsm.ChangeState(States.Attack);
+                        break;
+                    }
+                case E_RECOG_TYPE.Lose:
+                    {
+                        break;
+                    }
+                case E_RECOG_TYPE.ReRecog:
+                    {
+                        float dist = Vector3.Distance(transform.position, _objectiveEntity.transform.position);
+                        if (dist <= attackRange)
+                            fsm.ChangeState(States.Attack);
+                        break;
+                    }
+            }
+        }
+
+        void Move_FixedUpdate()
+        {
+            transform.DOLookAt(_objectiveEntity.transform.position, turnSpeed);
+            nav.SetDestination(_objectiveEntity.transform.position);
+        }
+        void Move_Exit()
+        {
+            this.GetModelManger().GetAnimator().SetBool("IsWalk", false);
+        }
+
+        /** Attack State */
+        void Attack_Enter()
+        {
+            Debug.Log("Attack_Enter");
+            //Skill
+            if (this.GetModelManger().GetAnimator().GetInteger("attackCount") == attackCount)
+                DoSkill(phase);
+            //Normal Attack
             else
-                fsm.ChangeState(States.Idle);
+                DoAttack(phase);
+
+            SetMoveState(false);
+
+            transform.DOLookAt(_objectiveEntity.transform.position, turnSpeed / 2);
         }
-    }
 
-    void Skill_Enter()
-    {
-        Debug.Log("Skill_Enter");
-        Freeze();
-    }
-
-    void Skill_FixedUpdate()
-    {
-        if (animator.GetCurrentAnimatorStateInfo(0).IsTag("walk"))
+        void Attack_Update()
         {
-            transform.DOLookAt(objectiveTarget.position, turnSpeed);
-            nav.SetDestination(objectiveTarget.position);
+            if (this.GetModelManger().GetAnimator().GetBool("IsAttackEnd"))
+            {
+                if (this.GetModelManger().GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("skill"))
+                    fsm.ChangeState(States.Skill);
+                else
+                    fsm.ChangeState(States.Idle);
+            }
         }
-    }
 
-    void Skill_Update()
-    {
-        if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f)
+        void Attack_End()
         {
-            if (animator.GetCurrentAnimatorStateInfo(0).IsTag("walk"))
-                fsm.ChangeState(States.Skill);
+            this.GetModelManger().GetAnimator().SetBool("IsAttackEnd", false);
+        }
+
+        void Skill_Enter()
+        {
+            Debug.Log("Skill_Enter");
+            if (!this.GetModelManger().GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("walk"))
+            {
+                SetMoveState(false);
+                transform.DOKill();
+                nav.SetDestination(transform.position);
+            }
+        }
+
+        void Skill_FixedUpdate()
+        {
+            if (this.GetModelManger().GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("walk"))
+            {
+                transform.DOLookAt(_objectiveEntity.transform.position, turnSpeed);
+                nav.SetDestination(_objectiveEntity.transform.position);
+            }
+        }
+
+        void Skill_Update()
+        {
+            if (this.GetModelManger().GetAnimator().GetBool("IsSkillEnd"))
+            {
+                IsInvincible = false;
+                if (this.GetModelManger().GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("walk"))
+                    fsm.ChangeState(States.Skill);
+                else
+                    fsm.ChangeState(States.Idle);
+            }
+        }
+
+        void Skill_Exit()
+        {
+            this.GetModelManger().GetAnimator().SetBool("IsSkillEnd", false);
+        }
+
+        /** Death State */
+        void Death_Enter()
+        {
+            Debug.Log("Death_Enter");
+            Die();
+        }
+
+        void Death_Update()
+        {
+            //check animation end
+        }
+
+        public override bool GetDamaged(DamageInfo damage)
+        {
+            bool isDamaged = false;
+
+            if (IsInvincible) return isDamaged;
+
+            if (Life.IsDie) { isDamaged = false; }
             else
-                fsm.ChangeState(States.Idle);
+            {
+                if (isDamaged = Life.Damaged(damage)) { GameManager.Instance.GlobalEvent.OnEnemyHitEvent.ForEach(Event => Event.Invoke()); }
+            }
+            if (Life.IsDie) { fsm.ChangeState(States.Death); }
+            return isDamaged;
         }
-    }
 
-    /** Death State */
-    void Death_Enter()
-    {
-        Debug.Log("Death_Enter");
-        Die();
-    }
+        protected override void SetDataToReferer()
+        {
+            StatReferer.SetRefStat(power);
+            StatReferer.SetRefStat(moveSpeed);
+            this.Settables.ForEach(E =>
+            {
+                E.SetStatDataToReferer(StatReferer);
+                E.SetExtrasDataToReferer(ExtrasReferer);
+            });
+        }
 
-    void Death_Update()
-    {
-        //check animation end
-    }
+        #region Move
+        private Stat moveSpeed;
+        public bool GetMoveState() => IsMovable;
 
-    void Death_Exit()
-    {
-        DestroySelf();
+        public void SetMoveState(bool movableState)
+        {
+            IsMovable = movableState;
+            if(movableState)
+                nav.enabled = true;
+            nav.isStopped = !movableState;
+            if (!movableState)
+            {
+                nav.enabled = false;
+                transform.DOKill();
+            }
+        }
+
+        public void MoveTick()
+        {
+            //Currently using Nav.SetDestination
+            throw new System.NotImplementedException();
+        }
+
+        public UniTask Turning()
+        {
+            //Currently using DoTween.DoLookAt
+            throw new System.NotImplementedException();
+        }
+
+        #endregion
     }
-    
-    public RecognizeEntityComposite GetRecognizeComposite() => this.recognize;
 }
