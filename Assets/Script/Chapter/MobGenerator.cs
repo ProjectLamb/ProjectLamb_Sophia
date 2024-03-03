@@ -35,11 +35,9 @@ public class MobGenerator : MonoBehaviour
 
             switch (randomValue)
             {
-                case (int)Enemy_TYPE.Raptor:
-                    instance.GetComponent<RaptorFlocks>().stage = stage;
-                    break;
                 default:
-                    instance.GetComponent<Enemy>().stage = stage;
+                    Sophia.Entitys.Enemy enemyTemp = instance.GetComponent<Sophia.Entitys.Enemy>();
+                    enemyTemp.CurrentInstantiatedStage = stage;
                     break;
             }
             mobAmount--;
