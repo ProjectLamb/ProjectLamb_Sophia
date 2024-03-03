@@ -6,7 +6,7 @@ using UnityEngine.Events;
 
 [System.Serializable]
 public class ExecutionState : EntityAffector{
-    /*아래 3줄은 EntityAffector 상속받아서 이미 있음*/
+/*  아래 3줄은 EntityAffector 상속받아서 이미 있음  */
 //  public AffectorPackage affectorPackage;
 //  public Entity targetEntity;
 //  public Entity ownerEntity;

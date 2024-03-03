@@ -25,8 +25,8 @@ namespace Sophia.Entitys
         [SerializeField] protected ProjectileObject[]         _attckProjectiles;
         [SerializeField] protected VisualFXObject             _spawnParticleRef;
         [SerializeField] protected VisualFXObject             _dieParticleRef;
-        [SerializeField] public  Entity                     _objectiveEntity;
         [SerializeField] protected E_MOB_AI_DIFFICULTY        _mobDifficulty;
+        [SerializeField] public    Entity                     _objectiveEntity;
 
 #endregion
 

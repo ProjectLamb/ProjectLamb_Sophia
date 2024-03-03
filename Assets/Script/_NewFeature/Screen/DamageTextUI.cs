@@ -120,12 +120,6 @@ namespace Sophia.UserInterface
             _rigid.velocity = Vector3.up * AnimationSpeed;
             CurrentDestroyCoroutine = StartCoroutine(CoDestroy());
         }
-        
-        IEnumerator DoAndRenderUI(UnityAction action)
-        {
-            action.Invoke(); 
-            yield return new WaitForEndOfFrame();
-        }
 
         public void ReactivateTextUI(DamageInfo damageInfo)
         {
@@ -135,23 +129,37 @@ namespace Sophia.UserInterface
             int newDamage = currentDamage + damageInfo.GetAmount();
             _rigid.velocity = Vector3.zero;
             Sequence ReactivateSeq = DOTween.Sequence();
-            if (damageInfo.hitType == HitType.Critical)
-            {
-                Tween ShakeTween = transform.DOShakePosition(0.1f, 10);
-                Tween CountTween = DOTween.To(() => currentDamage, x => currentDamage = x, newDamage, 0.1f)
-                                        .OnUpdate(() => { _textItem.text = $"<b>!{currentDamage}!</b>"; _textItem.UpdateText(); DamageAmount = currentDamage; });
-                ReactivateSeq.Append(ShakeTween).Join(CountTween).OnComplete(() => { _rigid.velocity = Vector3.up * AnimationSpeed; }).Play();
-            }
-            else if (damageInfo.damageHandleType == DamageHandleType.Dodge)
-            {
-                ReactivateSeq.OnComplete(() => { _textItem.text = $"<#666><i>Dodged<i></color>"; _textItem.UpdateText(); _rigid.velocity = Vector3.up * AnimationSpeed; }).Play();
-            }
-            else
-            {
-                Tween ShakeTween = transform.DOShakePosition(0.1f, 10);
-                Tween CountTween = DOTween.To(() => currentDamage, x => currentDamage = x, newDamage, 0.1f)
-                                        .OnUpdate(() => { _textItem.text = currentDamage.ToString(); _textItem.UpdateText(); DamageAmount = currentDamage; });
-                ReactivateSeq.Append(ShakeTween).Join(CountTween).OnComplete(() => { _rigid.velocity = Vector3.up * AnimationSpeed; }).Play();
+            switch(damageInfo.damageHandleType){
+                case DamageHandleType.Dodge : {
+                    ReactivateSeq.OnComplete(() => { _textItem.text = damageInfo.ToString(); _textItem.UpdateText(); _rigid.velocity = Vector3.up * AnimationSpeed; }).Play();
+                    break;
+                }
+                case DamageHandleType.BarrierPiercing : {
+                    Tween ShakeTween = transform.DOShakePosition(0.1f, 10);
+                    Tween CountTween = DOTween.To(() => currentDamage, x => currentDamage = x, newDamage, 0.1f)
+                                            .OnUpdate(() => { _textItem.text = currentDamage.ToString(); _textItem.UpdateText(); DamageAmount = currentDamage; });
+                    ReactivateSeq.Append(ShakeTween).Join(CountTween).OnComplete(() => { _rigid.velocity = Vector3.up * AnimationSpeed; }).Play();
+                    break;
+                }
+                case DamageHandleType.BarrierCoved : {
+                    ReactivateSeq.OnComplete(() => { _textItem.text = damageInfo.ToString(); _textItem.UpdateText(); _rigid.velocity = Vector3.up * AnimationSpeed; }).Play();
+                    break;
+                }
+                default : {
+                    if(damageInfo.hitType == HitType.Critical) {
+                        Tween ShakeTween = transform.DOShakePosition(0.1f, 10);
+                        Tween CountTween = DOTween.To(() => currentDamage, x => currentDamage = x, newDamage, 0.1f)
+                                                .OnUpdate(() => { _textItem.text = $"<b>!{currentDamage}!</b>"; _textItem.UpdateText(); DamageAmount = currentDamage; });
+                        ReactivateSeq.Append(ShakeTween).Join(CountTween).OnComplete(() => { _rigid.velocity = Vector3.up * AnimationSpeed; }).Play();
+                    }
+                    else {
+                        Tween ShakeTween = transform.DOShakePosition(0.1f, 10);
+                        Tween CountTween = DOTween.To(() => currentDamage, x => currentDamage = x, newDamage, 0.1f)
+                                                .OnUpdate(() => { _textItem.text = $"{currentDamage}"; _textItem.UpdateText(); DamageAmount = currentDamage; });
+                        ReactivateSeq.Append(ShakeTween).Join(CountTween).OnComplete(() => { _rigid.velocity = Vector3.up * AnimationSpeed; }).Play();
+                    }
+                    break;
+                }
             }
             CurrentDestroyCoroutine = StartCoroutine(CoDestroy());
         }

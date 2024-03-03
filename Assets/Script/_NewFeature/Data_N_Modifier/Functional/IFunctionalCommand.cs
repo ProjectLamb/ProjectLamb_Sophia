@@ -4,7 +4,7 @@ using UnityEngine.Events;
 
 namespace Sophia
 {
-    public interface IFunctionalCommand<T> : IUserInterfaceAccessible{
+    public interface IFunctionalCommand<T> : IUserInterfaceAccessible {
         public void Invoke(ref T referer);
     }
 
@@ -15,7 +15,8 @@ namespace Sophia
         public Sprite GetSprite();
     }
 
-    public interface IRandomlyActivatable {
+    public interface IRandomlyActivatable<T> {
+        public IFunctionalCommand<T> SetRandomPercentage(int percentage);
         public bool GetIsActivated();
     }
     

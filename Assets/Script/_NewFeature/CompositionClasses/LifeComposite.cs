@@ -4,6 +4,7 @@ using Sophia.DataSystem;
 
 using Sophia.DataSystem.Referer;
 using System.Collections.Generic;
+using Sophia.UserInterface;
 
 
 namespace Sophia
@@ -14,7 +15,6 @@ namespace Sophia
     [System.Serializable]
     public struct DamageInfo
     {
-        [SerializeField] public E_AFFECT_TYPE affectType;
         [SerializeField] public int damageAmount;
         [SerializeField] public float damageRatio;
         [SerializeField] public DamageHandleType damageHandleType;
@@ -66,6 +66,7 @@ namespace Sophia
             public Stat                 Defence         { get; protected set; }
             public Extras<DamageInfo>   DamagedExtras   { get; protected set; }
             public Extras<object>       DeadExtras      { get; protected set; }
+            public Extras<int>          HealExtras      { get; protected set; }
 
             private float mCurrentHealth;
             public float CurrentHealth
@@ -83,8 +84,8 @@ namespace Sophia
                 }
             }
 
-            private float mCurrentBarrier;
-            public float CurrentBarrier
+            private int mCurrentBarrier;
+            public int CurrentBarrier
             {
                 get { return mCurrentBarrier; }
                 protected set
@@ -110,6 +111,7 @@ namespace Sophia
                 Defence         = new Stat(defence, E_NUMERIC_STAT_TYPE.Defence, E_STAT_USE_TYPE.Natural, OnDefenceUpdated);
                 DamagedExtras   = new Extras<DamageInfo>(E_FUNCTIONAL_EXTRAS_TYPE.Damaged, OnDamageExtrasUpdated);
                 DeadExtras      = new Extras<object>(E_FUNCTIONAL_EXTRAS_TYPE.Dead, OnDeadExtrasUpdated);
+                HealExtras      = new Extras<int>(E_FUNCTIONAL_EXTRAS_TYPE.HealthTriggered, OnHealTriggeredExtrasUpdated);
 
                 CurrentHealth = maxHp;
                 IsDie = false;
@@ -119,7 +121,7 @@ namespace Sophia
                 OnHpUpdated ??= (float val) => { };
                 OnBarrierUpdated ??= (float val) => { };
                 OnDamaged ??= (DamageInfo val) => { };
-                OnHeal ??= (float val) => { };
+                OnHeal ??= (int val) => { };
                 OnBarrier ??= (float val) => { };
                 OnEnterDie ??= () => { };
                 OnExitDie ??= () => { };
@@ -144,13 +146,15 @@ namespace Sophia
 
 #region Setter 
 
+            public void SetDependUI(IHealthBarUI<LifeComposite> healthBar) => healthBar.SetReferenceComposite(this);
+
 #endregion
 
 #region Event
             public event UnityAction<float> OnHpUpdated = null;
             public event UnityAction<float> OnBarrierUpdated = null;
             public event UnityAction<DamageInfo> OnDamaged = null;
-            public event UnityAction<float> OnHeal = null;
+            public event UnityAction<int> OnHeal = null;
             public event UnityAction OnEnterDie = null;
             public event UnityAction OnExitDie = null;
             public event UnityAction<float> OnBarrier = null;
@@ -162,6 +166,7 @@ namespace Sophia
             protected void OnHitExtrasUpdated()     => Debug.Log("닿음 추가 동작 변경됨!");
             protected void OnDamageExtrasUpdated()  => Debug.Log("피격 추가 동작 변경됨!");
             protected void OnDeadExtrasUpdated()    => Debug.Log("죽음 추가 동작 변경됨!");
+            protected void OnHealTriggeredExtrasUpdated()    => Debug.Log("회복 추가 동작 변경됨!");
             
             public void ClearEvents()
             {
@@ -177,7 +182,7 @@ namespace Sophia
                 OnHpUpdated ??= (float val) => { };
                 OnBarrierUpdated ??= (float val) => { };
                 OnDamaged ??= (DamageInfo val) => { };
-                OnHeal ??= (float val) => { };
+                OnHeal ??= (int val) => { };
                 OnEnterDie ??= () => { };
                 OnExitDie ??= () => { };
                 OnBarrier ??= (float val) => { };
@@ -198,25 +203,26 @@ namespace Sophia
             {
                 extrasReferer.SetRefExtras<DamageInfo>(DamagedExtras);
                 extrasReferer.SetRefExtras<object>(DeadExtras);
+                extrasReferer.SetRefExtras<int>(HealExtras);
             }
 #endregion
-            public void Healed(float amount)
+            public void Healed(int amount)
             {
-                OnHeal.Invoke(amount);
+                OnHeal?.Invoke(amount);
+                HealExtras.PerformStartFunctionals(ref amount);
                 CurrentHealth += amount;
-                OnHpUpdated.Invoke(CurrentHealth);
             }
 
-            public void BarrierCoverd(float amount)
+            public void BarrierCoverd(int amount)
             {
-                OnBarrier.Invoke(amount);
                 CurrentBarrier += amount;
-                OnBarrierUpdated.Invoke(CurrentBarrier);
+                OnBarrier?.Invoke(amount);
             }
 
-            public void SetBarrier(float amount)
+            public void SetBarrier(int amount)
             {
                 CurrentBarrier = amount;
+                OnBarrier?.Invoke(amount);
             }
 
             public bool Damaged(DamageInfo damageInfo)
@@ -236,25 +242,28 @@ namespace Sophia
                     default:
                         {
                             int InputDamage = damageInfo.GetAmount();
-                            if (CurrentBarrier - InputDamage >= 0)
-                            {
-                                CurrentBarrier -= InputDamage;
-                                InputDamage = 0;
-                                damageInfo.damageHandleType = DamageHandleType.BarrierCoved;
-                            }
-                            else
-                            {
-                                InputDamage -= (int)CurrentBarrier;
-                                BreakBarrier();
-                                damageInfo.damageHandleType = DamageHandleType.None;
-                            }
+                            if(CurrentBarrier > 0) {
+                                if (CurrentBarrier - InputDamage >= 0)
+                                {
+                                    CurrentBarrier -= InputDamage;
+                                    InputDamage = 0;
+                                    damageInfo.damageHandleType = DamageHandleType.BarrierCoved;
+                                    OnBarrierUpdated?.Invoke(CurrentBarrier);
+                                }
+                                else
+                                {
+                                    InputDamage -= (int)CurrentBarrier;
+                                    BreakBarrier();
+                                    damageInfo.damageHandleType = DamageHandleType.None;
+                                }
+                            } 
                             CurrentHealth -= InputDamage;
                             break;
                         }
                 }
 
-                OnDamaged.Invoke(damageInfo);
-                OnHpUpdated.Invoke(CurrentHealth);
+                OnDamaged?.Invoke(damageInfo);
+                OnHpUpdated?.Invoke(CurrentHealth);
 
                 DamagedExtras.PerformExitFunctionals(ref damageInfo);
                 if (CurrentHealth <= 0) { this.Died(); }
@@ -264,17 +273,17 @@ namespace Sophia
             public void BreakBarrier()
             {
                 CurrentBarrier = 0;
-                OnBreakBarrier.Invoke();
+                OnBreakBarrier?.Invoke();
             }
 
             public void Died()
             {
                 object nullObject = null;
                 DeadExtras.PerformStartFunctionals(ref nullObject);
-                OnEnterDie.Invoke();
+                OnEnterDie?.Invoke();
                 IsDie = true;
                 DeadExtras.PerformExitFunctionals(ref nullObject);
-                OnExitDie.Invoke();
+                OnExitDie?.Invoke();
             }
         }
     }

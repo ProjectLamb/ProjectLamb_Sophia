@@ -16,13 +16,13 @@ public class Equipment_008 : AbstractEquipment { //, IPlayerDataApplicant{
     //public UnityAction UnequipState;
     //public UnityAction UpdateState;
     //public bool mIsInitialized = false;
-    [SerializeField] public  SternState sternAffector;
+    [SerializeField] public  StunState StunAffector;
 
     private UnityAction<Entity, Entity> Projectile;
     public override void InitEquipment( int _selectIndex)
     {
         equipmentName = "황소용 올가미";
-        this.Projectile += (Entity _owner, Entity _target) => {Sturn(_owner, _target);};
+        this.Projectile += (Entity _owner, Entity _target) => {Stun(_owner, _target);};
         if(_selectIndex == 0){
             this.AddingData.playerData.EntityDatas.ProjectileShootState += Projectile;
         }
@@ -30,7 +30,7 @@ public class Equipment_008 : AbstractEquipment { //, IPlayerDataApplicant{
     } 
     
     //디버프를 얘가 만든다면?
-    public void Sturn(Entity _owner, Entity _target) {
-        sternAffector.Init(_owner, _target).Modifiy();
+    public void Stun(Entity _owner, Entity _target) {
+        StunAffector.Init(_owner, _target).Modifiy();
     }
 }

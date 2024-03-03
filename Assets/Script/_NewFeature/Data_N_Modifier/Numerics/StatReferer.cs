@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Text;
 using Sophia.DataSystem.Modifiers;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Sophia.DataSystem.Referer
 {
     public class EntityStatReferer : IStatAccessible
     {
         protected SortedList<E_NUMERIC_STAT_TYPE, Stat> Stats = new();
+        protected StringBuilder stringBuilder = new StringBuilder();
 
         public EntityStatReferer() {
             this.Stats.Add(E_NUMERIC_STAT_TYPE.MaxHp, null);
@@ -42,18 +44,22 @@ namespace Sophia.DataSystem.Referer
 
         public string GetStatsInfo()
         {
-            StringBuilder stringBuilder = new StringBuilder(1000);
-
-            foreach(E_NUMERIC_STAT_TYPE key in Enum.GetValues(typeof(E_NUMERIC_STAT_TYPE)))
-            {
-                if(key == E_NUMERIC_STAT_TYPE.None || Stats[key] == null){continue;}
-                stringBuilder.Append(key.ToString());
-                stringBuilder.Append(" : ");
-                stringBuilder.Append(Stats[key].GetValueForce().ToString());
-                stringBuilder.Append("\n");
+            stringBuilder.Clear();
+            foreach(var stat in Stats) {
+                if(stat.Value != null) stringBuilder.AppendLine(stat.Key.ToString() + " : " + stat.Value.GetValueForce());
             }
-
             return stringBuilder.ToString();
+        }
+
+        public void AddListenerToStats(UnityAction unityAction) {
+            foreach(var stat in Stats) {
+                if(stat.Value != null) stat.Value.OnStatChanged.AddListener(unityAction);
+            }
+        }
+        public void RemoveListenerToStats(UnityAction unityAction) {
+            foreach(var stat in Stats) {
+                if(stat.Value != null) stat.Value.OnStatChanged.RemoveListener(unityAction);
+            }
         }
     }
 
@@ -62,6 +68,7 @@ namespace Sophia.DataSystem.Referer
         public PlayerStatReferer() : base() {
             this.Stats.Add(E_NUMERIC_STAT_TYPE.MaxStamina,                               null);
             this.Stats.Add(E_NUMERIC_STAT_TYPE.StaminaRestoreSpeed,                      null);
+            this.Stats.Add(E_NUMERIC_STAT_TYPE.DashForce,                                null);
             this.Stats.Add(E_NUMERIC_STAT_TYPE.CoolDownSpeed,                            null);
             this.Stats.Add(E_NUMERIC_STAT_TYPE.PoolSize,                                 null);
             this.Stats.Add(E_NUMERIC_STAT_TYPE.AttackSpeed,                              null);

@@ -68,6 +68,7 @@ namespace Sophia.Composite
             }
             StartAffector(affector);
             UpdateDebugAffectList();
+            Debug.Log($"{_entity.name} : {affector.Name}");
         }
 
         public void Recover(Affector affector)

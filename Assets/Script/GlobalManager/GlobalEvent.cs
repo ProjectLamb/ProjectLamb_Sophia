@@ -15,10 +15,10 @@ using UnityEngine.Events;
 
 public class GlobalEvent : MonoBehaviour
 {
-    public List<UnityAction>       OnEnemyDieEvent;
-    public List<UnityAction>       OnEnemyHitEvent;
-    public List<UnityAction<Stage>>        OnStageClear;
-    public List<UnityAction<Stage, Stage>> OnStageEnter;
+    public List<UnityAction>                OnEnemyDieEvent;
+    public List<UnityAction>                OnEnemyHitEvent;
+    public List<UnityAction<Stage>>         OnStageClear;
+    public List<UnityAction<Stage, Stage>>  OnStageEnter;
 
     private void Awake()
     {

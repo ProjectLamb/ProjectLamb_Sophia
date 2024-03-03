@@ -7,6 +7,7 @@ public class BattleSender : MonoBehaviour {
 
     public CommandSender _battleStartSender;
     public CommandSender _battleEndSender;
+    public CommandSender _dataMaddingSender;
 
     private void OnEnable() {
         GameManager.Instance.GlobalEvent.OnStageEnter.Add(
@@ -23,5 +24,10 @@ public class BattleSender : MonoBehaviour {
                 Debug.Log($"클리어 방 {currentStage.name}");
             })
         );
+    }
+
+    [ContextMenu("데이터 폭주")]
+    public void DataMadding() {
+        _dataMaddingSender.SendCommand();
     }
 }

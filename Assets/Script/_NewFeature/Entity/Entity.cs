@@ -9,13 +9,14 @@ namespace Sophia.Entitys
     using Sophia.Instantiates;
     using Sophia.Composite;
 
-    public abstract class Entity : MonoBehaviour, ILifeAccessible, IDataAccessible, IVisualAccessible, IAffectable
+    public abstract class Entity : MonoBehaviour, ILifeAccessible, IDataAccessible, IVisualAccessible, IAffectable, IAudioAccessible
     {
 
 #region SerializeMember 
         
-        [SerializeField] protected ModelManger  _modelManger;
-        [SerializeField] protected VisualFXBucket  _visualFXBucket;
+        [SerializeField] protected ModelManger          _modelManger;
+        [SerializeField] protected EntityAudioManager   _audioManager;
+        [SerializeField] protected VisualFXBucket       _visualFXBucket;
 
 #endregion
 
@@ -33,8 +34,8 @@ namespace Sophia.Entitys
         protected virtual void Awake() {
             TryGetComponent<Collider>(out entityCollider);
             TryGetComponent<Rigidbody>(out entityRigidbody);
-            StatReferer = new EntityStatReferer();
-            ExtrasReferer = new EntityExtrasReferer();
+            StatReferer     = new EntityStatReferer();
+            ExtrasReferer   = new EntityExtrasReferer();
         }
 
         protected virtual void Start() {
@@ -76,6 +77,10 @@ namespace Sophia.Entitys
         public GameObject GetGameObject() => this._modelManger.GetModelObject();
         public VisualFXBucket GetVisualFXBucket() => this._visualFXBucket;
         
+#endregion
+
+#region Audio Handler
+        public EntityAudioManager GetAudioManager() => _audioManager;
 #endregion
     }
 }
