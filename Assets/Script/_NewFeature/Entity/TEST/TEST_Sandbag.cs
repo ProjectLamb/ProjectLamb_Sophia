@@ -68,6 +68,10 @@ namespace Sophia.Entitys
         protected override void Start() {
             base.Start();
             ObjectiveTransform = _objectiveEntity.GetGameObject().transform;
+            Life.OnEnterDie += () => {
+                object NullRef = null;
+                GameManager.Instance.NewFeatureGlobalEvent.EnemyDie.PerformExitFunctionals(ref NullRef);
+            };
         }
 
         private void Update() {

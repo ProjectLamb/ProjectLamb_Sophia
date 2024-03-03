@@ -21,7 +21,7 @@ namespace Sophia.UserInterface
             LifeCompositeRef.OnEnterDie += TurnOffUI;
 
             StartCoroutine(
-                AsyncRender.PerformAndRenderUI(() => { 
+                AsyncRender.Instance.PerformAndRenderUI(() => { 
                     int intValue = LifeCompositeRef.MaxHp;
                     slider.maxValue = (float)intValue;
                     fill.color = gradient.Evaluate(1f); 
@@ -37,7 +37,7 @@ namespace Sophia.UserInterface
 
         public void DrawForce()
         {
-            StartCoroutine(AsyncRender.PerformAndRenderUI(() =>
+            StartCoroutine(AsyncRender.Instance.PerformAndRenderUI(() =>
             {
                 slider.value = LifeCompositeRef.CurrentHealth;
                 fill.color = gradient.Evaluate(slider.normalizedValue);
@@ -47,7 +47,7 @@ namespace Sophia.UserInterface
         private void UpdateFillAmount(float currentHp)
         {
             // Debug.Log(currentHp);
-            StartCoroutine(AsyncRender.PerformAndRenderUI(() =>
+            StartCoroutine(AsyncRender.Instance.PerformAndRenderUI(() =>
             {
                 slider.value = currentHp;
                 fill.color = gradient.Evaluate(slider.normalizedValue);

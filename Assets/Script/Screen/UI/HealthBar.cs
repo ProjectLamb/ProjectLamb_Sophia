@@ -19,7 +19,7 @@ public class HealthBar : MonoBehaviour
         LifeCompositeRef.OnHpUpdated += UpdateFillAmount;
         LifeCompositeRef.OnEnterDie += TurnOffUI;
 
-        StartCoroutine(AsyncRender.PerformAndRenderUI(() => { fill.color = gradient.Evaluate(1f); }));
+        StartCoroutine(AsyncRender.Instance.PerformAndRenderUI(() => { fill.color = gradient.Evaluate(1f); }));
     }
 
     private void OnDestroy() {
@@ -29,7 +29,7 @@ public class HealthBar : MonoBehaviour
     private void UpdateFillAmount(float currentHp)
     {
         // Debug.Log(currentHp);
-        StartCoroutine(AsyncRender.PerformAndRenderUI(() =>
+        StartCoroutine(AsyncRender.Instance.PerformAndRenderUI(() =>
         {
             slider.value = currentHp;
             fill.color = gradient.Evaluate(slider.normalizedValue);

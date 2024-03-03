@@ -13,6 +13,7 @@ namespace Sophia.Instantiates.Skills
         protected string description;
         protected Sprite icon;
         public CoolTimeComposite TimerComposite { get; protected set; }
+        public override CoolTimeComposite GetCoolTimeComposite() => this.TimerComposite;
         public Entitys.Player ownerEntity { get; protected set; }
 
         public SkillAbstractConcrete(in SerialUserInterfaceData userInterfaceData)
@@ -72,6 +73,7 @@ namespace Sophia.Instantiates.Skills
             #endregion
             public Barrier(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
             {
+                TimerComposite = new CoolTimeComposite(15f, 1);
                 TimerComposite.AddBindingAction(Activate);
             }
 
@@ -111,6 +113,7 @@ namespace Sophia.Instantiates.Skills
 
             public MoveFaster(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
             {
+                TimerComposite = new CoolTimeComposite(15f, 1);
                 TimerComposite.AddBindingAction(Activate);
             }
 
@@ -146,6 +149,7 @@ namespace Sophia.Instantiates.Skills
 
             public WeaponStun(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
             {
+                TimerComposite = new CoolTimeComposite(15f, 1);
                 TimerComposite.AddBindingAction(Activate);
             }
 
@@ -188,6 +192,7 @@ namespace Sophia.Instantiates.Skills
 
             public WeaponAdditionalDamage(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
             {
+                TimerComposite = new CoolTimeComposite(15f, 1);
                 TimerComposite.AddBindingAction(Activate);
             }
 
@@ -226,6 +231,7 @@ namespace Sophia.Instantiates.Skills
             #endregion
             public PowerUp(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
             {
+                TimerComposite = new CoolTimeComposite(15f, 1);
                 TimerComposite.AddBindingAction(Activate);
             }
 
@@ -259,6 +265,7 @@ namespace Sophia.Instantiates.Skills
 
             public Lava(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
             {
+                TimerComposite = new CoolTimeComposite(15f, 1);
                 TimerComposite.AddBindingAction(Activate);
             }
 
@@ -307,6 +314,7 @@ namespace Sophia.Instantiates.Skills
 
             public BlackWhiteHole(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
             {
+                TimerComposite = new CoolTimeComposite(15f, 1);
                 TimerComposite.AddBindingAction(Activate);
             }
 
@@ -358,6 +366,7 @@ namespace Sophia.Instantiates.Skills
 
             public DoubleShot(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
             {
+                TimerComposite = new CoolTimeComposite(15f, 1);
                 TimerComposite.AddBindingAction(Activate);
             }
 
@@ -378,10 +387,10 @@ namespace Sophia.Instantiates.Skills
 
 
             #endregion
-            public void Activate()
+            public async void Activate()
             {
                 ProjectileObject useProjectile1 = ProjectilePool.GetObject(projectileInstantiateData._projectileObjectRefer).Init(ownerEntity);
-                instantiatorRef.InstantablePositioning(useProjectile1, Vector3.zero, Vector3.forward * 15)
+                instantiatorRef.InstantablePositioning(useProjectile1, Vector3.zero, Vector3.forward * 45)
                                 .SetInstantiateType(projectileInstantiateData._InstantiateType)
                                 .SetScaleMultiplyByRatio(projectileInstantiateData._ScaleMultiplyByRatio)
                                 .SetDurateTimeByRatio(projectileInstantiateData._DurateTimeByRatio)
@@ -391,9 +400,11 @@ namespace Sophia.Instantiates.Skills
                                 .SetAffectType(projectileInstantiateData._AffectType)
                                 .SetIntervalData(in projectileInstantiateData._intervalData)
                                 .Activate();
+                
+                await UniTask.Delay(100); 
 
                 ProjectileObject useProjectile2 = ProjectilePool.GetObject(projectileInstantiateData._projectileObjectRefer).Init(ownerEntity);
-                instantiatorRef.InstantablePositioning(useProjectile2, Vector3.zero, Vector3.forward * -15)
+                instantiatorRef.InstantablePositioning(useProjectile2, Vector3.zero, Vector3.forward * -45)
                                 .SetInstantiateType(projectileInstantiateData._InstantiateType)
                                 .SetScaleMultiplyByRatio(projectileInstantiateData._ScaleMultiplyByRatio)
                                 .SetDurateTimeByRatio(projectileInstantiateData._DurateTimeByRatio)
@@ -419,6 +430,7 @@ namespace Sophia.Instantiates.Skills
 
             public Piercing(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
             {
+                TimerComposite = new CoolTimeComposite(15f, 1);
                 TimerComposite.AddBindingAction(Activate);
             }
 
@@ -476,6 +488,7 @@ namespace Sophia.Instantiates.Skills
 
             public RotateSlash(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
             {
+                TimerComposite = new CoolTimeComposite(15f, 1);
                 TimerComposite.AddBindingAction(Activate);
             }
 
@@ -498,7 +511,7 @@ namespace Sophia.Instantiates.Skills
             public void Activate()
             {
                 ProjectileObject useProjectile1 = ProjectilePool.GetObject(projectileInstantiateData._projectileObjectRefer).Init(ownerEntity);
-                instantiatorRef.InstantablePositioning(useProjectile1, Vector3.zero, Vector3.forward * 15)
+                instantiatorRef.InstantablePositioning(useProjectile1)
                                 .SetInstantiateType(projectileInstantiateData._InstantiateType)
                                 .SetScaleMultiplyByRatio(projectileInstantiateData._ScaleMultiplyByRatio)
                                 .SetDurateTimeByRatio(projectileInstantiateData._DurateTimeByRatio)
@@ -521,6 +534,7 @@ namespace Sophia.Instantiates.Skills
 
             public ThrowSlash(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
             {
+                TimerComposite = new CoolTimeComposite(15f, 1);
                 TimerComposite.AddBindingAction(Activate);
             }
 
@@ -553,6 +567,7 @@ namespace Sophia.Instantiates.Skills
                                 .SetAffectType(projectileInstantiateData._AffectType)
                                 .SetIntervalData(in projectileInstantiateData._intervalData)
                                 .Activate();
+
                 ProjectileObject useProjectile2 = ProjectilePool.GetObject(projectileInstantiateData._projectileObjectRefer).Init(ownerEntity);
                 instantiatorRef.InstantablePositioning(useProjectile2, Vector3.zero, Vector3.zero)
                                 .SetInstantiateType(projectileInstantiateData._InstantiateType)
@@ -590,7 +605,7 @@ namespace Sophia.Instantiates.Skills
 
             public DashSlash(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
             {
-                TimerComposite = new CoolTimeComposite(5, 2)
+                TimerComposite = new CoolTimeComposite(5, 3)
                                         .AddBindingAction(Activate);
             }
 
@@ -638,16 +653,5 @@ namespace Sophia.Instantiates.Skills
         }
     
     }
-    //     public class MoveFaster : SkillAbstractConcrete
-    //     {
-    // #region Member
-    // #endregion
-    //         public MoveFaster(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
-    //         {
-    //              TimerComposite.AddBindingAction(Activate);
-    //         }
-    // #region Setter
-    // #endregion
 
-    //     }
 }

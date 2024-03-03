@@ -5,6 +5,7 @@ using Sophia.Composite;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using DG.Tweening;
 
 namespace Sophia.UserInterface
 {
@@ -67,7 +68,7 @@ namespace Sophia.UserInterface
         private void Update() {}
 
         private void MaxHpUpdatedHandler() {
-            StartCoroutine(AsyncRender.PerformAndRenderUI(() => {
+            StartCoroutine(AsyncRender.Instance.PerformAndRenderUI(() => {
                 stringBuilder.Clear();
                 healthSlider.maxValue                 = lifeCompositeRef.MaxHp.GetValueByNature();
                 barrierSlider.maxValue                = lifeCompositeRef.MaxHp.GetValueByNature();
@@ -76,7 +77,7 @@ namespace Sophia.UserInterface
             }));
         }
         private void HpUpdatedHandler(float input) {
-            StartCoroutine(AsyncRender.PerformAndRenderUI(() => {
+            StartCoroutine(AsyncRender.Instance.PerformAndRenderUI(() => {
                 stringBuilder.Clear();
                 healthSlider.value                    = lifeCompositeRef.CurrentHealth;
                 stringBuilder.Append(lifeCompositeRef.CurrentHealth + lifeCompositeRef.CurrentBarrier + " / " + lifeCompositeRef.MaxHp.GetValueByNature());
@@ -85,7 +86,7 @@ namespace Sophia.UserInterface
         }
 
         private void BarrierHandler(float input) {
-            StartCoroutine(AsyncRender.PerformAndRenderUI(() => {
+            StartCoroutine(AsyncRender.Instance.PerformAndRenderUI(() => {
                 stringBuilder.Clear();
                 barrierSlider.value = lifeCompositeRef.CurrentBarrier;
                 stringBuilder.Append(lifeCompositeRef.CurrentHealth + lifeCompositeRef.CurrentBarrier + " / " + lifeCompositeRef.MaxHp.GetValueByNature());
@@ -94,7 +95,7 @@ namespace Sophia.UserInterface
         }
 
         private void BarrierUpdatedHandler(float input) {
-            StartCoroutine(AsyncRender.PerformAndRenderUI(() => {
+            StartCoroutine(AsyncRender.Instance.PerformAndRenderUI(() => {
                 stringBuilder.Clear();
                 barrierSlider.value = lifeCompositeRef.CurrentBarrier;
                 stringBuilder.Append(lifeCompositeRef.CurrentHealth + lifeCompositeRef.CurrentBarrier + " / " + lifeCompositeRef.MaxHp.GetValueByNature());
@@ -102,7 +103,7 @@ namespace Sophia.UserInterface
             }));
         }
         private void BreakBarrierHandler() {
-            StartCoroutine(AsyncRender.PerformAndRenderUI(() => {
+            StartCoroutine(AsyncRender.Instance.PerformAndRenderUI(() => {
                 stringBuilder.Clear();
                 barrierSlider.value = 0;
                 stringBuilder.Append(lifeCompositeRef.CurrentHealth + lifeCompositeRef.CurrentBarrier + " / " + lifeCompositeRef.MaxHp.GetValueByNature());
@@ -110,12 +111,12 @@ namespace Sophia.UserInterface
             }));
         }
         private void DamagedHandler(DamageInfo damage) {
-            StartCoroutine(AsyncRender.PerformAndRenderUI(() => {
+            StartCoroutine(AsyncRender.Instance.PerformAndRenderUI(() => {
 
             }));
         }
         private void HealHandler(int input) {
-            StartCoroutine(AsyncRender.PerformAndRenderUI(() => {
+            StartCoroutine(AsyncRender.Instance.PerformAndRenderUI(() => {
                 stringBuilder.Clear();
                 healthSlider.value                    = lifeCompositeRef.CurrentHealth;
                 stringBuilder.Append(healthSlider.value + " / " + healthSlider.maxValue);
@@ -123,10 +124,10 @@ namespace Sophia.UserInterface
             }));
         }
         private void EnterDieHandler() {
-            StartCoroutine(AsyncRender.PerformAndRenderUI(() => {}));
+            StartCoroutine(AsyncRender.Instance.PerformAndRenderUI(() => {}));
         }
         private void ExitDieHandler() {
-            StartCoroutine(AsyncRender.PerformAndRenderUI(() => {}));
+            StartCoroutine(AsyncRender.Instance.PerformAndRenderUI(() => {}));
         }
 
         private void OnDestroy() {

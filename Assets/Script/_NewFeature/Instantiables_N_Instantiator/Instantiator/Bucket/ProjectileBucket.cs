@@ -40,7 +40,7 @@ namespace Sophia.Instantiates
             Quaternion  rotateAngle  = Quaternion.Euler(_rotateOffset);
 
             instantiatedProjectile.transform.position = position;
-            instantiatedProjectile.transform.rotation = forwardAngle ;
+            instantiatedProjectile.transform.rotation = Quaternion.Euler(forwardAngle.eulerAngles + rotateAngle.eulerAngles);
 
             
             switch (instantiatedProjectile.PositioningType)
