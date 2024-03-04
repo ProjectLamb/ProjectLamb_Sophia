@@ -69,7 +69,7 @@ public class Raptor : Enemy
     {
         //Die.AudioClip.Play
         animator.SetTrigger("DoDie");
-        transform.parent.GetComponent<RaptorFlocks>().CurrentAmount--;
+        //transform.parent.GetComponent<RaptorFlocks>().CurrentAmount--;
         base.Die();
         IsLook = false;
         nav.enabled = false;
@@ -87,17 +87,17 @@ public class Raptor : Enemy
         base.GetDamaged(_amount, _vfx);
     }
 
-    public void DoHowl()
-    {
-        //Buff.AudioClip.Play
-        animator.SetBool("IsHowl", true);
-        if (!IsFirstRecog || transform.parent.GetComponent<RaptorFlocks>().CurrentAmount == 1)
-            transform.parent.GetComponent<RaptorFlocks>().InstantiateSmallRaptor();
-        else
-            DoBuff();
+    // public void DoHowl()
+    // {
+    //     //Buff.AudioClip.Play
+    //     animator.SetBool("IsHowl", true);
+    //     if (!IsFirstRecog || transform.parent.GetComponent<RaptorFlocks>().CurrentAmount == 1)
+    //         transform.parent.GetComponent<RaptorFlocks>().InstantiateSmallRaptor();
+    //     else
+    //         DoBuff();
 
-        Invoke("DoHowl", Random.Range(howlTime - 1, howlTime + 3));
-    }
+    //     Invoke("DoHowl", Random.Range(howlTime - 1, howlTime + 3));
+    // }
 
     public void DoDamage()
     {
@@ -155,15 +155,15 @@ public class Raptor : Enemy
         IsWandering = true;
     }
 
-    void DoBuff()
-    {
-        //버프 주는 이펙트
-        RaptorFlocks rf = transform.parent.GetComponent<RaptorFlocks>();
-        foreach(var E in rf.RaptorArray) {
-            if (E != null && E.GetComponent<Raptor>().IsSmallRaptor)
-                GetBuff(this , E.GetComponent<Raptor>());
-        }
-    }
+    // void DoBuff()
+    // {
+    //     //버프 주는 이펙트
+    //     RaptorFlocks rf = transform.parent.GetComponent<RaptorFlocks>();
+    //     foreach(var E in rf.RaptorArray) {
+    //         if (E != null && E.GetComponent<Raptor>().IsSmallRaptor)
+    //             GetBuff(this , E.GetComponent<Raptor>());
+    //     }
+    // }
 
     public void GetBuff(Entity _owenr, Entity _target)
     {
@@ -223,7 +223,7 @@ public class Raptor : Enemy
         base.Update();
         if (!IsSmallRaptor)  //큰 개체
         {
-            if(GetComponent<FieldOfView>().IsRecog) //첫 발견
+            //if(GetComponent<FieldOfView>().IsRecog) //첫 발견
             {
                 isRecog = true;
                 IsWandering = false;
@@ -235,7 +235,7 @@ public class Raptor : Enemy
                     Freeze();
                     nav.enabled = false;
                     IsCollider = true;
-                    DoHowl();
+                    //DoHowl();
                     IsLook = true;
                     GetComponent<FieldOfView>().enabled = false;
                     IsFirstRecog = true;

@@ -26,6 +26,8 @@ namespace Sophia.Instantiates
         [SerializeField] public int _ProjectilePower;
         [SerializeField] public SerialProjectileIntervalData _intervalData;
         [SerializeField] public E_AFFECT_TYPE _AffectType;
+        [SerializeField] public E_INSTANTIATE_STACKING_TYPE _stackingType;
+        [SerializeField] public E_INSTANTIATE_POSITION_TYPE _positioningType;
         [SerializeField] public SerialOnDamageExtrasModifierDatas _projectileDamageInfoByWaeponModifierDatas;
         [SerializeField] public SerialOnDamageExtrasModifierDatas _projectileDamageInfoBySkillModifierDatas;
     }
@@ -159,9 +161,11 @@ namespace Sophia.Instantiates
                     mCurrentDurateTime = 0.05f; 
                     return;
                 }
-                mCurrentDurateTime = value;
-                ProjectileMainModule.duration       = mCurrentDurateTime;
-                ProjectileMainModule.startLifetime  = mCurrentDurateTime;
+                float changedRatio = value / mCurrentDurateTime;
+                if(changedRatio <= 1.01 && 0.99 <= changedRatio) return;
+                ProjectileMainModule.duration = mCurrentDurateTime;
+                mCurrentDurateTime *= changedRatio;
+                SetParticleSimTime(transform, changedRatio);
             }
         }
 
@@ -289,20 +293,22 @@ namespace Sophia.Instantiates
             if (GetIsInitialized() == true) { throw new System.Exception("이미 초기화가 됨."); }
             if(owner == null) throw new System.Exception("투사체 생성 엔티티가 NULL임");
 
-            OwnerRef = owner;
-            CurrentSize = _baseSize;
-            CurrentDurateTime = _baseDurateTime;
-            CurrentProjectileDamage = _baseProjectileDamage;
-            CurrentForwardingSpeed = _baseForwardingSpeed;
-            CurrentSimulateSpeed = _baseSimulateSpeed;
-            
+            OwnerRef                    = owner;
+            AffectType                  = _affectType;
+            StackingType                = _stackingType;
+            PositioningType             = _positioningType;
+            CurrentSize                 = _baseSize;
+            CurrentDurateTime           = _baseDurateTime;
+            CurrentProjectileDamage     = _baseProjectileDamage;
+            CurrentForwardingSpeed      = _baseForwardingSpeed;
+            CurrentSimulateSpeed        = _baseSimulateSpeed;
             // ProjectileVisualData data = new ProjectileVisualData {
             //     ShaderUnderbarColor = ParticleMaterial.GetColor("_Color"),
             //     ShaderUnderbarColorPower = ParticleMaterial.GetFloat("_ColorPower"),
             //     DestroyEffect = _destroyEffect,
             //     HitEffect = _hitEffect
             // };
-
+// 
             // CurrnetProjectileVisualData = data;
 
 
@@ -314,6 +320,19 @@ namespace Sophia.Instantiates
 
         public ProjectileObject SetInstantiateType(E_INSTANTIATE_TYPE type) {
             instantiateType = type;
+            return this;
+        }
+
+        public ProjectileObject SetAffectType(E_AFFECT_TYPE type) {
+            AffectType = type;
+            return this;
+        }
+        public ProjectileObject SetStackingType(E_INSTANTIATE_STACKING_TYPE type) {
+            StackingType = type;
+            return this;
+        }
+        public ProjectileObject SetPositioningType(E_INSTANTIATE_POSITION_TYPE type) {
+            PositioningType = type;
             return this;
         }
 
@@ -380,17 +399,21 @@ namespace Sophia.Instantiates
             return this;
         }
 
-        public ProjectileObject SetAffectType(E_AFFECT_TYPE affectType) 
-        {
-            AffectType = affectType;
-            return this;
-        }
-
         public ProjectileObject SetProjectileVisual(ProjectileVisualData pvd) {
             CurrnetProjectileVisualData = pvd;
             return this;
         }
 
+        private void SetParticleSimTime(Transform parent, float simMuls) {
+            if(parent.TryGetComponent<ParticleSystem>(out ParticleSystem particle)) {
+                var mainModule = particle.main;
+                mainModule.simulationSpeed *= simMuls;
+                if(parent.childCount == 0) return;
+                foreach(Transform child in parent) {
+                    SetParticleSimTime(child, simMuls);
+                }
+            }
+        }
 
         private void ResetSettings()
         {
@@ -401,6 +424,9 @@ namespace Sophia.Instantiates
             CurrentProjectileDamage = _baseProjectileDamage;
             CurrentForwardingSpeed = _baseForwardingSpeed;
             CurrentSimulateSpeed = _baseSimulateSpeed;
+            AffectType = _affectType;
+            StackingType = _stackingType;
+            PositioningType = _positioningType;
             
             // ProjectileVisualData data = new ProjectileVisualData {
             //     ShaderUnderbarColor = ParticleMaterial.GetColor("_Color"),
@@ -408,7 +434,14 @@ namespace Sophia.Instantiates
             //     DestroyEffect = _destroyEffect,
             //     HitEffect = _hitEffect
             // };
+            // ProjectileVisualData data = new ProjectileVisualData {
+            //     ShaderUnderbarColor = ParticleMaterial.GetColor("_Color"),
+            //     ShaderUnderbarColorPower = ParticleMaterial.GetFloat("_ColorPower"),
+            //     DestroyEffect = _destroyEffect,
+            //     HitEffect = _hitEffect
+            // };
 
+            // CurrnetProjectileVisualData = data;
             // CurrnetProjectileVisualData = data;
 
             
@@ -505,7 +538,7 @@ namespace Sophia.Instantiates
             ParticleEmissionModule              = ProjectileParticle.emission;
             ParticleTriggerModule               = ProjectileParticle.trigger;
             ParticleColliderModule              = ProjectileParticle.collision;
-            
+
             // if(ParticleRendererModule != null && ParticleMaterial != null) {
             //     ParticleRendererModule.material     = ParticleMaterial;
             // }
@@ -513,6 +546,11 @@ namespace Sophia.Instantiates
             AffectType = _affectType;
             StackingType = _stackingType;
             PositioningType = _positioningType;
+            mCurrentProjectileDamage            = _baseProjectileDamage;
+            mCurrentDurateTime                  = _baseDurateTime;
+            mCurrentSize                        = _baseSize;
+            mCurrentForwardingSpeed             = _baseForwardingSpeed;
+            
             ProjectileParticle.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             ProjectileMainModule.stopAction = ParticleSystemStopAction.Callback;
 
@@ -531,6 +569,7 @@ namespace Sophia.Instantiates
                 if(targetEntity.GetDamaged(CurrentProjectileDamage)) {
                     OwnerRef.GetExtras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.ConveyAffect)?.PerformStartFunctionals(ref targetEntity);
                     GetExtrasWithProjectileInstantiatedType(ref targetEntity);
+                    //VisualFXObject visualFX = VisualFXObjectPool.GetObject(CurrnetProjectileVisualData.HitEffect).Init();
                     VisualFXObject visualFX = VisualFXObjectPool.GetObject(_hitEffect).Init();
                     targetEntity.GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
                     
@@ -546,6 +585,7 @@ namespace Sophia.Instantiates
             {
                 if(_serialProjectileIntervalData._isIntervalDamage && targetEntity.GetDamaged(CurrentProjectileDamage)) {
                     if(_serialProjectileIntervalData._isIntervalExtrasConvey) OwnerRef.GetExtras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.ConveyAffect)?.PerformStartFunctionals(ref targetEntity);
+                    //VisualFXObject visualFX = VisualFXObjectPool.GetObject(CurrnetProjectileVisualData.HitEffect).Init();
                     VisualFXObject visualFX = VisualFXObjectPool.GetObject(_hitEffect).Init();
                     targetEntity.GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
                     OnProjectileTriggerd.Invoke();
