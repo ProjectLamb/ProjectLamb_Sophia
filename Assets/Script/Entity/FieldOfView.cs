@@ -19,7 +19,6 @@ public class FieldOfView : MonoBehaviour
 
     // Target mask에 ray hit된 transform을 보관하는 리스트
     public List<Transform> visibleTargets = new List<Transform>();
-    public bool IsRecog;
     private bool RecogOnce;
     public E_RECOG_TYPE RecogType;
 
@@ -41,7 +40,7 @@ public class FieldOfView : MonoBehaviour
     void FindVisibleTargets()
     {
         //visibleTargets.Clear();
-        IsRecog = false;
+        RecogType = E_RECOG_TYPE.Lose;
         // viewRadius를 반지름으로 한 원 영역 내 targetMask 레이어인 콜라이더를 모두 가져옴
         Collider[] targetsInViewRadius = Physics.OverlapSphere(transform.position, viewRadius, targetMask);
 
@@ -59,7 +58,6 @@ public class FieldOfView : MonoBehaviour
                 if (!Physics.Raycast(transform.position, dirToTarget, dstToTarget, obstacleMask))
                 {
                     //visibleTargets.Add(target);
-                    IsRecog = true;
 
                     if (!RecogOnce)
                     {
@@ -69,8 +67,6 @@ public class FieldOfView : MonoBehaviour
                     else
                         RecogType = E_RECOG_TYPE.ReRecog;
                 }
-                else
-                    RecogType = E_RECOG_TYPE.Lose;
             }
         }
     }

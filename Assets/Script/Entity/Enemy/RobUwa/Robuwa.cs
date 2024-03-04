@@ -27,8 +27,7 @@ namespace Sophia.Entitys
         List<string> animBoolParamList;
         List<string> animTriggerParamList;
         private bool IsWandering = false;
-        [SerializeField]
-        private bool IsMovable = false;
+
         private float originViewRadius;
         private NavMeshAgent nav;
 
@@ -36,6 +35,8 @@ namespace Sophia.Entitys
 
         #region Serialize Member
         [SerializeField] protected RecognizeEntityComposite recognize;
+        [SerializeField] private bool IsMovable = false;
+        [SerializeField] private int wanderingCoolTime = 3;
         #endregion
 
         public enum States
@@ -210,6 +211,7 @@ namespace Sophia.Entitys
             fsm.ChangeState(States.Idle);
         }
 
+        /** Idle State */
         void Idle_Enter()
         {
             Debug.Log("Idle_Enter");
@@ -320,7 +322,7 @@ namespace Sophia.Entitys
             System.Random random = new System.Random();
             Debug.Log("Wander_Enter");
 
-            Invoke("DoWander", random.Next(0, 4));
+            Invoke("DoWander", random.Next(0, wanderingCoolTime + 1));
             SetMoveState(true);
         }
 
