@@ -105,7 +105,7 @@ using UnityEngine;
 #region Enemy Enums
     public enum Enemy_TYPE
     {
-        Enemy_Template, Raptor,
+        Robuwa, Raptor,
     }
 #endregion
 

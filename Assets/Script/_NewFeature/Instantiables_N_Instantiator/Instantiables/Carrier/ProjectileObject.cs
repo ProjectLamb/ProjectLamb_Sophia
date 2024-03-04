@@ -217,8 +217,8 @@ namespace Sophia.Instantiates
             private set 
             {
                 mCurrentProjectileVisualData = value;
-                ParticleRendererModule.material.SetColor("_Color", mCurrentProjectileVisualData.ShaderUnderbarColor);
-                ParticleRendererModule.material.SetFloat("_ColorPower", mCurrentProjectileVisualData.ShaderUnderbarColorPower);
+                // ParticleRendererModule.material.SetColor("_Color", mCurrentProjectileVisualData.ShaderUnderbarColor);
+                // ParticleRendererModule.material.SetFloat("_ColorPower", mCurrentProjectileVisualData.ShaderUnderbarColorPower);
             }
         }
 
@@ -232,7 +232,7 @@ namespace Sophia.Instantiates
         public      ParticleSystem.EmissionModule   ParticleEmissionModule;
         public      ParticleSystem.TriggerModule    ParticleTriggerModule;
         public      ParticleSystem.CollisionModule  ParticleColliderModule;
-        public      ParticleSystemRenderer          ParticleRendererModule;
+        // public      ParticleSystemRenderer          ParticleRendererModule;
 
 
 #endregion
@@ -408,7 +408,14 @@ namespace Sophia.Instantiates
             //     DestroyEffect = _destroyEffect,
             //     HitEffect = _hitEffect
             // };
+            // ProjectileVisualData data = new ProjectileVisualData {
+            //     ShaderUnderbarColor = ParticleMaterial.GetColor("_Color"),
+            //     ShaderUnderbarColorPower = ParticleMaterial.GetFloat("_ColorPower"),
+            //     DestroyEffect = _destroyEffect,
+            //     HitEffect = _hitEffect
+            // };
 
+            // CurrnetProjectileVisualData = data;
             // CurrnetProjectileVisualData = data;
 
             
@@ -506,9 +513,9 @@ namespace Sophia.Instantiates
             ParticleTriggerModule               = ProjectileParticle.trigger;
             ParticleColliderModule              = ProjectileParticle.collision;
             
-            if(ParticleRendererModule != null && ParticleMaterial != null) {
-                ParticleRendererModule.material     = ParticleMaterial;
-            }
+            // if(ParticleRendererModule != null && ParticleMaterial != null) {
+            //     ParticleRendererModule.material     = ParticleMaterial;
+            // }
             
             AffectType = _affectType;
             StackingType = _stackingType;

@@ -2,6 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum E_RECOG_TYPE
+{
+    None = 0, FirstRecog, Lose, ReRecog
+}
+
 public class FieldOfView : MonoBehaviour
 {
     // 시야 영역의 반지름과 시야 각도
@@ -15,6 +20,8 @@ public class FieldOfView : MonoBehaviour
     // Target mask에 ray hit된 transform을 보관하는 리스트
     public List<Transform> visibleTargets = new List<Transform>();
     public bool IsRecog;
+    private bool RecogOnce;
+    public E_RECOG_TYPE RecogType;
 
     void Start()
     {
@@ -53,7 +60,17 @@ public class FieldOfView : MonoBehaviour
                 {
                     //visibleTargets.Add(target);
                     IsRecog = true;
-                }                   
+
+                    if (!RecogOnce)
+                    {
+                        RecogType = E_RECOG_TYPE.FirstRecog;
+                        RecogOnce = true;
+                    }
+                    else
+                        RecogType = E_RECOG_TYPE.ReRecog;
+                }
+                else
+                    RecogType = E_RECOG_TYPE.Lose;
             }
         }
     }
