@@ -57,13 +57,14 @@ public class Raptor : Enemy
             nav.stoppingDistance = rushRange;
             nav.autoBraking = false;
         }
-
     }
+    
     protected override void UnFreeze()
     {
         base.UnFreeze();
         entityRigidbody.constraints = RigidbodyConstraints.FreezePositionY;
     }
+
     public override void Die()
     {
         //Die.AudioClip.Play

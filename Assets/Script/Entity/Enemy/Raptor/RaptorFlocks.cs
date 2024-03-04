@@ -20,7 +20,7 @@ public class RaptorFlocks : MonoBehaviour
             mCurrentAmount = value;
             if (mCurrentAmount == 0)
             {
-                stage.mobGenerator.CurrentMobCount--;
+                stage.mobGenerator.RemoveMob(this.gameObject);
                 Invoke("DestroySelf", 3f);
             }
         }
@@ -46,6 +46,7 @@ public class RaptorFlocks : MonoBehaviour
             }
         }
     }
+    public float spawnRate = 20.0f;
     int HowlCount;
 
     public GameObject[] RaptorArray;

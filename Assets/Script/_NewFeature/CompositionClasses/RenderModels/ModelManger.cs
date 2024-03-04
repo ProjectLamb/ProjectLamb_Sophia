@@ -47,7 +47,6 @@ namespace Sophia.Composite.RenderModels
         private void Awake() {
             _model = this.gameObject;
             
-            _model.TryGetComponent<Animator>(out _modelAnimator);
             foreach(Transform skinTransform in _skins.transform) {
                 _renderers.Add(skinTransform.GetComponent<Renderer>());
             }
@@ -97,7 +96,12 @@ namespace Sophia.Composite.RenderModels
 
 #region Animation
 
-        public Animator GetAnimator() {return this._modelAnimator;}
+        public Animator GetAnimator() {
+            if(this._modelAnimator == null) {
+                _model.TryGetComponent<Animator>(out _modelAnimator);
+            }
+            return this._modelAnimator;
+        }
 
 #endregion
     }
