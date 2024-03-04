@@ -217,8 +217,8 @@ namespace Sophia.Instantiates
             private set 
             {
                 mCurrentProjectileVisualData = value;
-                ParticleRendererModule.material.SetColor("_Color", mCurrentProjectileVisualData.ShaderUnderbarColor);
-                ParticleRendererModule.material.SetFloat("_ColorPower", mCurrentProjectileVisualData.ShaderUnderbarColorPower);
+                // ParticleRendererModule.material.SetColor("_Color", mCurrentProjectileVisualData.ShaderUnderbarColor);
+                // ParticleRendererModule.material.SetFloat("_ColorPower", mCurrentProjectileVisualData.ShaderUnderbarColorPower);
             }
         }
 
@@ -232,7 +232,7 @@ namespace Sophia.Instantiates
         public      ParticleSystem.EmissionModule   ParticleEmissionModule;
         public      ParticleSystem.TriggerModule    ParticleTriggerModule;
         public      ParticleSystem.CollisionModule  ParticleColliderModule;
-        public      ParticleSystemRenderer          ParticleRendererModule;
+        // public      ParticleSystemRenderer          ParticleRendererModule;
 
 
 #endregion
@@ -296,14 +296,14 @@ namespace Sophia.Instantiates
             CurrentForwardingSpeed = _baseForwardingSpeed;
             CurrentSimulateSpeed = _baseSimulateSpeed;
             
-            ProjectileVisualData data = new ProjectileVisualData {
-                ShaderUnderbarColor = ParticleMaterial.GetColor("_Color"),
-                ShaderUnderbarColorPower = ParticleMaterial.GetFloat("_ColorPower"),
-                DestroyEffect = _destroyEffect,
-                HitEffect = _hitEffect
-            };
+            // ProjectileVisualData data = new ProjectileVisualData {
+            //     ShaderUnderbarColor = ParticleMaterial.GetColor("_Color"),
+            //     ShaderUnderbarColorPower = ParticleMaterial.GetFloat("_ColorPower"),
+            //     DestroyEffect = _destroyEffect,
+            //     HitEffect = _hitEffect
+            // };
 
-            CurrnetProjectileVisualData = data;
+            // CurrnetProjectileVisualData = data;
 
 
             ClearEvents();
@@ -402,14 +402,14 @@ namespace Sophia.Instantiates
             CurrentForwardingSpeed = _baseForwardingSpeed;
             CurrentSimulateSpeed = _baseSimulateSpeed;
             
-            ProjectileVisualData data = new ProjectileVisualData {
-                ShaderUnderbarColor = ParticleMaterial.GetColor("_Color"),
-                ShaderUnderbarColorPower = ParticleMaterial.GetFloat("_ColorPower"),
-                DestroyEffect = _destroyEffect,
-                HitEffect = _hitEffect
-            };
+            // ProjectileVisualData data = new ProjectileVisualData {
+            //     ShaderUnderbarColor = ParticleMaterial.GetColor("_Color"),
+            //     ShaderUnderbarColorPower = ParticleMaterial.GetFloat("_ColorPower"),
+            //     DestroyEffect = _destroyEffect,
+            //     HitEffect = _hitEffect
+            // };
 
-            CurrnetProjectileVisualData = data;
+            // CurrnetProjectileVisualData = data;
 
             
             AffectType = E_AFFECT_TYPE.None;
@@ -506,9 +506,9 @@ namespace Sophia.Instantiates
             ParticleTriggerModule               = ProjectileParticle.trigger;
             ParticleColliderModule              = ProjectileParticle.collision;
             
-            if(ParticleRendererModule != null && ParticleMaterial != null) {
-                ParticleRendererModule.material     = ParticleMaterial;
-            }
+            // if(ParticleRendererModule != null && ParticleMaterial != null) {
+            //     ParticleRendererModule.material     = ParticleMaterial;
+            // }
             
             AffectType = _affectType;
             StackingType = _stackingType;
@@ -531,7 +531,7 @@ namespace Sophia.Instantiates
                 if(targetEntity.GetDamaged(CurrentProjectileDamage)) {
                     OwnerRef.GetExtras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.ConveyAffect)?.PerformStartFunctionals(ref targetEntity);
                     GetExtrasWithProjectileInstantiatedType(ref targetEntity);
-                    VisualFXObject visualFX = VisualFXObjectPool.GetObject(CurrnetProjectileVisualData.HitEffect).Init();
+                    VisualFXObject visualFX = VisualFXObjectPool.GetObject(_hitEffect).Init();
                     targetEntity.GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
                     
                     OnProjectileTriggerd.Invoke();
@@ -546,7 +546,7 @@ namespace Sophia.Instantiates
             {
                 if(_serialProjectileIntervalData._isIntervalDamage && targetEntity.GetDamaged(CurrentProjectileDamage)) {
                     if(_serialProjectileIntervalData._isIntervalExtrasConvey) OwnerRef.GetExtras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.ConveyAffect)?.PerformStartFunctionals(ref targetEntity);
-                    VisualFXObject visualFX = VisualFXObjectPool.GetObject(CurrnetProjectileVisualData.HitEffect).Init();
+                    VisualFXObject visualFX = VisualFXObjectPool.GetObject(_hitEffect).Init();
                     targetEntity.GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
                     OnProjectileTriggerd.Invoke();
                 }

@@ -14,6 +14,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Resources/Scenes/_TEST_Chapter_.unity
     guid: 70f34d01d713042c1ada5fa533bf1ae3
+  - enabled: 0
+    path: Assets/Resources/Workspace/neoskyclad/Scene/_TEST_Chapter_kdh.unity
+    guid: ab11fc6e8f3bdb243b7db3ca0a490400
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 1500e65aa38604acfa62802a54d459c5,
       type: 2}

@@ -30,7 +30,7 @@ public class Shop : MonoBehaviour
         get { return skillCount; }
         set { skillCount = value; }
     }
-    private int equipmentPrice = 20;
+    private int equipmentPrice = 25;
     private int heartPrice = 10;
     private int skillPrice = 50;
     public Carrier[] ItemArray;

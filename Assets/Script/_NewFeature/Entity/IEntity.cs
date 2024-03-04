@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using Sophia.Composite;
 using Sophia.Instantiates;
+using UnityEngine.AI;
 
 namespace Sophia
 {
