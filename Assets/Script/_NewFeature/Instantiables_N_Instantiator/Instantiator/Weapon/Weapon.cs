@@ -167,6 +167,7 @@ namespace Sophia.Instantiates {
 #endregion
 
         public void Use(Player player) {
+            Debug.Log("WeaponUsed");
             if(NormalQueue.Count == 0) { _weaponProjectiles.ForEach(E => NormalQueue.Enqueue(E)); }
             ProjectileObject useProjectile = ProjectilePool.GetObject(NormalQueue.Dequeue()).Init(player);
             mInstantiatorRef.InstantablePositioning(useProjectile)

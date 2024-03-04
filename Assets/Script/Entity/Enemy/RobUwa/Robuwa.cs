@@ -91,6 +91,7 @@ namespace Sophia.Entitys
         {
             fsm.Driver.FixedUpdate.Invoke();
         }
+        
         public void OnRobuwaEnterDie()
         {
             CurrentInstantiatedStage.mobGenerator.RemoveMob(this.gameObject);
@@ -100,12 +101,14 @@ namespace Sophia.Entitys
         {
             Destroy(gameObject, 0.5f);
         }
+        
         void SetNavMeshData()
         {
             nav.speed = moveSpeed.GetValueForce();
             nav.acceleration = nav.speed * 1.5f;
             nav.updateRotation = false;
             nav.stoppingDistance = AttackRange;
+            SetMoveState(true);
         }
 
         public override bool Die() { Life.Died(); return true; }
@@ -185,7 +188,9 @@ namespace Sophia.Entitys
         }
 
         #region Attack
+        
         private Stat power;
+
         public void UseProjectile_NormalAttack()
         {
             Sophia.Instantiates.ProjectileObject useProjectile = ProjectilePool.GetObject(_attckProjectiles[(int)ANIME_STATE.ATTACK]).Init(this);
@@ -194,6 +199,7 @@ namespace Sophia.Entitys
                                     .SetProjectilePower(GetStat(E_NUMERIC_STAT_TYPE.Power))
                                     .Activate();
         }
+        
         #endregion
 
         #region FSM Functions
@@ -214,7 +220,11 @@ namespace Sophia.Entitys
         {
             Debug.Log("Idle_Enter");
             recognize.CurrentViewRadius = originViewRadius;
-            SetMoveState(false);
+            
+            if(!IsMovable)return;
+            nav.isStopped = true;
+            nav.enabled = false;
+            transform.DOKill();
         }
 
         void Idle_Update()
@@ -244,7 +254,11 @@ namespace Sophia.Entitys
         {
             Debug.Log("Threat Enter");
 
-            SetMoveState(false);
+            
+            if(!IsMovable)return;
+            nav.isStopped = true;
+            nav.enabled = false;
+            transform.DOKill();
             recognize.CurrentViewRadius *= 2;
             this.GetModelManger().GetAnimator().SetTrigger("DoThreat");
         }
@@ -284,7 +298,9 @@ namespace Sophia.Entitys
         {
             Debug.Log("Move_Enter");
             this.GetModelManger().GetAnimator().SetBool("IsWalk", true);
-            SetMoveState(true);
+            
+            nav.isStopped = false;
+            nav.enabled = true;
         }
 
         void Move_Update()
@@ -321,7 +337,9 @@ namespace Sophia.Entitys
             Debug.Log("Wander_Enter");
 
             Invoke("DoWander", random.Next(0, 4));
-            SetMoveState(true);
+            
+            nav.isStopped = false;
+            nav.enabled = true;
         }
 
         void Wander_Update()
@@ -358,7 +376,11 @@ namespace Sophia.Entitys
         {
             Debug.Log("Attack_Enter");
 
-            SetMoveState(false);
+            
+            if(!IsMovable)return;
+            nav.isStopped = true;
+            nav.enabled = false;
+            transform.DOKill();
 
             transform.DOLookAt(_objectiveEntity.transform.position, TurnSpeed / 2);
             DoAttack();
@@ -383,6 +405,7 @@ namespace Sophia.Entitys
             Debug.Log("Death_Enter");
             Die();
         }
+        
         #endregion
 
         #region Inherited Functions From Enemy Class
@@ -398,6 +421,7 @@ namespace Sophia.Entitys
         }
 
         public override EntityStatReferer GetStatReferer() => this.StatReferer;
+        
         protected override void CollectSettable()
         {
             Settables.Add(Life);
@@ -414,7 +438,7 @@ namespace Sophia.Entitys
             if (Life.IsDie) { isDamaged = false; }
             else
             {
-                if (isDamaged = Life.Damaged(damage)) { GameManager.Instance.GlobalEvent.OnEnemyHitEvent.ForEach(Event => Event.Invoke()); }
+                if (isDamaged = Life.Damaged(damage)) {  }
             }
             if (Life.IsDie) { fsm.ChangeState(States.Death); }
             return isDamaged;
@@ -440,17 +464,24 @@ namespace Sophia.Entitys
         #endregion
 
         #region Move
+
         private Stat moveSpeed;
+        
         public bool GetMoveState() => IsMovable;
 
         public void SetMoveState(bool movableState)
         {
             IsMovable = movableState;
-            if (movableState)
+            if (IsMovable) {
                 nav.enabled = true;
-            nav.isStopped = !movableState;
-            if (!movableState)
+                
+                nav.isStopped = false;
+            }
+            else
             {
+                
+                if(!IsMovable)return;
+                nav.isStopped = true;
                 nav.enabled = false;
                 transform.DOKill();
             }

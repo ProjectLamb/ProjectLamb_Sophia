@@ -24,6 +24,7 @@ namespace Sophia.UserInterface
             }
             private set{}
         }
+        [SerializeField] PauseMenu pauseMenu;
 
         [SerializeField] Entitys.Player player;
         [SerializeField] Composite.SkillManager skillManager;
@@ -49,9 +50,9 @@ namespace Sophia.UserInterface
         }
 
         public void OpenSkillSelector(Skill skill, UnityAction<bool, KeyCode> action) {
-            GameManager.Instance.GlobalEvent.IsGamePaused = true;
             actionFromItem = action;
-            gameObject.SetActive(true);
+            pauseMenu.OpenMenu(gameObject);
+
             StartCoroutine(AsyncRender.Instance.PerformAndRenderUIUnScaled(() => {
                 currentSkillButton.SetUserInterfaceData(skill, KeyCode.None);
                 currentSkillButton.transform.localPosition = Vector3.zero;
@@ -67,9 +68,8 @@ namespace Sophia.UserInterface
         }
 
         public void CloseSkillSelector() {
-            GameManager.Instance.GlobalEvent.IsGamePaused = false;
             actionFromItem = null;
-            gameObject.SetActive(false);
+            pauseMenu.CloseMenu();
         }
 
         public void MoveCurrentHovering(KeyCode key){

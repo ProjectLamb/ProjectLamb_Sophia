@@ -72,7 +72,6 @@ namespace Sophia.UserInterface
 
         public DamageTextUI SetTextByString(string str)
         {
-            if (_textItem.text.Length != 0) return this;
             _textItem.text = str;
             _textItem.UpdateText();
             return this;

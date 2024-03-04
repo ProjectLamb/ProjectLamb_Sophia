@@ -86,8 +86,7 @@ namespace Sophia.Composite
         {
             if(!collectedSkillInfo.ContainsKey(key)) 
                 throw new System.Exception("올바른 스킬 키보드 접근이 아님 QER 중 하나로..");
-            if(collectedSkillInfo[key] != EmptySkill.Instance) 
-                return false;
+            if(collectedSkillInfo[key] != EmptySkill.Instance)  { Drop(key); }
             collectedSkill[key] = skill;
             collectedSkillInfo[key] = skill;
             switch(key) {

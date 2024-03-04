@@ -7,10 +7,12 @@ namespace Sophia.Instantiates
         [SerializeField] public int Gear;
         public bool triggeredOnce = false;
         public void SetGear(int data) => Gear = data;
+        
         protected override void Awake()
         {
             base.Awake();
         }
+
         protected override void OnTriggerLogic(Collider entity)
         {
             if(triggeredOnce) {return;}

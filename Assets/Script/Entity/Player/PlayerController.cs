@@ -24,9 +24,10 @@ public class PlayerController : MonoBehaviour
     }
 
     private void Update() {
+        if(GameManager.Instance.GlobalEvent.IsGamePaused) return;
         player.AimAssist();
         player.CheckAttack();
-        
+
         if(player.mIsDie) // 플레이어가 죽은 상태면 이동 불가
             IsMoveAllow = false;
 
@@ -38,7 +39,11 @@ public class PlayerController : MonoBehaviour
             if(Input.GetKeyDown(KeyCode.Q)){player.Skill(SKILL_KEY.Q);}
             if(Input.GetKeyDown(KeyCode.E)){player.Skill(SKILL_KEY.E);}
             if(Input.GetKeyDown(KeyCode.R)){player.Skill(SKILL_KEY.R);}
-            if(Input.GetMouseButtonDown(0)){player.Attack();}
+            if(Input.GetMouseButtonDown(0)){
+                Debug.Log(GameManager.Instance.GlobalEvent.IsGamePaused);
+                Debug.Log("Clicked");
+                player.Attack();
+            }
         }
     }
 }
