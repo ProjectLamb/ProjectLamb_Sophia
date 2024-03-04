@@ -35,7 +35,7 @@ namespace Sophia.DataSystem
 
         public class ExecutionStrike : Affector, IUserInterfaceAccessible
         {
-
+            private Atomics.AudioAtomics            AudioAffector;
             private Atomics.GetHitAtomics           DamageAffector;
             private Atomics.MaterialChangeAtomics   MaterialChangeAffector;
             private Atomics.VisualFXAtomics         VisualFXAffector;
@@ -69,6 +69,7 @@ namespace Sophia.DataSystem
             }
             protected override void Init(in SerialAffectorData affectData)
             {
+                AudioAffector = new Atomics.AudioAtomics(in affectData._audioData);
 
                 AffectType = E_AFFECT_TYPE.Execution;
                 Name = affectData._uiData._name;
@@ -102,6 +103,7 @@ namespace Sophia.DataSystem
 
         public class BurnAffect : Affector, IUserInterfaceAccessible
         {
+            private Atomics.AudioAtomics            AudioAffector;
             private Atomics.GetHitAtomics DamageAffector;
 
             public BurnAffect(in SerialAffectorData affectData) : base(in affectData)
@@ -125,6 +127,7 @@ namespace Sophia.DataSystem
 
             protected override void Init(in SerialAffectorData affectData)
             {
+                AudioAffector = new Atomics.AudioAtomics(in affectData._audioData);
                 AffectType = E_AFFECT_TYPE.Burn;
                 Name = affectData._uiData._name;
                 Description = affectData._uiData._description;
@@ -155,6 +158,7 @@ namespace Sophia.DataSystem
 
         public class PoisonedAffect : Affector, IUserInterfaceAccessible
         {
+            private Atomics.AudioAtomics            AudioAffector;
             public PoisonedAffect(in SerialAffectorData affectData) : base(in affectData)
             {
             }
@@ -182,6 +186,7 @@ namespace Sophia.DataSystem
 
             protected override void Init(in SerialAffectorData affectData)
             {
+                AudioAffector = new Atomics.AudioAtomics(in affectData._audioData);
                 AffectType = E_AFFECT_TYPE.Poisoned;
                 Name = affectData._uiData._name;
                 Description = affectData._uiData._description;
@@ -214,6 +219,7 @@ namespace Sophia.DataSystem
 
         public class BleedAffect : Affector, IUserInterfaceAccessible
         {
+            private Atomics.AudioAtomics            AudioAffector;
             private Atomics.GetHitAtomics DamageAffector;
             public BleedAffect(in SerialAffectorData affectData) : base(in affectData)
             {
@@ -236,6 +242,7 @@ namespace Sophia.DataSystem
 
             protected override void Init(in SerialAffectorData affectData)
             {
+                AudioAffector = new Atomics.AudioAtomics(in affectData._audioData);
                 AffectType = E_AFFECT_TYPE.Bleed;
                 Name = affectData._uiData._name;
                 Description = affectData._uiData._description;
@@ -265,6 +272,7 @@ namespace Sophia.DataSystem
 
         public class ColdAffect : Affector, IUserInterfaceAccessible
         {
+            private Atomics.AudioAtomics            AudioAffector;
             private Atomics.EntityStatModifyAtomics EntityStatModifyAffector;
             private Atomics.MaterialChangeAtomics MaterialChangeAffector;
             private Atomics.VisualFXAtomics VisualFXAffector;
@@ -290,6 +298,7 @@ namespace Sophia.DataSystem
 
             protected override void Init(in SerialAffectorData affectData)
             {
+                AudioAffector = new Atomics.AudioAtomics(in affectData._audioData);
                 AffectType = E_AFFECT_TYPE.Cold;
                 Name = affectData._uiData._name;
                 Description = affectData._uiData._description;
@@ -319,6 +328,7 @@ namespace Sophia.DataSystem
 
         public class StunAffect : Affector, IUserInterfaceAccessible
         {
+            private Atomics.AudioAtomics            AudioAffector;
             private Atomics.HoldAtomics HoldAffector;
             private Atomics.MaterialChangeAtomics MaterialChangeAffector;
             private Atomics.VisualFXAtomics VisualFXAffector;
@@ -347,6 +357,7 @@ namespace Sophia.DataSystem
 
             protected override void Init(in SerialAffectorData affectData)
             {
+                AudioAffector = new Atomics.AudioAtomics(in affectData._audioData);
                 AffectType = E_AFFECT_TYPE.Stun;
                 Name = affectData._uiData._name;
                 Description = affectData._uiData._description;
@@ -378,6 +389,7 @@ namespace Sophia.DataSystem
 
         public class BoundedAffect : Affector, IUserInterfaceAccessible
         {
+            private Atomics.AudioAtomics            AudioAffector;
             private Atomics.HoldAtomics HoldAffector;
 
             public BoundedAffect(in SerialAffectorData affectData) : base(in affectData)
@@ -407,6 +419,7 @@ namespace Sophia.DataSystem
 
             protected override void Init(in SerialAffectorData affectData)
             {
+                AudioAffector = new Atomics.AudioAtomics(in affectData._audioData);
                 Name = affectData._uiData._name;
                 Description = affectData._uiData._description;
                 Icon = affectData._uiData._icon;
@@ -431,6 +444,7 @@ namespace Sophia.DataSystem
 
         public class KnockbackAffect : Affector, IUserInterfaceAccessible
         {
+            private Atomics.AudioAtomics            AudioAffector;
             private Atomics.RigidImpulseAtomics RigidImpulseAffector;
             private Atomics.HoldAtomics HoldAffector;
 
@@ -458,6 +472,7 @@ namespace Sophia.DataSystem
 
             protected override void Init(in SerialAffectorData affectData)
             {
+                AudioAffector = new Atomics.AudioAtomics(in affectData._audioData);
                 AffectType = E_AFFECT_TYPE.Knockback;
                 Name = affectData._uiData._name;
                 HoldAffector = new Atomics.HoldAtomics();
@@ -487,6 +502,7 @@ namespace Sophia.DataSystem
 
         public class BlackHoleAffect : Affector, IUserInterfaceAccessible
         {
+            private Atomics.AudioAtomics            AudioAffector;
             private Atomics.RigidGradualAtomics RigidGradualAffector;
             private Atomics.HoldAtomics HoldAffector;
             public BlackHoleAffect(in SerialAffectorData affectData, Transform ownerTransform) : base(in affectData)
@@ -517,6 +533,7 @@ namespace Sophia.DataSystem
 
             protected override void Init(in SerialAffectorData affectData)
             {
+                AudioAffector = new Atomics.AudioAtomics(in affectData._audioData);
                 AffectType = E_AFFECT_TYPE.BlackHole;
                 Name = affectData._uiData._name;
                 Description = affectData._uiData._description;
@@ -547,6 +564,7 @@ namespace Sophia.DataSystem
 
         public class AirborneAffect : Affector, IUserInterfaceAccessible
         {
+            private Atomics.AudioAtomics            AudioAffector;
             private Atomics.TweenJumpTransformAtomics TweenJumpAffector;
             private Atomics.HoldAtomics HoldAffector;
             public AirborneAffect(in SerialAffectorData affectData) : base(in affectData)
@@ -567,6 +585,7 @@ namespace Sophia.DataSystem
 
             protected override void Init(in SerialAffectorData affectData)
             {
+                AudioAffector = new Atomics.AudioAtomics(in affectData._audioData);
                 AffectType = E_AFFECT_TYPE.Airborne;
                 Name = affectData._uiData._name;
                 Description = affectData._uiData._description;

@@ -122,11 +122,16 @@ namespace Sophia.Instantiates
             get { return mCurrentDurateTime; }
             private set
             {
-                if (mCurrentDurateTime <= 0.05f)
+                if (value <= 0.05f)
                 {
                     mCurrentDurateTime = 0.05f;
+                    return;
                 }
-                mCurrentDurateTime = value;
+                float changedRatio = value / mCurrentDurateTime;
+                if(changedRatio <= 1.01 && 0.99 <= changedRatio) return;
+                VisualFXMainModule.duration = mCurrentDurateTime;
+                mCurrentDurateTime *= changedRatio;
+                SetParticleSimTime(transform, changedRatio);
             }
         }
 
@@ -190,9 +195,11 @@ namespace Sophia.Instantiates
             ParticleEmissionModule  = _visualFXParticle.emission;
             ParticleTriggerModule   = _visualFXParticle.trigger;
             ParticleColliderModule  = _visualFXParticle.collision;
-
-            AffectType = _affectType;
             
+            mCurrentSize        =  _baseSize;
+            mCurrentDurateTime  =  _baseDurateTime;
+            AffectType = _affectType;
+
             if(this.DEBUG) Debug.Log($"Awake 실행 {this.AffectType}, {this.StackingType} {this.PositioningType}");
             
         }
@@ -218,6 +225,17 @@ namespace Sophia.Instantiates
             }
         }
 
+        private void SetParticleSimTime(Transform parent, float simMuls) {
+            if(parent.TryGetComponent<ParticleSystem>(out ParticleSystem particle)) {
+                var mainModule = particle.main;
+                mainModule.simulationSpeed *= simMuls;
+                if(parent.childCount == 0) return;
+                foreach(Transform child in parent) {
+                    SetParticleSimTime(child, simMuls);
+                }
+            }
+        }
+
 
 #region Getter
 
@@ -230,6 +248,8 @@ namespace Sophia.Instantiates
         public VisualFXObject Init()
         {
             if (GetIsInitialized() == true) { throw new System.Exception("이미 초기화가 됨."); }
+            CurrentSize       = _baseSize;
+            CurrentDurateTime = _baseDurateTime;
             ClearEvents();
             IsInitialized = true;
             return this;
@@ -283,11 +303,8 @@ namespace Sophia.Instantiates
         public void ClearEvents()
         {
             OnActivated = null;
-
             OnRelease = null;
-
             OnActivated ??= () => { };
-
             OnRelease ??= () => { };
         }
 

@@ -8,10 +8,10 @@ namespace Sophia.DataSystem.Atomics
         public readonly ParamRef[] StartParamRefs;
         public readonly ParamRef[] ExitParamRefs;
 
-        public AudioAtomics(EventReference fmodEventRef, ParamRef[] startParamRefs, ParamRef[] exitParamRefs) {
-            FmodEventReference  =   fmodEventRef;
-            StartParamRefs      =   startParamRefs;
-            ExitParamRefs       =   exitParamRefs;
+        public AudioAtomics(in SerialAudioData audioData) {
+            FmodEventReference  =   audioData._fmodEventRef;
+            StartParamRefs      =   audioData._startParamRefs;
+            ExitParamRefs       =   audioData._exitParamRefs;
         }
 
         public void Invoke(IAudioAccessible audioAccessible) {

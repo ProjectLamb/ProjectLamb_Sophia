@@ -17,6 +17,7 @@ namespace Sophia.Entitys
     public abstract class Enemy : Entity, IRecogStateAccessible {
 
 #region SerializeMember
+
         [Header("Mob Settings")]
         [SerializeField] protected SerialBaseEntityData       _baseEntityData;
         [SerializeField] protected SerialFieldOfViewData      _fOVData;
