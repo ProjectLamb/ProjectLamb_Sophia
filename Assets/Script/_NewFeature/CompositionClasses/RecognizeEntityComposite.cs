@@ -1,3 +1,4 @@
+
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -12,10 +13,6 @@ namespace Sophia.Composite
     using Sophia.Entitys;
     using System.Diagnostics.Tracing;
 
-    public enum E_RECOG_TYPE {
-        None = 0, FirstRecog, Lose, ReRecog
-    }
-
     [System.Serializable]
     public struct SerialFieldOfViewData {
         [SerializeField] [Range(0, 999)] public float viewRadius;
@@ -28,9 +25,7 @@ namespace Sophia.Composite
     }
 
     public class RecognizeEntityComposite {
-        public E_RECOG_TYPE RecogType;
         private FieldOfView FOV;
-        private bool RecogOnce;
         public RecognizeEntityComposite(GameObject gameObject, in SerialFieldOfViewData serialFieldOfViewData) {
             FOV = gameObject.AddComponent<FieldOfView>();
             FOV.viewAngle       =  serialFieldOfViewData.viewAngle;
@@ -38,22 +33,37 @@ namespace Sophia.Composite
             FOV.targetMask      =  serialFieldOfViewData.targetMask;
             FOV.obstacleMask    =  serialFieldOfViewData.obstacleMask;
             FOV.enabled = true;
-            RecogType = E_RECOG_TYPE.None;
+            FOV.RecogType = E_RECOG_TYPE.None;
+
+            CurrentViewRadius = serialFieldOfViewData.viewRadius;
+            CurrentViewAngle = serialFieldOfViewData.viewAngle;
         }
 
-        public float GetViewRadius() => FOV.viewRadius;
-        public float GetViewAngle() => FOV.viewAngle;
-        public E_RECOG_TYPE GetCurrentRecogState() {
-            if(FOV.IsRecog)
-                if(!RecogOnce){
-                    RecogOnce = true;
-                    return RecogType = E_RECOG_TYPE.FirstRecog;
-                }
-                else 
-                    return RecogType = E_RECOG_TYPE.ReRecog;
-            else 
-                return RecogType = E_RECOG_TYPE.Lose;
-        }
+        private float mCurrentViewRadius;
+        public float CurrentViewRadius {
+            get {
+                return mCurrentViewRadius;
+            }
+            set {
+                mCurrentViewRadius = value;
+                FOV.viewRadius = mCurrentViewRadius;
+            }
+        } 
+
+        private float mCurrentViewAngle;
+        public float CurrentViewAngle {
+            get {
+                return mCurrentViewAngle;
+            }
+            set {
+                if(0 > value || value > 360f) { value %= 360f; }
+                mCurrentViewAngle = value;
+                FOV.viewAngle = mCurrentViewAngle;
+                return;
+            }
+        } 
+
+        public E_RECOG_TYPE GetCurrentRecogState() => FOV.RecogType;
 
         public List<Entity> GetEntities() {
             List<Entity> entities = new List<Entity>();

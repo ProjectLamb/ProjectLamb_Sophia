@@ -35,6 +35,7 @@ public class Enemy : Entity
     public bool isDie;                  // public LifeComposite Life {get; private set;}
     public bool isOffensive;            // !isOffensive = Defensive
     int offensiveRate;                  // Factory 
+    public float spawnRate;
 
     public Projectile[] projectiles;    // private ProjectileObject[]         _attckProjectiles;
 
