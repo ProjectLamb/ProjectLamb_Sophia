@@ -26,13 +26,14 @@ public class PauseMenu : MonoBehaviour
                 var topMenu = menuStack.Peek();
                 topMenu.SetActive(false);
                 menuStack.Pop();
-                GameManager.Instance.GlobalEvent.IsGamePaused = false;
+                if(menuStack.Count == 0) GameManager.Instance.GlobalEvent.IsGamePaused = false;
             }));
             return;
         }
         var topMenu = menuStack.Peek();
         topMenu.SetActive(false);
         menuStack.Pop();
+        if(menuStack.Count == 0) {GameManager.Instance.GlobalEvent.IsGamePaused = false;}
     }
 
     private void Update() {

@@ -88,6 +88,7 @@ namespace Sophia.Composite
                 throw new System.Exception("올바른 스킬 키보드 접근이 아님 QER 중 하나로..");
             if(collectedSkillInfo[key] != EmptySkill.Instance)  { Drop(key); }
             collectedSkill[key] = skill;
+            collectedSkill[key].GetCoolTimeComposite().AddOnUseEvent(() => _ownerPlayer.GetModelManger().GetAnimator().Play("PlaySkillAction"));
             collectedSkillInfo[key] = skill;
             switch(key) {
                 case KeyCode.Q : {InGameScreenUI.Instance._playerSkillCoolUIs[0].SetSkill(collectedSkill[KeyCode.Q]); break;}

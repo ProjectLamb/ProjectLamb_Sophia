@@ -19,7 +19,8 @@ public class Stage : MonoBehaviour
     //private화 하기
     public StageGenerator stageGenerator;
     public MobGenerator mobGenerator;
-    GachaComponent gachaComponent;
+    public Sophia.Instantiates.GachaComponent gachaComponent;
+    //GachaComponent gachaComponent;
 
     #region Serial Member
     [SerializeField]
@@ -72,7 +73,8 @@ public class Stage : MonoBehaviour
     {
         TryGetComponent<StageGenerator>(out stageGenerator);
         TryGetComponent<MobGenerator>(out mobGenerator);
-        TryGetComponent<GachaComponent>(out gachaComponent);
+        TryGetComponent<Sophia.Instantiates.GachaComponent>(out gachaComponent);
+        //TryGetComponent<GachaComponent>(out gachaComponent);
         IsClear = false;
     }
 
@@ -202,8 +204,13 @@ public class Stage : MonoBehaviour
         }
         if (Type == "normal")
         {
-            gachaComponent.instantPivot.position = transform.position;
-            gachaComponent.InstantiateReward(gachaComponent.instantPivot);
+            // gachaComponent.instantPivot.position = transform.position;
+            // gachaComponent.InstantiateReward(gachaComponent.instantPivot);
+            List<Sophia.Instantiates.ItemObject> positionedItem = gachaComponent.InstantiateReward();
+            if(positionedItem.Count == 0) return;
+            foreach(var item in gachaComponent.InstantiateReward()) {
+                item.Activate();
+            }
         }
         else if (Type == "boss")
         {

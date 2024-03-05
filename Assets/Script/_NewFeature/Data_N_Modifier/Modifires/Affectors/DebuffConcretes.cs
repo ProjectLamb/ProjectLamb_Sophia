@@ -46,6 +46,7 @@ namespace Sophia.DataSystem
 
             public override void Enter(Entity entity)
             {
+                AudioAffector.Invoke(entity);
                 DamageAffector.Invoke(entity);
                 MaterialChangeAffector.material.SetFloat("_Activate", 1);
                 MaterialChangeAffector.Invoke(entity);
@@ -56,6 +57,7 @@ namespace Sophia.DataSystem
             {
                 MaterialChangeAffector.Revert(entity);
                 VisualFXAffector.Revert(entity);
+                AudioAffector.Revert(entity);
                 base.Exit(entity);
             }
             
@@ -112,11 +114,13 @@ namespace Sophia.DataSystem
 
             public override void Enter(Entity entity)
             {
+                AudioAffector.Invoke(entity);
                 DamageAffector.Invoke(entity);
             }
 
             public override void Exit(Entity entity)
             {
+                AudioAffector.Revert(entity);
                 base.Exit(entity);
             }
 
@@ -181,6 +185,7 @@ namespace Sophia.DataSystem
             {
                 MaterialChangeAffector.Revert(entity);
                 VisualFXAffector.Revert(entity);
+                AudioAffector.Revert(entity);
                 base.Exit(entity);
             }
 
@@ -227,11 +232,13 @@ namespace Sophia.DataSystem
             }
             public override void Enter(Entity entity)
             {
+                AudioAffector.Invoke(entity);
                 DamageAffector.Invoke(entity);
             }
 
             public override void Exit(Entity entity)
             {
+                AudioAffector.Revert(entity);
                 base.Exit(entity);
             }
 
@@ -293,6 +300,7 @@ namespace Sophia.DataSystem
             {
                 EntityStatModifyAffector.Revert(entity);
                 MaterialChangeAffector.Revert(entity);
+                AudioAffector.Revert(entity);
                 base.Exit(entity);
             }
 
@@ -340,6 +348,7 @@ namespace Sophia.DataSystem
 
             public override void Enter(Entity entity)
             {
+                AudioAffector.Invoke(entity);
                 HoldAffector.Invoke(entity as IMovable);
                 MaterialChangeAffector.Invoke(entity);
                 VisualFXAffector.Invoke(entity);
@@ -350,6 +359,7 @@ namespace Sophia.DataSystem
                 HoldAffector.Revert(entity as IMovable);
                 MaterialChangeAffector.Revert(entity);
                 VisualFXAffector.Revert(entity);
+                AudioAffector.Revert(entity);
                 base.Exit(entity);
             }
 
@@ -403,12 +413,14 @@ namespace Sophia.DataSystem
 
             public override void Enter(Entity entity)
             {
+                AudioAffector.Invoke(entity);
                 HoldAffector.Invoke(entity as IMovable);
             }
 
             public override void Exit(Entity entity)
             {
                 HoldAffector.Revert(entity as IMovable);
+                AudioAffector.Revert(entity);
                 base.Exit(entity);
             }
 
@@ -455,6 +467,7 @@ namespace Sophia.DataSystem
 
             public override void Enter(Entity entity)
             {
+                AudioAffector.Invoke(entity);
                 RigidImpulseAffector.Invoke(entity);
                 HoldAffector.Invoke(entity as IMovable);
             }
@@ -462,6 +475,7 @@ namespace Sophia.DataSystem
             public override void Exit(Entity entity)
             {
                 HoldAffector.Revert(entity as IMovable);
+                AudioAffector.Revert(entity);
                 base.Exit(entity);
             }
 
@@ -516,6 +530,7 @@ namespace Sophia.DataSystem
 
             public override void Enter(Entity entity)
             {
+                AudioAffector.Invoke(entity);
                 RigidGradualAffector.Invoke(entity);
                 HoldAffector.Invoke(entity as IMovable);
             }
@@ -573,6 +588,7 @@ namespace Sophia.DataSystem
 
             public override void Enter(Entity entity)
             {
+                AudioAffector.Invoke(entity);
                 TweenJumpAffector.Invoke(entity);
                 HoldAffector.Invoke(entity as IMovable);
             }

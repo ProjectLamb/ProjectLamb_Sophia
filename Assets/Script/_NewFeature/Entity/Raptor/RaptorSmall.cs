@@ -91,7 +91,7 @@ namespace Sophia.Entitys
         void Idle_Enter()
         {
             Debug.Log("Idle_Enter");
-            
+            _audioSources[(int)E_RAPTOR_AUDIO_INDEX.Idle].Play();
         }
 
         void Idle_Update()
@@ -161,6 +161,7 @@ namespace Sophia.Entitys
         {
             Debug.Log("Chase_Enter");
             this.GetModelManger().GetAnimator().SetBool("IsWalk", true);
+            _audioSources[(int)E_RAPTOR_AUDIO_INDEX.Found].Play();
             SetMoveState(true);
         }
 

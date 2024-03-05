@@ -11,9 +11,13 @@ using Sophia.DataSystem.Modifiers;
 using Cysharp.Threading.Tasks;
 using Sophia_Carriers;
 using UnityEngine.Rendering;
+using FMODPlus;
 
 namespace Sophia.Entitys
 {
+    public enum E_ROBUWA_AUDIO_INDEX {
+        Kaooo, Attack, MoveattackMode
+    }
     public class Robuwa : Enemy, IMovable
     {
         #region Public
@@ -147,12 +151,15 @@ namespace Sophia.Entitys
             {
                 case 0:
                     this.GetModelManger().GetAnimator().SetTrigger("DoAttackLeft");
+                    _audioSources[(int)E_ROBUWA_AUDIO_INDEX.Attack].Play();
                     break;
                 case 1:
                     this.GetModelManger().GetAnimator().SetTrigger("DoAttackRight");
+                    _audioSources[(int)E_ROBUWA_AUDIO_INDEX.Attack].Play();
                     break;
                 case 2:
                     this.GetModelManger().GetAnimator().SetTrigger("DoAttackJump");
+                    _audioSources[(int)E_ROBUWA_AUDIO_INDEX.Attack].Play();
                     break;
             }
         }
@@ -263,6 +270,8 @@ namespace Sophia.Entitys
             transform.DOKill();
             recognize.CurrentViewRadius *= 2;
             this.GetModelManger().GetAnimator().SetTrigger("DoThreat");
+            
+            _audioSources[(int)E_ROBUWA_AUDIO_INDEX.Kaooo].Play();
         }
 
         void Threat_Update()
@@ -300,7 +309,7 @@ namespace Sophia.Entitys
         {
             Debug.Log("Move_Enter");
             this.GetModelManger().GetAnimator().SetBool("IsWalk", true);
-            
+            _audioSources[(int)E_ROBUWA_AUDIO_INDEX.MoveattackMode].Play();
             nav.isStopped = false;
             nav.enabled = true;
         }
@@ -329,6 +338,7 @@ namespace Sophia.Entitys
 
         void Move_Exit()
         {
+            _audioSources[(int)E_ROBUWA_AUDIO_INDEX.MoveattackMode].Stop();
             this.GetModelManger().GetAnimator().SetBool("IsWalk", false);
         }
 
@@ -500,5 +510,6 @@ namespace Sophia.Entitys
         }
 
         #endregion
+        [SerializeField] protected List<FMODAudioSource> _audioSources;
     }
 }

@@ -135,7 +135,7 @@ namespace Sophia.Composite
     
 #endregion
 
-        private void Dash() {
+        public void Dash() {
             DashAtomics.Invoke();
             DashSource.Play();
         }
