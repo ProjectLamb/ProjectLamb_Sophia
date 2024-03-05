@@ -16,12 +16,14 @@ namespace Sophia.DataSystem
 
             public PowerUpAffect(in SerialAffectorData affectData) : base (affectData) {}
 
+            private AudioAtomics AudioAffector;
             protected override void Init(in SerialAffectorData affectData)
             {
                 AffectType = E_AFFECT_TYPE.PowerUp;
                 Name = affectData._uiData._name;
                 Description = affectData._uiData._description;
                 Icon = affectData._uiData._icon;
+                AudioAffector               = new AudioAtomics(in affectData._audioData);
 
                 EntityStatModifyAffector    = new EntityStatModifyAtomics(in affectData._calculateData);
                 VisualFXAffector            = new VisualFXAtomics(AffectType, in affectData._visualData);
@@ -32,6 +34,7 @@ namespace Sophia.DataSystem
 
             public override void Enter(Entity entity)
             {
+                AudioAffector.Invoke(entity);
                 EntityStatModifyAffector.Invoke(entity);
                 VisualFXAffector.Invoke(entity);
                 MaterialChange.Invoke(entity);
@@ -42,6 +45,7 @@ namespace Sophia.DataSystem
                 EntityStatModifyAffector.Revert(entity);
                 VisualFXAffector.Revert(entity);
                 MaterialChange.Revert(entity);
+                AudioAffector.Revert(entity);
                 base.Exit(entity);
             }
 
@@ -65,12 +69,14 @@ namespace Sophia.DataSystem
             {
             }
 
+            private AudioAtomics AudioAffector;
             protected override void Init(in SerialAffectorData affectData)
             {
                 AffectType = E_AFFECT_TYPE.MoveSpeedUp;
                 Name = affectData._uiData._name;
                 Description = affectData._uiData._description;
                 Icon = affectData._uiData._icon;
+                AudioAffector               = new AudioAtomics(in affectData._audioData);
 
                 EntityStatModifyAffector = new EntityStatModifyAtomics(in affectData._calculateData);
                 VisualFXAffector = new VisualFXAtomics(AffectType, affectData._visualData);
@@ -80,6 +86,7 @@ namespace Sophia.DataSystem
 
             public override void Enter(Entity entity)
             {
+                AudioAffector.Invoke(entity);
                 EntityStatModifyAffector.Invoke(entity);
                 VisualFXAffector.Invoke(entity);
             }
@@ -88,6 +95,7 @@ namespace Sophia.DataSystem
             {
                 EntityStatModifyAffector.Revert(entity);
                 VisualFXAffector.Revert(entity);
+                AudioAffector.Revert(entity);
                 base.Exit(entity);
             }
 

@@ -9,7 +9,7 @@ namespace Sophia.Instantiates
     using FMOD;
     using Sophia.DataSystem.Modifiers;
 
-    public class AffectorItem : Carrier
+    public class AffectorItemObject : Carrier
     {
         [SerializeField] SerialAffectorData _affectData;
         

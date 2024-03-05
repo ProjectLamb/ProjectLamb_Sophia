@@ -67,8 +67,8 @@ namespace Sophia.Instantiates.Skills
             #region Member
 
             private DataSystem.Atomics.BarrierAtomics barrier;
+            private DataSystem.Atomics.AudioAtomics audio;
             private DataSystem.Atomics.VisualFXAtomics visualFX;
-            private DataSystem.Atomics.MaterialChangeAtomics materialChange;
 
             #endregion
             public Barrier(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
@@ -80,6 +80,7 @@ namespace Sophia.Instantiates.Skills
             #region Setter
             public Barrier SetBarrierData(in SerialAffectorData affectorData)
             {
+                audio = new DataSystem.Atomics.AudioAtomics(in affectorData._audioData);
                 barrier = new DataSystem.Atomics.BarrierAtomics(affectorData._barrierData._barrierRatio);
                 visualFX = new DataSystem.Atomics.VisualFXAtomics(E_AFFECT_TYPE.None, in affectorData._visualData);
                 return this;
@@ -95,11 +96,11 @@ namespace Sophia.Instantiates.Skills
             {
                 barrier?.Invoke(ownerEntity);
                 visualFX?.Invoke(ownerEntity);
-                materialChange?.Invoke(ownerEntity);
+                audio.Invoke(ownerEntity);
                 await UniTask.Delay(5 * 1000);
                 barrier?.Revert(ownerEntity);
                 visualFX?.Revert(ownerEntity);
-                materialChange?.Revert(ownerEntity);
+                audio.Revert(ownerEntity);
             }
         }
 
@@ -446,6 +447,7 @@ namespace Sophia.Instantiates.Skills
                 PhysicsData = affectorData._physicsData;
                 return this;
             }
+
             public Piercing SetOwnerEntity(Entitys.Player player)
             {
                 ownerEntity = player;
@@ -455,6 +457,11 @@ namespace Sophia.Instantiates.Skills
                     player.GetMovementComposite().GetMovemenCompositetData,
                     player.GetStat(E_NUMERIC_STAT_TYPE.DashForce).GetValueForce
                 );
+                TimerComposite.AddOnUseEvent(async () => {
+                    player.GetMovementComposite().SetMovableState(false);
+                    await UniTask.Delay(500); 
+                    player.GetMovementComposite().SetMovableState(true);
+                });
                 return this;
             }
 
@@ -630,6 +637,11 @@ namespace Sophia.Instantiates.Skills
                     player.GetMovementComposite().GetMovemenCompositetData,
                     player.GetStat(E_NUMERIC_STAT_TYPE.DashForce).GetValueForce
                 );
+                TimerComposite.AddOnUseEvent(async () => {
+                    player.GetMovementComposite().SetMovableState(false);
+                    await UniTask.Delay(500); 
+                    player.GetMovementComposite().SetMovableState(true);
+                });
                 return this;
             }
 

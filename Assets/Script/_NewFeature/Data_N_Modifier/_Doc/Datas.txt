@@ -78,10 +78,10 @@ namespace Feature_NewData
     //
     //    /*********************************************************************************
     //    *
-    //    * Carrier Instantiator  Datas
+    //    * CarrierObject Instantiator  Datas
     //    *
     //    *********************************************************************************/
-    //    #region Carrier Instantiator  Datas
+    //    #region CarrierObject Instantiator  Datas
     //    public class InstatiatorNumerics : Numerics
     //    {
     //        public InstatiatorNumerics()

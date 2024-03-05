@@ -41,7 +41,7 @@ namespace Sophia.Entitys
         private DashSkill DashSkillAbility;
         private Stat Power;
         private Extras<int> GearcoinExtras;
-        private int mPlayerWealth;
+        public int mPlayerWealth;
         public event UnityAction<int> OnWealthChangeEvent;
         public int PlayerWealth {
             get { return mPlayerWealth; }
@@ -109,6 +109,8 @@ namespace Sophia.Entitys
                 StartCoroutine(actionDelay(this.GetModelManger().DisableTrail));
             });
             DashSkillAbility.SetAudioSource(DashSource);
+
+            OnWealthChangeEvent.Invoke(mPlayerWealth);
         }
 #endregion
 
@@ -121,6 +123,7 @@ namespace Sophia.Entitys
             bool isDamaged = false;
             if (Life.IsDie) { isDamaged = false; }
             isDamaged = Life.Damaged(damage);
+            if(isDamaged) {GetModelManger().GetAnimator().SetTrigger("GetDamaged");}
             if (Life.IsDie) { Die(); }
             return isDamaged;
         }
@@ -172,8 +175,9 @@ namespace Sophia.Entitys
         {
             if(DashSkillAbility.GetIsDashState()) return;
             // GetAnimator().SetFloat("Move", this.entityRigidbody.velocity.magnitude);
-            if (!Movement.IsBorder(this.transform)) {
+            if (!Movement.IsBorder(this.transform) && !Sophia.PlayerAttackAnim.isAttack) {
                 Movement.MoveTick(this.transform);
+                GetModelManger().GetAnimator().SetFloat("Move", entityRigidbody.velocity.magnitude);
             }
         }
 
@@ -196,7 +200,7 @@ namespace Sophia.Entitys
         }
 
 #region Weapon Handler
-
+        public WeaponManager GetWeaponManager() => _weaponManager;
         public ProjectileBucketManager GetProjectileBucketManager() => _projectileBucketManager;
         public void OnPowerUpdated() { Debug.Log("공격력 변경"); }
 
@@ -204,14 +208,16 @@ namespace Sophia.Entitys
         {
             try
             {
-                await Turning();
-                _weaponManager.Use();
+                if(Sophia.PlayerAttackAnim.canExitAttack || Sophia.PlayerAttackAnim.resetAtkTrigger) return;
+                await Movement.TurningWithAction(transform, Input.mousePosition, () => GetModelManger().GetAnimator().SetTrigger("DoAttack"));
+
             }
             catch (OperationCanceledException)
             {
 
             }
         }
+
 
 #endregion
 
@@ -220,7 +226,11 @@ namespace Sophia.Entitys
         public SkillManager GetSkillManager() => this._skillManager;
         public void CollectSkill(Skill skill, KeyCode key) => this._skillManager.Collect(skill, key);
         public void DropSkill(KeyCode key) => this._skillManager.Drop(key);
-        public void Use(KeyCode key) => this._skillManager.GetSkillByKey(key)?.Use();
+        public async void Use(KeyCode key) {
+            await Movement.TurningWithAction(transform, Input.mousePosition, () => {
+                this._skillManager.GetSkillByKey(key)?.Use();
+            });
+        }
 
 #endregion
 

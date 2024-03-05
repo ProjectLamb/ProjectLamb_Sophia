@@ -64,7 +64,7 @@ public class GachaComponent : MonoBehaviour
                 carrier.Init(null);
                 break;
             case ItemEquipment:
-                carrier = GameManager.Instance.GlobalCarrierManager.GetRandomItem("Equipment").Clone();
+                //carrier = GameManager.Instance.GlobalCarrierManager.GetRandomItem("Equipment").Clone();
                 carrier.Init(GameManager.Instance.PlayerGameObject.GetComponent<Player>());
                 break;
         }

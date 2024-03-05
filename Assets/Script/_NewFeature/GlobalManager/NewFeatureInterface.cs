@@ -29,7 +29,7 @@ namespace Sophia
     
     }
 
-//    public interface ICarrierInteractable {
+//    public interface ICarrierObjectInteractable {
 //        public IStatAccessible GetStat();
 //    }
 

@@ -178,7 +178,7 @@ namespace Sophia.DataSystem.Referer
 
 #endregion
 
-#region Carrier Trigger
+#region CarrierObject Trigger
 
             private Extras<Vector3>             OnPhysicTriggered = null;
             private Extras<int>                 OnGearcoinTriggered = null;

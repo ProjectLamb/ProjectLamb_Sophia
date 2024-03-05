@@ -6,6 +6,7 @@ namespace Sophia.Instantiates {
     using Sophia.Entitys;
     using Sophia.State;
     using Sophia.Composite.RenderModels;
+    using FMODPlus;
 
     public enum E_WEAPONE_USE_STATE {
         None, Normal, OnHit, Charge
@@ -67,6 +68,7 @@ namespace Sophia.Instantiates {
         [SerializeField] private float  _baseRatioAttackSpeed = 1f;
         [SerializeField] private float  _baseRatioDamage = 1f;
         [SerializeField] private Vector3 _instantiateOffsetPosition;
+        [SerializeField] private FMODAudioSource _swingAudio;
 
 #endregion
 
@@ -75,7 +77,7 @@ namespace Sophia.Instantiates {
         private ProjectileBucket        mInstantiatorRef;
         private Queue<ProjectileObject> NormalQueue = new Queue<ProjectileObject>();
         private Queue<ProjectileObject> OnHitQueue = new Queue<ProjectileObject>();
-
+        public DataSystem.Atomics.DashAtomics AttackDashAtomics {get; private set;}
         private int mCurrentPoolSize;
         public int CurrentPoolSize {
             get {return mCurrentPoolSize;}
@@ -133,7 +135,7 @@ namespace Sophia.Instantiates {
 #region Setter
 
         public bool IsInitialized = false;
-        public void WeaponConstructor(ProjectileBucket bucket, int poolSize, float ratioAttackSpeed, float ratioDamage) {
+        public void WeaponConstructor(ProjectileBucket bucket, int poolSize, float ratioAttackSpeed, float ratioDamage, Player player) {
             if(IsInitialized) throw new System.Exception("이미 생성자로 초기화 됨");
             mInstantiatorRef = bucket;
             StateType = E_WEAPONE_USE_STATE.Normal;
@@ -142,6 +144,8 @@ namespace Sophia.Instantiates {
             CurrentPoolSize         = _basePoolSize;
             CurrentRatioAttackSpeed = ratioAttackSpeed * _baseRatioAttackSpeed;
             CurrentRatioDamage      = ratioDamage * _baseRatioDamage;
+
+            AttackDashAtomics = new DataSystem.Atomics.DashAtomics(player.entityRigidbody, player.GetMovementComposite().GetTouchedData, () => {return 80;});
 
             IsInitialized = true;
         }
@@ -175,6 +179,19 @@ namespace Sophia.Instantiates {
                             .SetProjectilePower(player.GetStat(E_NUMERIC_STAT_TYPE.Power))
                             .SetProjectileDamageInfoByWaepon(player.GetExtras<DamageInfo>(E_FUNCTIONAL_EXTRAS_TYPE.WeaponUse))
                             .Activate();
+            AttackDashAtomics.Invoke();
+        }
+
+        public int CurrentProjectileIndex = 0;
+        public void UseByIndex(Player player) {
+            
+            ProjectileObject useProjectile = ProjectilePool.GetObject(_weaponProjectiles[CurrentProjectileIndex]).Init(player);
+            mInstantiatorRef.InstantablePositioning(useProjectile)
+                            .SetInstantiateType(E_INSTANTIATE_TYPE.Weapon)
+                            .SetProjectilePower(player.GetStat(E_NUMERIC_STAT_TYPE.Power))
+                            .SetProjectileDamageInfoByWaepon(player.GetExtras<DamageInfo>(E_FUNCTIONAL_EXTRAS_TYPE.WeaponUse))
+                            .Activate();
+            AttackDashAtomics.Invoke();
         }
     }
 
