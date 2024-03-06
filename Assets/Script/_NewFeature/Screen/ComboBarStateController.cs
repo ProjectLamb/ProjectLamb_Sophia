@@ -13,7 +13,7 @@ namespace Sophia.UserInterface
 
         private void Start()
         {
-            GameManager.Instance.GlobalEvent.OnEnemyHitEvent.Add(OnHitEventInLoop);
+            GameManager.Instance.NewFeatureGlobalEvent.OnEnemyHitEvent.AddListener(OnHitEventInLoop);
         }
 
         [ContextMenu("Start")]
@@ -29,7 +29,7 @@ namespace Sophia.UserInterface
         {
             if (gameObject.activeSelf == false)
             {
-                StartCoroutine(AsyncRender.Instance.PerformAndRenderUI(OnHitStart)); return;
+                StartCoroutine(GlobalAsync.PerformAndRenderUI(OnHitStart)); return;
             }
             if (!styleManager.styleAnimator.GetCurrentAnimatorStateInfo(0).IsName("Finished"))
             {
@@ -50,22 +50,6 @@ namespace Sophia.UserInterface
             styleManager.textItems[0].text = CurrentHitCounts.ToString();
             styleManager.textItems[0].UpdateText();
             OnHitEventInLoop();
-        }
-
-        [ContextMenu("Hit")]
-        public void SetCurrentHitCountOne()
-        {
-            CurrentHitCounts++;
-            styleManager.textItems[0].text = CurrentHitCounts.ToString();
-            styleManager.textItems[0].UpdateText();
-        }
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                SetCurrentHitCountOne();
-            }
         }
     }
 

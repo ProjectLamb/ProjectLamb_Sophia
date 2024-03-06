@@ -8,23 +8,6 @@ using UnityEngine.UI;
 
 namespace Sophia.UserInterface
 {
-    public class AsyncRender {
-        private static AsyncRender _instance = new AsyncRender();
-        public  static AsyncRender Instance = _instance;
-
-        public IEnumerator PerformUnScaled(float delayTime, UnityAction action) {
-            yield return new WaitForSecondsRealtime(delayTime);
-            action.Invoke();
-        }
-        public IEnumerator PerformAndRenderUI(UnityAction action)
-        {
-            action.Invoke(); yield return YieldInstructionCache.WaitForEndOfFrame;
-        }
-        public IEnumerator PerformAndRenderUIUnScaled(UnityAction action)
-        {
-            action.Invoke(); yield return new WaitForSecondsRealtime(0.0166f);
-        }
-    }
 
     public class InGameScreenUI : MonoBehaviour {
         private static InGameScreenUI _instance;

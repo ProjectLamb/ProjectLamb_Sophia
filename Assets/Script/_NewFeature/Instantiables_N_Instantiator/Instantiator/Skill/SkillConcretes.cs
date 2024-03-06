@@ -36,7 +36,7 @@ namespace Sophia.Instantiates.Skills
         bool IsUpdatorBinded = false;
         public override bool GetUpdatorBind() => IsUpdatorBinded;
 
-        public override void AddToUpdator()
+        public override void AddToUpdater()
         {
             GlobalTimeUpdator.CheckAndAdd(this);
             IsUpdatorBinded = true;
@@ -281,7 +281,6 @@ namespace Sophia.Instantiates.Skills
             public Lava SetOwnerEntity(Entitys.Player player)
             {
                 ownerEntity = player;
-                instantiatorRef = player.GetProjectileBucketManager().GetProjectileBucket(1);
                 return this;
             }
 
@@ -290,6 +289,8 @@ namespace Sophia.Instantiates.Skills
             public void Activate()
             {
                 ProjectileObject useProjectile = ProjectilePool.GetObject(projectileInstantiateData._projectileObjectRefer).Init(ownerEntity);
+                instantiatorRef = ownerEntity.GetProjectileBucketManager().GetProjectileBucket(projectileInstantiateData._bucketIndex);
+                instantiatorRef = ownerEntity.GetProjectileBucketManager().GetProjectileBucket(projectileInstantiateData._bucketIndex);
                 instantiatorRef.InstantablePositioning(useProjectile)
                                 .SetInstantiateType(projectileInstantiateData._InstantiateType)
                                 .SetScaleMultiplyByRatio(projectileInstantiateData._ScaleMultiplyByRatio)
@@ -330,7 +331,6 @@ namespace Sophia.Instantiates.Skills
             public BlackWhiteHole SetOwnerEntity(Entitys.Player player)
             {
                 ownerEntity = player;
-                instantiatorRef = player.GetProjectileBucketManager().GetProjectileBucket(0);
                 return this;
             }
 
@@ -339,6 +339,7 @@ namespace Sophia.Instantiates.Skills
             public void Activate()
             {
                 ProjectileObject useProjectile = ProjectilePool.GetObject(projectileInstantiateData._projectileObjectRefer).Init(ownerEntity);
+                instantiatorRef = ownerEntity.GetProjectileBucketManager().GetProjectileBucket(projectileInstantiateData._bucketIndex);
                 instantiatorRef.InstantablePositioning(useProjectile)
                                 .SetInstantiateType(projectileInstantiateData._InstantiateType)
                                 .SetScaleMultiplyByRatio(projectileInstantiateData._ScaleMultiplyByRatio)
@@ -382,7 +383,6 @@ namespace Sophia.Instantiates.Skills
             public DoubleShot SetOwnerEntity(Entitys.Player player)
             {
                 ownerEntity = player;
-                instantiatorRef = player.GetProjectileBucketManager().GetProjectileBucket(0);
                 return this;
             }
 
@@ -391,7 +391,8 @@ namespace Sophia.Instantiates.Skills
             public async void Activate()
             {
                 ProjectileObject useProjectile1 = ProjectilePool.GetObject(projectileInstantiateData._projectileObjectRefer).Init(ownerEntity);
-                instantiatorRef.InstantablePositioning(useProjectile1, Vector3.zero, Vector3.forward * 45)
+                instantiatorRef = ownerEntity.GetProjectileBucketManager().GetProjectileBucket(projectileInstantiateData._bucketIndex);
+                instantiatorRef.InstantablePositioning(useProjectile1, Vector3.zero, Vector3.forward * 30)
                                 .SetInstantiateType(projectileInstantiateData._InstantiateType)
                                 .SetScaleMultiplyByRatio(projectileInstantiateData._ScaleMultiplyByRatio)
                                 .SetDurateTimeByRatio(projectileInstantiateData._DurateTimeByRatio)
@@ -405,7 +406,7 @@ namespace Sophia.Instantiates.Skills
                 await UniTask.Delay(100); 
 
                 ProjectileObject useProjectile2 = ProjectilePool.GetObject(projectileInstantiateData._projectileObjectRefer).Init(ownerEntity);
-                instantiatorRef.InstantablePositioning(useProjectile2, Vector3.zero, Vector3.forward * -45)
+                instantiatorRef.InstantablePositioning(useProjectile2, Vector3.zero, Vector3.forward * -30)
                                 .SetInstantiateType(projectileInstantiateData._InstantiateType)
                                 .SetScaleMultiplyByRatio(projectileInstantiateData._ScaleMultiplyByRatio)
                                 .SetDurateTimeByRatio(projectileInstantiateData._DurateTimeByRatio)
@@ -451,7 +452,6 @@ namespace Sophia.Instantiates.Skills
             public Piercing SetOwnerEntity(Entitys.Player player)
             {
                 ownerEntity = player;
-                instantiatorRef = player.GetProjectileBucketManager().GetProjectileBucket(0);
                 DashAtomics = new DataSystem.Atomics.DashAtomics(
                     player.entityRigidbody, 
                     player.GetMovementComposite().GetMovemenCompositetData,
@@ -469,6 +469,7 @@ namespace Sophia.Instantiates.Skills
             public void Activate()
             {
                 ProjectileObject useProjectile1 = ProjectilePool.GetObject(projectileInstantiateData._projectileObjectRefer).Init(ownerEntity);
+                instantiatorRef = ownerEntity.GetProjectileBucketManager().GetProjectileBucket(projectileInstantiateData._bucketIndex);
                 instantiatorRef.InstantablePositioning(useProjectile1, Vector3.zero, Vector3.forward * 15)
                                 .SetInstantiateType(projectileInstantiateData._InstantiateType)
                                 .SetScaleMultiplyByRatio(projectileInstantiateData._ScaleMultiplyByRatio)
@@ -510,7 +511,6 @@ namespace Sophia.Instantiates.Skills
             public RotateSlash SetOwnerEntity(Entitys.Player player)
             {
                 ownerEntity = player;
-                instantiatorRef = player.GetProjectileBucketManager().GetProjectileBucket(1);
                 return this;
             }
 
@@ -518,6 +518,7 @@ namespace Sophia.Instantiates.Skills
             public void Activate()
             {
                 ProjectileObject useProjectile1 = ProjectilePool.GetObject(projectileInstantiateData._projectileObjectRefer).Init(ownerEntity);
+                instantiatorRef = ownerEntity.GetProjectileBucketManager().GetProjectileBucket(projectileInstantiateData._bucketIndex);
                 instantiatorRef.InstantablePositioning(useProjectile1)
                                 .SetInstantiateType(projectileInstantiateData._InstantiateType)
                                 .SetScaleMultiplyByRatio(projectileInstantiateData._ScaleMultiplyByRatio)
@@ -556,7 +557,6 @@ namespace Sophia.Instantiates.Skills
             public ThrowSlash SetOwnerEntity(Entitys.Player player)
             {
                 ownerEntity = player;
-                instantiatorRef = player.GetProjectileBucketManager().GetProjectileBucket(1);
                 return this;
             }
 
@@ -564,7 +564,8 @@ namespace Sophia.Instantiates.Skills
             public void Activate()
             {
                 ProjectileObject useProjectile1 = ProjectilePool.GetObject(projectileInstantiateData._projectileObjectRefer).Init(ownerEntity);
-                instantiatorRef.InstantablePositioning(useProjectile1, Vector3.zero, Vector3.up * -15)
+                instantiatorRef = ownerEntity.GetProjectileBucketManager().GetProjectileBucket(projectileInstantiateData._bucketIndex);
+                instantiatorRef.InstantablePositioning(useProjectile1, Vector3.zero, Vector3.right * -30)
                                 .SetInstantiateType(projectileInstantiateData._InstantiateType)
                                 .SetScaleMultiplyByRatio(projectileInstantiateData._ScaleMultiplyByRatio)
                                 .SetDurateTimeByRatio(projectileInstantiateData._DurateTimeByRatio)
@@ -587,7 +588,7 @@ namespace Sophia.Instantiates.Skills
                                 .SetIntervalData(in projectileInstantiateData._intervalData)
                                 .Activate();
                 ProjectileObject useProjectile3 = ProjectilePool.GetObject(projectileInstantiateData._projectileObjectRefer).Init(ownerEntity);
-                instantiatorRef.InstantablePositioning(useProjectile3, Vector3.zero, Vector3.up * 15)
+                instantiatorRef.InstantablePositioning(useProjectile3, Vector3.zero, Vector3.right * 30)
                                 .SetInstantiateType(projectileInstantiateData._InstantiateType)
                                 .SetScaleMultiplyByRatio(projectileInstantiateData._ScaleMultiplyByRatio)
                                 .SetDurateTimeByRatio(projectileInstantiateData._DurateTimeByRatio)
@@ -631,7 +632,6 @@ namespace Sophia.Instantiates.Skills
             public DashSlash SetOwnerEntity(Entitys.Player player)
             {
                 ownerEntity = player;
-                instantiatorRef = player.GetProjectileBucketManager().GetProjectileBucket(0);
                 DashAtomics = new DataSystem.Atomics.DashAtomics(
                     player.entityRigidbody, 
                     player.GetMovementComposite().GetMovemenCompositetData,
@@ -649,6 +649,7 @@ namespace Sophia.Instantiates.Skills
             public void Activate()
             {
                 ProjectileObject useProjectile1 = ProjectilePool.GetObject(projectileInstantiateData._projectileObjectRefer).Init(ownerEntity);
+                instantiatorRef = ownerEntity.GetProjectileBucketManager().GetProjectileBucket(projectileInstantiateData._bucketIndex);
                 instantiatorRef.InstantablePositioning(useProjectile1, Vector3.zero, Vector3.forward * 15)
                                 .SetInstantiateType(projectileInstantiateData._InstantiateType)
                                 .SetScaleMultiplyByRatio(projectileInstantiateData._ScaleMultiplyByRatio)

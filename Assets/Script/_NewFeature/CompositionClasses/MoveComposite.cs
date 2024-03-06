@@ -1,8 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
-
 using UnityEngine.Events;
 using Cysharp.Threading.Tasks;
 using Sophia.DataSystem;
@@ -63,12 +59,6 @@ namespace Sophia.Composite
 
 #region Getter
 
-        public Vector3 GetForwardingVector() {
-            Vector3 res = Vector3.zero;
-            res += AngleToVector(Camera.main.transform.eulerAngles.y + 90f) * mInputVec.x;
-            res += AngleToVector(Camera.main.transform.eulerAngles.y) * mInputVec.y;
-            return res.normalized;
-        }
         public (Vector3, int) GetTouchedData() {
             if(Mathf.Abs(mInputVec.x) > 0.01 || Mathf.Abs(mInputVec.y) > 0.01){
                 return (LastTouchedPointer.normalized, MoveSpeed);
@@ -76,10 +66,10 @@ namespace Sophia.Composite
             return (Vector3.zero, MoveSpeed);
         }
         public bool IsBorder(Transform transform) {
-            return Physics.Raycast(transform.position, GetForwardingVector(), 2, WallMask);
+            return Physics.Raycast(transform.position, mInputVec.GetSophiaForwardingVector(), 2, WallMask);
         }
 
-        public (Vector3, int) GetMovemenCompositetData() => (GetForwardingVector(), MoveSpeed);
+        public (Vector3, int) GetMovemenCompositetData() => (mInputVec.GetSophiaForwardingVector(), MoveSpeed);
     
 #endregion
 
@@ -107,7 +97,7 @@ namespace Sophia.Composite
         public void MoveTick(Transform transform) {
             if(!IsMovable) {return;}
 
-            ForwardingVector = GetForwardingVector();
+            ForwardingVector = mInputVec.GetSophiaForwardingVector();
             this.RbRef.velocity = ForwardingVector * MoveSpeed.GetValueForce();
 
             if(ForwardingVector != Vector3.zero) {
@@ -143,12 +133,5 @@ namespace Sophia.Composite
             await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);
             action.Invoke();
         }
-    
-#region Helper
-        private Vector3 AngleToVector(float _angle) {
-            _angle *= Mathf.Deg2Rad;
-            return new Vector3(Mathf.Sin(_angle), 0, Mathf.Cos(_angle));
-        }
-#endregion
     }   
 }

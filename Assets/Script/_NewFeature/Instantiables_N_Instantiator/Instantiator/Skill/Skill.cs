@@ -13,7 +13,7 @@ namespace Sophia.Instantiates {
     public abstract class Skill : IUserInterfaceAccessible, IUpdatorBindable
     {
         public abstract CoolTimeComposite GetCoolTimeComposite();
-        public abstract void    AddToUpdator();
+        public abstract void    AddToUpdater();
         public abstract void    FrameTick();
         public abstract string  GetDescription();
         public abstract string  GetName();

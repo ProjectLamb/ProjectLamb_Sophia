@@ -51,11 +51,11 @@ namespace Sophia.Composite
 
             DashAtomics = new DataSystem.Atomics.DashAtomics(rigidbodyRef, movementDataSender, DashForce.GetValueForce);
             
-            Timer = new Sophia.Composite.CoolTimeComposite(3f, MaxStamina.GetValueByNature())
+            Timer = new Sophia.Composite.CoolTimeComposite(3f, MaxStamina)
                 .SetAcceleratrion(StaminaRestoreSpeed)
                 .AddBindingAction(Dash);
                         
-            AddToUpdator();
+            AddToUpdater();
         }
         
 
@@ -79,12 +79,12 @@ namespace Sophia.Composite
 #region Event
 
         private void OnMaxStaminaUpdated() {
-            Timer.SetMaxStackCounts(this.MaxStamina.GetValueByNature());
+            Timer.SetMaxStackCounts(this.MaxStamina);
             InGameScreenUI.Instance._playerStaminaBarUI.MaxStaminaUpdatedHandler();
         }
 
         private void OnStaminaRestoreSpeedUpdated() {
-            Timer.SetAcceleratrion(this.StaminaRestoreSpeed.GetValueByNature());
+            Timer.SetAcceleratrion(this.StaminaRestoreSpeed);
         }
         
         private void OnDashForceUpdate() {
@@ -123,7 +123,7 @@ namespace Sophia.Composite
         bool IsUpdatorBinded = false;
         public bool GetUpdatorBind() => IsUpdatorBinded;
 
-        public void AddToUpdator() {
+        public void AddToUpdater() {
             GlobalTimeUpdator.CheckAndAdd(this);
             IsUpdatorBinded = true;
         }

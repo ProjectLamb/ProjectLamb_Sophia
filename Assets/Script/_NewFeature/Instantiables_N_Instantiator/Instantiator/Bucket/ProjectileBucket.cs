@@ -36,7 +36,7 @@ namespace Sophia.Instantiates
         {
             Vector3     offset       = _positionOffset;
             Vector3     position     = transform.position;
-            Quaternion  forwardAngle = GetForwardingAngle(instantiatedProjectile.transform.rotation);
+            Quaternion  forwardAngle = instantiatedProjectile.transform.rotation.GetSophiaForwardingAngle(transform);
             Quaternion  rotateAngle  = Quaternion.Euler(_rotateOffset);
 
             instantiatedProjectile.transform.position = position;
@@ -83,16 +83,5 @@ namespace Sophia.Instantiates
         }
 
         public ProjectileObject InstantablePositioning(ProjectileObject instantiatable) => InstantablePositioning(instantiatable, Vector3.zero, Vector3.zero);
-
-        private Quaternion GetForwardingAngle(Quaternion instantiatorQuaternion)
-        {
-            return Quaternion.Euler(transform.eulerAngles + instantiatorQuaternion.eulerAngles);
-        }
-
-        private Transform GetTransformParent(Transform instantiatorTransform)
-        {
-            instantiatorTransform.SetParent(this.transform);
-            return instantiatorTransform;
-        }
     }
 }

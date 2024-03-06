@@ -25,7 +25,7 @@ namespace Sophia.UserInterface
                     .AddOnFinishedEvent(RecoverStack)
                     .AddOnInitialized(ResetUI);
 
-            StartCoroutine(AsyncRender.Instance.PerformAndRenderUI(() => { 
+            StartCoroutine(GlobalAsync.PerformAndRenderUI(() => { 
                 fill.fillAmount = 0;
                 textMeshPro.text = TimerRef.stackCounter.CurrentStacksCount.ToString(); 
                 icon.sprite = skill.GetSprite();
@@ -34,7 +34,7 @@ namespace Sophia.UserInterface
 
         public void RemoveSkill() {
             TimerRef = null;
-            StartCoroutine(AsyncRender.Instance.PerformAndRenderUI(() => { 
+            StartCoroutine(GlobalAsync.PerformAndRenderUI(() => { 
                 fill.fillAmount = 1;
                 textMeshPro.text = "";
                 icon.sprite = defaultSprite;
@@ -49,21 +49,28 @@ namespace Sophia.UserInterface
         public void ResetUI()
         {
             fill.fillAmount = 0;
-            StartCoroutine(AsyncRender.Instance.PerformAndRenderUI(() => { textMeshPro.text = TimerRef.stackCounter.BaseStacksCount.ToString(); }));
+            StartCoroutine(GlobalAsync.PerformAndRenderUI(() => { textMeshPro.text = TimerRef.stackCounter.BaseStacksCount.ToString(); }));
         }
 
         public void DrawForce()
         {
-            StartCoroutine(AsyncRender.Instance.PerformAndRenderUI(() => { textMeshPro.text = TimerRef.stackCounter.BaseStacksCount.ToString(); }));
+            StartCoroutine(GlobalAsync.PerformAndRenderUI(() => { textMeshPro.text = TimerRef.stackCounter.BaseStacksCount.ToString(); }));
         }
 
         private void UseStack()
         {
-            StartCoroutine(AsyncRender.Instance.PerformAndRenderUI(() => { textMeshPro.text = TimerRef.stackCounter.CurrentStacksCount.ToString(); }));
+            StartCoroutine(GlobalAsync.PerformAndRenderUI(() => { textMeshPro.text = TimerRef.stackCounter.CurrentStacksCount.ToString(); }));
         }
         private void RecoverStack()
         {
-            StartCoroutine(AsyncRender.Instance.PerformAndRenderUI(() => { textMeshPro.text = TimerRef.stackCounter.CurrentStacksCount.ToString(); }));
+            StartCoroutine(GlobalAsync.PerformAndRenderUI(() => { textMeshPro.text = TimerRef.stackCounter.CurrentStacksCount.ToString(); }));
+        }
+
+        private void OnDestroy() {
+            TimerRef.RemoveOnTickingEvent(UpdateFillAmount)
+                    .RemoveOnUseEvent(UseStack)
+                    .RemoveOnFinishedEvent(RecoverStack)
+                    .RemoveOnInitialized(ResetUI);
         }
     }
 }

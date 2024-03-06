@@ -2,9 +2,11 @@ using UnityEngine;
 using TMPro;
 using System.Collections;
 using UnityEngine.Events;
+using System;
 
 namespace Sophia.UserInterface
 {
+    [Obsolete]
     public class DashCoolUI : MonoBehaviour
     {
         public UnityEngine.UI.Image fill;

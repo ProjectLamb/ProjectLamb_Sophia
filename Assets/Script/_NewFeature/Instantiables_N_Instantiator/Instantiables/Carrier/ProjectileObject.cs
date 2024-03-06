@@ -435,14 +435,6 @@ namespace Sophia.Instantiates
             //     DestroyEffect = _destroyEffect,
             //     HitEffect = _hitEffect
             // };
-            // ProjectileVisualData data = new ProjectileVisualData {
-            //     ShaderUnderbarColor = ParticleMaterial.GetColor("_Color"),
-            //     ShaderUnderbarColorPower = ParticleMaterial.GetFloat("_ColorPower"),
-            //     DestroyEffect = _destroyEffect,
-            //     HitEffect = _hitEffect
-            // };
-
-            // CurrnetProjectileVisualData = data;
             // CurrnetProjectileVisualData = data;
 
             

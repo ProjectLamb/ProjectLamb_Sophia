@@ -15,7 +15,7 @@ namespace Sophia
         public void SetBySkill()
         {
             SkillItemObject carrier = GetComponent<SkillItemObject>();
-            StartCoroutine(AsyncRender.Instance.PerformAndRenderUI(() =>
+            StartCoroutine(GlobalAsync.PerformAndRenderUI(() =>
             {
                 _spriteRenderer.sprite = carrier._userInterfaceData._icon;
                 _spriteRenderer.color = new Color(0, 0, 0, 1);

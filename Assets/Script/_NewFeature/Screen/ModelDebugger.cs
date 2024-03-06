@@ -60,7 +60,7 @@ namespace Sophia.UserInterface
             }
         }
 
-        public void StartRender() => CoRenderModelData = StartCoroutine(AsyncRender.Instance.PerformAndRenderUI( () => text.text = dataAccessible.GetStatsInfo().ToString()));
+        public void StartRender() => CoRenderModelData = StartCoroutine(GlobalAsync.PerformAndRenderUI( () => text.text = dataAccessible.GetStatsInfo().ToString()));
         // 렌더링 동작 (이벤트에 연결되는 녀석)
 
         private void LazyDependency() {

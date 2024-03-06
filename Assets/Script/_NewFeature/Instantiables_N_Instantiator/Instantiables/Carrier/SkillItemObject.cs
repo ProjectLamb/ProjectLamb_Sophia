@@ -43,7 +43,7 @@ namespace Sophia.Instantiates
                 );
                 CollectUserInterfaceAction(skill, (bool selected, KeyCode key) => {
                     if(selected) {
-                        skill.AddToUpdator();
+                        skill.AddToUpdater();
                         player.CollectSkill(skill, key);
                         _lootVFX.Stop();
                         _lootObject.SetActive(false);

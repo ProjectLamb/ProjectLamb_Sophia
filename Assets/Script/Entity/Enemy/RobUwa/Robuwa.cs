@@ -448,7 +448,9 @@ namespace Sophia.Entitys
             if (Life.IsDie) { isDamaged = false; }
             else
             {
-                if (isDamaged = Life.Damaged(damage)) {  }
+                if (isDamaged = Life.Damaged(damage)) {
+                    GameManager.Instance.NewFeatureGlobalEvent.OnEnemyHitEvent.Invoke();
+                }
             }
             if (Life.IsDie) { fsm.ChangeState(States.Death); }
             return isDamaged;
