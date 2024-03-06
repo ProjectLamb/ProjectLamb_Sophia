@@ -110,7 +110,7 @@ namespace Sophia.Composite
         public void ChangeWeapon(Weapon newWeapon) {
             _currentWeapon.WeaponDistructor();
             _currentWeapon = newWeapon;
-            newWeapon.WeaponConstructor(this._projectileBucket, PoolSize.GetValueByNature(), AttackSpeed.GetValueByRatio(), MeleeRatio.GetValueByRatio() );
+            newWeapon.WeaponConstructor(this._projectileBucket, PoolSize, AttackSpeed.GetValueByRatio(), MeleeRatio.GetValueByRatio() ,_playerRef);
             OnWeaponChanged?.Invoke();
         }
 

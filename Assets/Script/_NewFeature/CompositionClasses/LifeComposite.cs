@@ -5,6 +5,7 @@ using Sophia.DataSystem;
 using Sophia.DataSystem.Referer;
 using System.Collections.Generic;
 using Sophia.UserInterface;
+using System;
 
 
 namespace Sophia
@@ -57,7 +58,7 @@ namespace Sophia
 
         *********************************************************************************/
 
-        public class LifeComposite : IDataSettable
+        public class LifeComposite : IDataSettable, IDisposable
         {
 
 #region Members 
@@ -77,10 +78,13 @@ namespace Sophia
                     int floatToIntHp = MaxHp;
                     if (value > (float)floatToIntHp)
                     {
-                        mCurrentHealth = (float)floatToIntHp; return;
+                        mCurrentHealth = (float)floatToIntHp; 
+                        OnHpUpdated?.Invoke(mCurrentHealth);
+                        return;
                     }
                     if (value < 0) { mCurrentHealth = 0; return; }
                     mCurrentHealth = value;
+                    OnHpUpdated?.Invoke(mCurrentHealth);
                 }
             }
 
@@ -263,7 +267,6 @@ namespace Sophia
                 }
 
                 OnDamaged?.Invoke(damageInfo);
-                OnHpUpdated?.Invoke(CurrentHealth);
 
                 DamagedExtras.PerformExitFunctionals(ref damageInfo);
                 if (CurrentHealth <= 0) { this.Died(); }
@@ -284,6 +287,18 @@ namespace Sophia
                 IsDie = true;
                 DeadExtras.PerformExitFunctionals(ref nullObject);
                 OnExitDie?.Invoke();
+            }
+
+            public void Dispose()
+            {
+                OnHpUpdated = null;
+                OnBarrierUpdated = null;
+                OnDamaged = null;
+                OnHeal = null;
+                OnEnterDie = null;
+                OnExitDie = null;
+                OnBarrier = null;
+                OnBreakBarrier = null;
             }
         }
     }

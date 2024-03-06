@@ -37,6 +37,7 @@ namespace Sophia.Entitys
                 E.SetExtrasDataToReferer(ExtrasReferer);
             });
         }
+        
         protected override void CollectSettable()
         {
             Settables.Add(Life);
@@ -54,6 +55,10 @@ namespace Sophia.Entitys
         protected override void Start()
         {
             base.Start();
+            Life.OnEnterDie += () => {
+                object NullRef = null;
+                GameManager.Instance.NewFeatureGlobalEvent.EnemyDie.PerformStartFunctionals(ref NullRef);
+            };
         }
 
         private void FixedUpdate() {

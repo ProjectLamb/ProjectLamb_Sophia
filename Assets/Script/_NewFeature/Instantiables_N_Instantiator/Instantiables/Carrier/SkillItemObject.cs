@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace Sophia.Instantiates
 {
+    using System.Diagnostics;
     using Sophia.DataSystem;
     using Sophia.DataSystem.Modifiers;
     using Sophia.DataSystem.Modifiers.ConcreteEquipment;
@@ -14,7 +15,7 @@ namespace Sophia.Instantiates
     using UnityEngine.Events;
     using UnityEngine.VFX;
 
-    public class SkillItem : Carrier
+    public class SkillItemObject : ItemObject
     {
         [SerializeField] public E_SKILL_INDEX _index;
         [SerializeField] public SerialUserInterfaceData     _userInterfaceData;
@@ -22,21 +23,16 @@ namespace Sophia.Instantiates
         [SerializeField] public SerialOnDamageExtrasModifierDatas _damageModifierData;
         [SerializeField] public SerialOnConveyAffectExtrasModifierDatas _conveyAffectModifierData; 
         [SerializeField] public SerialProjectileInstantiateData _projectileInstantiateData; 
-
         public Skill skill  { get; private set; }
+        public bool ISDEBUG = true;
 
-        [SerializeField] public GameObject lootObject;
-        [SerializeField] public VisualEffect lootVFX;
-        public bool triggeredOnce = false;
-        
-        protected void Start()
-        {
-            lootVFX.Play();
+        private void Start() {
+            if(ISDEBUG) {DEBUG_Activate();}
         }
-        
+
         protected override void OnTriggerLogic(Collider entity)
         {
-            if(triggeredOnce) return;
+            if(!IsReadyToTrigger) return;
             if(entity.TryGetComponent<Entitys.Player>(out Entitys.Player player)) {
                 skill ??= FactoryConcreteSkill.GetSkillByID(_index, player,
                     in _userInterfaceData,
@@ -47,14 +43,13 @@ namespace Sophia.Instantiates
                 );
                 CollectUserInterfaceAction(skill, (bool selected, KeyCode key) => {
                     if(selected) {
-                        skill.AddToUpdator();
+                        skill.AddToUpdater();
                         player.CollectSkill(skill, key);
-                        lootVFX.Stop();
-                        lootObject.SetActive(false);
-                        triggeredOnce = true;
-                        if(this._isDestroyable){
-                            Instantiate(DestroyEffect, transform.position, Quaternion.identity);
-                            Destroy (gameObject, 3);
+                        _lootVFX.Stop();
+                        _lootObject.SetActive(false);
+                        IsReadyToTrigger = false;
+                        if(_isDestroyable) {
+                            Destroy (gameObject, 2);
                         }
                     }
                 });

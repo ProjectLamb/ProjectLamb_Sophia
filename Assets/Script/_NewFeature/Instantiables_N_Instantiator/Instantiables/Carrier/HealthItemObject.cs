@@ -4,21 +4,22 @@ using UnityEngine;
 namespace Sophia.Instantiates 
 {
     using Sophia.Entitys;
-    
-    public class HealthItem : Carrier {
+    using UnityEngine.VFX;
+
+    public class HealthItemObject : ItemObject {
         [SerializeField] public int Health;
-        public bool triggeredOnce = false;
         public void SetHealth(int data) => Health = data;
-        protected override void Awake() {
-            base.Awake();
-        }
+
         protected override void OnTriggerLogic(Collider entity)
         {
-            if(triggeredOnce) {return;}
+            if(!IsReadyToTrigger) {return;}
             if(entity.TryGetComponent<Player>(out Player player)){
                 player.GetLifeComposite().Healed(Health);
-                triggeredOnce = true;
-                if(this._isDestroyable) Destroy(gameObject, 1f);
+                
+                _lootVFX.Stop();
+                _lootObject.SetActive(false);
+                IsReadyToTrigger = false;
+                if(this._isDestroyable) Destroy(gameObject, 2f);
             }
         }
     }

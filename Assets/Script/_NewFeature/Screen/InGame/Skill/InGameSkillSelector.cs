@@ -24,6 +24,7 @@ namespace Sophia.UserInterface
             }
             private set{}
         }
+        [SerializeField] PauseMenu pauseMenu;
 
         [SerializeField] Entitys.Player player;
         [SerializeField] Composite.SkillManager skillManager;
@@ -34,10 +35,10 @@ namespace Sophia.UserInterface
         [SerializeField] UnityAction<bool, KeyCode> actionFromItem;
 
         private void OnEnable() {
-            StartCoroutine(AsyncRender.PerformAndRenderUIUnScaled(() => {
-                collectedSkillButton[0].SetUserInterfaceData(skillManager.SkillGetSkillInfoByKey(KeyCode.Q), KeyCode.Q);
-                collectedSkillButton[1].SetUserInterfaceData(skillManager.SkillGetSkillInfoByKey(KeyCode.E), KeyCode.E);
-                collectedSkillButton[2].SetUserInterfaceData(skillManager.SkillGetSkillInfoByKey(KeyCode.R), KeyCode.R);
+            StartCoroutine(GlobalAsync.PerformAndRenderUIUnScaled(() => {
+                collectedSkillButton[0].SetUserInterfaceData(skillManager.GetSkillInfoByKey(KeyCode.Q), KeyCode.Q);
+                collectedSkillButton[1].SetUserInterfaceData(skillManager.GetSkillInfoByKey(KeyCode.E), KeyCode.E);
+                collectedSkillButton[2].SetUserInterfaceData(skillManager.GetSkillInfoByKey(KeyCode.R), KeyCode.R);
                 collectedSkillButton[0].func        = SendSelectData;
                 collectedSkillButton[1].func        = SendSelectData;
                 collectedSkillButton[2].func        = SendSelectData;
@@ -49,10 +50,10 @@ namespace Sophia.UserInterface
         }
 
         public void OpenSkillSelector(Skill skill, UnityAction<bool, KeyCode> action) {
-            GameManager.Instance.GlobalEvent.IsGamePaused = true;
             actionFromItem = action;
-            gameObject.SetActive(true);
-            StartCoroutine(AsyncRender.PerformAndRenderUIUnScaled(() => {
+            pauseMenu.OpenMenu(gameObject);
+
+            StartCoroutine(GlobalAsync.PerformAndRenderUIUnScaled(() => {
                 currentSkillButton.SetUserInterfaceData(skill, KeyCode.None);
                 currentSkillButton.transform.localPosition = Vector3.zero;
             }));
@@ -63,13 +64,12 @@ namespace Sophia.UserInterface
             KeyCode AssignedKey = assignedKey;
             Debug.Log($"{IsSelected} {AssignedKey}");
             actionFromItem.Invoke(IsSelected, AssignedKey);
-            StartCoroutine(AsyncRender.PerformUnScaled(0.5f, CloseSkillSelector));
+            StartCoroutine(GlobalAsync.PerformUnScaled(0.5f, CloseSkillSelector));
         }
 
         public void CloseSkillSelector() {
-            GameManager.Instance.GlobalEvent.IsGamePaused = false;
             actionFromItem = null;
-            gameObject.SetActive(false);
+            pauseMenu.CloseMenu();
         }
 
         public void MoveCurrentHovering(KeyCode key){

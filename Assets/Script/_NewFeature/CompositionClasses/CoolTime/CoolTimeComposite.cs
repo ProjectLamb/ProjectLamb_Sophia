@@ -104,6 +104,48 @@ namespace Sophia.Composite
             stackCounter.OnRecoverAction += action;
             return this;
         }
+        
+        public CoolTimeComposite RemoveOnInitialized(UnityAction action)
+        {
+            timer.OnInitialized -= action;
+            return this;
+        }
+
+        public CoolTimeComposite RemoveOnStartCooldownEvent(UnityAction action)
+        {
+            timer.OnStart -= action;
+            return this;
+        }
+
+        public CoolTimeComposite RemoveOnTickingEvent(UnityAction<float> action)
+        {
+            timer.OnTicking -= action;
+            return this;
+        }
+
+        public CoolTimeComposite RemoveOnIntervalEvent(UnityAction action)
+        {
+            timer.OnInterval -= action;
+            return this;
+        }
+
+        public CoolTimeComposite RemoveOnFinishedEvent(UnityAction action)
+        {
+            timer.OnFinished -= action;
+            return this;
+        }
+
+        public CoolTimeComposite RemoveOnUseEvent(UnityAction action)
+        {
+            stackCounter.OnUseAction -= action;
+            return this;
+        }
+        
+        public CoolTimeComposite RemoveOnRecoverEvent(UnityAction action)
+        {
+            stackCounter.OnRecoverAction -= action;
+            return this;
+        }
 
         public void ClearEvents()
         {

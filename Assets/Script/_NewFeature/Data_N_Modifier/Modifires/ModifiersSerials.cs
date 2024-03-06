@@ -1,6 +1,7 @@
 using UnityEngine;
 namespace Sophia
 {
+    using FMODUnity;
     using Instantiates;
     using Sophia.Composite;
     using Sophia.Instantiates.Skills;
@@ -125,6 +126,7 @@ namespace Sophia
         [SerializeField] public SerialUserInterfaceData _uiData;
         [SerializeField] public E_AFFECT_TYPE _affectType;
         [SerializeField] public float _baseDurateTime;
+        [SerializeField] public SerialAudioData              _audioData;
         [SerializeField] public SerialSkinData                _skinData;
         [SerializeField] public SerialVisualData              _visualData;
         [SerializeField] public SerialBarrierData             _barrierData;
@@ -132,6 +134,14 @@ namespace Sophia
         [SerializeField] public SerialPhysicsData             _physicsData;
         [SerializeField] public SerialStatCalculateDatas      _calculateData;
         [SerializeField] public SerialProjectileVisualDatas   _projectileVisualData;
+    }
+
+    [System.Serializable]
+    public class SerialAudioData
+    {
+        [SerializeField] public EventReference _fmodEventRef;
+        [SerializeField] public ParamRef[] _startParamRefs;
+        [SerializeField] public ParamRef[] _exitParamRefs;
     }
 
     [System.Serializable]

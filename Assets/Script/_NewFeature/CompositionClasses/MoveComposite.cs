@@ -1,12 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
-
 using UnityEngine.Events;
 using Cysharp.Threading.Tasks;
 using Sophia.DataSystem;
 using Sophia.DataSystem.Referer;
+using FMODPlus;
 
 namespace Sophia.Composite
 {
@@ -27,13 +24,15 @@ namespace Sophia.Composite
         public bool IsMovable {get; protected set;}
 
         public  Vector3     ForwardingVector;
+        public  Vector3     LastTouchedPointer;
         public  Quaternion  Rotate;
         private Vector2     mInputVec;
 
         public const float CamRayLength = 500f;
         public LayerMask GroundMask = LayerMask.GetMask("Wall", "Map");
         public LayerMask WallMask = LayerMask.GetMask("Wall");
-        
+        private FMODAudioSource MoveSource;
+
         public MovementComposite(Rigidbody rigidbody, float baseMoveSpeed) {
             
             RbRef = rigidbody;
@@ -60,23 +59,24 @@ namespace Sophia.Composite
 
 #region Getter
 
-        public Vector3 GetForwardingVector() {
-            Vector3 res = Vector3.zero;
-            res += AngleToVector(Camera.main.transform.eulerAngles.y + 90f) * mInputVec.x;
-            res += AngleToVector(Camera.main.transform.eulerAngles.y) * mInputVec.y;
-            return res.normalized;
+        public (Vector3, int) GetTouchedData() {
+            if(Mathf.Abs(mInputVec.x) > 0.01 || Mathf.Abs(mInputVec.y) > 0.01){
+                return (LastTouchedPointer.normalized, MoveSpeed);
+            }
+            return (Vector3.zero, MoveSpeed);
         }
         public bool IsBorder(Transform transform) {
-            return Physics.Raycast(transform.position, ForwardingVector.normalized, 2, WallMask);
+            return Physics.Raycast(transform.position, mInputVec.GetSophiaForwardingVector(), 2, WallMask);
         }
 
-        public (Vector3, int) GetMovemenCompositetData() => (GetForwardingVector(), MoveSpeed);
+        public (Vector3, int) GetMovemenCompositetData() => (mInputVec.GetSophiaForwardingVector(), MoveSpeed);
     
 #endregion
 
 #region Setter 
 
         public void SetMovableState(bool Input) => IsMovable = Input;
+        public void SetAudioSource(FMODAudioSource source) { MoveSource = source; }
 
 #endregion
 
@@ -97,7 +97,7 @@ namespace Sophia.Composite
         public void MoveTick(Transform transform) {
             if(!IsMovable) {return;}
 
-            ForwardingVector = GetForwardingVector();
+            ForwardingVector = mInputVec.GetSophiaForwardingVector();
             this.RbRef.velocity = ForwardingVector * MoveSpeed.GetValueForce();
 
             if(ForwardingVector != Vector3.zero) {
@@ -114,18 +114,24 @@ namespace Sophia.Composite
             Ray camRay = Camera.main.ScreenPointToRay(mousePosition);
             if (Physics.Raycast(camRay, out RaycastHit groundHit, CamRayLength, GroundMask)) // 공격 도중에는 방향 전환 금지
             {
-                Vector3 PlayerToPointerVector = groundHit.point - transform.position;
-                PlayerToPointerVector.y = 0f;
-                this.RbRef.MoveRotation(Quaternion.LookRotation(PlayerToPointerVector));
+                LastTouchedPointer = groundHit.point - transform.position;
+                LastTouchedPointer.y = 0f;
+                this.RbRef.MoveRotation(Quaternion.LookRotation(LastTouchedPointer));
             }
             await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);
         }
-    
-#region Helper
-        private Vector3 AngleToVector(float _angle) {
-            _angle *= Mathf.Deg2Rad;
-            return new Vector3(Mathf.Sin(_angle), 0, Mathf.Cos(_angle));
+        public async UniTask TurningWithAction(Transform transform, Vector3 mousePosition, UnityAction action) {
+            if(!IsMovable) {return;}
+
+            Ray camRay = Camera.main.ScreenPointToRay(mousePosition);
+            if (Physics.Raycast(camRay, out RaycastHit groundHit, CamRayLength, GroundMask)) // 공격 도중에는 방향 전환 금지
+            {
+                LastTouchedPointer = groundHit.point - transform.position;
+                LastTouchedPointer.y = 0f;
+                this.RbRef.MoveRotation(Quaternion.LookRotation(LastTouchedPointer));
+            }
+            await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);
+            action.Invoke();
         }
-#endregion
     }   
 }

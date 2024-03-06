@@ -35,7 +35,7 @@ namespace Sophia.DataSystem
 
         public class ExecutionStrike : Affector, IUserInterfaceAccessible
         {
-
+            private Atomics.AudioAtomics            AudioAffector;
             private Atomics.GetHitAtomics           DamageAffector;
             private Atomics.MaterialChangeAtomics   MaterialChangeAffector;
             private Atomics.VisualFXAtomics         VisualFXAffector;
@@ -46,6 +46,7 @@ namespace Sophia.DataSystem
 
             public override void Enter(Entity entity)
             {
+                AudioAffector.Invoke(entity);
                 DamageAffector.Invoke(entity);
                 MaterialChangeAffector.material.SetFloat("_Activate", 1);
                 MaterialChangeAffector.Invoke(entity);
@@ -56,8 +57,10 @@ namespace Sophia.DataSystem
             {
                 MaterialChangeAffector.Revert(entity);
                 VisualFXAffector.Revert(entity);
+                AudioAffector.Revert(entity);
                 base.Exit(entity);
             }
+            
             public override void Run(Entity entity)
             {
                 float ActivateNum = 0;
@@ -68,6 +71,7 @@ namespace Sophia.DataSystem
             }
             protected override void Init(in SerialAffectorData affectData)
             {
+                AudioAffector = new Atomics.AudioAtomics(in affectData._audioData);
 
                 AffectType = E_AFFECT_TYPE.Execution;
                 Name = affectData._uiData._name;
@@ -154,6 +158,7 @@ namespace Sophia.DataSystem
 
         public class PoisonedAffect : Affector, IUserInterfaceAccessible
         {
+            private Atomics.AudioAtomics            AudioAffector;
             public PoisonedAffect(in SerialAffectorData affectData) : base(in affectData)
             {
             }
@@ -176,11 +181,13 @@ namespace Sophia.DataSystem
             {
                 MaterialChangeAffector.Revert(entity);
                 VisualFXAffector.Revert(entity);
+                AudioAffector.Revert(entity);
                 base.Exit(entity);
             }
 
             protected override void Init(in SerialAffectorData affectData)
             {
+                AudioAffector = new Atomics.AudioAtomics(in affectData._audioData);
                 AffectType = E_AFFECT_TYPE.Poisoned;
                 Name = affectData._uiData._name;
                 Description = affectData._uiData._description;
@@ -264,6 +271,7 @@ namespace Sophia.DataSystem
 
         public class ColdAffect : Affector, IUserInterfaceAccessible
         {
+            private Atomics.AudioAtomics            AudioAffector;
             private Atomics.EntityStatModifyAtomics EntityStatModifyAffector;
             private Atomics.MaterialChangeAtomics MaterialChangeAffector;
             private Atomics.VisualFXAtomics VisualFXAffector;
@@ -284,11 +292,13 @@ namespace Sophia.DataSystem
             {
                 EntityStatModifyAffector.Revert(entity);
                 MaterialChangeAffector.Revert(entity);
+                AudioAffector.Revert(entity);
                 base.Exit(entity);
             }
 
             protected override void Init(in SerialAffectorData affectData)
             {
+                AudioAffector = new Atomics.AudioAtomics(in affectData._audioData);
                 AffectType = E_AFFECT_TYPE.Cold;
                 Name = affectData._uiData._name;
                 Description = affectData._uiData._description;
@@ -318,6 +328,7 @@ namespace Sophia.DataSystem
 
         public class StunAffect : Affector, IUserInterfaceAccessible
         {
+            private Atomics.AudioAtomics            AudioAffector;
             private Atomics.HoldAtomics HoldAffector;
             private Atomics.MaterialChangeAtomics MaterialChangeAffector;
             private Atomics.VisualFXAtomics VisualFXAffector;
@@ -329,6 +340,7 @@ namespace Sophia.DataSystem
 
             public override void Enter(Entity entity)
             {
+                AudioAffector.Invoke(entity);
                 HoldAffector.Invoke(entity as IMovable);
                 MaterialChangeAffector.Invoke(entity);
                 VisualFXAffector.Invoke(entity);
@@ -339,6 +351,7 @@ namespace Sophia.DataSystem
                 HoldAffector.Revert(entity as IMovable);
                 MaterialChangeAffector.Revert(entity);
                 VisualFXAffector.Revert(entity);
+                AudioAffector.Revert(entity);
                 base.Exit(entity);
             }
 
@@ -346,6 +359,7 @@ namespace Sophia.DataSystem
 
             protected override void Init(in SerialAffectorData affectData)
             {
+                AudioAffector = new Atomics.AudioAtomics(in affectData._audioData);
                 AffectType = E_AFFECT_TYPE.Stun;
                 Name = affectData._uiData._name;
                 Description = affectData._uiData._description;
@@ -486,6 +500,7 @@ namespace Sophia.DataSystem
 
         public class BlackHoleAffect : Affector, IUserInterfaceAccessible
         {
+            private Atomics.AudioAtomics            AudioAffector;
             private Atomics.RigidGradualAtomics RigidGradualAffector;
             private Atomics.HoldAtomics HoldAffector;
             public BlackHoleAffect(in SerialAffectorData affectData, Transform ownerTransform) : base(in affectData)
@@ -499,6 +514,7 @@ namespace Sophia.DataSystem
 
             public override void Enter(Entity entity)
             {
+                AudioAffector.Invoke(entity);
                 RigidGradualAffector.Invoke(entity);
                 HoldAffector.Invoke(entity as IMovable);
             }
@@ -516,6 +532,7 @@ namespace Sophia.DataSystem
 
             protected override void Init(in SerialAffectorData affectData)
             {
+                AudioAffector = new Atomics.AudioAtomics(in affectData._audioData);
                 AffectType = E_AFFECT_TYPE.BlackHole;
                 Name = affectData._uiData._name;
                 Description = affectData._uiData._description;
@@ -526,6 +543,7 @@ namespace Sophia.DataSystem
                 Timer = new TimerComposite(affectData._baseDurateTime);
                 CurrentState = AffectorReadyState.Instance;
             }
+
 #region User Interface
             public string GetDescription()
             {

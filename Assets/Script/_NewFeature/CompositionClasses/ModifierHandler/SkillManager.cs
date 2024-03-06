@@ -8,6 +8,8 @@ namespace Sophia.Composite
     using Sophia.DataSystem.Modifiers;
     using Sophia.Entitys;
     using Sophia.Instantiates;
+    using Sophia.UserInterface;
+    using UnityEngine.InputSystem;
 
     public class SkillManager : MonoBehaviour {
 
@@ -37,7 +39,7 @@ namespace Sophia.Composite
             return null;
         }
 
-        public IUserInterfaceAccessible SkillGetSkillInfoByKey(KeyCode key) {
+        public IUserInterfaceAccessible GetSkillInfoByKey(KeyCode key) {
             IUserInterfaceAccessible res;
             if(!collectedSkillInfo.ContainsKey(key)) 
                 throw new System.Exception("올바른 스킬 키보드 접근이 아님 QER 중 하나로..");
@@ -84,10 +86,15 @@ namespace Sophia.Composite
         {
             if(!collectedSkillInfo.ContainsKey(key)) 
                 throw new System.Exception("올바른 스킬 키보드 접근이 아님 QER 중 하나로..");
-            if(collectedSkillInfo[key] != EmptySkill.Instance) 
-                return false;
+            if(collectedSkillInfo[key] != EmptySkill.Instance)  { Drop(key); }
             collectedSkill[key] = skill;
+            collectedSkill[key].GetCoolTimeComposite().AddOnUseEvent(() => _ownerPlayer.GetModelManger().GetAnimator().Play("PlaySkillAction"));
             collectedSkillInfo[key] = skill;
+            switch(key) {
+                case KeyCode.Q : {InGameScreenUI.Instance._playerSkillCoolUIs[0].SetSkill(collectedSkill[KeyCode.Q]); break;}
+                case KeyCode.E : {InGameScreenUI.Instance._playerSkillCoolUIs[1].SetSkill(collectedSkill[KeyCode.E]); break;}
+                case KeyCode.R : {InGameScreenUI.Instance._playerSkillCoolUIs[2].SetSkill(collectedSkill[KeyCode.R]); break;}
+            }
             return true;
         }
 
@@ -98,6 +105,11 @@ namespace Sophia.Composite
             if(collectedSkillInfo[key] != EmptySkill.Instance) {
                 collectedSkill[key] = null;
                 collectedSkillInfo[key] = EmptySkill.Instance;
+                switch(key) {
+                    case KeyCode.Q : {InGameScreenUI.Instance._playerSkillCoolUIs[0].RemoveSkill(); break;}
+                    case KeyCode.E : {InGameScreenUI.Instance._playerSkillCoolUIs[1].RemoveSkill(); break;}
+                    case KeyCode.R : {InGameScreenUI.Instance._playerSkillCoolUIs[2].RemoveSkill(); break;}
+                }
                 return true;
             }
             else {return false;}

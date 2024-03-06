@@ -5,7 +5,9 @@ using DG.Tweening;
 
 namespace Sophia.Instantiates
 {
+    using System;
     using Cysharp.Threading.Tasks.Triggers;
+    using FMODPlus;
     using Sophia.DataSystem;
     using Sophia.DataSystem.Modifiers;
     using Sophia.Entitys;
@@ -117,6 +119,7 @@ namespace Sophia.Instantiates
         [SerializeField] private SerialProjectileIntervalData _serialProjectileIntervalData;
         [SerializeField] private Collider           _carrierCollider = null;
         [SerializeField] private Rigidbody          _carrierRigidBody = null;
+        [SerializeField] private FMODAudioSource  _audioSource;
 
 #region Projectile Visual
 
@@ -161,11 +164,8 @@ namespace Sophia.Instantiates
                     mCurrentDurateTime = 0.05f; 
                     return;
                 }
-                float changedRatio = value / mCurrentDurateTime;
-                if(changedRatio <= 1.01 && 0.99 <= changedRatio) return;
+                mCurrentDurateTime = value;
                 ProjectileMainModule.duration = mCurrentDurateTime;
-                mCurrentDurateTime *= changedRatio;
-                SetParticleSimTime(transform, changedRatio);
             }
         }
 
@@ -205,10 +205,11 @@ namespace Sophia.Instantiates
             {
                 if(value >= 0.01f) {
                     mCurrentSimulateSpeed = value;
-                    ProjectileMainModule.simulationSpeed  = mCurrentSimulateSpeed;
+                    SetParticleSimTime(transform, mCurrentSimulateSpeed);
                     if(ProjectileVFXGraph!=null)ProjectileVFXGraph.playRate = mCurrentSimulateSpeed;
                     return;
                 }
+
                 mCurrentSimulateSpeed = 1f;
                 ProjectileMainModule.simulationSpeed  = 1f;
                 if(ProjectileVFXGraph!=null)ProjectileVFXGraph.playRate = 1f;
@@ -434,14 +435,6 @@ namespace Sophia.Instantiates
             //     DestroyEffect = _destroyEffect,
             //     HitEffect = _hitEffect
             // };
-            // ProjectileVisualData data = new ProjectileVisualData {
-            //     ShaderUnderbarColor = ParticleMaterial.GetColor("_Color"),
-            //     ShaderUnderbarColorPower = ParticleMaterial.GetFloat("_ColorPower"),
-            //     DestroyEffect = _destroyEffect,
-            //     HitEffect = _hitEffect
-            // };
-
-            // CurrnetProjectileVisualData = data;
             // CurrnetProjectileVisualData = data;
 
             
@@ -520,6 +513,7 @@ namespace Sophia.Instantiates
             gameObject.SetActive(true);
             OnActivated?.Invoke();
             IsActivated = true;
+            if(_audioSource != null ) _audioSource.Play();
             if(_DeactivateForce == true) { Invoke("DeActivate", CurrentDurateTime); }
             return;
         }
@@ -534,6 +528,7 @@ namespace Sophia.Instantiates
 
         private void Awake()
         {
+            TryGetComponent<FMODAudioSource>(out _audioSource);
             ProjectileMainModule                = ProjectileParticle.main;
             ParticleEmissionModule              = ProjectileParticle.emission;
             ParticleTriggerModule               = ProjectileParticle.trigger;
@@ -548,6 +543,7 @@ namespace Sophia.Instantiates
             PositioningType = _positioningType;
             mCurrentProjectileDamage            = _baseProjectileDamage;
             mCurrentDurateTime                  = _baseDurateTime;
+            mCurrentSimulateSpeed             = _baseSimulateSpeed;
             mCurrentSize                        = _baseSize;
             mCurrentForwardingSpeed             = _baseForwardingSpeed;
             
@@ -564,6 +560,7 @@ namespace Sophia.Instantiates
         protected override void OnTriggerLogic(Collider entity)
         {
             if(CheckIsOwnerCollider(entity)) {return;}
+            if(CheckIsSameTag(entity)) {return;}
             if (entity.TryGetComponent<Entity>(out Entity targetEntity))
             {
                 if(targetEntity.GetDamaged(CurrentProjectileDamage)) {
@@ -626,6 +623,11 @@ namespace Sophia.Instantiates
         public bool CheckIsSameOwner(Entity owner)
         {
             throw new System.NotImplementedException();
+        }
+        
+        private bool CheckIsSameTag(Collider entity)
+        {
+            return entity.gameObject.tag == OwnerRef.gameObject.tag;
         }
         
         public bool CheckIsOwnerCollider(Collider target)
