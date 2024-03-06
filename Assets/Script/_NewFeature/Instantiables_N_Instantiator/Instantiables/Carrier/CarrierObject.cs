@@ -6,8 +6,6 @@ namespace Sophia.Instantiates
 {
     public abstract class Carrier : MonoBehaviour
     {
-        public bool       _isDestroyable = true;
-        public GameObject DestroyEffect = null;
         [HideInInspector] public Collider carrierCollider;
         [HideInInspector] public Rigidbody carrierRigidbody;
         protected virtual void Awake() {

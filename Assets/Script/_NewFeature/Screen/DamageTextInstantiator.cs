@@ -36,7 +36,9 @@ namespace Sophia.UserInterface
 
         private void OnDisable()
         {
-            LifeCompositeRef.OnDamaged -= Generate;
+            if(LifeCompositeRef != null) {
+                LifeCompositeRef.OnDamaged -= Generate;
+            }
         }
 
         public void Generate(DamageInfo _damageInfo)

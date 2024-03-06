@@ -5,6 +5,7 @@ using DG.Tweening;
 using Sophia.Composite;
 using NUnit.Framework;
 using UnityEngine.AI;
+using System.Linq;
 
 namespace Sophia.Entitys
 {
@@ -63,6 +64,7 @@ namespace Sophia.Entitys
         {
             //Buff.AudioClip.Play
             GetModelManger().GetAnimator().SetTrigger("DoHowl");
+            _audioSources[(int)E_RAPTOR_AUDIO_INDEX.Howling].Play();
 
             if (raptorSmallList.Count == 0)
                 InstantiateRaptorSmall(spawnRaptorAmount);
@@ -87,7 +89,9 @@ namespace Sophia.Entitys
                     spawnPosition = hit.position;
                 }
                 instance = Instantiate(RaptorSmall, spawnPosition, Quaternion.identity);
+                CurrentInstantiatedStage.mobGenerator.AddMob(instance);
                 raptorSmallList.Add(instance.GetComponent<RaptorSmall>());
+                raptorSmallList.Last().CurrentInstantiatedStage = CurrentInstantiatedStage;
             }
         }
 
@@ -311,6 +315,10 @@ namespace Sophia.Entitys
         }
 
         #endregion
+
+        private void OnDestroy() {
+            howlingTimer.RemoveOnFinishedEvent(SetReadyHowling);    
+        }
     }
 
 }

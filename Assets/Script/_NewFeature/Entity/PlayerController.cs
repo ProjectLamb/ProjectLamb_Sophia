@@ -33,6 +33,7 @@ namespace Sophia.Entitys
         }
 
         private void Update() {
+            if(GameManager.Instance.GlobalEvent.IsGamePaused) return;
             //playerRef.AimAssist();
             //playerRef.CheckAttack();
             if(Input.GetKeyDown(KeyCode.Tab)) modelDebuggerRef.ToggleMenu();

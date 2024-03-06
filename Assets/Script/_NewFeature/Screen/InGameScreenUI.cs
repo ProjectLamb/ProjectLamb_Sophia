@@ -8,20 +8,6 @@ using UnityEngine.UI;
 
 namespace Sophia.UserInterface
 {
-    public class AsyncRender {
-        public static IEnumerator PerformUnScaled(float delayTime, UnityAction action) {
-            yield return new WaitForSecondsRealtime(delayTime);
-            action.Invoke();
-        }
-        public static IEnumerator PerformAndRenderUI(UnityAction action)
-        {
-            action.Invoke(); yield return YieldInstructionCache.WaitForEndOfFrame;
-        }
-        public static IEnumerator PerformAndRenderUIUnScaled(UnityAction action)
-        {
-            action.Invoke(); yield return new WaitForSecondsRealtime(0.0166f);
-        }
-    }
 
     public class InGameScreenUI : MonoBehaviour {
         private static InGameScreenUI _instance;
@@ -42,6 +28,7 @@ namespace Sophia.UserInterface
         [SerializeField] public Slider                  _playerBarrierBarUI;
         [SerializeField] public PlayerStaminaBarUI      _playerStaminaBarUI;
         [SerializeField] public PlayerWealthBar         _playerWealthBarUI;
+        [SerializeField] public PlayerSkillCoolUI[]     _playerSkillCoolUIs;
         [SerializeField] public HitCanvasShadeScript    _hitCanvasShadeScript;
 
     }

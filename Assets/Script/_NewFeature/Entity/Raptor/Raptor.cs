@@ -15,6 +15,9 @@ namespace Sophia.Entitys
     using Sophia.DataSystem.Referer;
     using Sophia.Instantiates;
 
+    public enum E_RAPTOR_AUDIO_INDEX {
+        Hit = 0, Roar, Death, FootStep, Found, Howling, Idle
+    }
     public abstract class Raptor : Enemy, IMovable
     {
 
@@ -29,7 +32,6 @@ namespace Sophia.Entitys
         // [SerializeField] protected VisualFXObject             _dieParticleRef;
         // [SerializeField] public    Entity                     _objectiveEntity;
         // [SerializeField] protected E_MOB_AI_DIFFICULTY        _mobDifficulty;
-        [SerializeField] protected FMODAudioSource _audioSources;
         [SerializeField] protected UnityEngine.AI.NavMeshAgent _nav;
         [Header("Raptor Settings")]
         [SerializeField] protected float TurnSpeed = 1;
@@ -145,6 +147,7 @@ namespace Sophia.Entitys
         protected void DoAttack()
         {
             GetModelManger().GetAnimator().SetTrigger("DoAttack");
+            _audioSources[(int)E_RAPTOR_AUDIO_INDEX.Roar].Play();
         }
         public void UseProjectile_NormalAttack()
         {
@@ -167,9 +170,11 @@ namespace Sophia.Entitys
             if (Life.IsDie) { isDamaged = false; }
             else
             {
-                if (isDamaged = Life.Damaged(damage)) { }
+                if (isDamaged = Life.Damaged(damage)) {
+                    GameManager.Instance.NewFeatureGlobalEvent.OnEnemyHitEvent.Invoke();
+                }
             }
-            if (Life.IsDie) { Die(); }
+            if (Life.IsDie) { fsm.ChangeState(States.Death); }
             return isDamaged;
         }
 
@@ -188,6 +193,8 @@ namespace Sophia.Entitys
         public void OnRaptorEnterDie()
         {
             GetModelManger().GetAnimator().SetTrigger("DoDie");
+            _audioSources[(int)E_RAPTOR_AUDIO_INDEX.Death].Play();
+            CurrentInstantiatedStage.mobGenerator.RemoveMob(this.gameObject);
             GameManager.Instance.NewFeatureGlobalEvent.EnemyDie.PerformStartFunctionals(ref NullRef);
             SetMoveState(false);
             entityCollider.enabled = false;
@@ -196,6 +203,7 @@ namespace Sophia.Entitys
         public void OnRaptorExitDie()
         {
             GameManager.Instance.NewFeatureGlobalEvent.EnemyDie.PerformExitFunctionals(ref NullRef);
+            Destroy(gameObject, 0.5f);
         }
 
         #endregion
@@ -321,5 +329,6 @@ namespace Sophia.Entitys
             //_nav.autoBraking = false;
         }
         #endregion
+        [SerializeField] protected List<FMODAudioSource> _audioSources;
     }
 }

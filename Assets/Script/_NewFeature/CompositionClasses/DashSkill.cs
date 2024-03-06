@@ -27,7 +27,7 @@ namespace Sophia.Composite
 
         public DashSkill(Rigidbody rb, Func<(Vector3, int)> movementDataSender, float forceAmount){
             rigidbodyRef = rb;
-            MaxStamina = new Stat(10,
+            MaxStamina = new Stat(3,
                 E_NUMERIC_STAT_TYPE.MaxStamina, 
                 E_STAT_USE_TYPE.Natural, 
                 OnMaxStaminaUpdated
@@ -51,11 +51,11 @@ namespace Sophia.Composite
 
             DashAtomics = new DataSystem.Atomics.DashAtomics(rigidbodyRef, movementDataSender, DashForce.GetValueForce);
             
-            Timer = new Sophia.Composite.CoolTimeComposite(3f, MaxStamina.GetValueByNature())
+            Timer = new Sophia.Composite.CoolTimeComposite(3f, MaxStamina)
                 .SetAcceleratrion(StaminaRestoreSpeed)
                 .AddBindingAction(Dash);
                         
-            AddToUpdator();
+            AddToUpdater();
         }
         
 
@@ -79,11 +79,12 @@ namespace Sophia.Composite
 #region Event
 
         private void OnMaxStaminaUpdated() {
-            Timer.SetMaxStackCounts(this.MaxStamina.GetValueByNature());
+            Timer.SetMaxStackCounts(this.MaxStamina);
+            InGameScreenUI.Instance._playerStaminaBarUI.MaxStaminaUpdatedHandler();
         }
 
         private void OnStaminaRestoreSpeedUpdated() {
-            Timer.SetAcceleratrion(this.StaminaRestoreSpeed.GetValueByNature());
+            Timer.SetAcceleratrion(this.StaminaRestoreSpeed);
         }
         
         private void OnDashForceUpdate() {
@@ -122,7 +123,7 @@ namespace Sophia.Composite
         bool IsUpdatorBinded = false;
         public bool GetUpdatorBind() => IsUpdatorBinded;
 
-        public void AddToUpdator() {
+        public void AddToUpdater() {
             GlobalTimeUpdator.CheckAndAdd(this);
             IsUpdatorBinded = true;
         }
@@ -134,13 +135,13 @@ namespace Sophia.Composite
     
 #endregion
 
-        private void Dash() {
+        public void Dash() {
             DashAtomics.Invoke();
             DashSource.Play();
         }
 
         public void Use() {
-            if(!GetIsDashState() && Timer.GetIsReadyToUse() ){ Timer.ActionStart();}
+            if((!GetIsDashState() && rigidbodyRef.velocity.magnitude > 5f) && Timer.GetIsReadyToUse() ){ Timer.ActionStart();}
         }
 
         public void RecoverOneDash() => Timer.stackCounter.RecoverStack();

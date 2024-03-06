@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
 using FMODPlus;
-using Unity.VisualScripting;
 using FMODUnity;
 
 namespace Sophia.Composite
@@ -13,14 +12,15 @@ namespace Sophia.Composite
         [SerializeField] private Entitys.Entity _entity;
 
 #endregion
-        private Dictionary<EventReference, FMODAudioSource> AudioSourceDic;
+        private Dictionary<EventReference, FMODAudioSource> AudioSourceDic = new ();
         public void AddSFX(EventReference eventRef) {
             if(!AudioSourceDic.ContainsKey(eventRef)){
-                AudioSourceDic.Add(eventRef, transform.AddComponent<FMODAudioSource>());
+                AudioSourceDic.Add(eventRef, gameObject.AddComponent<FMODAudioSource>());
                 AudioSourceDic[eventRef].playOnAwake = false;
                 AudioSourceDic[eventRef].clip = eventRef;
             }
         }
+        
         public void PlaySFX(EventReference eventRef) {
             AudioSourceDic[eventRef].Play();
         }
@@ -34,6 +34,7 @@ namespace Sophia.Composite
         }
         
         public void ApplyParameterSFX(EventReference eventRef, ParamRef[] paramRefs) {
+            if(paramRefs.Length == 0) return;
             AudioSourceDic[eventRef].ApplyParameter(paramRefs);
         }
     }
