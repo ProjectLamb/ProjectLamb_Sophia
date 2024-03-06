@@ -25,7 +25,7 @@ namespace Sophia
 
         public void UIUpdate()
         {
-            StartCoroutine(AsyncRender.Instance.PerformAndRenderUI(() =>
+            StartCoroutine(GlobalAsync.PerformAndRenderUI(() =>
             {
                 DOVirtual.Int(0, (int)playerReferer.GetStat(E_NUMERIC_STAT_TYPE.MaxHp).GetValueForce(), 0.5f, (E) => {StatNum[0].text = E.ToString();}).SetUpdate(true);
                 DOVirtual.Int(0, (int)playerReferer.GetStat(E_NUMERIC_STAT_TYPE.MoveSpeed).GetValueForce(), 0.5f, (E) => {StatNum[1].text = E.ToString();}).SetUpdate(true);

@@ -1,19 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
-using Sophia.UserInterface;
 using UnityEngine;
 using UnityEngine.Events;
 
+using Sophia;
 public class PauseMenu : MonoBehaviour
 {
-    
     public GameObject pauseMenuObject;
     public UnityEvent OpenUnityEvent;
     public UnityEvent CloseUnityEvent;
 
     Stack<GameObject> menuStack = new Stack<GameObject>();
     public void OpenMenu(GameObject _canvas){
-        if(menuStack.Count == 0) GameManager.Instance.GlobalEvent.IsGamePaused = true;
+        if(menuStack.Count == 0) {
+            GameManager.Instance.GlobalEvent.IsGamePaused = true;
+        }
         menuStack.Push(_canvas);
         var topMenu = menuStack.Peek();
         topMenu.SetActive(true);
@@ -21,7 +22,7 @@ public class PauseMenu : MonoBehaviour
 
     public void CloseMenu(){
         if(menuStack.Peek().name == pauseMenuObject.name) {
-            StartCoroutine(AsyncRender.Instance.PerformAndRenderUIUnScaled(() => {
+            StartCoroutine(GlobalAsync.PerformAndRenderUIUnScaled(() => {
                 CloseUnityEvent.Invoke();
                 var topMenu = menuStack.Peek();
                 topMenu.SetActive(false);

@@ -315,6 +315,10 @@ namespace Sophia.Entitys
         }
 
         #endregion
+
+        private void OnDestroy() {
+            howlingTimer.RemoveOnFinishedEvent(SetReadyHowling);    
+        }
     }
 
 }

@@ -55,7 +55,7 @@ namespace Sophia.DataSystem
         }
         
         // 모든것은 float로 관리하려고 했지만. MaxStamina는 무조건 Int형이 되야 한다.
-        public int GetValueByNature() {
+        public float GetValueByNature() {
             if(UseType.Equals(E_STAT_USE_TYPE.Natural)) {
                 RecalculateStat();
                 return (int)Math.Clamp(value, 0, int.MaxValue);

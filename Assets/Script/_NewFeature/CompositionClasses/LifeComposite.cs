@@ -5,6 +5,7 @@ using Sophia.DataSystem;
 using Sophia.DataSystem.Referer;
 using System.Collections.Generic;
 using Sophia.UserInterface;
+using System;
 
 
 namespace Sophia
@@ -57,7 +58,7 @@ namespace Sophia
 
         *********************************************************************************/
 
-        public class LifeComposite : IDataSettable
+        public class LifeComposite : IDataSettable, IDisposable
         {
 
 #region Members 
@@ -286,6 +287,18 @@ namespace Sophia
                 IsDie = true;
                 DeadExtras.PerformExitFunctionals(ref nullObject);
                 OnExitDie?.Invoke();
+            }
+
+            public void Dispose()
+            {
+                OnHpUpdated = null;
+                OnBarrierUpdated = null;
+                OnDamaged = null;
+                OnHeal = null;
+                OnEnterDie = null;
+                OnExitDie = null;
+                OnBarrier = null;
+                OnBreakBarrier = null;
             }
         }
     }

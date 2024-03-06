@@ -165,10 +165,11 @@ namespace Sophia.Entitys
         
         public void SetMoveState(bool movableState) => this.Movement.SetMovableState(movableState);
 
+        public Vector2 MoveInput;
         public void OnMove(InputValue _value)
         {
-            Vector2 move = _value.Get<Vector2>();
-            Movement.SetInputVector(move);
+            MoveInput = _value.Get<Vector2>();
+            Movement.SetInputVector(MoveInput);
         }
 
         public void MoveTick()

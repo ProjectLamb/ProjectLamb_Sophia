@@ -17,7 +17,7 @@ namespace Sophia
     *********************************************************************************/
     public interface IUpdatorBindable : IUpdatable {
         public bool GetUpdatorBind();
-        public void AddToUpdator();
+        public void AddToUpdater();
         public void RemoveFromUpdator();
     }
 

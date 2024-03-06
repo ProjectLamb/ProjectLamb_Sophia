@@ -29,7 +29,7 @@ namespace Sophia.UserInterface
         }
 
         public void SetUserInterfaceData(IUserInterfaceAccessible userInterfaceData, KeyCode key) {
-            StartCoroutine(AsyncRender.Instance.PerformAndRenderUIUnScaled(()=>{
+            StartCoroutine(GlobalAsync.PerformAndRenderUIUnScaled(()=>{
                 nameObj.text        = userInterfaceData.GetName();
                 descriptionObj.text = userInterfaceData.GetDescription();
                 if(userInterfaceData.GetSprite() != null) skillIconObj.sprite = userInterfaceData.GetSprite();

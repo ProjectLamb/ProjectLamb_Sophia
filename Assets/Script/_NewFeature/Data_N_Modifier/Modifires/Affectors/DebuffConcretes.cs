@@ -105,7 +105,6 @@ namespace Sophia.DataSystem
 
         public class BurnAffect : Affector, IUserInterfaceAccessible
         {
-            private Atomics.AudioAtomics            AudioAffector;
             private Atomics.GetHitAtomics DamageAffector;
 
             public BurnAffect(in SerialAffectorData affectData) : base(in affectData)
@@ -114,13 +113,11 @@ namespace Sophia.DataSystem
 
             public override void Enter(Entity entity)
             {
-                AudioAffector.Invoke(entity);
                 DamageAffector.Invoke(entity);
             }
 
             public override void Exit(Entity entity)
             {
-                AudioAffector.Revert(entity);
                 base.Exit(entity);
             }
 
@@ -131,7 +128,6 @@ namespace Sophia.DataSystem
 
             protected override void Init(in SerialAffectorData affectData)
             {
-                AudioAffector = new Atomics.AudioAtomics(in affectData._audioData);
                 AffectType = E_AFFECT_TYPE.Burn;
                 Name = affectData._uiData._name;
                 Description = affectData._uiData._description;
@@ -224,7 +220,6 @@ namespace Sophia.DataSystem
 
         public class BleedAffect : Affector, IUserInterfaceAccessible
         {
-            private Atomics.AudioAtomics            AudioAffector;
             private Atomics.GetHitAtomics DamageAffector;
             public BleedAffect(in SerialAffectorData affectData) : base(in affectData)
             {
@@ -232,13 +227,11 @@ namespace Sophia.DataSystem
             }
             public override void Enter(Entity entity)
             {
-                AudioAffector.Invoke(entity);
                 DamageAffector.Invoke(entity);
             }
 
             public override void Exit(Entity entity)
             {
-                AudioAffector.Revert(entity);
                 base.Exit(entity);
             }
 
@@ -249,7 +242,6 @@ namespace Sophia.DataSystem
 
             protected override void Init(in SerialAffectorData affectData)
             {
-                AudioAffector = new Atomics.AudioAtomics(in affectData._audioData);
                 AffectType = E_AFFECT_TYPE.Bleed;
                 Name = affectData._uiData._name;
                 Description = affectData._uiData._description;
@@ -399,7 +391,6 @@ namespace Sophia.DataSystem
 
         public class BoundedAffect : Affector, IUserInterfaceAccessible
         {
-            private Atomics.AudioAtomics            AudioAffector;
             private Atomics.HoldAtomics HoldAffector;
 
             public BoundedAffect(in SerialAffectorData affectData) : base(in affectData)
@@ -413,14 +404,12 @@ namespace Sophia.DataSystem
 
             public override void Enter(Entity entity)
             {
-                AudioAffector.Invoke(entity);
                 HoldAffector.Invoke(entity as IMovable);
             }
 
             public override void Exit(Entity entity)
             {
                 HoldAffector.Revert(entity as IMovable);
-                AudioAffector.Revert(entity);
                 base.Exit(entity);
             }
 
@@ -431,7 +420,6 @@ namespace Sophia.DataSystem
 
             protected override void Init(in SerialAffectorData affectData)
             {
-                AudioAffector = new Atomics.AudioAtomics(in affectData._audioData);
                 Name = affectData._uiData._name;
                 Description = affectData._uiData._description;
                 Icon = affectData._uiData._icon;
@@ -456,7 +444,6 @@ namespace Sophia.DataSystem
 
         public class KnockbackAffect : Affector, IUserInterfaceAccessible
         {
-            private Atomics.AudioAtomics            AudioAffector;
             private Atomics.RigidImpulseAtomics RigidImpulseAffector;
             private Atomics.HoldAtomics HoldAffector;
 
@@ -467,7 +454,6 @@ namespace Sophia.DataSystem
 
             public override void Enter(Entity entity)
             {
-                AudioAffector.Invoke(entity);
                 RigidImpulseAffector.Invoke(entity);
                 HoldAffector.Invoke(entity as IMovable);
             }
@@ -475,7 +461,6 @@ namespace Sophia.DataSystem
             public override void Exit(Entity entity)
             {
                 HoldAffector.Revert(entity as IMovable);
-                AudioAffector.Revert(entity);
                 base.Exit(entity);
             }
 
@@ -486,7 +471,6 @@ namespace Sophia.DataSystem
 
             protected override void Init(in SerialAffectorData affectData)
             {
-                AudioAffector = new Atomics.AudioAtomics(in affectData._audioData);
                 AffectType = E_AFFECT_TYPE.Knockback;
                 Name = affectData._uiData._name;
                 HoldAffector = new Atomics.HoldAtomics();
@@ -559,6 +543,7 @@ namespace Sophia.DataSystem
                 Timer = new TimerComposite(affectData._baseDurateTime);
                 CurrentState = AffectorReadyState.Instance;
             }
+
 #region User Interface
             public string GetDescription()
             {
@@ -579,7 +564,6 @@ namespace Sophia.DataSystem
 
         public class AirborneAffect : Affector, IUserInterfaceAccessible
         {
-            private Atomics.AudioAtomics            AudioAffector;
             private Atomics.TweenJumpTransformAtomics TweenJumpAffector;
             private Atomics.HoldAtomics HoldAffector;
             public AirborneAffect(in SerialAffectorData affectData) : base(in affectData)
@@ -588,7 +572,6 @@ namespace Sophia.DataSystem
 
             public override void Enter(Entity entity)
             {
-                AudioAffector.Invoke(entity);
                 TweenJumpAffector.Invoke(entity);
                 HoldAffector.Invoke(entity as IMovable);
             }
@@ -601,7 +584,6 @@ namespace Sophia.DataSystem
 
             protected override void Init(in SerialAffectorData affectData)
             {
-                AudioAffector = new Atomics.AudioAtomics(in affectData._audioData);
                 AffectType = E_AFFECT_TYPE.Airborne;
                 Name = affectData._uiData._name;
                 Description = affectData._uiData._description;

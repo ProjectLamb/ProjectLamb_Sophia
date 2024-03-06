@@ -94,7 +94,7 @@ namespace Sophia
             }
 
             //공격 중 이동이 감지되었다면
-            if(canExitAttack && player.GetMovementComposite().GetForwardingVector().magnitude <= 5f)
+            if(canExitAttack && player.MoveInput.magnitude >= 0.01f)
             {
                 animator.SetBool("canExitAttack",true);
             }
