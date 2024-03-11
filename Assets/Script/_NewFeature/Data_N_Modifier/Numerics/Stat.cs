@@ -6,7 +6,7 @@ using UnityEngine.Events;
 
 namespace Sophia.DataSystem
 {
-    using Numerics;
+    using Cysharp.Threading.Tasks;
     using Modifiers;
 
     public class Stat
@@ -16,7 +16,7 @@ namespace Sophia.DataSystem
         public readonly E_NUMERIC_STAT_TYPE NumericType;
         private float value;
         private bool isDirty = false;
-        public readonly UnityEvent OnStatChanged;
+        public readonly UnityEvent OnStatChanged = new();
 
         private readonly List<StatModifier> statModifierList = new();
 
@@ -26,7 +26,6 @@ namespace Sophia.DataSystem
             this.NumericType = NumericType;
             this.UseType = UseType;
             if(statChangedHandler != null) {
-                OnStatChanged = new UnityEvent();
                 OnStatChanged.AddListener(statChangedHandler);
             }
         }
@@ -56,7 +55,7 @@ namespace Sophia.DataSystem
         }
         
         // 모든것은 float로 관리하려고 했지만. MaxStamina는 무조건 Int형이 되야 한다.
-        public int GetValueByNature() {
+        public float GetValueByNature() {
             if(UseType.Equals(E_STAT_USE_TYPE.Natural)) {
                 RecalculateStat();
                 return (int)Math.Clamp(value, 0, int.MaxValue);
@@ -88,8 +87,9 @@ namespace Sophia.DataSystem
 
         public void RemoveModifier(StatModifier StatModifier)
         {
-            statModifierList.Remove(StatModifier);
-            isDirty = true;
+            if(statModifierList.Remove(StatModifier)) {
+                isDirty = true;
+            }
         }
 
         public void ResetModifiers()
@@ -118,7 +118,7 @@ namespace Sophia.DataSystem
             else {value = (float) Math.Round(value, 3);}
             isDirty = false;
 
-            OnStatChanged.Invoke();
+            OnStatChanged?.Invoke();
         }
 
         private void CalculateWithUseAndCalcType(E_STAT_USE_TYPE useType, StatModifier calc, ref float adder, ref float multiplier) {
@@ -142,3 +142,4 @@ namespace Sophia.DataSystem
         }
     }
 }
+

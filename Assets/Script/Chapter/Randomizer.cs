@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class Randomizer : MonoBehaviour
 {
-    public static bool random()
+    public static bool GetRandomBool()
     {
-        int n = Random.Range(0, 2);
-        if (n == 1)
+        System.Random random = new System.Random();
+        int randomBool = random.Next(0, 2);
+        if (randomBool == 1)
             return true;
         else
             return false;
@@ -15,6 +16,7 @@ public class Randomizer : MonoBehaviour
 
     public static bool GetThisChanceResult(float Chance)
     {
+        System.Random random = new System.Random();
         if (Chance < 0.0000001f)
         {
             Chance = 0.0000001f;
@@ -23,7 +25,7 @@ public class Randomizer : MonoBehaviour
         bool Success = false;
         int RandAccuracy = 10000000;
         float RandHitRange = Chance * RandAccuracy;
-        int Rand = UnityEngine.Random.Range(1, RandAccuracy+1);
+        int Rand = random.Next(1, RandAccuracy+1);
         if (Rand <= RandHitRange)
         {
             Success = true;
@@ -33,6 +35,7 @@ public class Randomizer : MonoBehaviour
 
     public static bool GetThisChanceResult_Percentage(float Percentage_Chance)
     {
+        System.Random random = new System.Random();
         if (Percentage_Chance < 0.0000001f)
         {
             Percentage_Chance = 0.0000001f;
@@ -43,7 +46,7 @@ public class Randomizer : MonoBehaviour
         bool Success = false;
         int RandAccuracy = 10000000;
         float RandHitRange = Percentage_Chance * RandAccuracy;
-        int Rand = UnityEngine.Random.Range(1, RandAccuracy+1);
+        int Rand = random.Next(1, RandAccuracy+1);
         if (Rand <= RandHitRange)
         {
             Success = true;

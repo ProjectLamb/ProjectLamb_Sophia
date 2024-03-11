@@ -2,48 +2,59 @@ using UnityEngine;
 using TMPro;
 using System.Collections;
 using UnityEngine.Events;
+using System;
 
-public class DashCoolUI : MonoBehaviour
+namespace Sophia.UserInterface
 {
-    public UnityEngine.UI.Image fill;
-    public TextMeshProUGUI textMeshPro;
-    
-    private Sophia.Composite.CoolTimeComposite TimerRef;
-
-    public void SetTimer(Sophia.Composite.CoolTimeComposite CoolTimeComposite) {
-        TimerRef = CoolTimeComposite;
-
-        TimerRef.AddOnTickingEvent(UpdateFillAmount)
-                .AddOnUseEvent(UseStack)
-                .AddOnFinishedEvent(RecoverStack)
-                .AddOnInitialized(ResetUI);
-        
-        StartCoroutine(DoAndRenderUI(() => {textMeshPro.text = TimerRef.stackCounter.CurrentStacksCount.ToString();}));
-    }
-
-
-    private void UpdateFillAmount(float NoneUse)
+    [Obsolete]
+    public class DashCoolUI : MonoBehaviour
     {
-        fill.fillAmount = 1f - TimerRef.GetProgressAmount();
-    }
-        
-    public void ResetUI() {
-        fill.fillAmount = 0;
-        StartCoroutine(DoAndRenderUI(() => {textMeshPro.text = TimerRef.stackCounter.BaseStacksCount.ToString();}));
-    }
+        public UnityEngine.UI.Image fill;
+        public TextMeshProUGUI textMeshPro;
 
-    public void DrawForce() {
-        StartCoroutine(DoAndRenderUI(() => {textMeshPro.text = TimerRef.stackCounter.BaseStacksCount.ToString();}));
-    }
+        private Sophia.Composite.CoolTimeComposite TimerRef;
 
-    IEnumerator DoAndRenderUI(UnityAction action){
-        action.Invoke(); yield return new WaitForEndOfFrame();
-    }
+        public void SetTimer(Sophia.Composite.CoolTimeComposite CoolTimeComposite)
+        {
+            TimerRef = CoolTimeComposite;
 
-    private void UseStack() {
-        StartCoroutine(DoAndRenderUI(() => {textMeshPro.text = TimerRef.stackCounter.CurrentStacksCount.ToString();}));
-    }
-    private void RecoverStack() {
-        StartCoroutine(DoAndRenderUI(() => {textMeshPro.text = TimerRef.stackCounter.CurrentStacksCount.ToString();}));
+            TimerRef.AddOnTickingEvent(UpdateFillAmount)
+                    .AddOnUseEvent(UseStack)
+                    .AddOnFinishedEvent(RecoverStack)
+                    .AddOnInitialized(ResetUI);
+
+            StartCoroutine(DoAndRenderUI(() => { textMeshPro.text = TimerRef.stackCounter.CurrentStacksCount.ToString(); }));
+        }
+
+
+        private void UpdateFillAmount(float NoneUse)
+        {
+            fill.fillAmount = 1f - TimerRef.GetProgressAmount();
+        }
+
+        public void ResetUI()
+        {
+            fill.fillAmount = 0;
+            StartCoroutine(DoAndRenderUI(() => { textMeshPro.text = TimerRef.stackCounter.BaseStacksCount.ToString(); }));
+        }
+
+        public void DrawForce()
+        {
+            StartCoroutine(DoAndRenderUI(() => { textMeshPro.text = TimerRef.stackCounter.BaseStacksCount.ToString(); }));
+        }
+
+        IEnumerator DoAndRenderUI(UnityAction action)
+        {
+            action.Invoke(); yield return new WaitForEndOfFrame();
+        }
+
+        private void UseStack()
+        {
+            StartCoroutine(DoAndRenderUI(() => { textMeshPro.text = TimerRef.stackCounter.CurrentStacksCount.ToString(); }));
+        }
+        private void RecoverStack()
+        {
+            StartCoroutine(DoAndRenderUI(() => { textMeshPro.text = TimerRef.stackCounter.CurrentStacksCount.ToString(); }));
+        }
     }
 }

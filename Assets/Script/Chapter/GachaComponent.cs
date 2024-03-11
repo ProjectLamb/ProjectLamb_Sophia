@@ -22,14 +22,15 @@ public class GachaComponent : MonoBehaviour
     }
 
     float totalProbs = 100.0f;
-    CarrierBucket carrierBucket;
+    public CarrierBucket carrierBucket;
 
     public List<GachaItem> gachaItemList;
 
     public int Gacha()
     {
+        System.Random random = new System.Random();
         int returnValue = 0;
-        float randomValue = Random.value * totalProbs;
+        float randomValue = (float)random.NextDouble() * totalProbs;
 
         float temp = 0.0f;
 
@@ -50,6 +51,7 @@ public class GachaComponent : MonoBehaviour
     {
         if (gachaItemList[index].item == null)
             return;
+
         Carrier carrier = gachaItemList[index].item;
         switch (gachaItemList[index].item)
         {
@@ -62,7 +64,7 @@ public class GachaComponent : MonoBehaviour
                 carrier.Init(null);
                 break;
             case ItemEquipment:
-                carrier = GameManager.Instance.GlobalCarrierManager.GetRandomItem("Equipment").Clone();
+                //carrier = GameManager.Instance.GlobalCarrierManager.GetRandomItem("Equipment").Clone();
                 carrier.Init(GameManager.Instance.PlayerGameObject.GetComponent<Player>());
                 break;
         }
@@ -72,6 +74,7 @@ public class GachaComponent : MonoBehaviour
     public void InstantiateReward(Transform pivot)
     {
         int index = Gacha();
+        Debug.Log(index);
         for (int i = 0; i < gachaItemList[index].count; i++)
         {
             if (gachaItemList[index].IsLaunch)

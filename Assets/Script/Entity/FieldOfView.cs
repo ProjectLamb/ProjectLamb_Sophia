@@ -2,6 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum E_RECOG_TYPE
+{
+    None = 0, FirstRecog, Lose, ReRecog
+}
+
 public class FieldOfView : MonoBehaviour
 {
     // 시야 영역의 반지름과 시야 각도
@@ -14,7 +19,8 @@ public class FieldOfView : MonoBehaviour
 
     // Target mask에 ray hit된 transform을 보관하는 리스트
     public List<Transform> visibleTargets = new List<Transform>();
-    public bool IsRecog;
+    private bool RecogOnce;
+    public E_RECOG_TYPE RecogType;
 
     void Start()
     {
@@ -34,7 +40,7 @@ public class FieldOfView : MonoBehaviour
     void FindVisibleTargets()
     {
         //visibleTargets.Clear();
-        IsRecog = false;
+        RecogType = E_RECOG_TYPE.Lose;
         // viewRadius를 반지름으로 한 원 영역 내 targetMask 레이어인 콜라이더를 모두 가져옴
         Collider[] targetsInViewRadius = Physics.OverlapSphere(transform.position, viewRadius, targetMask);
 
@@ -52,8 +58,15 @@ public class FieldOfView : MonoBehaviour
                 if (!Physics.Raycast(transform.position, dirToTarget, dstToTarget, obstacleMask))
                 {
                     //visibleTargets.Add(target);
-                    IsRecog = true;
-                }                   
+
+                    if (!RecogOnce)
+                    {
+                        RecogType = E_RECOG_TYPE.FirstRecog;
+                        RecogOnce = true;
+                    }
+                    else
+                        RecogType = E_RECOG_TYPE.ReRecog;
+                }
             }
         }
     }

@@ -13,8 +13,13 @@ public class HandleButtons : MonoBehaviour
         pauseMenu.CloseMenu();
         GameManager.Instance.GlobalEvent.IsGamePaused = false;
     }
+    IEnumerator enumerator() {
+        GameManager.Instance.GlobalEvent.IsGamePaused = false;
+        yield return new WaitForSecondsRealtime(0.01f);
+        SceneManager.LoadScene("_TA_001_Loading_");
+    }
     public void HandleRestart(){
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        StartCoroutine(enumerator());
     }
     public void HandleQuit(){
         #if UNITY_EDITOR

@@ -1,13 +1,10 @@
-using System;
-using System.Linq;
 using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using FMODPlus;
 
+using Sophia;
 using Component = UnityEngine.Component;
 using Random = UnityEngine.Random;
 
@@ -29,7 +26,7 @@ public class Player : Entity {
     //VisualModulator visualModulator;
     //GameObject model;
 
-#region SerializeMembeer
+#region SerializeMember
     [SerializeField] public ScriptableObjPlayerData ScriptablePD;
     [SerializeField] private int mBarrierAmount;
 
@@ -115,7 +112,7 @@ public class Player : Entity {
 
     private void Start() {
 
-        DashSkillAbility = new Sophia.Composite.DashSkill(entityRigidbody, DashDataSender);
+        DashSkillAbility = new Sophia.Composite.DashSkill(entityRigidbody, DashDataSender, 500);
         DashSkillAbility.SetAudioSource(DashSource);
         MasterData.MaxStaminaInject(DashSkillAbility.MaxStamina);
     }
@@ -131,7 +128,10 @@ public class Player : Entity {
 #region 
     public override void GetDamaged(int _amount){
         if(Life.IsDie) {return;}
-        Life.Damaged(_amount);
+        DamageInfo damageInfo = new DamageInfo();
+        damageInfo.damageAmount = _amount;
+        damageInfo.damageRatio = 1;
+        Life.Damaged(damageInfo);
         PlayerDataManager.GetEntityData().HitState.Invoke();
         anim.SetTrigger("GetDamaged");
         ChangeState(PLAYERSTATES.GetDamaged);
@@ -140,7 +140,10 @@ public class Player : Entity {
 
     public override void GetDamaged(int _amount, VFXObject obj){
         if(Life.IsDie) {return;}
-        Life.Damaged(_amount);
+        DamageInfo damageInfo = new DamageInfo();
+        damageInfo.damageAmount = _amount;
+        damageInfo.damageRatio = 1;
+        Life.Damaged(damageInfo);
         PlayerDataManager.GetEntityData().HitState.Invoke();
         anim.SetTrigger("GetDamaged");
         visualModulator.InteractByVFX(obj);
@@ -165,8 +168,8 @@ public class Player : Entity {
 
         float moveSpeed = PlayerDataManager.GetEntityData().MoveSpeed;
         
-        if(DashSkillAbility.GetIsDashState((int)moveSpeed)) { return; }
-        
+        if(DashSkillAbility.GetIsDashState()) { return; }
+         
         anim.SetFloat("Move", entityRigidbody.velocity.magnitude);
 
         mMoveVec = AngleToVector(Camera.main.transform.eulerAngles.y + 90f) * inputVec.x + AngleToVector(Camera.main.transform.eulerAngles.y) * inputVec.y; // vaxis : inputvec.y , haxis : inputvec.x

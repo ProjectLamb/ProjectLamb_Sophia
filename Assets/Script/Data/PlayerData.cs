@@ -18,6 +18,7 @@ public struct PlayerData
     public UnityAction UpdateState;
 
     public PlayerData(ScriptableObjPlayerData _scriptable){
+
         EntityDatas = new EntityData(_scriptable);
         MaxStamina = _scriptable.MaxStamina;
         StaminaRestoreRatio = _scriptable.StaminaRestoreRatio;

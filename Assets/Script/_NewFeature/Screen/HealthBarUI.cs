@@ -4,58 +4,63 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-
-public class HealthBarUI : MonoBehaviour
+namespace Sophia.UserInterface
 {
-    public Sophia.Composite.LifeComposite LifeCompositeRef;
-    public Slider slider;
-    public Image fill;
-    public Gradient gradient;
 
-    private void Start()
+    public class HealthBarUI : MonoBehaviour
     {
-        LifeCompositeRef ??= GetComponentInParent<Sophia.ILifeAccessible>(true).GetLifeComposite();
-        int intValue = LifeCompositeRef.MaxHp;
-        slider.maxValue = (float)intValue;
+        public Sophia.Composite.LifeComposite LifeCompositeRef;
+        public Slider slider;
+        public Image fill;
+        public Gradient gradient;
 
-        LifeCompositeRef.OnHpUpdated += UpdateFillAmount;
-        LifeCompositeRef.OnEnterDie += TurnOffUI;
-
-        StartCoroutine(DoAndRenderUI(() => { fill.color = gradient.Evaluate(1f); }));
-    }
-
-    private void OnDestroy() {
-        LifeCompositeRef.OnHpUpdated -= UpdateFillAmount;
-        LifeCompositeRef.OnEnterDie  -= TurnOffUI;
-    }
-
-    public void DrawForce()
-    {
-        StartCoroutine(DoAndRenderUI(() =>
+        private void Start()
         {
-            slider.value = LifeCompositeRef.CurrentHealth;
-            fill.color = gradient.Evaluate(slider.normalizedValue);
-        }));
-    }
+            LifeCompositeRef ??= GetComponentInParent<Sophia.ILifeAccessible>(true).GetLifeComposite();
+            LifeCompositeRef.OnHpUpdated += UpdateFillAmount;
+            LifeCompositeRef.OnEnterDie += TurnOffUI;
 
-    IEnumerator DoAndRenderUI(UnityAction action)
-    {
-        action.Invoke(); yield return new WaitForEndOfFrame();
-    }
+            StartCoroutine(
+                GlobalAsync.PerformAndRenderUI(() => { 
+                    int intValue = LifeCompositeRef.MaxHp;
+                    slider.maxValue = (float)intValue;
+                    fill.color = gradient.Evaluate(1f); 
+                })
+            );
+        }
 
-    private void UpdateFillAmount(float currentHp)
-    {
-        // Debug.Log(currentHp);
-        StartCoroutine(DoAndRenderUI(() =>
+        private void OnDestroy()
         {
-            slider.value = currentHp;
-            fill.color = gradient.Evaluate(slider.normalizedValue);
-        }));
+            if(LifeCompositeRef != null) {
+                LifeCompositeRef.OnHpUpdated -= UpdateFillAmount;
+                LifeCompositeRef.OnEnterDie -= TurnOffUI;
+            }
+        }
+
+        public void DrawForce()
+        {
+            StartCoroutine(GlobalAsync.PerformAndRenderUI(() =>
+            {
+                slider.value = LifeCompositeRef.CurrentHealth;
+                fill.color = gradient.Evaluate(slider.normalizedValue);
+            }));
+        }
+
+        private void UpdateFillAmount(float currentHp)
+        {
+            // Debug.Log(currentHp);
+            StartCoroutine(GlobalAsync.PerformAndRenderUI(() =>
+            {
+                slider.value = currentHp;
+                fill.color = gradient.Evaluate(slider.normalizedValue);
+            }));
+        }
+
+        public void TurnOffUI()
+        {
+            this.StopAllCoroutines();
+            slider.gameObject.SetActive(false);
+        }
     }
 
-    public void TurnOffUI()
-    {
-        this.StopAllCoroutines();
-        slider.gameObject.SetActive(false);
-    }
 }

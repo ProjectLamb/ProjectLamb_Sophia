@@ -30,7 +30,7 @@ public class Shop : MonoBehaviour
         get { return skillCount; }
         set { skillCount = value; }
     }
-    private int equipmentPrice = 20;
+    private int equipmentPrice = 25;
     private int heartPrice = 10;
     private int skillPrice = 50;
     public Carrier[] ItemArray;
@@ -86,7 +86,7 @@ public class Shop : MonoBehaviour
         CarrierBucket carrierBucket = null;
         if (id == 0 && equipmentCount < 3) //equipment
         {
-            temp = GameManager.Instance.GlobalCarrierManager.GetRandomItem("Equipment").Clone();
+            //temp = GameManager.Instance.GlobalCarrierManager.GetRandomItem("Equipment").Clone();
             temp.Init(GameManager.Instance.PlayerGameObject.GetComponent<Player>());
 
             temp.gameObject.AddComponent<PurchaseComponent>();
@@ -104,7 +104,7 @@ public class Shop : MonoBehaviour
         }
         else if (id == 1)   //skill
         {
-            temp = GameManager.Instance.GlobalCarrierManager.GetRandomItem("Skill").Clone();
+            //temp = GameManager.Instance.GlobalCarrierManager.GetRandomItem("Skill").Clone();
             temp.Init(GameManager.Instance.PlayerGameObject.GetComponent<Player>());
             temp.gameObject.AddComponent<PurchaseComponent>();
             temp.GetComponent<PurchaseComponent>().price = skillPrice;
@@ -121,7 +121,7 @@ public class Shop : MonoBehaviour
         }
         else if (id == 2)   //heart
         {
-            temp = GameManager.Instance.GlobalCarrierManager.itemHeart.Clone();
+            //temp = GameManager.Instance.GlobalCarrierManager.itemHeart.Clone();
             temp.InitByObject(null, new object[] { 30 });
 
             temp.gameObject.AddComponent<PurchaseComponent>();

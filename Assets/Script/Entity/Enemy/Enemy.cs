@@ -1,11 +1,7 @@
-using System.Linq;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
-using UnityEngine.Events;
 using Sophia_Carriers;
 using DG.Tweening;
+using Sophia;
 
 /// <summary>
 /// 적 클래스 <br/>
@@ -21,33 +17,34 @@ public class Enemy : Entity
     //public GameObject model;
 
     [field: SerializeField]
-    public ScriptableObjEnemyData ScriptableED;
-    protected EntityData BaseEnemyData;
-    [SerializeField] protected EntityData FinalData;
+    public ScriptableObjEnemyData ScriptableED; // private SerialBaseEntityData       _baseEntityData;
+    protected EntityData BaseEnemyData;  // StatReferer
+    [SerializeField] protected EntityData FinalData; // StatReferer
 
-    public override void ResetData()
+    public override void ResetData() //❌
     {
         FinalData = BaseEnemyData;
     }
 
-    public override ref EntityData GetFinalData() { return ref this.FinalData; }
-    public override EntityData GetOriginData() { return this.BaseEnemyData; }
+    public override ref EntityData GetFinalData() { return ref this.FinalData; } // ❌
+    public override EntityData GetOriginData() { return this.BaseEnemyData; } // ❌
 
-    public UnityEngine.AI.NavMeshAgent nav;
-    public Transform objectiveTarget;
-    public bool isRecog;
-    public bool isDie;
-    public bool isOffensive;    //!isOffensive = Defensive
-    int offensiveRate;
+    public UnityEngine.AI.NavMeshAgent nav; // 
+    public Transform objectiveTarget;   // public  Entity                     _objectiveEntity;
+    public bool isRecog;                // public RecognizeEntityComposite RecognizeEntity {get; private set;}
+    public bool isDie;                  // public LifeComposite Life {get; private set;}
+    public bool isOffensive;            // !isOffensive = Defensive
+    int offensiveRate;                  // Factory 
+    public float spawnRate;
 
-    public Projectile[] projectiles;
+    public Projectile[] projectiles;    // private ProjectileObject[]         _attckProjectiles;
 
-    public ImageGenerator imageGenerator;
-    public Stage stage;
-    public MobGenerator mobGenerator;
-    public Animator animator;
-    public AnimEventInvoker animEventInvoker;
-    public ParticleSystem DieParticle;
+    public ImageGenerator imageGenerator; 
+    public Stage stage;                 // public Stage CurrentStage {get; private set;}
+    //public MobGenerator mobGenerator;
+    public Animator animator;           //        [SerializeField] private Animator _modelAnimator;
+    public AnimEventInvoker animEventInvoker; // MonsterLove
+    public ParticleSystem DieParticle;  //private VisualFXObject             _dieParticleRef;
 
     public override void Die()
     {
@@ -60,14 +57,20 @@ public class Enemy : Entity
     public override void GetDamaged(int _amount)
     {
         if (Life.IsDie == true) { return; }
-        Life.Damaged(_amount);
+        DamageInfo damageInfo = new DamageInfo();
+        damageInfo.damageAmount = _amount;
+        damageInfo.damageRatio = 1;
+        Life.Damaged(damageInfo);
         if (Life.IsDie) { Die(); }
     }
 
     public override void GetDamaged(int _amount, VFXObject _vfx)
     {
         if (Life.IsDie == true) { return; }
-        Life.Damaged(_amount);
+                DamageInfo damageInfo = new DamageInfo();
+        damageInfo.damageAmount = _amount;
+        damageInfo.damageRatio = 1;
+        Life.Damaged(damageInfo);
         if (Life.IsDie) { Die(); }
         visualModulator.InteractByVFX(_vfx);
     }
@@ -135,8 +138,8 @@ public class Enemy : Entity
         NavMeshSet();
     }
 
-    public void Generate(float val) {
-        imageGenerator.GenerateImage((int)val);
+    public void Generate(DamageInfo info) {
+        imageGenerator.GenerateImage(info.GetAmount());
     }
 
     private void Start()
@@ -147,14 +150,14 @@ public class Enemy : Entity
     protected virtual void FixedUpdate()
     {
         /***************************/
-        if (GameManager.Instance?.GlobalEvent.IsGamePaused == true) { return; }
+        // if (GameManager.Instance?.GlobalEvent.IsGamePaused == true) { return; }
         /***************************/
     }
 
     protected virtual void Update()
     {
         /***************************/
-        if (GameManager.Instance?.GlobalEvent.IsGamePaused == true) { return; }
+        // if (GameManager.Instance?.GlobalEvent.IsGamePaused == true) { return; }
         /***************************/
 
         /*if (isRecog) { nav.enabled = true; }
