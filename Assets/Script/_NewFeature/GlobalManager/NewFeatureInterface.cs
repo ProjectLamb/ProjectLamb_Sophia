@@ -1,11 +1,11 @@
 using UnityEngine;
-using Cysharp.Threading.Tasks;
-using System.Threading.Tasks;
+
 
 namespace Sophia
 {
     using Instantiates;
-    using Composite.RenderModels;
+    using Composite;
+    using Sophia.DataSystem.Modifiers;
 
     /*********************************************************************************
     * IUpdatorBindable & IUpdatable
@@ -17,7 +17,7 @@ namespace Sophia
     *********************************************************************************/
     public interface IUpdatorBindable : IUpdatable {
         public bool GetUpdatorBind();
-        public void AddToUpator();
+        public void AddToUpdater();
         public void RemoveFromUpdator();
     }
 
@@ -29,7 +29,7 @@ namespace Sophia
     
     }
 
-//    public interface ICarrierInteractable {
+//    public interface ICarrierObjectInteractable {
 //        public IStatAccessible GetStat();
 //    }
 
@@ -39,7 +39,7 @@ namespace Sophia
 //     }
 
     public interface IInstantiatorAccessible {
-
+        public ProjectileBucketManager GetProjectileBucketManager();
     }
 
 //     public interface IWeaponStatAccessible {
@@ -51,23 +51,27 @@ namespace Sophia
 //        public void Restore(int amount);
 //    }
 
-    public interface IModelAccessible {
-        public void ChangeSkin(Material skin);
-        public void RevertSkin();
-        public Animator GetAnimator();
-    }
-
-    public interface IVFXAccessible {
-        public VisualFXObject ActivateInstantable(Entity owner, VisualFXObject _instantiable, Vector3 _offset);
-        public VisualFXObject ActivateInstantable(Entity owner, VisualFXObject _instantiable);
-    }
-
     public interface IVisualAccessible {
-        public ModelManger GetModelManger();
+        public Composite.RenderModels.ModelManger GetModelManger();
         public VisualFXBucket GetVisualFXBucket();
     }
+
 
 //     public interface IUseMonobehaviourConstructor {
 //         public void Initialize(object data);
 //     }
+
+    public interface IAttackable
+    {
+        public void Attack();
+    }
+
+    public interface IWeaponManagerAccessible : IAffectable {
+        public WeaponManager GetWeaponManager();
+    }
+
+    public interface IAudioAccessible
+    {
+        public EntityAudioManager GetAudioManager();
+    }
 }

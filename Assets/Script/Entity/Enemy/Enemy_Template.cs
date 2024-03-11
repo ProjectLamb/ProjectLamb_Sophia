@@ -7,7 +7,6 @@ public class Enemy_Template : Enemy
     public override void Die()
     {
         base.Die();
-        stage.mobGenerator.CurrentMobCount--;
         Invoke("DestroySelf", 0.5f);
     }
     // Start is called before the first frame update
@@ -17,9 +16,11 @@ public class Enemy_Template : Enemy
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    protected override void FixedUpdate()
     {
-        transform.LookAt(objectiveTarget);
-        nav.SetDestination(objectiveTarget.position);
+//        transform.LookAt(objectiveTarget);
+//        if(nav.enabled == true) {
+//            nav?.SetDestination(objectiveTarget.position);
+//        }
     }
 }

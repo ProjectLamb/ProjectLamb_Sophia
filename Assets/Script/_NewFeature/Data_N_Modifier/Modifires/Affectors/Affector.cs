@@ -1,77 +1,147 @@
 using UnityEngine;
+using UnityEngine.Events;
 
-namespace Sophia.DataSystem
+namespace Sophia.DataSystem.Modifiers
 {
     using System;
-    using Sophia.Composite.Timer;
+    using System.Threading;
+    using Sophia.Composite.NewTimer;
     using Sophia.Entitys;
-    using Sophia.Instantiates;
-    using UnityEngine.Events;
+    using Sophia.State;
 
-    namespace Modifiers.Affector
+    public abstract class Affector : IStateMachine<AffectorState, Entitys.Entity>, ITimerAccessible<Entity>
     {
-        public abstract class Affector
+#region Members
+
+        public E_AFFECT_TYPE AffectType {get; protected set;}
+        public string Name {get; protected set;}
+        public string Description {get; protected set;}
+        public Sprite Icon {get; protected set;}
+        protected TimerComposite Timer;
+
+        public Affector(in SerialAffectorData affectData)
         {
-            #region Members
-            public readonly E_AFFECT_TYPE AffectType;
-            public readonly Entity targetEntity;
-            public readonly Entity ownerEntity;
-            public float BaseDurateTime { get; private set; }
-            public TimerComposite Timer { get; private set; }
-            public Affector(E_AFFECT_TYPE affectType, Entity ownerReceivers, Entity targetReceivers, float durateTime)
-            {
-                this.AffectType = affectType;
+            this.Init(in affectData);
+            OnClear += ResetState;
+        }
 
-                this.ownerEntity = ownerReceivers;
-                this.targetEntity = targetReceivers;
-                this.BaseDurateTime = durateTime;
+        protected abstract void Init(in SerialAffectorData affectData);
+#endregion
 
-                this.Timer = new TimerComposite(BaseDurateTime);
+#region Event
 
-                OnModifiy = (ref float a) => { };
-                OnTickRunning = () => { };
-                OnRevert = () => { };
-            }
-            #endregion
+        public event UnityAction<Affector> OnClear;
+        public void ClearAffect(Affector affector) => OnClear?.Invoke(affector);
 
-            #region Setter
-            public Affector SetAccelarationByTenacity(float tenecity)
-            {
-                Timer.SetAcceleratrion(tenecity);
-                return this;
-            }
-            #endregion
+#endregion
 
-            #region Event 
+#region State Machine
 
-            public event UnityActionRef<float> OnModifiy;
-            public event UnityAction OnTickRunning;
-            public event UnityAction OnRevert;
-            public event UnityAction OnCancle;
-            public void ClearEvent()
-            {
-                OnModifiy = null;
-                OnTickRunning = null;
-                OnRevert = null;
-                OnCancle = null;
+        protected AffectorState CurrentState;
+        public AffectorState GetCurrentState() => CurrentState;
+        public void ChangeState(AffectorState newState) {
+            if(newState == null) return;
+            if(GetIstransferableState(newState)) CurrentState = newState;
+        }
+        public void ExecuteState(Entity entity) => CurrentState.Affect(this, entity);
+        public bool GetIstransferableState(AffectorState transState) {
+            return (CurrentState.GetTransitionBit() & transState.GetCurrentBit()) == transState.GetCurrentBit();
+        }
+        public void ResetState(Affector affector) => ResetState();
+        public void ResetState() {
+            this.Timer.ResetTimer();
+            this.CurrentState = AffectorReadyState.Instance;
+            this.OnClear += ResetState;
+        }
 
-                OnModifiy = (ref float a) => {};
-                OnTickRunning = () => {};
-                OnRevert = () => {};
-                OnCancle = () => {};
-            }
-            #endregion
+#endregion
+        
+#region Timer
 
-            public virtual void ConveyToTarget() => targetEntity.ModifiedByAffector(this);
-            public virtual void Modifiy(float tenacity) { OnModifiy?.Invoke(ref tenacity); }
-            public virtual void TickRunning() { OnTickRunning?.Invoke(); }
-            public virtual void Revert() { OnRevert?.Invoke(); }
-            public virtual void CancleModify()
-            {
-                Timer = null;
-                OnCancle?.Invoke();
-                ClearEvent();
+        public TimerComposite GetTimerComposite() => Timer;
+        public abstract void Enter(Entity entity);
+        public abstract void Run(Entity entity);
+        public virtual void Exit(Entity entity) { OnClear?.Invoke(this); }
+
+#endregion
+
+    }
+
+    public interface AffectorState : ITransitionAccessible{
+        public void Affect(Affector affector, Entity entity);
+    }
+
+    public class AffectorReadyState : AffectorState
+    {
+        private static AffectorReadyState _instance = new AffectorReadyState();
+        public static AffectorReadyState Instance => _instance;
+        public void Affect(Affector affector, Entity entity)
+        {
+            affector.ChangeState(AffectorStartState.Instance);
+        }
+
+        public int GetCurrentBit() => (int)TimerStateBit.Ready;
+        public int GetTransitionBit() => (int)TimerStateBit.Start;
+ 
+    }
+
+    public class AffectorStartState : AffectorState
+    {
+        private static AffectorStartState _instance = new AffectorStartState();
+        public static AffectorStartState Instance => _instance;
+
+        public void Affect(Affector affector, Entity entity)
+        {
+            affector.Enter(entity);
+            affector.ChangeState(AffectorRunState.Instance);
+        }
+
+        public int GetCurrentBit() => (int)TimerStateBit.Start;
+        public int GetTransitionBit() => (int)TimerStateBit.Run;
+    }
+
+    public class AffectorRunState : AffectorState
+    {
+        private static AffectorRunState _instance = new AffectorRunState();
+        public static AffectorRunState Instance => _instance;
+
+        public void Affect(Affector affector, Entity entity)
+        {
+            if(affector.GetTimerComposite().IsBlocked)      { affector.ChangeState(AffectorPauseState.Instance);        return;}
+            if(affector.GetTimerComposite().GetIsTimesUp()) { affector.ChangeState(AffectorTerminateState.Instance);    return;}
+            if(affector.GetTimerComposite().GetIsActivateInterval()) { 
+                affector.Run(entity);
             }
         }
+
+        public int GetCurrentBit() => (int)TimerStateBit.Run;
+        public int GetTransitionBit() => (int)TimerStateBit.Terminate + (int)TimerStateBit.Pause;
     }
+
+    public class AffectorPauseState : AffectorState
+    {
+        private static AffectorPauseState _instance = new AffectorPauseState();
+        public static AffectorPauseState Instance => _instance;
+        public void Affect(Affector affector, Entity entity)
+        {
+            if(!affector.GetTimerComposite().IsBlocked) {affector.ChangeState(AffectorRunState.Instance); return;}
+        }
+
+        public int GetCurrentBit() => (int)TimerStateBit.Pause;
+        public int GetTransitionBit() => (int)TimerStateBit.Terminate + (int)TimerStateBit.Run;
+    }
+
+    public class AffectorTerminateState : AffectorState
+    {
+        private static AffectorTerminateState _instance = new AffectorTerminateState();
+        public static AffectorTerminateState Instance => _instance;
+        public void Affect(Affector affector, Entity entity)
+        {
+            affector.Exit(entity);
+        }
+
+        public int GetCurrentBit() => (int)TimerStateBit.Terminate;
+        public int GetTransitionBit() => 0;
+    }
+    
 }

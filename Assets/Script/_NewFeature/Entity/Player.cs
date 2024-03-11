@@ -1,180 +1,255 @@
 using System;
+using System.Collections;
 using UnityEngine;
-using FMODPlus;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using FMODPlus;
 using Cysharp.Threading.Tasks;
 
 namespace Sophia.Entitys
 {
     using Sophia.Composite;
     using Sophia.DataSystem;
-    using Sophia.DataSystem.Numerics;
-    using Sophia.DataSystem.Functional;
     using Sophia.Instantiates;
-    using Sophia.DataSystem.Modifiers.Affector;
+    using Sophia.DataSystem.Referer;
+    using Sophia.DataSystem.Modifiers;
+    using Sophia.UserInterface;
 
-    public class Player : Entity {
+    public class Player : Entity, IMovementAccessible, IAffectManagerAccessible, IInstantiatorAccessible
+    {
 
-#region SerializeMembeer 
-        [SerializeField] private SerialBasePlayerData _basePlayerData;
+#region SerializeMember 
+        [Header("None")]
 //      [SerializeField] private ModelManger  _modelManger;
 //      [SerializeField] private VisualFXBucket  _visualFXBucket;
-        [SerializeField] private WeaponManager        _weaponManager;
-        [SerializeField] private ProjectileBucket     _projectileBucket;
-        [SerializeField] public  Wealths              _PlayerWealth;
+        [SerializeField] private SerialBasePlayerData       _basePlayerData;
+        [SerializeField] private ProjectileBucketManager    _projectileBucketManager;
+        [SerializeField] private WeaponManager              _weaponManager;
+        [SerializeField] private EquipmentManager           _equipmentManager;
+        [SerializeField] private AffectorManager            _affectorManager;
+        [SerializeField] private SkillManager               _skillManager;
 
 #endregion
 
 #region Members
 //      [HideInInspector] public Collider entityCollider;
 //      [HideInInspector] public Rigidbody entityRigidbody;
+//      [HideInInspector] protected List<IDataSettable> Settables = new();
 
-        public PlayerStatReferer    StatReferer         {get; private set;}
-        public PlayerExtrasReferer  ExtrasReferer         {get; private set;}
-        public LifeComposite        Life                {get; private set;}
-        public MovementComposite    Movement            {get; private set;}
-        public AffectorHandlerComposite    AffectHandler            {get; private set;}
-        public DashSkill            DashSkillAbility    {get; private set;}
-        public Stat                 Power               {get; private set;}
+        private LifeComposite Life;
+        private MovementComposite Movement;
+        private DashSkill DashSkillAbility;
+        private Stat Power;
+        private Extras<int> GearcoinExtras;
+        public int mPlayerWealth;
+        public event UnityAction<int> OnWealthChangeEvent;
+        public int PlayerWealth {
+            get { return mPlayerWealth; }
+            set {
+                mPlayerWealth = value;
+                OnWealthChangeEvent.Invoke(mPlayerWealth);
+            }
+        }
+
+        protected override void SetDataToReferer()
+        {
+            StatReferer.SetRefStat(Power);
+            ExtrasReferer.SetRefExtras<int>(GearcoinExtras);
+            this.Settables.ForEach(E => {
+                E.SetStatDataToReferer(StatReferer);
+                E.SetExtrasDataToReferer(ExtrasReferer);
+            });
+        }
+
+        protected override void CollectSettable()
+        {
+            this.Settables.Add(Life);
+            this.Settables.Add(Movement);
+            this.Settables.Add(DashSkillAbility);
+            this.Settables.Add(_projectileBucketManager);
+            this.Settables.Add(_weaponManager);
+            this.Settables.Add(_affectorManager);
+            this.Settables.Add(GameManager.Instance.NewFeatureGlobalEvent);
+        }
         
+        protected override void Awake()
+        {
+            /**/
+            TryGetComponent<Collider>(out entityCollider);
+            TryGetComponent<Rigidbody>(out entityRigidbody);
+            StatReferer     = new PlayerStatReferer();
+            ExtrasReferer   = new PlayerExtrasReferer();
+
+            Life = new LifeComposite(_basePlayerData.MaxHp, _basePlayerData.Defence);
+            Movement = new MovementComposite(entityRigidbody, _basePlayerData.MoveSpeed);
+            DashSkillAbility = new DashSkill(this.entityRigidbody, Movement.GetMovemenCompositetData, _basePlayerData.DashForce);
+            Power = new Stat(_basePlayerData.Power, 
+                E_NUMERIC_STAT_TYPE.Power, 
+                E_STAT_USE_TYPE.Natural, 
+                OnPowerUpdated 
+            );
+            GearcoinExtras = new Extras<int>(
+                E_FUNCTIONAL_EXTRAS_TYPE.GearcoinTriggered,
+                () => {Debug.Log("기어 획득");}
+            );
+            _affectorManager.Init(_basePlayerData.Tenacity);
+        }
+
+        protected override void Start()
+        {
+            base.Start();
+            Life.SetDependUI(InGameScreenUI.Instance._playerHealthBarUI);
+            Life.OnDamaged += InGameScreenUI.Instance._hitCanvasShadeScript.Invoke;
+
+            InGameScreenUI.Instance._playerWealthBarUI.SetPlayer(this);
+            
+            DashSkillAbility.SetDependUI(InGameScreenUI.Instance._playerStaminaBarUI);
+            DashSkillAbility.Timer.AddOnUseEvent(() => {
+                this.GetModelManger().EnableTrail();
+                StartCoroutine(actionDelay(this.GetModelManger().DisableTrail));
+            });
+            DashSkillAbility.SetAudioSource(DashSource);
+
+            OnWealthChangeEvent.Invoke(mPlayerWealth);
+        }
 #endregion
 
 #region Life Accessible
 
         public override LifeComposite GetLifeComposite() => this.Life;
 
-        public override void GetDamaged(int damage) {
-            if (Life.IsDie) { return; }
-            Life.Damaged(damage);
-            if(Life.IsDie) {Die();}
-        }
-        public override void GetDamaged(int damage, VisualFXObject vfx) {
-            if (Life.IsDie) { return; }
-            Life.Damaged(damage);
-            if(Life.IsDie) {Die();}
-
-            _visualFXBucket.ActivateInstantable(this, vfx)?.Activate();
+        public override bool GetDamaged(DamageInfo damage)
+        {
+            bool isDamaged = false;
+            if (Life.IsDie) { isDamaged = false; }
+            isDamaged = Life.Damaged(damage);
+            if(isDamaged) {GetModelManger().GetAnimator().SetTrigger("GetDamaged");}
+            if (Life.IsDie) { Die(); }
+            return isDamaged;
         }
 
-        public override void Die() {
+        public override bool Die()
+        {
             throw new System.NotImplementedException();
         }
 
 #endregion
 
 #region Data Accessible
-        public override EntityStatReferer GetStatReferer() => StatReferer;
+
+        public override EntityStatReferer GetStatReferer() => this.StatReferer;
+        
         public override Stat GetStat(E_NUMERIC_STAT_TYPE numericType) => StatReferer.GetStat(numericType);
 
-        [ContextMenu("Get Stats Info")]
+        [ContextMenu("GetStatsInfo")]
+        public void GetStatsInfoDebug()
+        {
+            Debug.Log(StatReferer.GetStatsInfo());
+        }
+
         public override string GetStatsInfo()
         {
-            Debug.Log(this.StatReferer.GetStatsInfo());
             return this.StatReferer.GetStatsInfo();
         }
 
         public override EntityExtrasReferer GetExtrasReferer() => ExtrasReferer;
+        
         public override Extras<T> GetExtras<T>(E_FUNCTIONAL_EXTRAS_TYPE functionalType) => ExtrasReferer.GetExtras<T>(functionalType);
+
 #endregion
 
 #region Movement
 
         public MovementComposite GetMovementComposite() => this.Movement;
+        public bool GetMoveState() => this.Movement.IsMovable;
+        
+        public void SetMoveState(bool movableState) => this.Movement.SetMovableState(movableState);
+
+        public Vector2 MoveInput;
         public void OnMove(InputValue _value)
         {
-            Vector2 move = _value.Get<Vector2>();
-            Movement.SetInputVector(move);
+            MoveInput = _value.Get<Vector2>();
+            Movement.SetInputVector(MoveInput);
         }
 
-        public void MoveTick() 
+        public void MoveTick()
         {
-            if(DashSkillAbility.GetIsDashState(GetStat(E_NUMERIC_STAT_TYPE.MoveSpeed))) return;
+            if(DashSkillAbility.GetIsDashState()) return;
             // GetAnimator().SetFloat("Move", this.entityRigidbody.velocity.magnitude);
-            if(!Movement.IsBorder(this.transform)) Movement.MoveTick(this.transform);
+            if (!Movement.IsBorder(this.transform) && !Sophia.PlayerAttackAnim.isAttack) {
+                Movement.MoveTick(this.transform);
+                GetModelManger().GetAnimator().SetFloat("Move", entityRigidbody.velocity.magnitude);
+            }
         }
 
-        public async UniTask Turning() {await Movement.Turning(transform, Input.mousePosition);}
+        public async UniTask Turning() { await Movement.Turning(transform, Input.mousePosition); }
         //public void TurningWithCallback(UnityAction action) => Movement.TurningWithCallback(transform,Input.mousePosition,action).Forget();
 
 #endregion
 
 #region Dash
-    public FMODAudioSource DashSource;
-    
-    public void Dash() => DashSkillAbility.Use();/*m*/
+        public DashSkill GetDashAbility() => DashSkillAbility;
+        public FMODAudioSource DashSource;
+        
+        public void Dash() => DashSkillAbility.Use();/*m*/
 
 #endregion
 
-#region Weaponmanager
-        public WeaponManager GetWeaponManager() => this._weaponManager;
+        IEnumerator actionDelay(UnityAction action) {
+            yield return YieldInstructionCache.WaitForSeconds(0.5f);
+            action.Invoke(); 
+        }
+
+#region Weapon Handler
+        public WeaponManager GetWeaponManager() => _weaponManager;
+        public ProjectileBucketManager GetProjectileBucketManager() => _projectileBucketManager;
+        public void OnPowerUpdated() { Debug.Log("공격력 변경"); }
+
+        public async void Attack()
+        {
+            try
+            {
+                if(Sophia.PlayerAttackAnim.canExitAttack || Sophia.PlayerAttackAnim.resetAtkTrigger) return;
+                await Movement.TurningWithAction(transform, Input.mousePosition, () => GetModelManger().GetAnimator().SetTrigger("DoAttack"));
+
+            }
+            catch (OperationCanceledException)
+            {
+
+            }
+        }
+
 
 #endregion
-        private void Awake() {
-            TryGetComponent<Collider>(out entityCollider);
-            TryGetComponent<Rigidbody>(out entityRigidbody);
-        
-            StatReferer         = new PlayerStatReferer();
-            ExtrasReferer       = new PlayerExtrasReferer();
-            Life                = new LifeComposite(_basePlayerData.MaxHp, _basePlayerData.Defence);
-            Movement            = new MovementComposite(entityRigidbody, _basePlayerData.MoveSpeed);
-            DashSkillAbility    = new DashSkill(this.entityRigidbody, Movement.GetMovemenCompositetData);
-            Power               = new Stat(_basePlayerData.Power,
-                                            E_NUMERIC_STAT_TYPE.Power,
-                                            E_STAT_USE_TYPE.Natural,
-                                            OnPowerUpdated
-                                        );
-            AffectHandler = new AffectorHandlerComposite(_basePlayerData.Tenacity);
+
+#region Skill Handler 
+
+        public SkillManager GetSkillManager() => this._skillManager;
+        public void CollectSkill(Skill skill, KeyCode key) => this._skillManager.Collect(skill, key);
+        public void DropSkill(KeyCode key) => this._skillManager.Drop(key);
+        public async void Use(KeyCode key) {
+            await Movement.TurningWithAction(transform, Input.mousePosition, () => {
+                this._skillManager.GetSkillByKey(key)?.Use();
+            });
         }
-        public void OnPowerUpdated() {throw new System.NotImplementedException();}
-        private void Start(){
-           StatReferer.SetRefStat(Life.MaxHp);
-           StatReferer.SetRefStat(Life.Defence);
 
-           ExtrasReferer.SetRefExtras<float>(Life.HitExtras);
-           ExtrasReferer.SetRefExtras<float>(Life.DamagedExtras);
-           ExtrasReferer.SetRefExtras<object>(Life.DeadExtras);
+#endregion
 
-           StatReferer.SetRefStat(Movement.MoveSpeed);
-           ExtrasReferer.SetRefExtras<Vector3>(Movement.MoveExtras);
-           ExtrasReferer.SetRefExtras<object>(Movement.IdleExtras);
-           
-           StatReferer.SetRefStat(DashSkillAbility.MaxStamina);
-           StatReferer.SetRefStat(DashSkillAbility.StaminaRestoreSpeed);
-           ExtrasReferer.SetRefExtras<object>(DashSkillAbility.DashExtras);
-           
-           StatReferer.SetRefStat(AffectHandler.Tenacity);
+#region Equip Handler
 
-           StatReferer.SetRefStat(Power);
-                      
-           StatReferer.SetRefStat(_projectileBucket.InstantiableDurateLifeTimeMultiplyRatio);
-           StatReferer.SetRefStat(_projectileBucket.InstantiableSizeMultiplyRatio);
-           StatReferer.SetRefStat(_projectileBucket.InstantiableForwardingSpeedMultiplyRatio);
+        public EquipmentManager GetEquipmentManager() => this._equipmentManager;
+        public void EquipEquipment(Equipment equipment) => this._equipmentManager.Equip(equipment);
+        public void DropEquipment(Equipment equipment) => this._equipmentManager.Drop(equipment);
 
-           StatReferer.SetRefStat(_weaponManager.PoolSize);
-           StatReferer.SetRefStat(_weaponManager.AttackSpeed);
-           StatReferer.SetRefStat(_weaponManager.MeleeRatio);
-
-           DashSkillAbility.SetAudioSource(DashSource);
-        
-           ExtrasReferer.SetRefExtras<Entity>(new Extras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.TargetAffected, ()=>{Debug.Log("Affect Extras Changed");}));
-        }
-        public async void Attack() { 
-            try {
-                await Turning();
-                _weaponManager.GetCurrentWeapon().Use(this); 
-            }
-            catch (OperationCanceledException) {
-                
-            }
-        }
-        public void Skill() {throw new System.NotImplementedException();}
+#endregion
 
 #region Affect Handler
 
-        public override AffectorHandlerComposite GetAffectorHandlerComposite() => this.AffectHandler;
-        public override void ModifiedByAffector(Affector affector) => this.AffectHandler.ModifiyByAffector(affector);
+        public override AffectorManager GetAffectorManager() => this._affectorManager ??= GetComponentInChildren<AffectorManager>();
+        public override void Affect(Affector affector) => this._affectorManager.Affect(affector);
+        public override void Recover(Affector affector) => this._affectorManager.Recover(affector);
 
 #endregion
 
-    }    
+    }
 }

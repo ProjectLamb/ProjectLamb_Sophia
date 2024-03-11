@@ -17,8 +17,6 @@ public abstract class Entity : MonoBehaviour, IDamagable, IDieable, IAffectable,
     [SerializeField] public GameObject model;
     [SerializeField] public VisualModulator visualModulator;
     [SerializeField] public CarrierBucket carrierBucket;
-    [SerializeField] public int mCurrentHealth;
-
     public Sophia.Composite.LifeComposite Life;
 
     public Dictionary<STATE_TYPE, AffectorPackage> AffectorStacks = new Dictionary<STATE_TYPE, AffectorPackage>();

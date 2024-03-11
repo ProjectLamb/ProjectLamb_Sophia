@@ -3,70 +3,59 @@ using System.Collections.Generic;
 using System.Linq;
 using Sophia;
 using Sophia.Composite;
+using System.Collections;
+using UnityEngine.Events;
 
-/*********************************************************************************
-메이플과 같은 데미지 UI를 띄울것이다.
-
-그냥과 버퍼드 UI
-    AlertUIManager;
-
-*********************************************************************************/
-public enum DamageInstant_Type
+namespace Sophia.UserInterface
 {
-    Stacking, Layerd
-}
+    /*********************************************************************************
+    메이플과 같은 데미지 UI를 띄울것이다.
 
-public class DamageTextInstantiator : MonoBehaviour
-{
-    public LifeComposite LifeCompositeRef;
-    [SerializeField]
-    private DamageTextUI textUI;
+    그냥과 버퍼드 UI
+        AlertUIManager;
 
-    private DamageTextUI StakingText;
-    private List<DamageTextUI> LayerdTextList;
-
-    private void Start() {
-        LifeCompositeRef ??= GetComponentInParent<ILifeAccessible>().GetLifeComposite();
-        LifeCompositeRef.OnDamaged += Generate;
-    }
-
-    private void OnDestroy() {
-        LifeCompositeRef.OnDamaged -= Generate;
-    }
-
-    public void Generate(float _damageAmount)
+    *********************************************************************************/
+    public enum DamageInstant_Type
     {
-        if (StakingText == null)
-        {
-            StakingText = Instantiate(textUI, transform)
-                                                .SetText(_damageAmount)
-                                                .SetAnimationSpeed(5f)
-                                                .SetDestroyTimer(3f);
+        Stacking, Layerd
+    }
 
-            StakingText.ActivatedTextUI();
-        }
-        else
+    public class DamageTextInstantiator : MonoBehaviour
+    {
+        public LifeComposite LifeCompositeRef;
+        [SerializeField]
+        private DamageTextUI textUI;
+        private DamageTextUI StakingText;
+        private List<DamageTextUI> LayerdTextList;
+
+        private void Start()
         {
-            StakingText.SetPosition(transform.position)
-                        .ReactivateTextUI((int)_damageAmount);
+            LifeCompositeRef ??= GetComponentInParent<ILifeAccessible>().GetLifeComposite();
+            LifeCompositeRef.OnDamaged += Generate;
         }
 
-    }
-
-    public void Generate(List<float> _damageAmount)
-    {
-        LayerdTextList = new List<DamageTextUI>();
-        Vector3 addingPosition = transform.position;
-        _damageAmount.ForEach((E) =>
+        private void OnDisable()
         {
-            LayerdTextList.Add(
-                Instantiate(textUI, transform)
-                    .SetText(E)
-                    .SetAnimationSpeed(5f)
-                    .SetDestroyTimer(3f)
-            );
-            LayerdTextList.Last().SetPosition(addingPosition += textUI.GetNextPosition());
-        });
-        LayerdTextList.ForEach((T) => { T.ActivatedTextUI(); });
+            if(LifeCompositeRef != null) {
+                LifeCompositeRef.OnDamaged -= Generate;
+            }
+        }
+
+        public void Generate(DamageInfo _damageInfo)
+        {
+                if (StakingText == null)
+                {
+                    StakingText = Instantiate(textUI, transform)
+                                    .SetTextByString(_damageInfo.ToString())
+                                    .SetAnimationSpeed(5f)
+                                    .SetDestroyTimer(3f);
+                    StakingText.ActivatedTextUI();
+                }
+                else
+                {
+                    StakingText.SetPosition(transform.position)
+                                .ReactivateTextUI(_damageInfo);
+                }
+        }
     }
 }

@@ -12,7 +12,7 @@
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "75f68222d0a4bd2b468dbf3e6a17a191d28041ab"
+      "hash": "b93741e2b5fe9073e169853ade0039c7cf2595f0"
     },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
@@ -49,11 +49,12 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.cinemachine": {
-      "version": "2.9.5",
+      "version": "3.0.1",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.test-framework": "1.1.31"
+        "com.unity.splines": "2.0.0",
+        "com.unity.test-framework": "1.1.33"
       },
       "url": "https://packages.unity.com"
     },
@@ -75,20 +76,18 @@
       },
       "url": "https://packages.unity.com"
     },
-    "com.unity.ext.nunit": {
-      "version": "2.0.5",
+    "com.unity.editorcoroutines": {
+      "version": "1.0.0",
       "depth": 1,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
-    "com.unity.ide.rider": {
-      "version": "3.0.27",
-      "depth": 0,
+    "com.unity.ext.nunit": {
+      "version": "2.0.5",
+      "depth": 1,
       "source": "registry",
-      "dependencies": {
-        "com.unity.ext.nunit": "1.0.6"
-      },
+      "dependencies": {},
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.visualstudio": {
@@ -114,6 +113,15 @@
       "depth": 1,
       "source": "registry",
       "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.memoryprofiler": {
+      "version": "1.1.0",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.editorcoroutines": "1.0.0"
+      },
       "url": "https://packages.unity.com"
     },
     "com.unity.nuget.mono-cecil": {
@@ -182,7 +190,7 @@
     },
     "com.unity.settings-manager": {
       "version": "2.0.1",
-      "depth": 1,
+      "depth": 2,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
@@ -198,7 +206,7 @@
     },
     "com.unity.splines": {
       "version": "2.5.2",
-      "depth": 0,
+      "depth": 1,
       "source": "registry",
       "dependencies": {
         "com.unity.settings-manager": "1.0.3",
@@ -239,15 +247,14 @@
         "com.unity.modules.imgui": "1.0.0"
       }
     },
-    "com.unity.visualscripting": {
-      "version": "1.9.1",
+    "com.unity.visualeffectgraph": {
+      "version": "16.0.5",
       "depth": 0,
-      "source": "registry",
+      "source": "builtin",
       "dependencies": {
-        "com.unity.ugui": "1.0.0",
-        "com.unity.modules.jsonserialize": "1.0.0"
-      },
-      "url": "https://packages.unity.com"
+        "com.unity.shadergraph": "16.0.5",
+        "com.unity.render-pipelines.core": "16.0.5"
+      }
     },
     "com.unity.modules.accessibility": {
       "version": "1.0.0",

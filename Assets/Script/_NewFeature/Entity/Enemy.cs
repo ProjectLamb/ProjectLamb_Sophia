@@ -1,39 +1,42 @@
-using System.Collections.Generic;
-
 using UnityEngine;
+using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 
-namespace Sophia.Entitys{
-    using Cysharp.Threading.Tasks;
+namespace Sophia.Entitys
+{
     using Sophia.Composite;
+    using Sophia.Composite.RenderModels;
     using Sophia.DataSystem;
-    using Sophia.DataSystem.Numerics;
+    using Sophia.DataSystem.Referer;
     using Sophia.Instantiates;
 
-    public abstract class Enemy : Entity, IVisualAccessible {
+    public enum E_MOB_AI_DIFFICULTY {
+        None = 0, Offensive, Defensive
+    }
 
-        public EntityStatReferer entityStat;
-        
-        [SerializeField]
-        private float currentHealth;
+    public abstract class Enemy : Entity, IRecogStateAccessible {
 
-        private void Awake() {
-            entityStat = new EntityStatReferer();
-        }
+#region SerializeMember
 
-        public override void GetDamaged(int damage) {
-            currentHealth -= damage;
-            if(currentHealth <= 0) {Die();}
-        }
-        public override void GetDamaged(int damage, VisualFXObject vfx) {}
-        public override void Die() {throw new System.NotImplementedException();}
+        [Header("Mob Settings")]
+        [SerializeField] protected SerialBaseEntityData       _baseEntityData;
+        [SerializeField] protected SerialFieldOfViewData      _fOVData;
+        [SerializeField] protected AffectorManager            _affectorManager;
+        [SerializeField] protected ProjectileBucketManager    _projectileBucketManager;
+        [SerializeField] protected ProjectileObject[]         _attckProjectiles;
+        [SerializeField] protected VisualFXObject             _spawnParticleRef;
+        [SerializeField] protected VisualFXObject             _dieParticleRef;
+        [SerializeField] protected E_MOB_AI_DIFFICULTY        _mobDifficulty;
+        [SerializeField] public    Entity                     _objectiveEntity;
 
-        public Animator GetAnimator() { return _modelManger.GetAnimator(); }
+#endregion
 
-        public override Stat GetStat(E_NUMERIC_STAT_TYPE numericType){
-            return entityStat.GetStat(numericType);
-        }
+#region Stage
+        public Stage CurrentInstantiatedStage;
 
-        [ContextMenu("Get Stats Info")]
-        public override string GetStatsInfo() => entityStat.GetStatsInfo();
-    }    
+#endregion
+        protected Transform objectiveTarget;
+        public abstract RecognizeEntityComposite GetRecognizeComposite();
+
+    }
 }

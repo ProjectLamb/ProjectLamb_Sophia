@@ -12,7 +12,7 @@ using UnityEngine;
         MOVE = 0, DASH, ATTACK, SKILL, GET_DAMAGE, DIE, TRIGGER,
         
         //100 ~ 199 //디버프
-        BURN = 100, POISONED, BLEED, CONTRACTED, FREEZE, CONFUSED, FEAR, STERN, BOUNDED, EXECUTION, KNOCKBACK, BLACK_HOLE,
+        BURN = 100, POISONED, BLEED, CONTRACTED, FREEZE, CONFUSED, FEAR, Stun, BOUNDED, EXECUTION, KNOCKBACK, BLACK_HOLE,
         
         //200 ~ 299
         MOVE_SPEED_UP = 200, TENACITY_UP, POWER_UP, ATTACK_SPEED_UP, BARRIER, INVISIBLE, INVINCIBLE, ON_HIT, DEFENCE, PROJECTILE_GENERATOR
@@ -105,7 +105,7 @@ using UnityEngine;
 #region Enemy Enums
     public enum Enemy_TYPE
     {
-        Enemy_Template, Raptor,
+        Robuwa, Raptor,
     }
 #endregion
 

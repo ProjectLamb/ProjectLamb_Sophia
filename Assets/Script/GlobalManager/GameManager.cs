@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
         get {
             if(_instance == null)
             {
-                _instance = FindObjectOfType(typeof(GameManager)) as GameManager;
+                _instance = FindFirstObjectByType(typeof(GameManager)) as GameManager;
 
                 if (_instance == null)
                     Debug.Log("no Singleton obj");
@@ -22,13 +22,13 @@ public class GameManager : MonoBehaviour
             return _instance;
         }
     }
-    
 
     public GlobalEvent GlobalEvent;
+    public Sophia.GlobalEvent                  NewFeatureGlobalEvent;
     public GlobalAudioManager                  GlobalAudioManager;
-    public GlobalCarrierManger                 GlobalCarrierManager;
+    //public GlobalCarrierManger                 GlobalCarrierManager;
     public GlobalSceneLoader                   GlobalSceneLoader;
-    public Sophia.GlobalTimeUpdator                   GlobalTimeUpdator;
+    public Sophia.GlobalTimeUpdator            GlobalTimeUpdator;
     public GameObject                          PlayerGameObject;
     public GameObject                          ChapterGenerator;
     public GameObject                          Shop;
