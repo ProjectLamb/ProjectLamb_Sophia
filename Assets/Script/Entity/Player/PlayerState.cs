@@ -9,12 +9,12 @@ namespace PlayerState
     {
         public override void Enter(Player player)
         {
-
+        
         }
 
         public override void Update(Player player)
         {
-            Debug.Log("현재 idle 상태");
+            Debug.Log("현재 상태 : Idle");
         }
 
         public override void Exit(Player player)
@@ -28,17 +28,17 @@ namespace PlayerState
     {
         public override void Enter(Player player)
         {
-
+            
         }
 
         public override void Update(Player player)
         {
-
+            Debug.Log("현재 상태 : Move");
         }
 
         public override void Exit(Player player)
         {
-            
+
         }
     }
 
@@ -47,12 +47,13 @@ namespace PlayerState
     {
         public override void Enter(Player player)
         {
-            Debug.Log("attack state 진입");
+            
         }
 
         public override void Update(Player player)
         {
-
+            if(player.DoAttackDash)
+                player.AttackDash();
         }
 
         public override void Exit(Player player)
@@ -66,12 +67,12 @@ namespace PlayerState
     {
         public override void Enter(Player player)
         {
-
+            
         }
 
         public override void Update(Player player)
         {
-
+            Debug.Log("현재 상태 : GetDamaged");
         }
 
         public override void Exit(Player player)
@@ -85,12 +86,12 @@ namespace PlayerState
     {
         public override void Enter(Player player)
         {
-
+            
         }
 
         public override void Update(Player player)
         {
-
+            Debug.Log("현재 상태 : Die");
         }
 
         public override void Exit(Player player)
