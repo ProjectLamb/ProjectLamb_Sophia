@@ -15,6 +15,7 @@ namespace Sophia.Entitys
         [SerializeField] private float RushTime;
 
         #endregion
+        float originDrag;
         CoolTimeComposite rushTimer;
         private bool IsRush;
         // Start is called before the first frame update
@@ -22,10 +23,13 @@ namespace Sophia.Entitys
         protected override void Awake()
         {
             base.Awake();
+            originDrag = entityRigidbody.drag;
         }
         protected override void Start()
         {
             base.Start();
+            CurrentInstantiatedStage.mobGenerator.AddMob(this.gameObject);
+            transform.parent = CurrentInstantiatedStage.transform.GetChild((int)Stage.STAGE_CHILD.MOB);
         }
 
         // Update is called once per frame
@@ -275,9 +279,7 @@ namespace Sophia.Entitys
             }
             else
             {
-                //서서히 감소시키는 코드 넣기
-                entityRigidbody.velocity = Vector3.one;
-                entityRigidbody.constraints = RigidbodyConstraints.FreezeAll;
+                entityRigidbody.drag += 0.1f;
             }
         }
 
@@ -285,6 +287,7 @@ namespace Sophia.Entitys
         {
             GetModelManger().GetAnimator().SetBool("IsRushEnd", false);
             _nav.enabled = false;
+            entityRigidbody.drag = originDrag;
             entityRigidbody.velocity = Vector3.zero;
             entityRigidbody.constraints = RigidbodyConstraints.FreezeAll;
             ResetAnimParam();
