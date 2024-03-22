@@ -1,3 +1,12 @@
+<<<<<<< HEAD
+fileFormatVersion: 2
+guid: 1603c3a53e2934d93ba0eb0e188f3c84
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+=======
 fileFormatVersion: 2
 <<<<<<<< HEAD:Assets/리소스_20240219.zip.meta
 guid: dea11156114dcc64f860ec5afa2001a7
@@ -9,3 +18,4 @@ DefaultImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+>>>>>>> develop
