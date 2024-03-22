@@ -12,6 +12,7 @@ using Cysharp.Threading.Tasks;
 using Sophia_Carriers;
 using UnityEngine.Rendering;
 using FMODPlus;
+using Sophia.AI;
 
 namespace Sophia.Entitys
 {
@@ -39,8 +40,9 @@ namespace Sophia.Entitys
 
         #region Serialize Member
         [SerializeField] protected RecognizeEntityComposite recognize;
-        [SerializeField] private bool IsMovable = false;
+        [SerializeField] private bool isMovable = false;
         [SerializeField] private int wanderingCoolTime = 3;
+        [SerializeField] private EQS eqs;
         #endregion
 
         public enum States
@@ -72,6 +74,7 @@ namespace Sophia.Entitys
             animTriggerParamList = new List<string>();
 
             TryGetComponent<NavMeshAgent>(out nav);
+            TryGetComponent<EQS>(out eqs);
 
             fsm = new StateMachine<States>(this);
             fsm.ChangeState(States.Init);
@@ -166,11 +169,10 @@ namespace Sophia.Entitys
 
         void DoWander()
         {
-            EQS();
-
             float range = recognize.CurrentViewRadius * 2;
             float minDistance = recognize.CurrentViewRadius;
             Vector3 randomVector = Random.insideUnitSphere * range;
+            //Vector3 randomVector = eqs.RunEQS();
             NavMeshHit hit;
 
             randomVector += transform.position;
@@ -188,11 +190,6 @@ namespace Sophia.Entitys
             {
                 DoWander();
             }
-        }
-
-        void EQS()
-        {
-            //Environmental Query System
         }
 
         #region Attack
@@ -230,7 +227,7 @@ namespace Sophia.Entitys
             Debug.Log("Idle_Enter");
             recognize.CurrentViewRadius = originViewRadius;
             
-            if(!IsMovable)return;
+            if(!isMovable)return;
             nav.isStopped = true;
             nav.enabled = false;
             transform.DOKill();
@@ -263,8 +260,7 @@ namespace Sophia.Entitys
         {
             Debug.Log("Threat Enter");
 
-            
-            if(!IsMovable)return;
+            if(!isMovable)return;
             nav.isStopped = true;
             nav.enabled = false;
             transform.DOKill();
@@ -387,7 +383,7 @@ namespace Sophia.Entitys
             Debug.Log("Attack_Enter");
 
             
-            if(!IsMovable)return;
+            if(!isMovable)return;
             nav.isStopped = true;
             nav.enabled = false;
             transform.DOKill();
@@ -479,12 +475,12 @@ namespace Sophia.Entitys
 
         private Stat moveSpeed;
         
-        public bool GetMoveState() => IsMovable;
+        public bool GetMoveState() => isMovable;
 
         public void SetMoveState(bool movableState)
         {
-            IsMovable = movableState;
-            if (IsMovable) {
+            isMovable = movableState;
+            if (isMovable) {
                 nav.enabled = true;
                 
                 nav.isStopped = false;
@@ -492,7 +488,7 @@ namespace Sophia.Entitys
             else
             {
                 
-                if(!IsMovable)return;
+                if(!isMovable)return;
                 nav.isStopped = true;
                 nav.enabled = false;
                 transform.DOKill();
