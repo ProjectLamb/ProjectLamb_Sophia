@@ -5,8 +5,11 @@ using UnityEngine.InputSystem;
 using FMODPlus;
 
 using Sophia;
+using Component = UnityEngine.Component;
+using Random = UnityEngine.Random;
 
-public enum PlayerStates // 플레이어 상태 
+
+public enum PLAYERSTATES // 플레이어 상태 
     {
         Idle = 0,
         Move,
@@ -49,7 +52,7 @@ public class Player : Entity {
     public EquipmentManager         equipmentManager;
     public ImageGenerator           imageGenerator;
     public LayerMask                groundMask; // 바닥을 인식하는 마스크
-    public AttackAnim               attackAnim;
+    public PlayerAnim               playerAnim;
     /// <summary>
     /// RoomGenerator.cs에서 참조하는 변수 (리펙토링 필요해 보인다.) <br/>
     /// * 포탈을 사용할수 있는지 없는지는 Map이 책임을 가져아 한다. <br/>
@@ -68,12 +71,10 @@ public class Player : Entity {
     private bool                    mIsBorder;
     private bool                    mIsDashed;
     
-    public  bool                    mIsDie;
-    public  bool                    isAttack; // 일반 공격(1,2,3타) 여부
-    public  bool                    canExitAttack; // 공격 중 탈출가능시점
-    //[merge] 0125중 TA_escatrgot branch의 attackTrigger가 변수명이 겹쳐서 resetAtkTrigger로 합쳤음
-    public  bool                    resetAtkTrigger; // 선입력되어있는 attack 트리거를 해제하기 위한 변수
+    public  bool                    IsExitAttack; // 공격 중 탈출가능시점
+    public  bool                    DoAttackDash; // 공격하면서 앞으로 조금 대쉬하는 시점
     public  bool                    attackProTime; // 공격 이펙트 출현시점
+    public  bool                    IsThirdAttack;
 
     [HideInInspector] Animator anim;
     
@@ -82,8 +83,8 @@ public class Player : Entity {
     IEnumerator mCoWaitDash;        // StopCorutine을 사용하기 위해서는 코루틴 변수가 필요하다. 
     public ParticleSystem DieParticle;
 
-    private State [] states; // 상태 배열
-    private State    currentState; // 현재 상태
+    public State [] states; // 상태 배열
+    public State    currentState; // 현재 상태
 
     protected override void Awake(){
         /*아래 3줄은 절때 활성화 하지마라. base.Awake() 에서 이미 이걸 하고 있다.*/
@@ -93,25 +94,23 @@ public class Player : Entity {
         //CurrentHealth = 마스터 데이터
         base.Awake();
         model.TryGetComponent<Animator>(out anim);
-        model.TryGetComponent<AttackAnim>(out attackAnim);
+        model.TryGetComponent<PlayerAnim>(out playerAnim);
       
         //kabocha
         states                         = new State[5];
-        states[(int)PlayerStates.Idle] = new PlayerState.Idle();
-        states[(int)PlayerStates.Move] = new PlayerState.Move();
-        states[(int)PlayerStates.Attack] = new PlayerState.Attack();
-        states[(int)PlayerStates.GetDamaged] = new PlayerState.GetDamaged();
-        states[(int)PlayerStates.Die] = new PlayerState.Die();
+        states[(int)PLAYERSTATES.Idle] = new PlayerState.Idle();
+        states[(int)PLAYERSTATES.Move] = new PlayerState.Move();
+        states[(int)PLAYERSTATES.Attack] = new PlayerState.Attack();
+        states[(int)PLAYERSTATES.GetDamaged] = new PlayerState.GetDamaged();
+        states[(int)PLAYERSTATES.Die] = new PlayerState.Die();
  
         //시작할 때 플레이어 상태 idle 상태로 지정
-        currentState = states[(int)PlayerStates.Idle];
+        currentState = states[(int)PLAYERSTATES.Idle];
       
         Life = new Sophia.Composite.LifeComposite(PlayerDataManager.GetEntityData().MaxHP);
     }
 
     private void Start() {
-        isAttack = false;
-        //isThrAttack = false;
 
         DashSkillAbility = new Sophia.Composite.DashSkill(entityRigidbody, DashDataSender, 500);
         DashSkillAbility.SetAudioSource(DashSource);
@@ -135,6 +134,8 @@ public class Player : Entity {
         Life.Damaged(damageInfo);
         PlayerDataManager.GetEntityData().HitState.Invoke();
         anim.SetTrigger("GetDamaged");
+        ChangeState(PLAYERSTATES.GetDamaged);
+        if(Life.CurrentHealth <= 0) Die(); // 체력이 0 이하면 사망 처리
     }
 
     public override void GetDamaged(int _amount, VFXObject obj){
@@ -149,9 +150,8 @@ public class Player : Entity {
     }
 
     public override void Die() {
-        Debug.Log("체력 없음!");
+        ChangeState(PLAYERSTATES.Die);
         anim.SetTrigger("Die");
-        mIsDie = true;
     }
 
     public void OnMove(InputValue value) // new input system 사용
@@ -177,14 +177,14 @@ public class Player : Entity {
 
         bool IsBorder(){return Physics.Raycast(transform.position, mMoveVec.normalized, 2, LayerMask.GetMask("Wall"));}
         
-        if (!IsBorder() && !isAttack) // 벽으로 막혀있지 않고 공격중이 아닐때만 이동 가능
+        if (!IsBorder()/*currentState != states[(int)PLAYERSTATES.Attack]*/) // 벽으로 막혀있지 않고 공격중이 아닐때만 이동 가능
         {
             Vector3 rbVel = mMoveVec * moveSpeed;
             this.entityRigidbody.velocity = rbVel;
             if(mMoveVec != Vector3.zero){
+                ChangeState(PLAYERSTATES.Move);
                 mRotate = Quaternion.LookRotation(mMoveVec);
                 transform.rotation = Quaternion.Slerp(transform.rotation,mRotate, 0.6f);
-                
             }
             PlayerDataManager.GetEntityData().MoveState?.Invoke();
         }
@@ -209,8 +209,7 @@ public class Player : Entity {
     }
 
     IEnumerator AsyncTurning(RaycastHit _groundHit, UnityAction _action){
-        
-        yield return new WaitForEndOfFrame();
+        //yield return new WaitForEndOfFrame();
         Vector3 playerToMouse = _groundHit.point - transform.position;
         playerToMouse.y = 0f;
         Quaternion newRotatation = Quaternion.LookRotation(playerToMouse);
@@ -219,7 +218,6 @@ public class Player : Entity {
         yield return new WaitForEndOfFrame();
         _action.Invoke();
         yield return new WaitForEndOfFrame();
-
     }
 
 #endregion
@@ -234,13 +232,21 @@ public class Player : Entity {
 
     public void Attack()
     {
-        if(!resetAtkTrigger){
-            ChangeState(PlayerStates.Attack);
-            anim.SetTrigger("DoAttack");
-        }
+        anim.SetTrigger("DoAttack");
+        ChangeState(PLAYERSTATES.Attack);
         //Turning(() => weaponManager.weapon.Use(PlayerDataManager.GetEntityData().Power));
     }
     
+    public void AttackDash()
+    {
+        float camRayLength = 200f;
+        Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);   
+        if (Physics.Raycast(camRay, out RaycastHit hit, camRayLength)){
+            Vector3 attackDash = hit.transform.position - this.transform.position;
+            this.entityRigidbody.AddForce(attackDash*2.0f);
+            }
+        DoAttackDash = false; // 변수 초기화
+        }
     /// <summary>
     /// Equipment_010과 의존 관계다 <br/>
     /// 슈슈슉 충전공격후 여러번 때리는것 <br/>
@@ -280,7 +286,7 @@ public class Player : Entity {
             // 마우스가 "Enemy" 태그를 가진 collider와 충돌했을때
             if(hit.collider.tag == "Enemy"){
                 // 공격중이라면
-                if(isAttack){
+                if(currentState == states[(int)PLAYERSTATES.Attack]){
                     // RAYCASTHIT가 닿은 대상의 중심을 바라본다
                     transform.rotation = Quaternion.LookRotation(hit.collider.transform.position - this.transform.position);
                     }
@@ -290,12 +296,12 @@ public class Player : Entity {
     
     public void CheckAttack()
     {
-        isAttack = AttackAnim.isAttack;
-        canExitAttack = AttackAnim.canExitAttack;
-        resetAtkTrigger = AttackAnim.resetAtkTrigger;
+        IsExitAttack = PlayerAnim.IsExitAttack;
+        DoAttackDash = PlayerAnim.DoAttackDash;
+        IsThirdAttack = PlayerAnim.IsThirdAttack;
 
         // 공격중이라면
-        if(isAttack){
+        if(currentState == states[(int)PLAYERSTATES.Attack]){
             anim.SetBool("isAttack",true);
         }
         else{
@@ -303,20 +309,21 @@ public class Player : Entity {
         }
 
         //공격 중 이동이 감지되었다면
-        if(canExitAttack && inputVec != Vector2.zero)
+        if(IsExitAttack && inputVec != Vector2.zero)
         {
-            anim.SetBool("canExitAttack",true);
+            ChangeState(PLAYERSTATES.Idle);
+            anim.SetBool("IsExitAttack",true);
         }
-        else if(!canExitAttack)
+        else if(!IsExitAttack)
         {
-            anim.SetBool("canExitAttack",false);
+            anim.SetBool("IsExitAttack",false);
         }
 
-        if(resetAtkTrigger) // 세번째 공격 종료시점에 선입력되어있는 DoAttack 트리거 reset
+        if(currentState == states[(int)PLAYERSTATES.Idle]) // Idle 상태면 Attack 트리거 reset
             anim.ResetTrigger("DoAttack");
     }
-  
-    public void ChangeState(PlayerStates newState)
+
+    public void ChangeState(PLAYERSTATES newState)
     {
         //새로 바꾸려는 상태가 비어있으면 그냥 return;
         if(states[(int)newState] == null) {
