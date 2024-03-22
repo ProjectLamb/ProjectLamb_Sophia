@@ -9,7 +9,7 @@ namespace PlayerState
     {
         public override void Enter(Player player)
         {
-        
+            Debug.Log("idle 상태 진입");
         }
 
         public override void Update(Player player)

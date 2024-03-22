@@ -74,7 +74,6 @@ public class Player : Entity {
     public  bool                    IsExitAttack; // 공격 중 탈출가능시점
     public  bool                    DoAttackDash; // 공격하면서 앞으로 조금 대쉬하는 시점
     public  bool                    attackProTime; // 공격 이펙트 출현시점
-    public  bool                    IsThirdAttack;
 
     [HideInInspector] Animator anim;
     
@@ -145,7 +144,6 @@ public class Player : Entity {
         damageInfo.damageRatio = 1;
         Life.Damaged(damageInfo);
         PlayerDataManager.GetEntityData().HitState.Invoke();
-        anim.SetTrigger("GetDamaged");
         visualModulator.InteractByVFX(obj);
     }
 
@@ -234,6 +232,7 @@ public class Player : Entity {
     {
         anim.SetTrigger("DoAttack");
         ChangeState(PLAYERSTATES.Attack);
+        Debug.Log(currentState);
         //Turning(() => weaponManager.weapon.Use(PlayerDataManager.GetEntityData().Power));
     }
     
@@ -298,14 +297,12 @@ public class Player : Entity {
     {
         IsExitAttack = PlayerAnim.IsExitAttack;
         DoAttackDash = PlayerAnim.DoAttackDash;
-        IsThirdAttack = PlayerAnim.IsThirdAttack;
-
         // 공격중이라면
         if(currentState == states[(int)PLAYERSTATES.Attack]){
-            anim.SetBool("isAttack",true);
+            anim.SetBool("IsAttack",true);
         }
         else{
-            anim.SetBool("isAttack",false);
+            anim.SetBool("IsAttack",false);
         }
 
         //공격 중 이동이 감지되었다면
@@ -325,9 +322,9 @@ public class Player : Entity {
 
     public void ChangeState(PLAYERSTATES newState)
     {
+        Debug.Log("changestate 테스트");
         //새로 바꾸려는 상태가 비어있으면 그냥 return;
         if(states[(int)newState] == null) {
-            Debug.Log("텅 비엇내");
             return;
         }
 
