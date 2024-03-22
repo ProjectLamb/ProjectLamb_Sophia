@@ -127,6 +127,8 @@ namespace Sophia.Instantiates
         [SerializeField] private VisualFXObject     _hitEffect = null;
         [SerializeField] private ParticleSystem     ProjectileParticle = null;
         [SerializeField] private VisualEffect       ProjectileVFXGraph = null;
+        [SerializeField] private Animator           ProjectileAnimator = null;
+        [SerializeField] private bool               UseAnimator;
         [SerializeField] private Material           ParticleMaterial = null;
 
 #endregion
@@ -566,10 +568,14 @@ namespace Sophia.Instantiates
                 if(targetEntity.GetDamaged(CurrentProjectileDamage)) {
                     OwnerRef.GetExtras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.ConveyAffect)?.PerformStartFunctionals(ref targetEntity);
                     GetExtrasWithProjectileInstantiatedType(ref targetEntity);
+
+                    if (UseAnimator)
+                        ProjectileAnimator.SetTrigger("DoHit");
+
                     //VisualFXObject visualFX = VisualFXObjectPool.GetObject(CurrnetProjectileVisualData.HitEffect).Init();
                     VisualFXObject visualFX = VisualFXObjectPool.GetObject(_hitEffect).Init();
                     targetEntity.GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
-                    
+
                     OnProjectileTriggerd.Invoke();
                 }
             }
@@ -582,9 +588,14 @@ namespace Sophia.Instantiates
             {
                 if(_serialProjectileIntervalData._isIntervalDamage && targetEntity.GetDamaged(CurrentProjectileDamage)) {
                     if(_serialProjectileIntervalData._isIntervalExtrasConvey) OwnerRef.GetExtras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.ConveyAffect)?.PerformStartFunctionals(ref targetEntity);
+
+                    if (UseAnimator)
+                        ProjectileAnimator.SetTrigger("DoHit");
+
                     //VisualFXObject visualFX = VisualFXObjectPool.GetObject(CurrnetProjectileVisualData.HitEffect).Init();
                     VisualFXObject visualFX = VisualFXObjectPool.GetObject(_hitEffect).Init();
                     targetEntity.GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
+
                     OnProjectileTriggerd.Invoke();
                 }
             }     
