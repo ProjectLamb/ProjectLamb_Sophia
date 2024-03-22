@@ -9,6 +9,7 @@ namespace Sophia.Entitys
         Stage stage;
 
         public GameObject[] Mobs;
+        public GameObject[] Boss;
         public GameObject ElderOne;
         public List<GameObject> CurrentMobList;
         public int InitMobAmount = 3;
@@ -40,17 +41,24 @@ namespace Sophia.Entitys
                 instance = Instantiate(Mobs[randomValue], new Vector3(stage.stageGenerator.tileGameObjectArray[i, j].transform.position.x, transform.position.y, stage.stageGenerator.tileGameObjectArray[i, j].transform.position.z), Quaternion.identity);
                 instance.GetComponent<Enemy>()._objectiveEntity = GameManager.Instance.PlayerGameObject.GetComponent<Entity>();
                 AddMob(instance);
-                instance.transform.parent = transform.GetChild(4);
+                instance.transform.parent = transform.GetChild((int)Stage.STAGE_CHILD.MOB);
 
-                switch (randomValue)
-                {
-                    default:
-                        Sophia.Entitys.Enemy enemyTemp = instance.GetComponent<Sophia.Entitys.Enemy>();
-                        enemyTemp.CurrentInstantiatedStage = stage;
-                        break;
-                }
+                Sophia.Entitys.Enemy enemyTemp = instance.GetComponent<Sophia.Entitys.Enemy>();
+                enemyTemp.CurrentInstantiatedStage = stage;
+
                 spawnAmount--;
             }
+        }
+
+        public void InstantiateBoss()
+        {
+            GameObject instance;
+            //Boss[]로 바꾸기
+            instance = Instantiate(ElderOne, transform.position, Quaternion.identity);
+            instance.transform.parent = transform.GetChild((int)Stage.STAGE_CHILD.MOB);
+            instance.GetComponent<Boss>().CurrentInstantiatedStage = stage;
+            Debug.Log(instance.GetComponent<Boss>().CurrentInstantiatedStage);
+            AddMob(instance);
         }
 
         public void AddMob(GameObject mob)
