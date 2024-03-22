@@ -9,8 +9,11 @@ using Sophia.Entitys;
 public class Stage : MonoBehaviour
 {
     #region Enum Members
+
     public enum PORTAL_TYPE { NORMAL, BOSS, }
     public enum STAGE_CHILD { TILE, WALL, PORTAL, OBSTACLE, MOB, }
+    public enum STAGE_SIZE { SMALL, MIDDLE, BIG };
+
     #endregion
     //  StageGenerator //Stage[10];
     //  Stage[(int).Enum.Boss];
@@ -50,6 +53,8 @@ public class Stage : MonoBehaviour
         }
     }
 
+    [SerializeField]
+    private float[] SizeRate = new float[3] { 80.0f, 10.0f, 10.0f };
 
     [SerializeField]
     private bool mIsClear;
@@ -82,13 +87,23 @@ public class Stage : MonoBehaviour
     {
         System.Random rand = new System.Random();
 
+        stageSizeRandom = 1;
+
         if (Type == "normal")
         {
-            stageSizeRandom = rand.Next(1, 4);
-        }
-        else
-        {
-            stageSizeRandom = 1;
+            float randomValue = (float)rand.NextDouble() * 100.0f;
+            float temp = 0.0f;
+
+            for (int i = 0; i <= SizeRate.Length; i++)
+            {
+                temp += SizeRate[i];
+
+                if (randomValue <= temp)
+                {
+                    stageSizeRandom = i + 1;
+                    break;
+                }
+            }
         }
 
         stageGenerator.InitStageGenerator(stageSizeRandom);
@@ -141,9 +156,8 @@ public class Stage : MonoBehaviour
         }
         else if (Type == "boss")
         {
-            GameObject instance;
-            instance = Instantiate(mobGenerator.ElderOne, transform.position, Quaternion.identity);
-            instance.transform.parent = transform.GetChild((int)Stage.STAGE_CHILD.MOB);
+            mobGenerator.InitMobGenerator();
+            mobGenerator.InstantiateBoss();
         }
         if (mType == "start")
         {
@@ -207,8 +221,9 @@ public class Stage : MonoBehaviour
             // gachaComponent.instantPivot.position = transform.position;
             // gachaComponent.InstantiateReward(gachaComponent.instantPivot);
             List<Sophia.Instantiates.ItemObject> positionedItem = gachaComponent.InstantiateReward();
-            if(positionedItem.Count == 0) return;
-            foreach(var item in gachaComponent.InstantiateReward()) {
+            if (positionedItem.Count == 0) return;
+            foreach (var item in gachaComponent.InstantiateReward())
+            {
                 item.Activate();
             }
         }
