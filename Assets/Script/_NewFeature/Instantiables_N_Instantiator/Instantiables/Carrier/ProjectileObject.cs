@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Pool;
@@ -430,6 +431,7 @@ namespace Sophia.Instantiates
             AffectType = _affectType;
             StackingType = _stackingType;
             PositioningType = _positioningType;
+            _carrierCollider.enabled = true;  // 이중 데미지 방지
             
             // ProjectileVisualData data = new ProjectileVisualData {
             //     ShaderUnderbarColor = ParticleMaterial.GetColor("_Color"),
@@ -523,7 +525,11 @@ namespace Sophia.Instantiates
         public void DeActivate()
         {
             if (!IsInitialized) { return; }
-            poolRefer.Release(this);
+            if (UseAnimator) {
+                StartCoroutine(StartDestruct());
+            } else {
+                poolRefer.Release(this);
+            }
         }
 
 #endregion
@@ -566,17 +572,21 @@ namespace Sophia.Instantiates
             if (entity.TryGetComponent<Entity>(out Entity targetEntity))
             {
                 if(targetEntity.GetDamaged(CurrentProjectileDamage)) {
+                    _carrierCollider.enabled = false;  // 이중 데미지 방지
+
                     OwnerRef.GetExtras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.ConveyAffect)?.PerformStartFunctionals(ref targetEntity);
                     GetExtrasWithProjectileInstantiatedType(ref targetEntity);
 
-                    if (UseAnimator)
-                        ProjectileAnimator.SetTrigger("DoHit");
+                    if (UseAnimator) {
+                        StartCoroutine(StartDestruct());
+                    }
 
                     //VisualFXObject visualFX = VisualFXObjectPool.GetObject(CurrnetProjectileVisualData.HitEffect).Init();
                     VisualFXObject visualFX = VisualFXObjectPool.GetObject(_hitEffect).Init();
                     targetEntity.GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
 
                     OnProjectileTriggerd.Invoke();
+
                 }
             }
         }
@@ -589,8 +599,9 @@ namespace Sophia.Instantiates
                 if(_serialProjectileIntervalData._isIntervalDamage && targetEntity.GetDamaged(CurrentProjectileDamage)) {
                     if(_serialProjectileIntervalData._isIntervalExtrasConvey) OwnerRef.GetExtras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.ConveyAffect)?.PerformStartFunctionals(ref targetEntity);
 
-                    if (UseAnimator)
-                        ProjectileAnimator.SetTrigger("DoHit");
+                    if (UseAnimator) {
+                        // StartCoroutine(StartDestruct());
+                    }
 
                     //VisualFXObject visualFX = VisualFXObjectPool.GetObject(CurrnetProjectileVisualData.HitEffect).Init();
                     VisualFXObject visualFX = VisualFXObjectPool.GetObject(_hitEffect).Init();
@@ -627,6 +638,14 @@ namespace Sophia.Instantiates
             if(!IsMoveStoped) {
                 OnProjectileForwarding?.Invoke();
             }
+        }
+
+        IEnumerator StartDestruct()
+        {
+            ProjectileAnimator.SetTrigger("DoHit");
+            while (!ProjectileAnimator.GetBool("IsDestructEnd"))
+                yield return null;
+            poolRefer.Release(this);
         }
 
 #region Helper

@@ -22,6 +22,8 @@ namespace Sophia.Entitys
     public class Mollu : Enemy, IMovable
     {
         #region Public
+        public ParticleSystem LeftRocketParticle;
+        public ParticleSystem RightRocketParticle;
         public int AttackRange;
         public int TurnSpeed;   //Stat으로 관리 가능성
         #endregion
@@ -36,6 +38,18 @@ namespace Sophia.Entitys
 
         private float originViewRadius;
         private NavMeshAgent nav;
+
+        ParticleSystem.MainModule _leftRocketParticleMain;
+        ParticleSystem.MainModule _rightRocketParticleMain;
+        ParticleSystem.MinMaxCurve _rocketStartLifetimeAtStop;
+        ParticleSystem.MinMaxCurve _rocketStartLifetimeAtMove;
+        ParticleSystem.MinMaxCurve _rocketStartSpeedAtStop;
+        ParticleSystem.MinMaxCurve _rocketStartSpeedAtMove;
+        ParticleSystem.MinMaxCurve _rocketStartSizeAtStop;
+        ParticleSystem.MinMaxCurve _rocketStartSizeAtMove;
+        ParticleSystem.MinMaxGradient _rocketStartColorAtStop;
+        ParticleSystem.MinMaxGradient _rocketStartColorAtMove;
+        Vector3 _lastPos;
         #endregion
 
         #region Serialize Member
@@ -72,6 +86,19 @@ namespace Sophia.Entitys
             animBoolParamList = new List<string>();
             animTriggerParamList = new List<string>();
 
+            _leftRocketParticleMain = LeftRocketParticle.main;
+            _rightRocketParticleMain = RightRocketParticle.main;
+            _rocketStartLifetimeAtStop = _leftRocketParticleMain.startLifetime;
+            _rocketStartLifetimeAtMove = _rocketStartLifetimeAtStop.constant / 2;
+            _rocketStartSpeedAtStop = _leftRocketParticleMain.startSpeed.constant;
+            _rocketStartSpeedAtMove = _rocketStartSpeedAtStop.constant + 20;
+            _rocketStartSizeAtStop = _leftRocketParticleMain.startSize;
+            _rocketStartSizeAtMove = _rocketStartSizeAtStop.constant + 5;
+            _rocketStartColorAtStop = _leftRocketParticleMain.startColor;
+            _rocketStartColorAtMove = new ParticleSystem.MinMaxGradient(Color.red);
+
+            _lastPos = transform.position;
+
             TryGetComponent<NavMeshAgent>(out nav);
 
             fsm = new StateMachine<States>(this);
@@ -91,11 +118,36 @@ namespace Sophia.Entitys
         // Update is called once per frame
         void Update()
         {
+
             fsm.Driver.Update.Invoke();
         }
 
         void FixedUpdate()
         {
+            // Check entity is moving or not
+            if (transform.position != _lastPos) {  // Moving
+                // _leftRocketParticleMain.startLifetime = _rocketStartLifetimeAtMove;
+                _leftRocketParticleMain.startSpeed = _rocketStartSpeedAtMove;
+                _leftRocketParticleMain.startSize = _rocketStartSizeAtMove;
+                _leftRocketParticleMain.startColor = _rocketStartColorAtMove;
+
+                // _rightRocketParticleMain.startLifetime = _rocketStartLifetimeAtMove;
+                _rightRocketParticleMain.startSpeed = _rocketStartSpeedAtMove;
+                _rightRocketParticleMain.startSize = _rocketStartSizeAtMove;
+                _rightRocketParticleMain.startColor = _rocketStartColorAtMove;
+            } else {  // Stationary
+                // _leftRocketParticleMain.startLifetime = _rocketStartLifetimeAtStop;
+                _leftRocketParticleMain.startSpeed = _rocketStartSpeedAtStop;
+                _leftRocketParticleMain.startSize = _rocketStartSizeAtStop;
+                _leftRocketParticleMain.startColor = _rocketStartColorAtStop;
+
+                // _rightRocketParticleMain.startLifetime = _rocketStartLifetimeAtStop;
+                _rightRocketParticleMain.startSpeed = _rocketStartSpeedAtStop;
+                _rightRocketParticleMain.startSize = _rocketStartSizeAtStop;
+                _rightRocketParticleMain.startColor = _rocketStartColorAtStop;
+            }
+            _lastPos = transform.position;
+
             fsm.Driver.FixedUpdate.Invoke();
         }
 
@@ -197,9 +249,6 @@ namespace Sophia.Entitys
             _projectileBucketManager.InstantablePositioning((int)ANIME_STATE.ATTACK, useProjectile)
                                     .SetProjectilePower(GetStat(E_NUMERIC_STAT_TYPE.Power))
                                     .Activate();
-
-
-
         }
         #endregion
 
@@ -248,11 +297,12 @@ namespace Sophia.Entitys
         }
 
         /**Threat State*/
+        // TODO) 플레이어 발견시 이펙트 추가 예정 (예시 : 머리에서 빨간 빛이 나옴)
         void Threat_Enter()
         {
             Debug.Log("Mollu) Threat_Enter");
 
-            if(!IsMovable) return;
+            if (!IsMovable) return;
             nav.isStopped = true;
             nav.enabled = false;
             transform.DOKill();
@@ -355,6 +405,8 @@ namespace Sophia.Entitys
 
         void Wander_Exit()
         {
+            Debug.Log("Mollu) Exit Wander");
+
             IsWandering = false;
         }
 
@@ -371,6 +423,7 @@ namespace Sophia.Entitys
 
             DoAttack();
         }
+
         void Attack_Update()
         {
             if (GetModelManger().GetAnimator().GetBool("IsAttackEnd"))
@@ -383,7 +436,7 @@ namespace Sophia.Entitys
         {
             float dist = Vector3.Distance(transform.position, _objectiveEntity.transform.position);
             if (dist <= AttackRange) {
-                transform.DOLookAt(_objectiveEntity.transform.position, TurnSpeed * 2);
+                transform.DOLookAt(_objectiveEntity.transform.position, TurnSpeed * 1.2f);
             } else {
                 isFirstAttack = true;
             }
@@ -472,13 +525,11 @@ namespace Sophia.Entitys
             IsMovable = movableState;
             if (IsMovable) {
                 nav.enabled = true;
-
                 nav.isStopped = false;
-            }
-            else
-            {
+            } else {
+                if (!IsMovable)
+                    return;
 
-                if(!IsMovable)return;
                 nav.isStopped = true;
                 nav.enabled = false;
                 transform.DOKill();
