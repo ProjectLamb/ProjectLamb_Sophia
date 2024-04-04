@@ -15,7 +15,8 @@ namespace Sophia.Entitys
     using Sophia.DataSystem.Referer;
     using Sophia.Instantiates;
 
-    public enum E_RAPTOR_AUDIO_INDEX {
+    public enum E_RAPTOR_AUDIO_INDEX
+    {
         Hit = 0, Roar, Death, FootStep, Found, Howling, Idle
     }
     public abstract class Raptor : Enemy, IMovable
@@ -119,10 +120,10 @@ namespace Sophia.Entitys
         }
         protected void InitAnimParamList()
         {
-            for (int i = 0; i < GetModelManger().GetAnimator().parameterCount; i++)
+            for (int i = 0; i < GetModelManager().GetAnimator().parameterCount; i++)
             {
-                AnimatorControllerParameter acp = this.GetModelManger().GetAnimator().GetParameter(i);
-                switch (this.GetModelManger().GetAnimator().GetParameter(i).type)
+                AnimatorControllerParameter acp = this.GetModelManager().GetAnimator().GetParameter(i);
+                switch (this.GetModelManager().GetAnimator().GetParameter(i).type)
                 {
                     case AnimatorControllerParameterType.Bool:
                         animBoolParamList.Add(acp.name);
@@ -139,14 +140,14 @@ namespace Sophia.Entitys
         protected void ResetAnimParam()
         {
             foreach (string b in animBoolParamList)
-                this.GetModelManger().GetAnimator().SetBool(b, false);
+                this.GetModelManager().GetAnimator().SetBool(b, false);
             foreach (string t in animTriggerParamList)
-                this.GetModelManger().GetAnimator().ResetTrigger(t);
+                this.GetModelManager().GetAnimator().ResetTrigger(t);
         }
         #region Attack
         protected void DoAttack()
         {
-            GetModelManger().GetAnimator().SetTrigger("DoAttack");
+            GetModelManager().GetAnimator().SetTrigger("DoAttack");
             _audioSources[(int)E_RAPTOR_AUDIO_INDEX.Roar].Play();
         }
         public void UseProjectile_NormalAttack()
@@ -170,7 +171,8 @@ namespace Sophia.Entitys
             if (Life.IsDie) { isDamaged = false; }
             else
             {
-                if (isDamaged = Life.Damaged(damage)) {
+                if (isDamaged = Life.Damaged(damage))
+                {
                     GameManager.Instance.NewFeatureGlobalEvent.OnEnemyHitEvent.Invoke();
                 }
             }
@@ -186,13 +188,13 @@ namespace Sophia.Entitys
 
         public void OnRaptorHit(DamageInfo damageInfo)
         {
-            GetModelManger().GetAnimator().SetTrigger("DoHit");
+            GetModelManager().GetAnimator().SetTrigger("DoHit");
             GameManager.Instance.NewFeatureGlobalEvent.EnemyHit.PerformStartFunctionals(ref NullRef);
         }
 
         public void OnRaptorEnterDie()
         {
-            GetModelManger().GetAnimator().SetTrigger("DoDie");
+            GetModelManager().GetAnimator().SetTrigger("DoDie");
             _audioSources[(int)E_RAPTOR_AUDIO_INDEX.Death].Play();
             CurrentInstantiatedStage.mobGenerator.RemoveMob(this.gameObject);
             GameManager.Instance.NewFeatureGlobalEvent.EnemyDie.PerformStartFunctionals(ref NullRef);
@@ -299,9 +301,9 @@ namespace Sophia.Entitys
 
         public void SetMoveState(bool movableState)
         {
+            _nav.enabled = true;
+
             isMovable = movableState;
-            if (movableState)
-                _nav.enabled = true;
             _nav.isStopped = !movableState;
             if (!movableState)
             {

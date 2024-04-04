@@ -63,7 +63,7 @@ namespace Sophia.Entitys
         void DoHowl()
         {
             //Buff.AudioClip.Play
-            GetModelManger().GetAnimator().SetTrigger("DoHowl");
+            GetModelManager().GetAnimator().SetTrigger("DoHowl");
             _audioSources[(int)E_RAPTOR_AUDIO_INDEX.Howling].Play();
 
             if (raptorSmallList.Count == 0)
@@ -187,7 +187,7 @@ namespace Sophia.Entitys
 
             _nav.speed = MoveSpeed.GetValueForce() / 2;
             _nav.acceleration = _nav.speed * 1.5f / 2;
-            this.GetModelManger().GetAnimator().SetBool("IsEscape", true);
+            this.GetModelManager().GetAnimator().SetBool("IsEscape", true);
             SetMoveState(true);
         }
         void Escape_Update()
@@ -214,7 +214,7 @@ namespace Sophia.Entitys
         {
             _nav.speed = MoveSpeed.GetValueForce();
             _nav.acceleration = _nav.speed * 1.5f;
-            this.GetModelManger().GetAnimator().SetBool("IsEscape", false);
+            this.GetModelManager().GetAnimator().SetBool("IsEscape", false);
         }
 
         /** Wander State */
@@ -244,7 +244,7 @@ namespace Sophia.Entitys
         {
             if (IsWandering)
             {
-                this.GetModelManger().GetAnimator().SetBool("IsWalk", true);
+                this.GetModelManager().GetAnimator().SetBool("IsWalk", true);
                 transform.DOLookAt(wanderPosition, TurnSpeed);
                 _nav.SetDestination(wanderPosition);
             }
@@ -253,7 +253,7 @@ namespace Sophia.Entitys
         void Wander_Exit()
         {
             IsWandering = false;
-            this.GetModelManger().GetAnimator().SetBool("IsWalk", false);
+            this.GetModelManager().GetAnimator().SetBool("IsWalk", false);
         }
 
         /**Attack State*/
@@ -268,7 +268,7 @@ namespace Sophia.Entitys
 
         void Attack_Update()
         {
-            if (this.GetModelManger().GetAnimator().GetBool("IsAttackEnd"))
+            if (this.GetModelManager().GetAnimator().GetBool("IsAttackEnd"))
             {
                 fsm.ChangeState(States.Idle);
             }
@@ -276,7 +276,7 @@ namespace Sophia.Entitys
 
         void Attack_Exit()
         {
-            GetModelManger().GetAnimator().SetBool("IsAttackEnd", false);
+            GetModelManager().GetAnimator().SetBool("IsAttackEnd", false);
             ResetAnimParam();
         }
 
@@ -292,7 +292,7 @@ namespace Sophia.Entitys
 
         void Howl_Update()
         {
-            if (GetModelManger().GetAnimator().GetBool("IsHowlEnd"))
+            if (GetModelManager().GetAnimator().GetBool("IsHowlEnd"))
             {
                 fsm.ChangeState(States.Idle);
             }
@@ -300,7 +300,7 @@ namespace Sophia.Entitys
 
         void Howl_Exit()
         {
-            GetModelManger().GetAnimator().SetBool("IsHowlEnd", false);
+            GetModelManager().GetAnimator().SetBool("IsHowlEnd", false);
 
             if (!howlingTimer.GetIsReadyToUse())
                 return;

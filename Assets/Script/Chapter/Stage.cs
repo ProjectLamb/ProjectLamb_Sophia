@@ -94,7 +94,7 @@ public class Stage : MonoBehaviour
             float randomValue = (float)rand.NextDouble() * 100.0f;
             float temp = 0.0f;
 
-            for (int i = 0; i <= SizeRate.Length; i++)
+            for (int i = 0; i < SizeRate.Length; i++)
             {
                 temp += SizeRate[i];
 

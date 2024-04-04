@@ -15,9 +15,9 @@ public class PurchaseComponent : MonoBehaviour {
     }
     public bool Purchase()
     {
-        int current_gear = PlayerDataManager.GetPlayerData().Gear;
+        int current_gear = GameManager.Instance.PlayerGameObject.GetComponent<Sophia.Entitys.Player>().PlayerWealth;
         if(current_gear >= this.price){
-            PlayerDataManager.GetPlayerData().Gear -= price;
+            GameManager.Instance.PlayerGameObject.GetComponent<Sophia.Entitys.Player>().PlayerWealth -= price;
             OnPurchasedEvent.Invoke();
             return true;
         }

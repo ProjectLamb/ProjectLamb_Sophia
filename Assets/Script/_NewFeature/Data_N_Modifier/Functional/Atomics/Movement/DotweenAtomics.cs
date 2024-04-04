@@ -10,7 +10,7 @@ namespace Sophia.DataSystem.Atomics {
             airingTime  = durateTime;
         }
         public void Invoke(Entitys.Entity entityRef) {
-            GameObject entityModel = entityRef.GetModelManger().GetModelObject();
+            GameObject entityModel = entityRef.GetModelManager().GetModelObject();
             entityModel.transform.DOLocalJump(UnityEngine.Vector3.zero, forceAmount, 1, airingTime);
         } 
     }

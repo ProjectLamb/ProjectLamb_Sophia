@@ -16,7 +16,7 @@ public class HandleButtons : MonoBehaviour
     IEnumerator enumerator() {
         GameManager.Instance.GlobalEvent.IsGamePaused = false;
         yield return new WaitForSecondsRealtime(0.01f);
-        SceneManager.LoadScene("_TA_001_Loading_");
+        SceneManager.LoadScene("01_Loading_");
     }
     public void HandleRestart(){
         StartCoroutine(enumerator());

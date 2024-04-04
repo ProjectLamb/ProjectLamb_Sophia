@@ -26,7 +26,8 @@ namespace Sophia.Instantiates
         protected bool IsTweenActivated;
         [ContextMenu("Debug Activate")]
         public void DEBUG_Activate() {
-            Init();Activate();
+            Init();
+            Activate();
         }
 
         public ItemObject Init() {

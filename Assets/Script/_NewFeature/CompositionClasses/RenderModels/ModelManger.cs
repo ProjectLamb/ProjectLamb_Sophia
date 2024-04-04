@@ -21,7 +21,7 @@ namespace Sophia.Composite.RenderModels
     * 애니메이션 과 로직 함수와 바인딩
     *********************************************************************************/
     
-    public class ModelManger : MonoBehaviour {
+    public class ModelManager : MonoBehaviour {
 #region SerializeMember
 
         [SerializeField] private GameObject _model;
