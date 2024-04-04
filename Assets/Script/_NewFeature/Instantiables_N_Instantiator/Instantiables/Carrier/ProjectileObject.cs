@@ -242,6 +242,8 @@ namespace Sophia.Instantiates
         public      ParticleSystem.CollisionModule  ParticleColliderModule;
         // public      ParticleSystemRenderer          ParticleRendererModule;
 
+        bool IsHit = false;
+        float ElapsedTime = 0f;
 
 #endregion
 
@@ -432,7 +434,12 @@ namespace Sophia.Instantiates
             StackingType = _stackingType;
             PositioningType = _positioningType;
             _carrierCollider.enabled = true;  // 이중 데미지 방지
-            
+
+            if (UseAnimator) {
+                ProjectileAnimator.ResetTrigger("DoHit");
+                ProjectileAnimator.SetBool("IsDestructEnd", false);
+            }
+
             // ProjectileVisualData data = new ProjectileVisualData {
             //     ShaderUnderbarColor = ParticleMaterial.GetColor("_Color"),
             //     ShaderUnderbarColorPower = ParticleMaterial.GetFloat("_ColorPower"),
@@ -525,6 +532,8 @@ namespace Sophia.Instantiates
         public void DeActivate()
         {
             if (!IsInitialized) { return; }
+            if (IsHit) return;
+
             if (UseAnimator) {
                 StartCoroutine(StartDestruct());
             } else {
@@ -562,6 +571,7 @@ namespace Sophia.Instantiates
         }
         
         private void OnParticleSystemStopped() {
+            Debug.Log("OnParticleSystemStopped");
             DeActivate();
         }
 
@@ -572,7 +582,9 @@ namespace Sophia.Instantiates
             if (entity.TryGetComponent<Entity>(out Entity targetEntity))
             {
                 if(targetEntity.GetDamaged(CurrentProjectileDamage)) {
+                    IsHit = true;
                     _carrierCollider.enabled = false;  // 이중 데미지 방지
+                    _carrierRigidBody.velocity = Vector3.zero;
 
                     OwnerRef.GetExtras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.ConveyAffect)?.PerformStartFunctionals(ref targetEntity);
                     GetExtrasWithProjectileInstantiatedType(ref targetEntity);
@@ -642,6 +654,7 @@ namespace Sophia.Instantiates
 
         IEnumerator StartDestruct()
         {
+            _carrierCollider.enabled = false;  // 이중 데미지 방지
             ProjectileAnimator.SetTrigger("DoHit");
             while (!ProjectileAnimator.GetBool("IsDestructEnd"))
                 yield return null;
