@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Pool;
@@ -241,9 +242,6 @@ namespace Sophia.Instantiates
         public      ParticleSystem.TriggerModule    ParticleTriggerModule;
         public      ParticleSystem.CollisionModule  ParticleColliderModule;
         // public      ParticleSystemRenderer          ParticleRendererModule;
-
-        bool IsHit = false;
-        float ElapsedTime = 0f;
 
 #endregion
 
@@ -525,20 +523,16 @@ namespace Sophia.Instantiates
             OnActivated?.Invoke();
             IsActivated = true;
             if(_audioSource != null ) _audioSource.Play();
-            if(_DeactivateForce == true) { Invoke("DeActivate", CurrentDurateTime); }
-            return;
+            if (UseAnimator)
+                StartCoroutine(WaitForDurateTime(CurrentDurateTime));
+            if (_DeactivateForce == true)
+                Invoke("DeActivate", CurrentDurateTime);
         }
 
         public void DeActivate()
         {
             if (!IsInitialized) { return; }
-            if (IsHit) return;
-
-            if (UseAnimator) {
-                StartCoroutine(StartDestruct());
-            } else {
-                poolRefer.Release(this);
-            }
+            poolRefer.Release(this);
         }
 
 #endregion
@@ -582,23 +576,21 @@ namespace Sophia.Instantiates
             if (entity.TryGetComponent<Entity>(out Entity targetEntity))
             {
                 if(targetEntity.GetDamaged(CurrentProjectileDamage)) {
-                    IsHit = true;
                     _carrierCollider.enabled = false;  // 이중 데미지 방지
                     _carrierRigidBody.velocity = Vector3.zero;
-
-                    OwnerRef.GetExtras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.ConveyAffect)?.PerformStartFunctionals(ref targetEntity);
-                    GetExtrasWithProjectileInstantiatedType(ref targetEntity);
 
                     if (UseAnimator) {
                         StartCoroutine(StartDestruct());
                     }
+
+                    OwnerRef.GetExtras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.ConveyAffect)?.PerformStartFunctionals(ref targetEntity);
+                    GetExtrasWithProjectileInstantiatedType(ref targetEntity);
 
                     //VisualFXObject visualFX = VisualFXObjectPool.GetObject(CurrnetProjectileVisualData.HitEffect).Init();
                     VisualFXObject visualFX = VisualFXObjectPool.GetObject(_hitEffect).Init();
                     targetEntity.GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
 
                     OnProjectileTriggerd.Invoke();
-
                 }
             }
         }
@@ -650,6 +642,12 @@ namespace Sophia.Instantiates
             if(!IsMoveStoped) {
                 OnProjectileForwarding?.Invoke();
             }
+        }
+
+        IEnumerator WaitForDurateTime(float cCurrentDurateTime)
+        {
+            yield return new WaitForSeconds(cCurrentDurateTime);
+            StartCoroutine(StartDestruct());
         }
 
         IEnumerator StartDestruct()
