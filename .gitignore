@@ -85,8 +85,15 @@ Assets/Feel/*
 Assets/Pixel\ Crushers/*
 Assets/Editor\ Default\ Resources/*
 Assets/Gizmos/*
+
 # Ignore Vscode
 .vscode/
+
+# Ignore JetBrains Rider
+.idea
+
+# Ignore Desktop Services Store (macOS file format)
+.DS_Store
 
 # End of https://www.toptal.com/developers/gitignore/api/unity
 
