@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using AYellowpaper.SerializedCollections;
+using System.Runtime.CompilerServices;
 
 namespace Sophia
 {
@@ -18,6 +19,8 @@ namespace Sophia
         static public bool canNextAttack = true;    //공격 중 다음 공격 가능 여부 (콤보)
         static public bool canExitAttack = true; // 공격 중 탈출 가능 여부
         static public bool attackProTime = false;
+        public float attackSpeedWeight = 0f;    //공격 애니메이션 속도 가중치
+        float attackAnimSpeed;  // 공격 애니메이션 속도
 
         private void OnEnable()
         {
@@ -45,15 +48,19 @@ namespace Sophia
 
         void AttackStart() // 공격 시작 시점
         {
-            animator.ResetTrigger("DoAttack");
+            //DoAttack 선입력 해제
+            if (animator.GetFloat("attackAnimSpeed") <= 1.5f)
+            {
+                animator.ResetTrigger("DoAttack");
+            }
             animator.SetFloat("Move", 0);
+            isAttack = true;
+            animator.SetBool("isAttack", true);
 
             canExitAttack = false;
             animator.SetBool("canExitAttack", false);
             canNextAttack = false;
             animator.SetBool("canNextAttack", false);
-            isAttack = true;
-            animator.SetBool("isAttack", true);
         }
 
         void AttackEnd() // 공격 종료 시점
@@ -64,10 +71,10 @@ namespace Sophia
 
         void NextAttack()
         {
-            canExitAttack = false;
-            animator.SetBool("canExitAttack", false);
             canNextAttack = true;
             animator.SetBool("canNextAttack", true);
+            canExitAttack = false;
+            animator.SetBool("canExitAttack", false);
         }
 
         void ExitAttack() // 공격 애니메이션 중 이동 입력 시 탈출
@@ -80,6 +87,7 @@ namespace Sophia
 
         void ResetIdle() // idle 상태 돌입 시 변수 초기화
         {
+            animator.SetFloat("attackAnimSpeed", attackAnimSpeed);
             animator.ResetTrigger("DoAttack");
             canNextAttack = true;
             animator.SetBool("canNextAttack", true);
@@ -109,6 +117,10 @@ namespace Sophia
 
             isAttack = false;
             animator.SetBool("isAttack", false);
+        }
+
+        private void Update() {
+            attackAnimSpeed = weapon.CurrentRatioAttackSpeed + attackSpeedWeight;
         }
     }
 

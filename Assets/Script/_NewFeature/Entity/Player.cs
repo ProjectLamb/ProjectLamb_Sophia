@@ -14,6 +14,7 @@ namespace Sophia.Entitys
     using Sophia.DataSystem.Referer;
     using Sophia.DataSystem.Modifiers;
     using Sophia.UserInterface;
+    using Sophia.Composite.RenderModels;
 
     public class Player : Entity, IMovementAccessible, IAffectManagerAccessible, IInstantiatorAccessible
     {
@@ -130,6 +131,8 @@ namespace Sophia.Entitys
 
         public override bool Die()
         {
+            entityCollider.enabled = false;
+            _modelManager.GetAnimator().SetTrigger("Die");
             throw new System.NotImplementedException();
         }
 

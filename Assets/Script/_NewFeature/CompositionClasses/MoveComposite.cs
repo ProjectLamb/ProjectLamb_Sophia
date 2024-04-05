@@ -124,8 +124,8 @@ namespace Sophia.Composite
             {
                 LastTouchedPointer = groundHit.point - transform.position;
                 LastTouchedPointer.y = 0f;
-                this.RbRef.MoveRotation(Quaternion.LookRotation(LastTouchedPointer));
-                //this.RbRef.transform.DOLookAt(LastTouchedPointer, 0.1f);
+                //this.RbRef.MoveRotation(Quaternion.LookRotation(LastTouchedPointer));
+                RbRef.DORotate(Quaternion.LookRotation(LastTouchedPointer).eulerAngles, 0.1f);
             }
             await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);
         }
@@ -138,8 +138,8 @@ namespace Sophia.Composite
             {
                 LastTouchedPointer = groundHit.point - transform.position;
                 LastTouchedPointer.y = 0f;
-                this.RbRef.MoveRotation(Quaternion.LookRotation(LastTouchedPointer));
-                //RbRef.DOLookAt(LastTouchedPointer, 0.1f);
+                //this.RbRef.MoveRotation(Quaternion.LookRotation(LastTouchedPointer));
+                RbRef.DORotate(Quaternion.LookRotation(LastTouchedPointer).eulerAngles, 0.1f);
             }
             await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);
             action.Invoke();
