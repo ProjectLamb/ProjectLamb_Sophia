@@ -174,10 +174,10 @@ namespace Sophia.Entitys
 
         void InitAnimParamList()
         {
-            for (int i = 0; i < GetModelManger().GetAnimator().parameterCount; i++)
+            for (int i = 0; i < GetModelManager().GetAnimator().parameterCount; i++)
             {
-                AnimatorControllerParameter acp = GetModelManger().GetAnimator().GetParameter(i);
-                switch (GetModelManger().GetAnimator().GetParameter(i).type)
+                AnimatorControllerParameter acp = GetModelManager().GetAnimator().GetParameter(i);
+                switch (GetModelManager().GetAnimator().GetParameter(i).type)
                 {
                     case AnimatorControllerParameterType.Bool:
                         animBoolParamList.Add(acp.name);
@@ -194,18 +194,18 @@ namespace Sophia.Entitys
         void ResetAnimParam()
         {
             foreach (string b in animBoolParamList)
-                GetModelManger().GetAnimator().SetBool(b, false);
+                GetModelManager().GetAnimator().SetBool(b, false);
             foreach (string t in animTriggerParamList)
-                GetModelManger().GetAnimator().ResetTrigger(t);
+                GetModelManager().GetAnimator().ResetTrigger(t);
         }
 
         void DoAttack()
         {
             if (isFirstAttack) {
-                GetModelManger().GetAnimator().SetTrigger("DoFirstAttack1");
+                GetModelManager().GetAnimator().SetTrigger("DoFirstAttack1");
                 isFirstAttack = false;
             } else {
-                GetModelManger().GetAnimator().SetTrigger("DoAttack1");
+                GetModelManager().GetAnimator().SetTrigger("DoAttack1");
             }
         }
 
@@ -426,7 +426,7 @@ namespace Sophia.Entitys
 
         void Attack_Update()
         {
-            if (GetModelManger().GetAnimator().GetBool("IsAttackEnd"))
+            if (GetModelManager().GetAnimator().GetBool("IsAttackEnd"))
             {
                 fsm.ChangeState(States.Idle);
             }

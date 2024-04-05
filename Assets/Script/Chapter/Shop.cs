@@ -5,6 +5,8 @@ using UnityEngine.Events;
 using Cysharp.Threading.Tasks;
 using System;
 using Sophia_Carriers;
+using Sophia.Instantiates;
+using Sophia;
 public class Shop : MonoBehaviour
 {
     public GameObject equipmentPivot;
@@ -33,13 +35,13 @@ public class Shop : MonoBehaviour
     private int equipmentPrice = 25;
     private int heartPrice = 10;
     private int skillPrice = 50;
-    public Carrier[] ItemArray;
+    public ItemObject[] ItemArray;
 
     private UnityAction<int> instantiateItemEvent;
 
     void Awake()
     {
-        ItemArray = new Carrier[3];
+        ItemArray = new ItemObject[3];
         vendingMachine.GetComponent<VendingMachine>().price = 10;
         //rerollMachine.GetComponent<RerollMachine>().price = 5;
     }
@@ -73,7 +75,7 @@ public class Shop : MonoBehaviour
         }
         else
         {
-            // InstantiateItemById(_id);
+            //InstantiateItemById(id);
             instantiateItemEvent.Invoke(id);
         }
     }
@@ -82,63 +84,81 @@ public class Shop : MonoBehaviour
 
     private void InstantiateItemById(int id)
     {
-        Carrier temp = null;
-        CarrierBucket carrierBucket = null;
+        ItemObject item = null;
+        ItemObjectBucket bucket = null;
+
         if (id == 0 && equipmentCount < 3) //equipment
         {
-            //temp = GameManager.Instance.GlobalCarrierManager.GetRandomItem("Equipment").Clone();
-            temp.Init(GameManager.Instance.PlayerGameObject.GetComponent<Player>());
+            // //temp = GameManager.Instance.GlobalCarrierManager.GetRandomItem("Equipment").Clone();
+            // temp.Init(GameManager.Instance.PlayerGameObject.GetComponent<Player>());
 
-            temp.gameObject.AddComponent<PurchaseComponent>();
-            temp.GetComponent<PurchaseComponent>().price = equipmentPrice + equipmentCount * 5;
+            // temp.gameObject.AddComponent<PurchaseComponent>();
+            // temp.GetComponent<PurchaseComponent>().price = equipmentPrice + equipmentCount * 5;
 
-            temp.GetComponent<PurchaseComponent>().OnPurchasedEvent += () => { this.EquipmentCount++; };
-            temp.GetComponent<PurchaseComponent>().OnPurchasedEvent += () => { this.InstantiateOnDelayItemByFlag(0, 1); };
-            temp.GetComponent<PurchaseComponent>().OnPurchasedDenyEvent += () =>
-            {
-                //GameManger.Instance.GlobalEvent.UI.PurchasedDeny();
-            };
+            // temp.GetComponent<PurchaseComponent>().OnPurchasedEvent += () => { this.EquipmentCount++; };
+            // temp.GetComponent<PurchaseComponent>().OnPurchasedEvent += () => { this.InstantiateOnDelayItemByFlag(0, 1); };
+            // temp.GetComponent<PurchaseComponent>().OnPurchasedDenyEvent += () =>
+            // {
+            //     //GameManger.Instance.GlobalEvent.UI.PurchasedDeny();
+            // };
+            //bucket = equipmentPivot.GetComponent<CarrierBucket>();
 
-            carrierBucket = equipmentPivot.GetComponent<CarrierBucket>();
-            ItemArray[0] = temp;
+            System.Random random = new System.Random();
+
+            item = ItemPool.Instance._equipmentItems[random.Next(0, ItemPool.Instance._equipmentItems.Count)];
+            bucket = equipmentPivot.GetComponent<ItemObjectBucket>();
+            item = bucket.InstantablePositioning(Instantiate(item));
+            ItemArray[0] = item;
+            item.Init();
         }
         else if (id == 1)   //skill
         {
-            //temp = GameManager.Instance.GlobalCarrierManager.GetRandomItem("Skill").Clone();
-            temp.Init(GameManager.Instance.PlayerGameObject.GetComponent<Player>());
-            temp.gameObject.AddComponent<PurchaseComponent>();
-            temp.GetComponent<PurchaseComponent>().price = skillPrice;
+            // //temp = GameManager.Instance.GlobalCarrierManager.GetRandomItem("Skill").Clone();
+            // item.Init(GameManager.Instance.PlayerGameObject.GetComponent<Player>());
+            // item.gameObject.AddComponent<PurchaseComponent>();
+            // item.GetComponent<PurchaseComponent>().price = skillPrice;
 
-            temp.GetComponent<PurchaseComponent>().OnPurchasedEvent += () => { this.SkillCount++; };
-            //temp.GetComponent<PurchaseComponent>().OnPurchasedEvent += () => {this.InstantiateOnDelayItemByFlag(1, 1);};
-            temp.GetComponent<PurchaseComponent>().OnPurchasedDenyEvent += () =>
-            {
-                //GameManger.Instance.GlobalEvent.UI.PurchasedDeny();
-            };
+            // item.GetComponent<PurchaseComponent>().OnPurchasedEvent += () => { this.SkillCount++; };
+            // //temp.GetComponent<PurchaseComponent>().OnPurchasedEvent += () => {this.InstantiateOnDelayItemByFlag(1, 1);};
+            // item.GetComponent<PurchaseComponent>().OnPurchasedDenyEvent += () =>
+            // {
+            //     //GameManger.Instance.GlobalEvent.UI.PurchasedDeny();
+            // };
 
-            carrierBucket = skillPivot.GetComponent<CarrierBucket>();
-            ItemArray[1] = temp;
+            // bucket = skillPivot.GetComponent<CarrierBucket>();
+
+            System.Random random = new System.Random();
+
+            item = ItemPool.Instance._skillItems[random.Next(0, ItemPool.Instance._skillItems.Count)];
+            bucket = skillPivot.GetComponent<ItemObjectBucket>();
+            item = bucket.InstantablePositioning(Instantiate(item));
+            ItemArray[1] = item;
+            item.Init();
         }
         else if (id == 2)   //heart
         {
-            //temp = GameManager.Instance.GlobalCarrierManager.itemHeart.Clone();
-            temp.InitByObject(null, new object[] { 30 });
+            // //temp = GameManager.Instance.GlobalCarrierManager.itemHeart.Clone();
+            // item.InitByObject(null, new object[] { 30 });
 
-            temp.gameObject.AddComponent<PurchaseComponent>();
-            temp.GetComponent<PurchaseComponent>().price = heartPrice + heartCount * 5;
+            // item.gameObject.AddComponent<PurchaseComponent>();
+            // item.GetComponent<PurchaseComponent>().price = heartPrice + heartCount * 5;
 
-            temp.GetComponent<PurchaseComponent>().OnPurchasedEvent += () => { this.InstantiateOnDelayItemByFlag(2, 1); };
-            temp.GetComponent<PurchaseComponent>().OnPurchasedEvent += () => { this.HeartCount++; };
-            temp.GetComponent<PurchaseComponent>().OnPurchasedDenyEvent += () =>
-            {
-                //GameManger.Instance.GlobalEvent.UI.PurchasedDeny();
-            };
+            // item.GetComponent<PurchaseComponent>().OnPurchasedEvent += () => { this.InstantiateOnDelayItemByFlag(2, 1); };
+            // item.GetComponent<PurchaseComponent>().OnPurchasedEvent += () => { this.HeartCount++; };
+            // item.GetComponent<PurchaseComponent>().OnPurchasedDenyEvent += () =>
+            // {
+            //     //GameManger.Instance.GlobalEvent.UI.PurchasedDeny();
+            // };
 
-            carrierBucket = heartPivot.GetComponent<CarrierBucket>();
-            ItemArray[2] = temp;
+            // bucket = heartPivot.GetComponent<CarrierBucket>();
+            item = ItemPool.Instance._healthItem;
+            bucket = heartPivot.GetComponent<ItemObjectBucket>();
+            item = bucket.InstantablePositioning(Instantiate(item));
+            ItemArray[2] = item;
+            item.Init();
         }
-        carrierBucket.CarrierTransformPositionning(gameObject, temp);
-        temp.transform.parent = transform;
+        item.Activate();
+        item.transform.parent = transform;
     }
 
     public async UniTaskVoid AsyncWaitUse(float _waitSecondTime, int _id, UnityAction<int> instantiateItemEvent)

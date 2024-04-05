@@ -14,8 +14,8 @@ namespace Sophia.DataSystem.Atomics
             prevLayer = gameObjectRef.layer;
             changeLayer = layerMask.value;
         }
-        public void Invoke(IVisualAccessible modelAccessible) => modelAccessible.GetModelManger().GetModelObject().layer = changeLayer;
-        public void Revert(IVisualAccessible modelAccessible) => modelAccessible.GetModelManger().GetModelObject().layer = prevLayer;
+        public void Invoke(IVisualAccessible modelAccessible) => modelAccessible.GetModelManager().GetModelObject().layer = changeLayer;
+        public void Revert(IVisualAccessible modelAccessible) => modelAccessible.GetModelManager().GetModelObject().layer = prevLayer;
     }
 
     public class VisualFXAtomics {

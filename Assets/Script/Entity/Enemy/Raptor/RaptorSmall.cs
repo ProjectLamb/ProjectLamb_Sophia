@@ -71,7 +71,7 @@ namespace Sophia.Entitys
 
         void DoRush()
         {
-            GetModelManger().GetAnimator().SetTrigger("DoRush");
+            GetModelManager().GetAnimator().SetTrigger("DoRush");
         }
 
         #region FSM Functions
@@ -148,7 +148,7 @@ namespace Sophia.Entitys
         {
             if (IsWandering)
             {
-                this.GetModelManger().GetAnimator().SetBool("IsWalk", true);
+                this.GetModelManager().GetAnimator().SetBool("IsWalk", true);
                 transform.DOLookAt(wanderPosition, TurnSpeed);
                 _nav.SetDestination(wanderPosition);
             }
@@ -157,14 +157,14 @@ namespace Sophia.Entitys
         void Wander_Exit()
         {
             IsWandering = false;
-            this.GetModelManger().GetAnimator().SetBool("IsWalk", false);
+            this.GetModelManager().GetAnimator().SetBool("IsWalk", false);
         }
 
         /**Chase State*/
         void Chase_Enter()
         {
             Debug.Log("Chase_Enter");
-            this.GetModelManger().GetAnimator().SetBool("IsWalk", true);
+            this.GetModelManager().GetAnimator().SetBool("IsWalk", true);
             _audioSources[(int)E_RAPTOR_AUDIO_INDEX.Found].Play();
             SetMoveState(true);
         }
@@ -191,7 +191,7 @@ namespace Sophia.Entitys
 
         void Chase_Exit()
         {
-            this.GetModelManger().GetAnimator().SetBool("IsWalk", false);
+            this.GetModelManager().GetAnimator().SetBool("IsWalk", false);
         }
 
         /**Attack State*/
@@ -207,7 +207,7 @@ namespace Sophia.Entitys
 
         void Attack_Update()
         {
-            if (this.GetModelManger().GetAnimator().GetBool("IsAttackEnd"))
+            if (this.GetModelManager().GetAnimator().GetBool("IsAttackEnd"))
             {
                 fsm.ChangeState(States.Idle);
             }
@@ -215,7 +215,7 @@ namespace Sophia.Entitys
 
         void Attack_Exit()
         {
-            GetModelManger().GetAnimator().SetBool("IsAttackEnd", false);
+            GetModelManager().GetAnimator().SetBool("IsAttackEnd", false);
             ResetAnimParam();
         }
 
@@ -231,7 +231,7 @@ namespace Sophia.Entitys
 
         void Tap_Update()
         {
-            if (this.GetModelManger().GetAnimator().GetBool("IsTapEnd"))
+            if (this.GetModelManager().GetAnimator().GetBool("IsTapEnd"))
             {
                 fsm.ChangeState(States.Rush);
             }
@@ -244,7 +244,7 @@ namespace Sophia.Entitys
 
         void Tap_Exit()
         {
-            GetModelManger().GetAnimator().SetBool("IsTapEnd", false);
+            GetModelManager().GetAnimator().SetBool("IsTapEnd", false);
             ResetAnimParam();
         }
 
@@ -253,19 +253,19 @@ namespace Sophia.Entitys
         {
             Debug.Log("Rush_Enter");
 
+            SetMoveState(true);
+            entityRigidbody.constraints = RigidbodyConstraints.FreezePositionY;
             rushTimer.ActionStart();
             UseProjectile_DashAttack();
-            entityRigidbody.constraints = RigidbodyConstraints.FreezePositionY;
-            SetMoveState(true);
         }
 
         void Rush_Update()
         {
             if (!IsRush)
             {
-                GetModelManger().GetAnimator().SetTrigger("DoRushQuit");
+                GetModelManager().GetAnimator().SetTrigger("DoRushQuit");
             }
-            if (GetModelManger().GetAnimator().GetBool("IsRushEnd"))
+            if (GetModelManager().GetAnimator().GetBool("IsRushEnd"))
             {
                 fsm.ChangeState(States.Idle);
             }
@@ -285,7 +285,7 @@ namespace Sophia.Entitys
 
         void Rush_Exit()
         {
-            GetModelManger().GetAnimator().SetBool("IsRushEnd", false);
+            GetModelManager().GetAnimator().SetBool("IsRushEnd", false);
             _nav.enabled = false;
             entityRigidbody.drag = originDrag;
             entityRigidbody.velocity = Vector3.zero;

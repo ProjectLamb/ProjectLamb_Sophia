@@ -96,3 +96,6 @@ Assets/Gizmos/*
 .DS_Store
 
 # End of https://www.toptal.com/developers/gitignore/api/unity
+
+# neoskyclad
+fmod_editor.log
