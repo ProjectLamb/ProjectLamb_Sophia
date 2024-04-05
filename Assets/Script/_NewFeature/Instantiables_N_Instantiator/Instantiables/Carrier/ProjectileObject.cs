@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Pool;
@@ -241,7 +243,6 @@ namespace Sophia.Instantiates
         public      ParticleSystem.CollisionModule  ParticleColliderModule;
         // public      ParticleSystemRenderer          ParticleRendererModule;
 
-
 #endregion
 
 #region ObjectPool
@@ -430,7 +431,13 @@ namespace Sophia.Instantiates
             AffectType = _affectType;
             StackingType = _stackingType;
             PositioningType = _positioningType;
-            
+            _carrierCollider.enabled = true;  // 이중 데미지 방지
+
+            if (UseAnimator) {
+                ProjectileAnimator.ResetTrigger("DoHit");
+                ProjectileAnimator.SetBool("IsDestructEnd", false);
+            }
+
             // ProjectileVisualData data = new ProjectileVisualData {
             //     ShaderUnderbarColor = ParticleMaterial.GetColor("_Color"),
             //     ShaderUnderbarColorPower = ParticleMaterial.GetFloat("_ColorPower"),
@@ -516,8 +523,10 @@ namespace Sophia.Instantiates
             OnActivated?.Invoke();
             IsActivated = true;
             if(_audioSource != null ) _audioSource.Play();
-            if(_DeactivateForce == true) { Invoke("DeActivate", CurrentDurateTime); }
-            return;
+            if (UseAnimator)
+                StartCoroutine(WaitForDurateTime(CurrentDurateTime));
+            if (_DeactivateForce == true)
+                Invoke("DeActivate", CurrentDurateTime);
         }
 
         public void DeActivate()
@@ -556,6 +565,7 @@ namespace Sophia.Instantiates
         }
         
         private void OnParticleSystemStopped() {
+            Debug.Log("OnParticleSystemStopped");
             DeActivate();
         }
 
@@ -566,11 +576,15 @@ namespace Sophia.Instantiates
             if (entity.TryGetComponent<Entity>(out Entity targetEntity))
             {
                 if(targetEntity.GetDamaged(CurrentProjectileDamage)) {
+                    _carrierCollider.enabled = false;  // 이중 데미지 방지
+                    _carrierRigidBody.velocity = Vector3.zero;
+
+                    if (UseAnimator) {
+                        StartCoroutine(StartDestruct());
+                    }
+
                     OwnerRef.GetExtras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.ConveyAffect)?.PerformStartFunctionals(ref targetEntity);
                     GetExtrasWithProjectileInstantiatedType(ref targetEntity);
-
-                    if (UseAnimator)
-                        ProjectileAnimator.SetTrigger("DoHit");
 
                     //VisualFXObject visualFX = VisualFXObjectPool.GetObject(CurrnetProjectileVisualData.HitEffect).Init();
                     VisualFXObject visualFX = VisualFXObjectPool.GetObject(_hitEffect).Init();
@@ -589,8 +603,9 @@ namespace Sophia.Instantiates
                 if(_serialProjectileIntervalData._isIntervalDamage && targetEntity.GetDamaged(CurrentProjectileDamage)) {
                     if(_serialProjectileIntervalData._isIntervalExtrasConvey) OwnerRef.GetExtras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.ConveyAffect)?.PerformStartFunctionals(ref targetEntity);
 
-                    if (UseAnimator)
-                        ProjectileAnimator.SetTrigger("DoHit");
+                    if (UseAnimator) {
+                        // StartCoroutine(StartDestruct());
+                    }
 
                     //VisualFXObject visualFX = VisualFXObjectPool.GetObject(CurrnetProjectileVisualData.HitEffect).Init();
                     VisualFXObject visualFX = VisualFXObjectPool.GetObject(_hitEffect).Init();
@@ -627,6 +642,21 @@ namespace Sophia.Instantiates
             if(!IsMoveStoped) {
                 OnProjectileForwarding?.Invoke();
             }
+        }
+
+        IEnumerator WaitForDurateTime(float cCurrentDurateTime)
+        {
+            yield return new WaitForSeconds(cCurrentDurateTime);
+            StartCoroutine(StartDestruct());
+        }
+
+        IEnumerator StartDestruct()
+        {
+            _carrierCollider.enabled = false;  // 이중 데미지 방지
+            ProjectileAnimator.SetTrigger("DoHit");
+            while (!ProjectileAnimator.GetBool("IsDestructEnd"))
+                yield return null;
+            poolRefer.Release(this);
         }
 
 #region Helper
