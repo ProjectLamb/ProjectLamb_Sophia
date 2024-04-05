@@ -83,18 +83,23 @@ public class Minimap : MonoBehaviour
         imgList[imgDic[depart]].transform.GetChild(1).gameObject.SetActive(false);
         if (GameManager.Instance.ChapterGenerator.GetComponent<ChapterGenerator>().stage[depart].Discovered)
         {
-            if(GameManager.Instance.ChapterGenerator.GetComponent<ChapterGenerator>().stage[depart].Type == "hidden")
-            {
-                imgList[imgDic[depart]].GetComponent<Image>().transform.GetChild(0).GetComponent<Image>().color = Color.magenta;
-            }
+            // if(GameManager.Instance.ChapterGenerator.GetComponent<ChapterGenerator>().stage[depart].Type == "hidden")
+            // {
+            //     imgList[imgDic[depart]].GetComponent<Image>().transform.GetChild(0).GetComponent<Image>().color = Color.magenta;
+            // }
             Color departColor = imgList[imgDic[depart]].GetComponent<Image>().transform.GetChild(0).GetComponent<Image>().color;
             departColor.a = 0.7f;
             imgList[imgDic[depart]].GetComponent<Image>().transform.GetChild(0).GetComponent<Image>().color = departColor;
         }
         imgList[imgDic[arrive]].transform.GetChild(1).gameObject.SetActive(true);
         Color arriveColor = imgList[imgDic[arrive]].gameObject.GetComponent<Image>().transform.GetChild(0).GetComponent<Image>().color;
+        if (GameManager.Instance.ChapterGenerator.GetComponent<ChapterGenerator>().stage[arrive].Type == "hidden")
+        {
+            arriveColor = Color.magenta;
+        }
         arriveColor.a = 1;
         imgList[imgDic[arrive]].gameObject.GetComponent<Image>().transform.GetChild(0).GetComponent<Image>().color = arriveColor;
+
         if (!BlackSheepWall)
         {
             if (map.GetComponent<ChapterGenerator>().stage[arrive].East != null)

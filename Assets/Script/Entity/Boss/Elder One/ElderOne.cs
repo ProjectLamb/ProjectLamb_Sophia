@@ -23,6 +23,7 @@ namespace Sophia.Entitys
         private int turnSpeed = 2;
         private bool isPhaseChanged = false;
         private bool IsMovable;
+        [SerializeField]
         private bool IsInvincible;
         private NavMeshAgent nav;
 
@@ -43,11 +44,11 @@ namespace Sophia.Entitys
         {
             base.Awake();
 
+            Life = new LifeComposite(_baseEntityData.MaxHp, _baseEntityData.Defence);
+            recognize = new RecognizeEntityComposite(this.gameObject, this._fOVData);
+
             power = new Stat(_baseEntityData.Power, E_NUMERIC_STAT_TYPE.Power, E_STAT_USE_TYPE.Natural, () => { Debug.Log("공격력 수치 변경"); });
             moveSpeed = new Stat(_baseEntityData.MoveSpeed, E_NUMERIC_STAT_TYPE.MoveSpeed, E_STAT_USE_TYPE.Natural, () => { Debug.Log("이동속도 수치 변경"); });
-
-            recognize = new RecognizeEntityComposite(this.gameObject, this._fOVData);
-            Life = new LifeComposite(_baseEntityData.MaxHp, _baseEntityData.Defence);
 
             _affectorManager.Init(_baseEntityData.Tenacity);
 
@@ -86,10 +87,10 @@ namespace Sophia.Entitys
 
         void InitAnimParamList()
         {
-            for (int i = 0; i < this.GetModelManger().GetAnimator().parameterCount; i++)
+            for (int i = 0; i < this.GetModelManager().GetAnimator().parameterCount; i++)
             {
-                AnimatorControllerParameter acp = this.GetModelManger().GetAnimator().GetParameter(i);
-                switch (this.GetModelManger().GetAnimator().GetParameter(i).type)
+                AnimatorControllerParameter acp = this.GetModelManager().GetAnimator().GetParameter(i);
+                switch (this.GetModelManager().GetAnimator().GetParameter(i).type)
                 {
                     case AnimatorControllerParameterType.Bool:
                         animBoolParamList.Add(acp.name);
@@ -106,9 +107,9 @@ namespace Sophia.Entitys
         void ResetAnimParam()
         {
             foreach (string b in animBoolParamList)
-                this.GetModelManger().GetAnimator().SetBool(b, false);
+                this.GetModelManager().GetAnimator().SetBool(b, false);
             foreach (string t in animTriggerParamList)
-                this.GetModelManger().GetAnimator().ResetTrigger(t);
+                this.GetModelManager().GetAnimator().ResetTrigger(t);
         }
 
         void SetNavMeshData()
@@ -134,16 +135,16 @@ namespace Sophia.Entitys
             switch (random)
             {
                 case 0:
-                    this.GetModelManger().GetAnimator().ResetTrigger(animTriggerParamList[0]);
-                    this.GetModelManger().GetAnimator().ResetTrigger(animTriggerParamList[1]);
+                    this.GetModelManager().GetAnimator().ResetTrigger(animTriggerParamList[0]);
+                    this.GetModelManager().GetAnimator().ResetTrigger(animTriggerParamList[1]);
                     break;
                 case 1:
-                    this.GetModelManger().GetAnimator().ResetTrigger(animTriggerParamList[1]);
-                    this.GetModelManger().GetAnimator().SetTrigger(animTriggerParamList[0]);
+                    this.GetModelManager().GetAnimator().ResetTrigger(animTriggerParamList[1]);
+                    this.GetModelManager().GetAnimator().SetTrigger(animTriggerParamList[0]);
                     break;
                 case 2:
-                    this.GetModelManger().GetAnimator().ResetTrigger(animTriggerParamList[0]);
-                    this.GetModelManger().GetAnimator().SetTrigger(animTriggerParamList[1]);
+                    this.GetModelManager().GetAnimator().ResetTrigger(animTriggerParamList[0]);
+                    this.GetModelManager().GetAnimator().SetTrigger(animTriggerParamList[1]);
                     break;
                 default:
                     ResetAnimParam();
@@ -154,7 +155,7 @@ namespace Sophia.Entitys
         void DoAttack(int phase)
         {
             for (int i = 2; i <= 5; i++)
-                this.GetModelManger().GetAnimator().ResetTrigger(animTriggerParamList[i]);
+                this.GetModelManager().GetAnimator().ResetTrigger(animTriggerParamList[i]);
 
             if (phase == 1)
             {
@@ -162,19 +163,19 @@ namespace Sophia.Entitys
                 switch (random)
                 {
                     case 0:
-                        this.GetModelManger().GetAnimator().SetTrigger(animTriggerParamList[2]);
+                        this.GetModelManager().GetAnimator().SetTrigger(animTriggerParamList[2]);
                         break;
                     case 1:
-                        this.GetModelManger().GetAnimator().SetTrigger(animTriggerParamList[3]);
+                        this.GetModelManager().GetAnimator().SetTrigger(animTriggerParamList[3]);
                         break;
                     case 2:
-                        this.GetModelManger().GetAnimator().SetTrigger(animTriggerParamList[4]);
+                        this.GetModelManager().GetAnimator().SetTrigger(animTriggerParamList[4]);
                         break;
                 }
             }
             else if (phase == 2)
             {
-                this.GetModelManger().GetAnimator().SetTrigger(animTriggerParamList[5]);
+                this.GetModelManager().GetAnimator().SetTrigger(animTriggerParamList[5]);
             }
             else
             {
@@ -185,22 +186,22 @@ namespace Sophia.Entitys
         void DoSkill(int phase)
         {
             for (int i = 2; i < animTriggerParamList.Count; i++)
-                this.GetModelManger().GetAnimator().ResetTrigger(animTriggerParamList[i]);
+                this.GetModelManager().GetAnimator().ResetTrigger(animTriggerParamList[i]);
 
             if (phase == 1)
             {
-                this.GetModelManger().GetAnimator().SetTrigger(animTriggerParamList[6]);
+                this.GetModelManager().GetAnimator().SetTrigger(animTriggerParamList[6]);
             }
             else if (phase == 2)
             {
-                if (this.GetModelManger().GetAnimator().GetInteger("phaseSkill") % 2 == 0)
+                if (this.GetModelManager().GetAnimator().GetInteger("phaseSkill") % 2 == 0)
                 {
-                    this.GetModelManger().GetAnimator().SetTrigger(animTriggerParamList[7]);
+                    this.GetModelManager().GetAnimator().SetTrigger(animTriggerParamList[7]);
                 }
                 else
                 {
                     IsInvincible = true;
-                    this.GetModelManger().GetAnimator().SetTrigger(animTriggerParamList[8]);
+                    this.GetModelManager().GetAnimator().SetTrigger(animTriggerParamList[8]);
                 }
             }
         }
@@ -278,7 +279,7 @@ namespace Sophia.Entitys
         void Move_Enter()
         {
             Debug.Log("Move_Enter");
-            this.GetModelManger().GetAnimator().SetBool("IsWalk", true);
+            this.GetModelManager().GetAnimator().SetBool("IsWalk", true);
             SetMoveState(true);
         }
 
@@ -319,7 +320,7 @@ namespace Sophia.Entitys
         }
         void Move_Exit()
         {
-            this.GetModelManger().GetAnimator().SetBool("IsWalk", false);
+            this.GetModelManager().GetAnimator().SetBool("IsWalk", false);
         }
 
         /** Attack State */
@@ -327,7 +328,7 @@ namespace Sophia.Entitys
         {
             Debug.Log("Attack_Enter");
             //Skill
-            if (this.GetModelManger().GetAnimator().GetInteger("attackCount") == attackCount)
+            if (this.GetModelManager().GetAnimator().GetInteger("attackCount") == attackCount)
                 DoSkill(phase);
             //Normal Attack
             else
@@ -340,9 +341,9 @@ namespace Sophia.Entitys
 
         void Attack_Update()
         {
-            if (this.GetModelManger().GetAnimator().GetBool("IsAttackEnd"))
+            if (this.GetModelManager().GetAnimator().GetBool("IsAttackEnd"))
             {
-                if (this.GetModelManger().GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("skill"))
+                if (this.GetModelManager().GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("skill"))
                     fsm.ChangeState(States.Skill);
                 else
                     fsm.ChangeState(States.Idle);
@@ -351,13 +352,14 @@ namespace Sophia.Entitys
 
         void Attack_End()
         {
-            this.GetModelManger().GetAnimator().SetBool("IsAttackEnd", false);
+            this.GetModelManager().GetAnimator().SetBool("IsAttackEnd", false);
         }
 
         void Skill_Enter()
         {
             Debug.Log("Skill_Enter");
-            if (!this.GetModelManger().GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("walk"))
+            IsInvincible = false;
+            if (!this.GetModelManager().GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("walk"))
             {
                 SetMoveState(false);
                 transform.DOKill();
@@ -367,7 +369,7 @@ namespace Sophia.Entitys
 
         void Skill_FixedUpdate()
         {
-            if (this.GetModelManger().GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("walk"))
+            if (this.GetModelManager().GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("walk"))
             {
                 transform.DOLookAt(_objectiveEntity.transform.position, turnSpeed);
                 nav.SetDestination(_objectiveEntity.transform.position);
@@ -376,10 +378,9 @@ namespace Sophia.Entitys
 
         void Skill_Update()
         {
-            if (this.GetModelManger().GetAnimator().GetBool("IsSkillEnd"))
+            if (this.GetModelManager().GetAnimator().GetBool("IsSkillEnd"))
             {
-                IsInvincible = false;
-                if (this.GetModelManger().GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("walk"))
+                if (this.GetModelManager().GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("walk"))
                     fsm.ChangeState(States.Skill);
                 else
                     fsm.ChangeState(States.Idle);
@@ -388,7 +389,7 @@ namespace Sophia.Entitys
 
         void Skill_Exit()
         {
-            this.GetModelManger().GetAnimator().SetBool("IsSkillEnd", false);
+            this.GetModelManager().GetAnimator().SetBool("IsSkillEnd", false);
         }
 
         /** Death State */
@@ -409,11 +410,12 @@ namespace Sophia.Entitys
 
             if (IsInvincible) return isDamaged;
 
-            if (Life.IsDie) { isDamaged = false; }
-            else
-            {
-                if (isDamaged = Life.Damaged(damage)) { GameManager.Instance.GlobalEvent.OnEnemyHitEvent.ForEach(Event => Event.Invoke()); }
-            }
+            // if (Life.IsDie) { isDamaged = false; }
+            // else
+            // {
+            //     if (isDamaged = Life.Damaged(damage)) { GameManager.Instance.GlobalEvent.OnEnemyHitEvent.ForEach(Event => Event.Invoke()); }
+            // }
+            if (isDamaged = Life.Damaged(damage)) { GameManager.Instance.GlobalEvent.OnEnemyHitEvent.ForEach(Event => Event.Invoke()); }
             if (Life.IsDie) { fsm.ChangeState(States.Death); }
             return isDamaged;
         }
@@ -435,9 +437,9 @@ namespace Sophia.Entitys
 
         public void SetMoveState(bool movableState)
         {
+            nav.enabled = true;
+
             IsMovable = movableState;
-            if(movableState)
-                nav.enabled = true;
             nav.isStopped = !movableState;
             if (!movableState)
             {

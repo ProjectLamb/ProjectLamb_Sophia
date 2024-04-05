@@ -22,7 +22,7 @@ namespace Sophia
         private void OnEnable()
         {
             weapon = (Instantiates.Weapon)player.GetWeaponManager().GetCurrentWeapon();
-            animator = player.GetModelManger().GetAnimator();
+            animator = player.GetModelManager().GetAnimator();
             IdleStart();
         }
         void AttackProjectile1()

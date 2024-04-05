@@ -14,6 +14,7 @@ namespace Sophia.Entitys
     using Sophia.DataSystem.Referer;
     using Sophia.DataSystem.Modifiers;
     using Sophia.UserInterface;
+    using Sophia.Composite.RenderModels;
 
     public class Player : Entity, IMovementAccessible, IAffectManagerAccessible, IInstantiatorAccessible
     {
@@ -106,8 +107,8 @@ namespace Sophia.Entitys
             
             DashSkillAbility.SetDependUI(InGameScreenUI.Instance._playerStaminaBarUI);
             DashSkillAbility.Timer.AddOnUseEvent(() => {
-                this.GetModelManger().EnableTrail();
-                StartCoroutine(actionDelay(this.GetModelManger().DisableTrail));
+                this.GetModelManager().EnableTrail();
+                StartCoroutine(actionDelay(this.GetModelManager().DisableTrail));
             });
             DashSkillAbility.SetAudioSource(DashSource);
 
@@ -124,13 +125,15 @@ namespace Sophia.Entitys
             bool isDamaged = false;
             if (Life.IsDie) { isDamaged = false; }
             isDamaged = Life.Damaged(damage);
-            if(isDamaged) {GetModelManger().GetAnimator().SetTrigger("GetDamaged");}
+            if(isDamaged) {GetModelManager().GetAnimator().SetTrigger("GetDamaged");}
             if (Life.IsDie) { Die(); }
             return isDamaged;
         }
 
         public override bool Die()
         {
+            entityCollider.enabled = false;
+            _modelManager.GetAnimator().SetTrigger("Die");
             throw new System.NotImplementedException();
         }
 
@@ -177,9 +180,9 @@ namespace Sophia.Entitys
         {
             if(DashSkillAbility.GetIsDashState()) return;
             // GetAnimator().SetFloat("Move", this.entityRigidbody.velocity.magnitude);
-            if (!Movement.IsBorder(this.transform) && !Sophia.PlayerAnim.IsAttack) {
+            if (!Movement.IsBorder(this.transform) && Sophia.PlayerAttackAnim.canExitAttack) {
                 Movement.MoveTick(this.transform);
-                GetModelManger().GetAnimator().SetFloat("Move", entityRigidbody.velocity.magnitude);
+                GetModelManager().GetAnimator().SetFloat("Move", entityRigidbody.velocity.magnitude);
             }
         }
 
@@ -210,8 +213,10 @@ namespace Sophia.Entitys
         {
             try
             {
-                if(Sophia.PlayerAnim.IsExitAttack || Sophia.PlayerAnim.IsThirdAttack ) return;
-                await Movement.TurningWithAction(transform, Input.mousePosition, () => GetModelManger().GetAnimator().SetTrigger("DoAttack"));
+                if (!Sophia.PlayerAttackAnim.canNextAttack)
+                    return;
+                // if(Sophia.PlayerAttackAnim.canExitAttack || Sophia.PlayerAttackAnim.resetAtkTrigger) return;
+                await Movement.TurningWithAction(transform, Input.mousePosition, () => GetModelManager().GetAnimator().SetTrigger("DoAttack"));
 
             }
             catch (OperationCanceledException)

@@ -103,14 +103,14 @@ namespace Sophia.Entitys
 
         public void OnSandbagDamaged(DamageInfo info) {
             // DoHit
-            _modelManger.GetAnimator().SetTrigger("DoHit");
+            _modelManager.GetAnimator().SetTrigger("DoHit");
             // SomeUi
         }
 
         public void OnSandBagDead() {
             // DoDie
             entityCollider.enabled = false;
-            _modelManger.GetAnimator().SetTrigger("DoDie");
+            _modelManager.GetAnimator().SetTrigger("DoDie");
             VisualFXObject visualFXFromPool = VisualFXObjectPool.GetObject(_dieParticleRef).Init();
             _visualFXBucket.InstantablePositioning(visualFXFromPool);
         }
@@ -159,13 +159,13 @@ namespace Sophia.Entitys
         [ContextMenu("평타", false, int.MaxValue)]
         void InstantiateProjectiles1(){
             //Find Instantiate On This Animator Events;
-            _modelManger.GetAnimator().SetTrigger("DoAttack");
+            _modelManager.GetAnimator().SetTrigger("DoAttack");
         }
     
         [ContextMenu("범위데미지",false, int.MaxValue)]
         void InstantiateProjectiles2(){
             //Find Instantiate On This Animator Events;
-            _modelManger.GetAnimator().SetTrigger("DoJump");
+            _modelManager.GetAnimator().SetTrigger("DoJump");
         }
 #endregion
 

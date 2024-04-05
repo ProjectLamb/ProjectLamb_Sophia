@@ -89,22 +89,23 @@ public class Stage : MonoBehaviour
 
         stageSizeRandom = 1;
 
-        if (Type == "normal")
-        {
-            float randomValue = (float)rand.NextDouble() * 100.0f;
-            float temp = 0.0f;
+        //// 스테이지 사이즈 랜덤화
+        // if (Type == "normal")
+        // {
+        //     float randomValue = (float)rand.NextDouble() * 100.0f;
+        //     float temp = 0.0f;
 
-            for (int i = 0; i <= SizeRate.Length; i++)
-            {
-                temp += SizeRate[i];
+        //     for (int i = 0; i < SizeRate.Length; i++)
+        //     {
+        //         temp += SizeRate[i];
 
-                if (randomValue <= temp)
-                {
-                    stageSizeRandom = i + 1;
-                    break;
-                }
-            }
-        }
+        //         if (randomValue <= temp)
+        //         {
+        //             stageSizeRandom = i + 1;
+        //             break;
+        //         }
+        //     }
+        // }
 
         stageGenerator.InitStageGenerator(stageSizeRandom);
 

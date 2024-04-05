@@ -141,7 +141,7 @@ namespace Sophia.Composite
         }
 
         public void Use() {
-            if((!GetIsDashState() && rigidbodyRef.velocity.magnitude > 5f) && Timer.GetIsReadyToUse() ){ Timer.ActionStart();}
+            if((!GetIsDashState() && rigidbodyRef.velocity.magnitude >= 0.01f) && Timer.GetIsReadyToUse() ){ Timer.ActionStart();}
         }
 
         public void RecoverOneDash() => Timer.stackCounter.RecoverStack();

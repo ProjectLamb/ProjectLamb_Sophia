@@ -18,12 +18,12 @@ namespace Sophia.DataSystem.Atomics
         }
 
         public async void Invoke(IVisualAccessible visualAccessible) {
-            await visualAccessible.GetModelManger().ChangeSkin(cancellationTokenSource.Token, material);
+            await visualAccessible.GetModelManager().ChangeSkin(cancellationTokenSource.Token, material);
         }
 
         public async void Revert(IVisualAccessible visualAccessible) {
             cancellationTokenSource.Cancel();
-            await visualAccessible.GetModelManger().RevertSkin();
+            await visualAccessible.GetModelManager().RevertSkin();
         }
     }
     public class ProjectileVisualChangeAtomics {
