@@ -93,6 +93,7 @@ namespace Sophia.Entitys
                 () => {Debug.Log("기어 획득");}
             );
             _affectorManager.Init(_basePlayerData.Tenacity);
+
         }
 
         protected override void Start()
@@ -176,7 +177,7 @@ namespace Sophia.Entitys
         {
             if(DashSkillAbility.GetIsDashState()) return;
             // GetAnimator().SetFloat("Move", this.entityRigidbody.velocity.magnitude);
-            if (!Movement.IsBorder(this.transform) && !Sophia.PlayerAttackAnim.isAttack) {
+            if (!Movement.IsBorder(this.transform) && !Sophia.PlayerAnim.IsAttack) {
                 Movement.MoveTick(this.transform);
                 GetModelManger().GetAnimator().SetFloat("Move", entityRigidbody.velocity.magnitude);
             }
@@ -209,7 +210,7 @@ namespace Sophia.Entitys
         {
             try
             {
-                if(Sophia.PlayerAttackAnim.canExitAttack || Sophia.PlayerAttackAnim.resetAtkTrigger) return;
+                if(Sophia.PlayerAnim.IsExitAttack || Sophia.PlayerAnim.IsThirdAttack ) return;
                 await Movement.TurningWithAction(transform, Input.mousePosition, () => GetModelManger().GetAnimator().SetTrigger("DoAttack"));
 
             }
@@ -250,6 +251,5 @@ namespace Sophia.Entitys
         public override void Recover(Affector affector) => this._affectorManager.Recover(affector);
 
 #endregion
-
     }
 }

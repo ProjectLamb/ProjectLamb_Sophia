@@ -28,9 +28,8 @@ public class PlayerController : MonoBehaviour
         player.AimAssist();
         player.CheckAttack();
         
-        if((player.currentState == player.states[(int)PLAYERSTATES.Die]) || (player.currentState == player.states[(int)PLAYERSTATES.Attack])) // 플레이어 상태가 Die, Attack이라면 이동 불가
+        if(player.mIsDie)
             IsMoveAllow = false;
-
         else // 그 외 상태라면
             IsMoveAllow = true;
 
