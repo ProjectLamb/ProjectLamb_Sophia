@@ -109,15 +109,15 @@ public class Stage : MonoBehaviour
 
         stageGenerator.InitStageGenerator(stageSizeRandom);
 
-        if (Type == "normal")
-        {
-            stageGenerator.SetFloorType();
-        }
+        // // 스테이지 타일 랜덤화
+        // if (Type == "normal")
+        // {
+        //     stageGenerator.SetFloorType();
+        // }
 
         stageGenerator.InstantiateTile();
         stageGenerator.InstantiateWall();
         stageGenerator.InstantiatePortal();
-        stageGenerator.GenerateNevMesh();
 
         if (Type == "normal")
         {
@@ -160,6 +160,8 @@ public class Stage : MonoBehaviour
             mobGenerator.InitMobGenerator();
             mobGenerator.InstantiateBoss();
         }
+        stageGenerator.GenerateNevMesh();
+        
         if (mType == "start")
         {
             GameObject character = GameManager.Instance.PlayerGameObject;

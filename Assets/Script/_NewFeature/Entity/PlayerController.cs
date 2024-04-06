@@ -19,6 +19,7 @@ namespace Sophia.Entitys
     {
         [SerializeField] Player playerRef;
         [SerializeField] ModelDebugger modelDebuggerRef;
+        [SerializeField] PlayerInput playerInput;
 
         static public bool IsMoveAllow = true; //인풋을 받을수 있는지 없는지
         static public bool IsAttackAllow = true; //인풋을 받을수 있는지 없는지
@@ -26,6 +27,7 @@ namespace Sophia.Entitys
 
         private void Awake() {
             IsMoveAllow = true;
+            TryGetComponent<PlayerInput>(out playerInput);
         }
 
         private void FixedUpdate() {
@@ -40,6 +42,9 @@ namespace Sophia.Entitys
 
             if(IsMoveAllow){ 
                 if(Input.GetKeyDown(KeyCode.Space)){playerRef.Dash();}
+            }
+            else{
+                playerInput.enabled = false;
             }
             
             if(IsAttackAllow){

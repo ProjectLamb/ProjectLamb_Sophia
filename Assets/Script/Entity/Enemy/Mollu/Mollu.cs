@@ -451,6 +451,13 @@ namespace Sophia.Entitys
         void Death_Enter()
         {
             Debug.Log("Mollu) Death_Enter");
+            List<Sophia.Instantiates.ItemObject> itemObjects;
+            itemObjects = GetComponent<Sophia.Instantiates.GachaComponent>().InstantiateReward();
+
+            foreach (Sophia.Instantiates.ItemObject itemObject in itemObjects)
+            {
+                itemObject.Activate();
+            }
             Die();
         }
 

@@ -6,6 +6,7 @@ using Sophia.Composite;
 using NUnit.Framework;
 using UnityEngine.AI;
 using System.Linq;
+using Sophia.Instantiates;
 
 namespace Sophia.Entitys
 {
@@ -311,13 +312,22 @@ namespace Sophia.Entitys
         void Death_Enter()
         {
             Debug.Log("Death_Enter");
+
+            List<Sophia.Instantiates.ItemObject> itemObjects;
+            itemObjects = GetComponent<Sophia.Instantiates.GachaComponent>().InstantiateReward();
+
+            foreach (ItemObject itemObject in itemObjects)
+            {
+                itemObject.Activate();
+            }
             Die();
         }
 
         #endregion
 
-        private void OnDestroy() {
-            howlingTimer.RemoveOnFinishedEvent(SetReadyHowling);    
+        private void OnDestroy()
+        {
+            howlingTimer.RemoveOnFinishedEvent(SetReadyHowling);
         }
     }
 

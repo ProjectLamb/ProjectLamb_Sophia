@@ -262,8 +262,6 @@ namespace Sophia.Entitys
             Debug.Log("Threat Enter");
 
             if (!isMovable) return;
-            nav.isStopped = true;
-            nav.enabled = false;
             transform.DOKill();
             recognize.CurrentViewRadius *= 2;
             this.GetModelManager().GetAnimator().SetTrigger("DoThreat");
@@ -294,6 +292,7 @@ namespace Sophia.Entitys
         void Threat_FixedUpdate()
         {
             transform.DOLookAt(_objectiveEntity.transform.position, TurnSpeed);
+            nav.SetDestination(_objectiveEntity.transform.position);
         }
 
         void Threat_Exit()
@@ -410,6 +409,13 @@ namespace Sophia.Entitys
         void Death_Enter()
         {
             Debug.Log("Death_Enter");
+            List<Sophia.Instantiates.ItemObject> itemObjects;
+            itemObjects = GetComponent<Sophia.Instantiates.GachaComponent>().InstantiateReward();
+
+            foreach (Sophia.Instantiates.ItemObject itemObject in itemObjects)
+            {
+                itemObject.Activate();
+            }
             Die();
         }
 
