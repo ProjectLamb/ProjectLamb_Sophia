@@ -12,10 +12,12 @@ using Cysharp.Threading.Tasks;
 using Sophia_Carriers;
 using UnityEngine.Rendering;
 using FMODPlus;
+using Sophia.AI;
 
 namespace Sophia.Entitys
 {
-    public enum E_ROBUWA_AUDIO_INDEX {
+    public enum E_ROBUWA_AUDIO_INDEX
+    {
         Kaooo, Attack, MoveattackMode
     }
     public class Robuwa : Enemy, IMovable
@@ -39,8 +41,9 @@ namespace Sophia.Entitys
 
         #region Serialize Member
         [SerializeField] protected RecognizeEntityComposite recognize;
-        [SerializeField] private bool IsMovable = false;
+        [SerializeField] private bool isMovable = false;
         [SerializeField] private int wanderingCoolTime = 3;
+        [SerializeField] private EQS eqs;
         #endregion
 
         public enum States
@@ -72,6 +75,7 @@ namespace Sophia.Entitys
             animTriggerParamList = new List<string>();
 
             TryGetComponent<NavMeshAgent>(out nav);
+            TryGetComponent<EQS>(out eqs);
 
             fsm = new StateMachine<States>(this);
             fsm.ChangeState(States.Init);
@@ -96,7 +100,7 @@ namespace Sophia.Entitys
         {
             fsm.Driver.FixedUpdate.Invoke();
         }
-        
+
         public void OnRobuwaEnterDie()
         {
             CurrentInstantiatedStage.mobGenerator.RemoveMob(this.gameObject);
@@ -106,7 +110,7 @@ namespace Sophia.Entitys
         {
             Destroy(gameObject, 0.5f);
         }
-        
+
         void SetNavMeshData()
         {
             nav.speed = moveSpeed.GetValueForce();
@@ -120,10 +124,10 @@ namespace Sophia.Entitys
 
         void InitAnimParamList()
         {
-            for (int i = 0; i < this.GetModelManger().GetAnimator().parameterCount; i++)
+            for (int i = 0; i < this.GetModelManager().GetAnimator().parameterCount; i++)
             {
-                AnimatorControllerParameter acp = this.GetModelManger().GetAnimator().GetParameter(i);
-                switch (this.GetModelManger().GetAnimator().GetParameter(i).type)
+                AnimatorControllerParameter acp = this.GetModelManager().GetAnimator().GetParameter(i);
+                switch (this.GetModelManager().GetAnimator().GetParameter(i).type)
                 {
                     case AnimatorControllerParameterType.Bool:
                         animBoolParamList.Add(acp.name);
@@ -140,25 +144,25 @@ namespace Sophia.Entitys
         void ResetAnimParam()
         {
             foreach (string b in animBoolParamList)
-                this.GetModelManger().GetAnimator().SetBool(b, false);
+                this.GetModelManager().GetAnimator().SetBool(b, false);
             foreach (string t in animTriggerParamList)
-                this.GetModelManger().GetAnimator().ResetTrigger(t);
+                this.GetModelManager().GetAnimator().ResetTrigger(t);
         }
 
         void DoAttack()
         {
-            switch (this.GetModelManger().GetAnimator().GetInteger("attackCount") % 3)
+            switch (this.GetModelManager().GetAnimator().GetInteger("attackCount") % 3)
             {
                 case 0:
-                    this.GetModelManger().GetAnimator().SetTrigger("DoAttackLeft");
+                    this.GetModelManager().GetAnimator().SetTrigger("DoAttackLeft");
                     _audioSources[(int)E_ROBUWA_AUDIO_INDEX.Attack].Play();
                     break;
                 case 1:
-                    this.GetModelManger().GetAnimator().SetTrigger("DoAttackRight");
+                    this.GetModelManager().GetAnimator().SetTrigger("DoAttackRight");
                     _audioSources[(int)E_ROBUWA_AUDIO_INDEX.Attack].Play();
                     break;
                 case 2:
-                    this.GetModelManger().GetAnimator().SetTrigger("DoAttackJump");
+                    this.GetModelManager().GetAnimator().SetTrigger("DoAttackJump");
                     _audioSources[(int)E_ROBUWA_AUDIO_INDEX.Attack].Play();
                     break;
             }
@@ -166,11 +170,10 @@ namespace Sophia.Entitys
 
         void DoWander()
         {
-            EQS();
-
             float range = recognize.CurrentViewRadius * 2;
             float minDistance = recognize.CurrentViewRadius;
             Vector3 randomVector = Random.insideUnitSphere * range;
+            //Vector3 randomVector = eqs.RunEQS();
             NavMeshHit hit;
 
             randomVector += transform.position;
@@ -190,13 +193,8 @@ namespace Sophia.Entitys
             }
         }
 
-        void EQS()
-        {
-            //Environmental Query System
-        }
-
         #region Attack
-        
+
         private Stat power;
 
         public void UseProjectile_NormalAttack()
@@ -207,7 +205,7 @@ namespace Sophia.Entitys
                                     .SetProjectilePower(GetStat(E_NUMERIC_STAT_TYPE.Power))
                                     .Activate();
         }
-        
+
         #endregion
 
         #region FSM Functions
@@ -229,8 +227,8 @@ namespace Sophia.Entitys
         {
             Debug.Log("Idle_Enter");
             recognize.CurrentViewRadius = originViewRadius;
-            
-            if(!IsMovable)return;
+
+            if (!isMovable) return;
             nav.isStopped = true;
             nav.enabled = false;
             transform.DOKill();
@@ -263,20 +261,19 @@ namespace Sophia.Entitys
         {
             Debug.Log("Threat Enter");
 
-            
-            if(!IsMovable)return;
+            if (!isMovable) return;
             nav.isStopped = true;
             nav.enabled = false;
             transform.DOKill();
             recognize.CurrentViewRadius *= 2;
-            this.GetModelManger().GetAnimator().SetTrigger("DoThreat");
-            
+            this.GetModelManager().GetAnimator().SetTrigger("DoThreat");
+
             _audioSources[(int)E_ROBUWA_AUDIO_INDEX.Kaooo].Play();
         }
 
         void Threat_Update()
         {
-            if (this.GetModelManger().GetAnimator().GetBool("IsThreatEnd"))
+            if (this.GetModelManager().GetAnimator().GetBool("IsThreatEnd"))
             {
                 if (recognize.GetCurrentRecogState() == E_RECOG_TYPE.Lose)
                 {
@@ -301,14 +298,14 @@ namespace Sophia.Entitys
 
         void Threat_Exit()
         {
-            this.GetModelManger().GetAnimator().SetBool("IsThreatEnd", false);
+            this.GetModelManager().GetAnimator().SetBool("IsThreatEnd", false);
         }
 
         /**Move State*/
         void Move_Enter()
         {
             Debug.Log("Move_Enter");
-            this.GetModelManger().GetAnimator().SetBool("IsWalk", true);
+            this.GetModelManager().GetAnimator().SetBool("IsWalk", true);
             _audioSources[(int)E_ROBUWA_AUDIO_INDEX.MoveattackMode].Play();
             nav.isStopped = false;
             nav.enabled = true;
@@ -339,7 +336,7 @@ namespace Sophia.Entitys
         void Move_Exit()
         {
             _audioSources[(int)E_ROBUWA_AUDIO_INDEX.MoveattackMode].Stop();
-            this.GetModelManger().GetAnimator().SetBool("IsWalk", false);
+            this.GetModelManager().GetAnimator().SetBool("IsWalk", false);
         }
 
         /**Wander State*/
@@ -369,7 +366,7 @@ namespace Sophia.Entitys
         {
             if (IsWandering)
             {
-                this.GetModelManger().GetAnimator().SetBool("IsWalk", true);
+                this.GetModelManager().GetAnimator().SetBool("IsWalk", true);
                 transform.DOLookAt(wanderPosition, TurnSpeed);
                 nav.SetDestination(wanderPosition);
             }
@@ -378,7 +375,7 @@ namespace Sophia.Entitys
         void Wander_Exit()
         {
             IsWandering = false;
-            this.GetModelManger().GetAnimator().SetBool("IsWalk", false);
+            this.GetModelManager().GetAnimator().SetBool("IsWalk", false);
         }
 
         /**Attack State*/
@@ -386,8 +383,8 @@ namespace Sophia.Entitys
         {
             Debug.Log("Attack_Enter");
 
-            
-            if(!IsMovable)return;
+
+            if (!isMovable) return;
             nav.isStopped = true;
             nav.enabled = false;
             transform.DOKill();
@@ -398,7 +395,7 @@ namespace Sophia.Entitys
 
         void Attack_Update()
         {
-            if (this.GetModelManger().GetAnimator().GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f)
+            if (this.GetModelManager().GetAnimator().GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f)
             {
                 fsm.ChangeState(States.Idle);
             }
@@ -415,7 +412,7 @@ namespace Sophia.Entitys
             Debug.Log("Death_Enter");
             Die();
         }
-        
+
         #endregion
 
         #region Inherited Functions From Enemy Class
@@ -431,7 +428,7 @@ namespace Sophia.Entitys
         }
 
         public override EntityStatReferer GetStatReferer() => this.StatReferer;
-        
+
         protected override void CollectSettable()
         {
             Settables.Add(Life);
@@ -448,7 +445,8 @@ namespace Sophia.Entitys
             if (Life.IsDie) { isDamaged = false; }
             else
             {
-                if (isDamaged = Life.Damaged(damage)) {
+                if (isDamaged = Life.Damaged(damage))
+                {
                     GameManager.Instance.NewFeatureGlobalEvent.OnEnemyHitEvent.Invoke();
                 }
             }
@@ -478,22 +476,17 @@ namespace Sophia.Entitys
         #region Move
 
         private Stat moveSpeed;
-        
-        public bool GetMoveState() => IsMovable;
+
+        public bool GetMoveState() => isMovable;
 
         public void SetMoveState(bool movableState)
         {
-            IsMovable = movableState;
-            if (IsMovable) {
-                nav.enabled = true;
-                
-                nav.isStopped = false;
-            }
-            else
+            nav.enabled = true;
+
+            isMovable = movableState;
+            nav.isStopped = !movableState;
+            if (!movableState)
             {
-                
-                if(!IsMovable)return;
-                nav.isStopped = true;
                 nav.enabled = false;
                 transform.DOKill();
             }

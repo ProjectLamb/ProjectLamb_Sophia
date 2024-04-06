@@ -14,7 +14,7 @@ namespace Sophia.Entitys
 
 #region SerializeMember 
         
-        [SerializeField] protected ModelManger          _modelManger;
+        [SerializeField] protected ModelManager          _modelManager;
         [SerializeField] protected EntityAudioManager   _audioManager;
         [SerializeField] protected VisualFXBucket       _visualFXBucket;
 
@@ -73,8 +73,8 @@ namespace Sophia.Entitys
 
 #region Visual Accessible
 
-        public ModelManger GetModelManger() => this._modelManger;
-        public GameObject GetGameObject() => this._modelManger.GetModelObject();
+        public ModelManager GetModelManager() => this._modelManager;
+        public GameObject GetGameObject() => this._modelManager.GetModelObject();
         public VisualFXBucket GetVisualFXBucket() => this._visualFXBucket;
         
 #endregion

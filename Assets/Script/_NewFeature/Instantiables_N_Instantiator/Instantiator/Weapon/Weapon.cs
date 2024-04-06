@@ -60,7 +60,7 @@ namespace Sophia.Instantiates {
 
 #region SerializeMember Member
 
-        [SerializeField] protected ModelManger  _modelManger;
+        [SerializeField] protected ModelManager  _modelManger;
         [SerializeField] protected List<VisualFXBucket>  _weaponVisualFXBucket;
         [SerializeField] private List<ProjectileObject> _weaponProjectiles;
         [SerializeField] private List<Animation> _performAnimation;

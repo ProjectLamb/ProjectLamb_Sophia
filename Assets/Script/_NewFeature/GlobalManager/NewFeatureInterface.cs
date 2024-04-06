@@ -52,7 +52,7 @@ namespace Sophia
 //    }
 
     public interface IVisualAccessible {
-        public Composite.RenderModels.ModelManger GetModelManger();
+        public Composite.RenderModels.ModelManager GetModelManager();
         public VisualFXBucket GetVisualFXBucket();
     }
 
