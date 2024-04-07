@@ -15,14 +15,17 @@ namespace Sophia.Instantiates
     using UnityEngine.Events;
     using UnityEngine.VFX;
 
+
     public class SkillItemObject : ItemObject
     {
+        [SerializeField] public SkillCardData[] _skillCardData = new SkillCardData[3];
+
         [SerializeField] public E_SKILL_INDEX _index;
         [SerializeField] public SerialUserInterfaceData     _userInterfaceData;
         [SerializeField] public SerialAffectorData          _affectorData;
         [SerializeField] public SerialOnDamageExtrasModifierDatas _damageModifierData;
-        [SerializeField] public SerialOnConveyAffectExtrasModifierDatas _conveyAffectModifierData; 
-        [SerializeField] public SerialProjectileInstantiateData _projectileInstantiateData; 
+        [SerializeField] public SerialOnConveyAffectExtrasModifierDatas _conveyAffectModifierData;
+        [SerializeField] public SerialProjectileInstantiateData _projectileInstantiateData;
         public Skill skill  { get; private set; }
         public bool ISDEBUG = true;
 

@@ -16,7 +16,8 @@ namespace Sophia.Instantiates
         [SerializeField] protected VisualEffect    _lootVFX;
         [SerializeField] protected bool           _isDestroyable = true;
         [SerializeField] protected GameObject     _destroyEffect = null;
-        
+        [SerializeField] protected GameObject     _playerGameObject = null;
+
         public bool IsInitialized       { get; protected set; }
         public bool IsActivated         { get; protected set; }
         public bool IsReadyToTrigger    { get; protected set; }
