@@ -15,11 +15,8 @@ namespace Sophia.Instantiates
     using UnityEngine.Events;
     using UnityEngine.VFX;
 
-
     public class SkillItemObject : ItemObject
     {
-        [SerializeField] public SkillCardData[] _skillCardData = new SkillCardData[3];
-
         [SerializeField] public E_SKILL_INDEX _index;
         [SerializeField] public SerialUserInterfaceData     _userInterfaceData;
         [SerializeField] public SerialAffectorData          _affectorData;
@@ -58,7 +55,7 @@ namespace Sophia.Instantiates
                 });
             }
         }
-        public void CollectUserInterfaceAction(Skill skill, UnityAction<bool, KeyCode> action) { 
+        public void CollectUserInterfaceAction(Skill skill, UnityAction<bool, KeyCode> action) {
             InGameSkillSelector.Instance.OpenSkillSelector(skill, action);
         }
     }
