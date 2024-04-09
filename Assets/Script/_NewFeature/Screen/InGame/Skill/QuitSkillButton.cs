@@ -10,10 +10,10 @@ namespace Sophia.UserInterface
 {
     public class QuitSkillButton : MonoBehaviour, IPointerClickHandler
     {
-        public UnityAction<bool, KeyCode> func;
+        public UnityAction func;
         public void OnPointerClick(PointerEventData eventData)
         {
-            func.Invoke(false, KeyCode.None);
+            func.Invoke();
         }
 
     }
