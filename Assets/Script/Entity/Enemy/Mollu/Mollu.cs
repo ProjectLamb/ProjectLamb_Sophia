@@ -118,14 +118,24 @@ namespace Sophia.Entitys
         // Update is called once per frame
         void Update()
         {
-
             fsm.Driver.Update.Invoke();
+
+            if (IsMovable)
+            {
+                nav.enabled = true;
+            }
+            else
+            {
+                nav.enabled = false;
+                transform.DOKill();
+            }
         }
 
         void FixedUpdate()
         {
             // Check entity is moving or not
-            if (transform.position != _lastPos) {  // Moving
+            if (transform.position != _lastPos)
+            {  // Moving
                 // _leftRocketParticleMain.startLifetime = _rocketStartLifetimeAtMove;
                 _leftRocketParticleMain.startSpeed = _rocketStartSpeedAtMove;
                 _leftRocketParticleMain.startSize = _rocketStartSizeAtMove;
@@ -135,7 +145,9 @@ namespace Sophia.Entitys
                 _rightRocketParticleMain.startSpeed = _rocketStartSpeedAtMove;
                 _rightRocketParticleMain.startSize = _rocketStartSizeAtMove;
                 _rightRocketParticleMain.startColor = _rocketStartColorAtMove;
-            } else {  // Stationary
+            }
+            else
+            {  // Stationary
                 // _leftRocketParticleMain.startLifetime = _rocketStartLifetimeAtStop;
                 _leftRocketParticleMain.startSpeed = _rocketStartSpeedAtStop;
                 _leftRocketParticleMain.startSize = _rocketStartSizeAtStop;
@@ -153,6 +165,8 @@ namespace Sophia.Entitys
 
         public void OnMolluEnterDie()
         {
+            Sophia.Instantiates.VisualFXObject visualFX = VisualFXObjectPool.GetObject(_dieParticleRef).Init();
+            GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
             CurrentInstantiatedStage.mobGenerator.RemoveMob(gameObject);
         }
 
@@ -201,10 +215,13 @@ namespace Sophia.Entitys
 
         void DoAttack()
         {
-            if (isFirstAttack) {
+            if (isFirstAttack)
+            {
                 GetModelManager().GetAnimator().SetTrigger("DoFirstAttack1");
                 isFirstAttack = false;
-            } else {
+            }
+            else
+            {
                 GetModelManager().GetAnimator().SetTrigger("DoAttack1");
             }
         }
@@ -223,7 +240,8 @@ namespace Sophia.Entitys
             if (minDistance > Vector3.Distance(randomVector, transform.position))
                 DoWander();
 
-            if (NavMesh.SamplePosition(randomVector, out hit, range, NavMesh.AllAreas)) {
+            if (NavMesh.SamplePosition(randomVector, out hit, range, NavMesh.AllAreas))
+            {
                 wanderPosition = hit.position;
                 IsWandering = true;
                 fsm.ChangeState(States.Wander);
@@ -272,21 +290,27 @@ namespace Sophia.Entitys
             Debug.Log("Mollu) Idle_Enter");
             recognize.CurrentViewRadius = originViewRadius;
 
-            if(!IsMovable) return;
+            if (!IsMovable) return;
+            nav.SetDestination(transform.position);
             nav.isStopped = true;
-            nav.enabled = false;
             transform.DOKill();
         }
 
         void Idle_Update()
         {
-            if (recognize.GetCurrentRecogState() == E_RECOG_TYPE.None || recognize.GetCurrentRecogState() == E_RECOG_TYPE.Lose) {
+            if (recognize.GetCurrentRecogState() == E_RECOG_TYPE.None || recognize.GetCurrentRecogState() == E_RECOG_TYPE.Lose)
+            {
                 if (!IsWandering)
                     fsm.ChangeState(States.Wander);
-            } else {
-                if (recognize.GetCurrentRecogState() == E_RECOG_TYPE.FirstRecog) {
+            }
+            else
+            {
+                if (recognize.GetCurrentRecogState() == E_RECOG_TYPE.FirstRecog)
+                {
                     fsm.ChangeState(States.Threat);
-                } else {
+                }
+                else
+                {
                     float dist = Vector3.Distance(transform.position, _objectiveEntity.transform.position);
                     if (dist <= AttackRange)
                         fsm.ChangeState(States.Attack);
@@ -303,10 +327,10 @@ namespace Sophia.Entitys
             Debug.Log("Mollu) Threat_Enter");
 
             if (!IsMovable) return;
+            nav.SetDestination(transform.position);
             nav.isStopped = true;
-            nav.enabled = false;
             transform.DOKill();
-            recognize.CurrentViewRadius *= 2;
+            recognize.CurrentViewRadius *= 3;
             // GetModelManger().GetAnimator().SetTrigger("DoThreat");
 
             // _audioSources[(int)E_MOLLU_AUDIO_INDEX.TODO].Play();
@@ -315,23 +339,26 @@ namespace Sophia.Entitys
         void Threat_Update()
         {
             // if (GetModelManger().GetAnimator().GetBool("IsThreatEnd")) {
-                if (recognize.GetCurrentRecogState() == E_RECOG_TYPE.Lose)
-                    fsm.ChangeState(States.Idle);
-                else
-                {
-                    float dist = Vector3.Distance(transform.position, _objectiveEntity.transform.position);
+            if (recognize.GetCurrentRecogState() == E_RECOG_TYPE.Lose)
+                fsm.ChangeState(States.Idle);
+            else
+            {
+                float dist = Vector3.Distance(transform.position, _objectiveEntity.transform.position);
 
-                    if (dist <= AttackRange)
-                        fsm.ChangeState(States.Attack);
-                    else
-                        fsm.ChangeState(States.Move);
-                }
+                if (dist <= AttackRange)
+                    fsm.ChangeState(States.Attack);
+                else
+                    fsm.ChangeState(States.Move);
+            }
             // }
         }
 
         void Threat_FixedUpdate()
         {
-            transform.DOLookAt(_objectiveEntity.transform.position, TurnSpeed);
+            if (IsMovable)
+            {
+                transform.DOLookAt(_objectiveEntity.transform.position, TurnSpeed);
+            }
         }
 
         void Threat_Exit()
@@ -363,8 +390,11 @@ namespace Sophia.Entitys
         {
             if (recognize.GetCurrentRecogState() == E_RECOG_TYPE.FirstRecog || recognize.GetCurrentRecogState() == E_RECOG_TYPE.ReRecog)
             {
-                transform.DOLookAt(_objectiveEntity.transform.position, TurnSpeed);
-                nav.SetDestination(_objectiveEntity.transform.position);
+                if (IsMovable)
+                {
+                    transform.DOLookAt(_objectiveEntity.transform.position, TurnSpeed);
+                    nav.SetDestination(_objectiveEntity.transform.position);
+                }
             }
         }
 
@@ -396,7 +426,7 @@ namespace Sophia.Entitys
 
         void Wander_FixedUpdate()
         {
-            if (IsWandering)
+            if (IsWandering && IsMovable)
             {
                 transform.DOLookAt(wanderPosition, TurnSpeed);
                 nav.SetDestination(wanderPosition);
@@ -416,9 +446,9 @@ namespace Sophia.Entitys
         {
             Debug.Log("Mollu) Attack_Enter");
 
-            if(!IsMovable) return;
+            if (!IsMovable) return;
+            nav.SetDestination(transform.position);
             nav.isStopped = true;
-            nav.enabled = false;
             transform.DOKill();
 
             DoAttack();
@@ -435,9 +465,15 @@ namespace Sophia.Entitys
         void Attack_FixedUpdate()
         {
             float dist = Vector3.Distance(transform.position, _objectiveEntity.transform.position);
-            if (dist <= AttackRange) {
-                transform.DOLookAt(_objectiveEntity.transform.position, TurnSpeed * 1.2f);
-            } else {
+            if (dist <= AttackRange)
+            {
+                if(IsMovable)
+                {
+                    transform.DOLookAt(_objectiveEntity.transform.position, TurnSpeed * 1.2f);
+                }
+            }
+            else
+            {
                 isFirstAttack = true;
             }
         }
@@ -494,7 +530,8 @@ namespace Sophia.Entitys
             if (Life.IsDie) { isDamaged = false; }
             else
             {
-                if (isDamaged = Life.Damaged(damage)) {
+                if (isDamaged = Life.Damaged(damage))
+                {
                     GameManager.Instance.NewFeatureGlobalEvent.OnEnemyHitEvent.Invoke();
                 }
             }
@@ -530,10 +567,13 @@ namespace Sophia.Entitys
         public void SetMoveState(bool movableState)
         {
             IsMovable = movableState;
-            if (IsMovable) {
+            if (IsMovable)
+            {
                 nav.enabled = true;
                 nav.isStopped = false;
-            } else {
+            }
+            else
+            {
                 if (!IsMovable)
                     return;
 

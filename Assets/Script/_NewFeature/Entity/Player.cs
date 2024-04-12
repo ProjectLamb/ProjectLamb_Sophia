@@ -139,6 +139,7 @@ namespace Sophia.Entitys
         {
             PlayerController.IsAttackAllow = false;
             PlayerController.IsMoveAllow = false;
+            GetMovementComposite().SetMovableState(false);
             entityCollider.enabled = false;
             _modelManager.GetAnimator().SetTrigger("Die");
 
@@ -194,8 +195,8 @@ namespace Sophia.Entitys
             if (!Movement.IsBorder(this.transform) && Sophia.PlayerAttackAnim.canExitAttack)
             {
                 Movement.MoveTick(this.transform);
+                GetModelManager().GetAnimator().SetFloat("Move", entityRigidbody.velocity.magnitude);
             }
-            GetModelManager().GetAnimator().SetFloat("Move", entityRigidbody.velocity.magnitude);
         }
 
         public async UniTask Turning() { await Movement.Turning(transform, Input.mousePosition); }

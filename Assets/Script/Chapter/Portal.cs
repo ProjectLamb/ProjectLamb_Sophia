@@ -123,7 +123,7 @@ public class Portal : MonoBehaviour
         {
             if (IsCollider){
                 WarpPortal();
-                portalSFXSource.SendCommand();
+                //portalSFXSource.SendCommand();
             }
         }
     }

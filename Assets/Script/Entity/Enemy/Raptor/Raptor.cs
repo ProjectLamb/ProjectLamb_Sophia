@@ -105,6 +105,16 @@ namespace Sophia.Entitys
         protected virtual void Update()
         {
             fsm.Driver.Update.Invoke();
+
+            if (isMovable)
+            {
+                _nav.enabled = true;
+            }
+            else
+            {
+                _nav.enabled = false;
+                transform.DOKill();
+            }
         }
 
         protected virtual void FixedUpdate()
@@ -189,13 +199,25 @@ namespace Sophia.Entitys
         public void OnRaptorHit(DamageInfo damageInfo)
         {
             GetModelManager().GetAnimator().SetTrigger("DoHit");
+            _audioSources[(int)E_RAPTOR_AUDIO_INDEX.Hit].Play();
             GameManager.Instance.NewFeatureGlobalEvent.EnemyHit.PerformStartFunctionals(ref NullRef);
         }
 
         public void OnRaptorEnterDie()
         {
             GetModelManager().GetAnimator().SetTrigger("DoDie");
+
+            for (int i = 0; i < 4; i++)
+            {
+                if (_projectileBucketManager.GetProjectileBucket(i) != null)
+                    _projectileBucketManager.GetProjectileBucket(i).gameObject.SetActive(false);
+            }
+
             _audioSources[(int)E_RAPTOR_AUDIO_INDEX.Death].Play();
+
+            Sophia.Instantiates.VisualFXObject visualFX = VisualFXObjectPool.GetObject(_dieParticleRef).Init();
+            GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
+
             CurrentInstantiatedStage.mobGenerator.RemoveMob(this.gameObject);
             GameManager.Instance.NewFeatureGlobalEvent.EnemyDie.PerformStartFunctionals(ref NullRef);
             SetMoveState(false);
@@ -289,7 +311,7 @@ namespace Sophia.Entitys
         #endregion
 
         #region Movable
-        private bool isMovable = false;
+        protected bool isMovable = false;
         private Vector3 moveVec;
         public (Vector3, int) GetMoveBindingData()
         {

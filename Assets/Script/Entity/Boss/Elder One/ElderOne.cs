@@ -125,6 +125,7 @@ namespace Sophia.Entitys
             if (Life.CurrentHealth <= Life.MaxHp / 2)
             {
                 phase = 2;
+                nav.speed = _baseEntityData.MoveSpeed * 2;
                 isPhaseChanged = true;
             }
         }
@@ -208,6 +209,9 @@ namespace Sophia.Entitys
 
         void OnElderOneEnterDie()
         {
+            Sophia.Instantiates.VisualFXObject visualFX = VisualFXObjectPool.GetObject(_dieParticleRef).Init();
+            GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
+            
             CurrentInstantiatedStage.mobGenerator.RemoveMob(this.gameObject);
         }
         public override bool Die() { Life.Died(); return true; }

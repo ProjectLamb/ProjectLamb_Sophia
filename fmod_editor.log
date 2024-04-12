@@ -7,89 +7,13 @@
 [LOG] OutputWASAPI::init                       : Output buffer size: 4096 samples, latency: 0.00ms, period: 10.00ms, DSP buffer: 1024 * 4
 [LOG] Thread::initThread                       : Init FMOD stream thread. Affinity: 0x4000000000000003, Priority: 0xFFFF7FFB, Stack Size: 98304, Semaphore: No, Sleep Time: 10, Looping: Yes.
 [LOG] Thread::initThread                       : Init FMOD mixer thread. Affinity: 0x4000000000000001, Priority: 0xFFFF7FFA, Stack Size: 81920, Semaphore: No, Sleep Time: 0, Looping: Yes.
-[LOG] AsyncManager::init                       : manager 0000028EBC50F648 isAsync 0 updatePeriod 0.02
+[LOG] AsyncManager::init                       : manager 000001AB71508628 isAsync 0 updatePeriod 0.02
 [LOG] AsyncManager::init                       : done
 [LOG] PlaybackSystem::init                     : 
 [LOG] Thread::initThread                       : Init FMOD Studio sample load thread. Affinity: 0x4000000000000003, Priority: 0xFFFF7FFD, Stack Size: 98304, Semaphore: No, Sleep Time: 1, Looping: No.
 [LOG] PlaybackSystem::init                     : done
 [LOG] Thread::initThread                       : Init FMOD Studio bank load thread. Affinity: 0x4000000000000003, Priority: 0xFFFF7FFD, Stack Size: 98304, Semaphore: No, Sleep Time: 1, Looping: No.
 [LOG] Manager::init                            : done.
-[LOG] AsyncThread::add                         : add sound to async queue : soundi = 0000028CD5C12DD8, queue head = 0000028F55B835A8, queue count = 0
-[LOG] AsyncThread::threadFunc                  : Starting Asynchronous operation on sound 0000028CD5C12DD8
-[LOG] AsyncThread::add                         : add sound to async queue : soundi = 0000028CD5C12A78, queue head = 0000028F55B835A8, queue count = 0
-[LOG] AsyncThread::threadFunc                  : Finished Asynchronous operation on sound 0000028CD5C12DD8
-[LOG] AsyncThread::threadFunc                  : Starting Asynchronous operation on sound 0000028CD5C12A78
-[LOG] AsyncThread::threadFunc                  : Finished Asynchronous operation on sound 0000028CD5C12A78
-[LOG] SoundI::release                          : Pad Bass (sidechain) (0000028D5C9938D8)
-[LOG] SoundI::release                          :     Pad Bass (sidechain) (0000028F936DBB28)
-[LOG] SoundI::release                          :     Pad Bass (sidechain) (0000028CD5C12A78)
-[LOG] SoundI::release                          : Pad (sidechain) (0000028CD5C12F88)
-[LOG] SoundI::release                          :     Pad (sidechain) (0000028F936DC828)
-[LOG] SoundI::release                          :     Pad (sidechain) (0000028CD5C12DD8)
-[LOG] SoundI::release                          :  (0000028E83C891F8)
-[LOG] SoundI::release                          :     Select Area 1_2 (0000028CD5B532C8)
-[LOG] SoundI::release                          :  (0000028E83C897B8)
-[LOG] SoundI::release                          :     Mouse_Hovering2 (0000028CD5B53468)
-[LOG] SoundI::release                          :  (0000028D6BB2DD88)
-[LOG] SoundI::release                          :     A-1 (0000028CAA26D018)
-[LOG] SoundI::release                          :  (0000028DDFD90018)
-[LOG] SoundI::release                          :     A-2 (0000028CB2183A58)
-[LOG] SoundI::release                          :  (0000028D6BB2D098)
-[LOG] SoundI::release                          :     A-3 (0000028CAECB4F88)
-[LOG] SoundI::release                          :  (0000028EAE45F378)
-[LOG] SoundI::release                          :     A-4 (0000028E4A4F4B18)
-[LOG] SoundI::release                          :  (0000028D6BB2D938)
-[LOG] SoundI::release                          :     A-5 (0000028F5651A7E8)
-[LOG] SoundI::release                          :  (0000028E6F82E948)
-[LOG] SoundI::release                          :     A-6 (0000028CB21838B8)
-[LOG] SoundI::release                          :  (0000028D6BB2D378)
-[LOG] SoundI::release                          :     A-7 (0000028CAA26CE78)
-[LOG] SoundI::release                          :  (0000028F61BE6F68)
-[LOG] SoundI::release                          :     sogsN_Part_1 (0000028E75932298)
-[LOG] SoundI::release                          :  (0000028EAE45F4E8)
-[LOG] SoundI::release                          :     sogsN_Part_2 (0000028E4A4F4158)
-[LOG] SoundI::release                          :  (0000028EAE45FD88)
-[LOG] SoundI::release                          :     sogsN_Part_3 (0000028E4A4F4638)
-[LOG] SoundI::release                          :  (0000028E06508368)
-[LOG] SoundI::release                          :     sogsN_Part_4 (0000028F5651AE68)
-[LOG] SoundI::release                          :  (0000028DDFD8FEA8)
-[LOG] SoundI::release                          :     sogsN_Part_5 (0000028CB2183098)
-[LOG] SoundI::release                          :  (0000028E06508088)
-[LOG] SoundI::release                          :     footsteps_player_grass_01 (0000028F5651A308)
-[LOG] SoundI::release                          :  (0000028DDFD8F778)
-[LOG] SoundI::release                          :     footsteps_player_grass_02 (0000028CB2183238)
-[LOG] SoundI::release                          :  (0000028F61BE6C88)
-[LOG] SoundI::release                          :     footsteps_player_grass_03 (0000028EBB81C3A8)
-[LOG] SoundI::release                          :  (0000028D6BB2D658)
-[LOG] SoundI::release                          :     laser 1 (0000028CAECB5468)
-[LOG] SoundI::release                          :  (0000028D6BB2DAA8)
-[LOG] SoundI::release                          :     laser 3 (0000028F5651A648)
-[LOG] SoundI::release                          :  (0000028F61BE70D8)
-[LOG] SoundI::release                          :     laser 4 (0000028E75931DB8)
-[LOG] SoundI::release                          :  (0000028E06508928)
-[LOG] SoundI::release                          :     SwingAir (0000028F5651AB28)
-[LOG] SoundI::release                          :  (0000028D6BB2D208)
-[LOG] SoundI::release                          :     SFX_Swing (0000028CAECB4908)
-[LOG] SoundI::release                          :  (0000028E065081F8)
-[LOG] SoundI::release                          :     B-1 (0000028E4A4F42F8)
-[LOG] SoundI::release                          :  (0000028E6F82EAB8)
-[LOG] SoundI::release                          :     B-2 (0000028CB2183578)
-[LOG] SoundI::release                          :  (0000028F61BE7808)
-[LOG] SoundI::release                          :     B-3 (0000028E75931A78)
-[LOG] SoundI::release                          :  (0000028D6BB2D7C8)
-[LOG] SoundI::release                          :     A-1 (0000028CAECB4C48)
-[LOG] SoundI::release                          :  (0000028F61BE6DF8)
-[LOG] SoundI::release                          :     Dashsample (0000028E759325D8)
-[LOG] Thread::callback                         : FMOD Studio update thread finished.
-[LOG] Thread::callback                         : FMOD Studio bank load thread finished.
-[LOG] Profile::disconnectAll                   : Profiler disconnecting all clients
-[LOG] Thread::callback                         : FMOD Studio sample load thread finished.
-[LOG] LiveUpdate::release                      : 
-[LOG] LiveUpdate::reset                        : Reset connection (reason Disconnected)
-[LOG] Thread::callback                         : FMOD stream thread finished.
-[LOG] Thread::callback                         : FMOD mixer thread finished.
-[LOG] Profile::disconnectAll                   : Profiler disconnecting all clients
-[LOG] SystemI::close                           : Closed.
 [LOG] Manager::readBank                        : fileversion = 142, compatVersion = 140 (oldest = 44, newest = 142)
 [LOG] Manager::readBank                        : fileversion = 142, compatVersion = 140 (oldest = 44, newest = 142)
 [LOG] Manager::readBank                        : fileversion = 142, compatVersion = 140 (oldest = 44, newest = 142)
@@ -102,92 +26,37 @@
 [LOG] SystemI::createSoundInternal             : exinfo->length             = 1996576
 [LOG] SystemI::createSoundInternal             : exinfo->fileoffset         = 129440
 [LOG] SystemI::createSoundInternal             : exinfo->numsubsounds       = 1
-[LOG] SystemI::createSoundInternal             : exinfo->inclusionlist      = 000000C8EFD7EF68
+[LOG] SystemI::createSoundInternal             : exinfo->inclusionlist      = 000000583AF1F5D8
 [LOG] SystemI::createSoundInternal             : exinfo->inclusionlistnum   = 1
 [LOG] SystemI::createSoundInternal             : exinfo->suggestedsoundtype = 5
-[LOG] SystemI::createSoundInternal             : exinfo->useropen           = 00007FFE7A553F70
-[LOG] SystemI::createSoundInternal             : exinfo->userclose          = 00007FFE7A553F30
-[LOG] SystemI::createSoundInternal             : exinfo->userread           = 00007FFE7A554050
-[LOG] SystemI::createSoundInternal             : exinfo->userseek           = 00007FFE7A554110
-[LOG] SystemI::createSoundInternal             : exinfo->fileuserdata       = 0000028F93B8AC18
+[LOG] SystemI::createSoundInternal             : exinfo->useropen           = 00007FFDC46C3F70
+[LOG] SystemI::createSoundInternal             : exinfo->userclose          = 00007FFDC46C3F30
+[LOG] SystemI::createSoundInternal             : exinfo->userread           = 00007FFDC46C4050
+[LOG] SystemI::createSoundInternal             : exinfo->userseek           = 00007FFDC46C4110
+[LOG] SystemI::createSoundInternal             : exinfo->fileuserdata       = 000001A573C92C38
 [LOG] SystemI::createSoundInternal             : exinfo->initialseekpostype = 1
 [LOG] SystemI::DSPCodecPoolRegister            : register codec pool for pool type 5
-[LOG] SystemI::createSoundInternal             : Sample 0/1: name='moster_kaooo..3', format=5, channels=2, frequency=44100, lengthbytes=44224, lengthpcm=132300, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.288692.
+[LOG] SystemI::createSoundInternal             : Sample 0/1: name='ElderOne_NormalAttack_PunchB', format=5, channels=2, frequency=44100, lengthbytes=5184, lengthpcm=33075, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.499931.
 [LOG] SystemI::createSoundInternal             : Create name='', mode=0x02000202
 [LOG] SystemI::createSoundInternal             : exinfo->cbsize             = 224
 [LOG] SystemI::createSoundInternal             : exinfo->length             = 1996576
 [LOG] SystemI::createSoundInternal             : exinfo->fileoffset         = 129440
 [LOG] SystemI::createSoundInternal             : exinfo->numsubsounds       = 1
-[LOG] SystemI::createSoundInternal             : exinfo->inclusionlist      = 000000C8EFD7EF68
+[LOG] SystemI::createSoundInternal             : exinfo->inclusionlist      = 000000583AF1F5D8
 [LOG] SystemI::createSoundInternal             : exinfo->inclusionlistnum   = 1
 [LOG] SystemI::createSoundInternal             : exinfo->suggestedsoundtype = 5
-[LOG] SystemI::createSoundInternal             : exinfo->useropen           = 00007FFE7A553F70
-[LOG] SystemI::createSoundInternal             : exinfo->userclose          = 00007FFE7A553F30
-[LOG] SystemI::createSoundInternal             : exinfo->userread           = 00007FFE7A554050
-[LOG] SystemI::createSoundInternal             : exinfo->userseek           = 00007FFE7A554110
-[LOG] SystemI::createSoundInternal             : exinfo->fileuserdata       = 0000028F93B8AC18
+[LOG] SystemI::createSoundInternal             : exinfo->useropen           = 00007FFDC46C3F70
+[LOG] SystemI::createSoundInternal             : exinfo->userclose          = 00007FFDC46C3F30
+[LOG] SystemI::createSoundInternal             : exinfo->userread           = 00007FFDC46C4050
+[LOG] SystemI::createSoundInternal             : exinfo->userseek           = 00007FFDC46C4110
+[LOG] SystemI::createSoundInternal             : exinfo->fileuserdata       = 000001A573C92C38
 [LOG] SystemI::createSoundInternal             : exinfo->initialseekpostype = 1
 [LOG] SystemI::DSPCodecPoolRegister            : register codec pool for pool type 5
-[LOG] SystemI::createSoundInternal             : Sample 0/1: name='moster_kaooo..2', format=5, channels=2, frequency=44100, lengthbytes=11456, lengthpcm=49612, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.999969.
-[LOG] SystemI::createSound                     : filename = Assets/Resources/FmodProject/Build/Desktop/SFX.bank : mode 02010082
-[LOG] SystemI::createSound                     : FMOD_NONBLOCKING specified.  Putting into queue to be opened asynchronously!
-[LOG] AsyncThread::add                         : add sound to async queue : soundi = 0000028D6B1A1A28, queue head = 0000028F55B835A8, queue count = 0
-[LOG] AsyncThread::threadFunc                  : Starting Asynchronous operation on sound 0000028D6B1A1A28
-[LOG] SystemI::createSoundInternal             :     Create name='Assets/Resources/FmodProject/Build/Desktop/SFX.bank', mode=0x02010082
-[LOG] SystemI::createSoundInternal             :     exinfo->cbsize             = 224
-[LOG] SystemI::createSoundInternal             :     exinfo->length             = 1996576
-[LOG] SystemI::createSoundInternal             :     exinfo->fileoffset         = 129440
-[LOG] SystemI::createSoundInternal             :     exinfo->numsubsounds       = 1
-[LOG] SystemI::createSoundInternal             :     exinfo->inclusionlist      = 0000028E07493800
-[LOG] SystemI::createSoundInternal             :     exinfo->inclusionlistnum   = 1
-[LOG] SystemI::createSoundInternal             :     exinfo->suggestedsoundtype = 5
-[LOG] SystemI::createSoundInternal             :     exinfo->initialseekpostype = 1
-[LOG] SystemI::createSoundInternal             :     Stream 0/1: name='monster_kaooo..1', format=5, channels=2, frequency=44100, lengthbytes=115904, lengthpcm=540225, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.107810.
-[LOG] AsyncThread::threadFunc                  : Finished Asynchronous operation on sound 0000028D6B1A1A28
-[LOG] SystemI::createSound                     : filename = Assets/Resources/FmodProject/Build/Desktop/SFX.bank : mode 02010082
-[LOG] SystemI::createSound                     : FMOD_NONBLOCKING specified.  Putting into queue to be opened asynchronously!
-[LOG] AsyncThread::add                         : add sound to async queue : soundi = 0000028D6B1A1D88, queue head = 0000028F55B835A8, queue count = 0
-[LOG] AsyncThread::threadFunc                  : Starting Asynchronous operation on sound 0000028D6B1A1D88
-[LOG] SystemI::createSoundInternal             :     Create name='Assets/Resources/FmodProject/Build/Desktop/SFX.bank', mode=0x02010082
-[LOG] SystemI::createSoundInternal             :     exinfo->cbsize             = 224
-[LOG] SystemI::createSoundInternal             :     exinfo->length             = 1996576
-[LOG] SystemI::createSoundInternal             :     exinfo->fileoffset         = 129440
-[LOG] SystemI::createSoundInternal             :     exinfo->numsubsounds       = 1
-[LOG] SystemI::createSoundInternal             :     exinfo->inclusionlist      = 0000028E07493F80
-[LOG] SystemI::createSoundInternal             :     exinfo->inclusionlistnum   = 1
-[LOG] SystemI::createSoundInternal             :     exinfo->suggestedsoundtype = 5
-[LOG] SystemI::createSoundInternal             :     exinfo->initialseekposition = 613
-[LOG] SystemI::createSoundInternal             :     exinfo->initialseekpostype = 1
-[LOG] SystemI::createSoundInternal             :     Stream 0/1: name='monster_kaooo..1', format=5, channels=2, frequency=44100, lengthbytes=115904, lengthpcm=540225, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.107810.
-[LOG] AsyncThread::threadFunc                  : Finished Asynchronous operation on sound 0000028D6B1A1D88
-[LOG] SoundI::release                          : monster_kaooo..1 (0000028D6B1A1D88)
-[LOG] SoundI::release                          :     monster_kaooo..1 (0000028E074E50F8)
-[LOG] SoundI::release                          :     monster_kaooo..1 (0000028E056C7578)
-[LOG] SoundI::release                          : monster_kaooo..1 (0000028D6B1A1A28)
-[LOG] SoundI::release                          :     monster_kaooo..1 (0000028E074E43F8)
-[LOG] SoundI::release                          :     monster_kaooo..1 (0000028E056C7068)
-[LOG] SystemI::createSound                     : filename = Assets/Resources/FmodProject/Build/Desktop/SFX.bank : mode 02010082
-[LOG] SystemI::createSound                     : FMOD_NONBLOCKING specified.  Putting into queue to be opened asynchronously!
-[LOG] AsyncThread::add                         : add sound to async queue : soundi = 0000028D6B1A1F38, queue head = 0000028F55B835A8, queue count = 0
-[LOG] AsyncThread::threadFunc                  : Starting Asynchronous operation on sound 0000028D6B1A1F38
-[LOG] SystemI::createSoundInternal             :     Create name='Assets/Resources/FmodProject/Build/Desktop/SFX.bank', mode=0x02010082
-[LOG] SystemI::createSoundInternal             :     exinfo->cbsize             = 224
-[LOG] SystemI::createSoundInternal             :     exinfo->length             = 1996576
-[LOG] SystemI::createSoundInternal             :     exinfo->fileoffset         = 129440
-[LOG] SystemI::createSoundInternal             :     exinfo->numsubsounds       = 1
-[LOG] SystemI::createSoundInternal             :     exinfo->inclusionlist      = 0000028E07493A80
-[LOG] SystemI::createSoundInternal             :     exinfo->inclusionlistnum   = 1
-[LOG] SystemI::createSoundInternal             :     exinfo->suggestedsoundtype = 5
-[LOG] SystemI::createSoundInternal             :     exinfo->initialseekpostype = 1
-[LOG] SystemI::createSoundInternal             :     Stream 0/1: name='monster_kaooo..1', format=5, channels=2, frequency=44100, lengthbytes=115904, lengthpcm=540225, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.107810.
-[LOG] AsyncThread::threadFunc                  : Finished Asynchronous operation on sound 0000028D6B1A1F38
-[LOG] SoundI::release                          : monster_kaooo..1 (0000028D6B1A1F38)
-[LOG] SoundI::release                          :     monster_kaooo..1 (0000028B11DF15D8)
-[LOG] SoundI::release                          :     monster_kaooo..1 (0000028E83C06E18)
-[LOG] SoundI::release                          :  (0000028F61BE70D8)
-[LOG] SoundI::release                          :     moster_kaooo..2 (0000028EBB81BB88)
-[LOG] SoundI::release                          :  (0000028F61BE6F68)
-[LOG] SoundI::release                          :     moster_kaooo..3 (0000028EBB81C3A8)
+[LOG] SystemI::createSoundInternal             : Sample 0/1: name='ElderOne_NormalAttack_PunchA', format=5, channels=2, frequency=44100, lengthbytes=5120, lengthpcm=33075, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.484782.
+[LOG] SoundI::release                          :  (000001A69CBB8798)
+[LOG] SoundI::release                          :     ElderOne_NormalAttack_PunchA (000001A73E9E0EF8)
+[LOG] SoundI::release                          :  (000001A69CBB8628)
+[LOG] SoundI::release                          :     ElderOne_NormalAttack_PunchB (000001A73E9E13D8)
 [LOG] Thread::callback                         : FMOD Studio bank load thread finished.
 [LOG] Thread::callback                         : FMOD Studio sample load thread finished.
 [LOG] LiveUpdate::release                      : 
@@ -195,5 +64,3 @@
 [LOG] Thread::callback                         : FMOD stream thread finished.
 [LOG] Thread::callback                         : FMOD mixer thread finished.
 [LOG] SystemI::close                           : Closed.
-[LOG] Thread::callback                         : FMOD nonblocking thread (0) finished.
-[LOG] Thread::callback                         : FMOD file thread finished.

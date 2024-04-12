@@ -41,7 +41,7 @@ namespace Sophia.Entitys
 
         #region Serialize Member
         [SerializeField] protected RecognizeEntityComposite recognize;
-        [SerializeField] private bool isMovable = false;
+        [SerializeField] private bool isMovable = true;
         [SerializeField] private int wanderingCoolTime = 3;
         [SerializeField] private EQS eqs;
         #endregion
@@ -94,6 +94,16 @@ namespace Sophia.Entitys
         void Update()
         {
             fsm.Driver.Update.Invoke();
+
+            if (isMovable)
+            {
+                nav.enabled = true;
+            }
+            else
+            {
+                nav.enabled = false;
+                transform.DOKill();
+            }
         }
 
         void FixedUpdate()
@@ -103,6 +113,15 @@ namespace Sophia.Entitys
 
         public void OnRobuwaEnterDie()
         {
+            Sophia.Instantiates.VisualFXObject visualFX = VisualFXObjectPool.GetObject(_dieParticleRef).Init();
+            GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
+            
+            for(int i = 0; i < 4; i++)
+            {
+                if(_projectileBucketManager.GetProjectileBucket(i) != null)
+                    _projectileBucketManager.GetProjectileBucket(i).gameObject.SetActive(false);
+            }
+
             CurrentInstantiatedStage.mobGenerator.RemoveMob(this.gameObject);
         }
 
@@ -229,8 +248,8 @@ namespace Sophia.Entitys
             recognize.CurrentViewRadius = originViewRadius;
 
             if (!isMovable) return;
+            nav.SetDestination(transform.position);
             nav.isStopped = true;
-            nav.enabled = false;
             transform.DOKill();
         }
 
@@ -263,7 +282,7 @@ namespace Sophia.Entitys
 
             if (!isMovable) return;
             transform.DOKill();
-            recognize.CurrentViewRadius *= 2;
+            recognize.CurrentViewRadius *= 3;
             this.GetModelManager().GetAnimator().SetTrigger("DoThreat");
 
             _audioSources[(int)E_ROBUWA_AUDIO_INDEX.Kaooo].Play();
@@ -291,8 +310,11 @@ namespace Sophia.Entitys
 
         void Threat_FixedUpdate()
         {
-            transform.DOLookAt(_objectiveEntity.transform.position, TurnSpeed);
-            nav.SetDestination(_objectiveEntity.transform.position);
+            if (isMovable)
+            {
+                transform.DOLookAt(_objectiveEntity.transform.position, TurnSpeed);
+                nav.SetDestination(_objectiveEntity.transform.position);
+            }
         }
 
         void Threat_Exit()
@@ -306,8 +328,8 @@ namespace Sophia.Entitys
             Debug.Log("Move_Enter");
             this.GetModelManager().GetAnimator().SetBool("IsWalk", true);
             _audioSources[(int)E_ROBUWA_AUDIO_INDEX.MoveattackMode].Play();
-            nav.isStopped = false;
             nav.enabled = true;
+            nav.isStopped = false;
         }
 
         void Move_Update()
@@ -327,8 +349,11 @@ namespace Sophia.Entitys
         {
             if (recognize.GetCurrentRecogState() == E_RECOG_TYPE.FirstRecog || recognize.GetCurrentRecogState() == E_RECOG_TYPE.ReRecog)
             {
-                transform.DOLookAt(_objectiveEntity.transform.position, TurnSpeed);
-                nav.SetDestination(_objectiveEntity.transform.position);
+                if (isMovable)
+                {
+                    transform.DOLookAt(_objectiveEntity.transform.position, TurnSpeed);
+                    nav.SetDestination(_objectiveEntity.transform.position);
+                }
             }
         }
 
@@ -363,7 +388,7 @@ namespace Sophia.Entitys
 
         void Wander_FixedUpdate()
         {
-            if (IsWandering)
+            if (IsWandering && isMovable)
             {
                 this.GetModelManager().GetAnimator().SetBool("IsWalk", true);
                 transform.DOLookAt(wanderPosition, TurnSpeed);
@@ -384,8 +409,8 @@ namespace Sophia.Entitys
 
 
             if (!isMovable) return;
+            nav.SetDestination(transform.position);
             nav.isStopped = true;
-            nav.enabled = false;
             transform.DOKill();
 
             transform.DOLookAt(_objectiveEntity.transform.position, TurnSpeed / 2);

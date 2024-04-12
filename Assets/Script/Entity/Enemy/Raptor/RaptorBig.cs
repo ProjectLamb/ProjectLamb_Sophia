@@ -51,8 +51,8 @@ namespace Sophia.Entitys
         // Update is called once per frame
         protected override void Update()
         {
-            howlingTimer.TickRunning();
             base.Update();
+            howlingTimer.TickRunning();
         }
 
         public override void SetNavMeshData()
@@ -63,14 +63,24 @@ namespace Sophia.Entitys
 
         void DoHowl()
         {
-            //Buff.AudioClip.Play
+            int currentRaptorCount = 0;
             GetModelManager().GetAnimator().SetTrigger("DoHowl");
             _audioSources[(int)E_RAPTOR_AUDIO_INDEX.Howling].Play();
 
-            if (raptorSmallList.Count == 0)
+            foreach (RaptorSmall raptor in raptorSmallList)
+            {
+                if (raptor != null)
+                {
+                    currentRaptorCount++;
+                }
+            }
+
+            if (currentRaptorCount == 0)
                 InstantiateRaptorSmall(spawnRaptorAmount);
             else
+            {
                 DoBuff();
+            }
         }
 
         void InstantiateRaptorSmall(int amount)
@@ -100,7 +110,8 @@ namespace Sophia.Entitys
         {
             foreach (RaptorSmall raptorSmall in raptorSmallList)
             {
-                raptorSmall.GetBuff(new Sophia.DataSystem.Modifiers.ConcreteAffector.PowerUpAffect(in serialAffectorData));
+                if (raptorSmall != null)
+                    raptorSmall.GetBuff(new Sophia.DataSystem.Modifiers.ConcreteAffector.PowerUpAffect(in serialAffectorData));
             }
         }
         void DoEscape()
@@ -144,7 +155,9 @@ namespace Sophia.Entitys
         {
             Debug.Log("Idle_Enter");
             Recognize.CurrentViewRadius = originViewRadius;
-            SetMoveState(false);
+            _audioSources[(int)E_RAPTOR_AUDIO_INDEX.Idle].Play();
+            _nav.SetDestination(transform.position);
+            _nav.isStopped = true;
         }
 
         void Idle_Update()
@@ -175,9 +188,16 @@ namespace Sophia.Entitys
 
         void Idle_FixedUpdate()
         {
+            if (Recognize.GetCurrentRecogState() == E_RECOG_TYPE.FirstRecog)
+            {
+                _audioSources[(int)E_RAPTOR_AUDIO_INDEX.Found].Play();
+            }
             if (Recognize.GetCurrentRecogState() == E_RECOG_TYPE.FirstRecog || Recognize.GetCurrentRecogState() == E_RECOG_TYPE.ReRecog)
             {
-                transform.DOLookAt(_objectiveEntity.transform.position, TurnSpeed);
+                if (isMovable)
+                {
+                    transform.DOLookAt(_objectiveEntity.transform.position, TurnSpeed);
+                }
             }
         }
 
@@ -186,7 +206,7 @@ namespace Sophia.Entitys
         {
             Debug.Log("Escape_Enter");
 
-            _nav.speed = MoveSpeed.GetValueForce() / 2;
+            //_nav.speed = MoveSpeed.GetValueForce() / 2;
             _nav.acceleration = _nav.speed * 1.5f / 2;
             this.GetModelManager().GetAnimator().SetBool("IsEscape", true);
             SetMoveState(true);
@@ -207,8 +227,11 @@ namespace Sophia.Entitys
 
         void Escape_FixedUpdate()
         {
-            _nav.SetDestination(EscapePosition);
-            transform.DOLookAt(_objectiveEntity.transform.position, TurnSpeed);
+            if (isMovable)
+            {
+                _nav.SetDestination(EscapePosition);
+                transform.DOLookAt(_objectiveEntity.transform.position, TurnSpeed);
+            }
         }
 
         void Escape_Exit()
@@ -243,7 +266,7 @@ namespace Sophia.Entitys
 
         void Wander_FixedUpdate()
         {
-            if (IsWandering)
+            if (IsWandering && isMovable)
             {
                 this.GetModelManager().GetAnimator().SetBool("IsWalk", true);
                 transform.DOLookAt(wanderPosition, TurnSpeed);
@@ -262,7 +285,8 @@ namespace Sophia.Entitys
         {
             Debug.Log("Attack_Enter");
 
-            SetMoveState(false);
+            _nav.SetDestination(transform.position);
+            _nav.isStopped = true;
             transform.DOLookAt(_objectiveEntity.transform.position, TurnSpeed / 2);
             DoAttack();
         }
@@ -286,7 +310,8 @@ namespace Sophia.Entitys
         {
             Debug.Log("Howl_Enter");
 
-            SetMoveState(false);
+            _nav.SetDestination(transform.position);
+            _nav.isStopped = true;
             transform.DOLookAt(_objectiveEntity.transform.position, TurnSpeed);
             DoHowl();
         }

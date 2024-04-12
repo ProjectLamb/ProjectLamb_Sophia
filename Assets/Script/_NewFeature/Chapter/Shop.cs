@@ -91,7 +91,7 @@ namespace Sophia
                 case "Equipment" :  {
                     var randIdx= random.Next(0, equipmentCount);
                     Debug.Log(randIdx);
-                    return Instantiate(itemPoolRef._equipmentItems[randIdx]).Init();
+                    return Instantiate(itemPoolRef.GetRandomEquipment(E_EQUIPMENT_TYPE.Shop)).Init();
                 }
                 case "Skill" :  {
                     var randIdx= random.Next(0, skillCount);

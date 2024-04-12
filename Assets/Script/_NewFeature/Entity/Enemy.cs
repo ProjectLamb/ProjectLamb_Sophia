@@ -35,8 +35,6 @@ namespace Sophia.Entitys
         public Stage CurrentInstantiatedStage;
 
 #endregion
-        protected Transform objectiveTarget;
         public abstract RecognizeEntityComposite GetRecognizeComposite();
-
     }
 }
