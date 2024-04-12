@@ -43,6 +43,7 @@ public class TextManager : MonoBehaviour
         _playerSkillCool.SetActive(false);
 
         talkPanel.SetActive(true);
+        talkText.text = "";
         TypingManager.instance.Typing(dialogStrings, talkText);
     }
 }

@@ -52,8 +52,10 @@ namespace Sophia.Entitys
             }
             //텍스트 테스트용
             if(Input.GetKeyDown(KeyCode.C)){
+                IsMoveAllow = false;
+                IsAttackAllow = false;
+                IsReversedInput = false;
                 textManager.TextAction();
-                Debug.Log("성공적");
                 }
         }
     }
