@@ -38,7 +38,11 @@ namespace Sophia.Instantiates
             this.IsActivated = false;
             this.TriggerTime = 0;
             this.IsReadyToTrigger = true;
-            if(_lootVFX != null) this._lootVFX?.Stop();
+            if(_lootVFX != null)
+            {
+                this._lootVFX.playRate *= 2;
+                this._lootVFX?.Stop();
+            }
             return this;
         }
 

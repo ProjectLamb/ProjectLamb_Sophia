@@ -23,6 +23,7 @@ namespace Sophia.Instantiates {
         public abstract void    PhysicsTick();
         public abstract void    RemoveFromUpdator();
         public abstract void    Use();
+        public abstract void    SetUltCoolTime();
     }
     
     public class EmptySkill : IUserInterfaceAccessible
