@@ -9,8 +9,6 @@ using Sophia.DataSystem.Referer;
 using Sophia.DataSystem;
 using Sophia.DataSystem.Modifiers;
 using Cysharp.Threading.Tasks;
-using Sophia_Carriers;
-using UnityEngine.Rendering;
 using FMODPlus;
 
 namespace Sophia.Entitys
@@ -69,6 +67,8 @@ namespace Sophia.Entitys
             Death,
         }
 
+        private object NullRef = null;
+
         StateMachine<States> fsm;
         protected override void Awake()
         {
@@ -109,10 +109,9 @@ namespace Sophia.Entitys
         {
             base.Start();
 
+            Life.OnDamaged += OnMolluHit;
             Life.OnEnterDie += OnMolluEnterDie;
             Life.OnExitDie += OnMolluExitDie;
-
-            InitAnimParamList();
         }
 
         // Update is called once per frame
@@ -163,15 +162,31 @@ namespace Sophia.Entitys
             fsm.Driver.FixedUpdate.Invoke();
         }
 
+        public void OnMolluHit(DamageInfo damageInfo)
+        {
+            // GetModelManager().GetAnimator().SetTrigger("DoHit");
+            GameManager.Instance.NewFeatureGlobalEvent.EnemyHit.PerformStartFunctionals(ref NullRef);
+        }
+
         public void OnMolluEnterDie()
         {
+            // GetModelManager().GetAnimator().SetTrigger("DoDie");
+            // _audioSources[(int)E_MOLLU_AUDIO_INDEX.Death].Play();
+
+            //VFX
             Sophia.Instantiates.VisualFXObject visualFX = VisualFXObjectPool.GetObject(_dieParticleRef).Init();
             GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
+
             CurrentInstantiatedStage.mobGenerator.RemoveMob(gameObject);
+            GameManager.Instance.NewFeatureGlobalEvent.EnemyDie.PerformStartFunctionals(ref NullRef);
+            SetMoveState(false);
+            entityCollider.enabled = false;
+
         }
 
         public void OnMolluExitDie()
         {
+            GameManager.Instance.NewFeatureGlobalEvent.EnemyDie.PerformExitFunctionals(ref NullRef);
             Destroy(gameObject, 0.5f);
         }
 
@@ -184,7 +199,11 @@ namespace Sophia.Entitys
             SetMoveState(true);
         }
 
-        public override bool Die() { Life.Died(); return true; }
+        public override bool Die()
+        {
+            Life.Died();
+            return true;
+        }
 
         void InitAnimParamList()
         {
@@ -280,6 +299,7 @@ namespace Sophia.Entitys
             //Init Settings
             originViewRadius = recognize.CurrentViewRadius;
             SetNavMeshData();
+            InitAnimParamList();
 
             fsm.ChangeState(States.Idle);
         }
@@ -467,7 +487,7 @@ namespace Sophia.Entitys
             float dist = Vector3.Distance(transform.position, _objectiveEntity.transform.position);
             if (dist <= AttackRange)
             {
-                if(IsMovable)
+                if (IsMovable)
                 {
                     transform.DOLookAt(_objectiveEntity.transform.position, TurnSpeed * 1.2f);
                 }
@@ -527,7 +547,10 @@ namespace Sophia.Entitys
         public override bool GetDamaged(DamageInfo damage)
         {
             bool isDamaged = false;
-            if (Life.IsDie) { isDamaged = false; }
+            if (Life.IsDie)
+            {
+                isDamaged = false;
+            }
             else
             {
                 if (isDamaged = Life.Damaged(damage))
@@ -535,7 +558,10 @@ namespace Sophia.Entitys
                     GameManager.Instance.NewFeatureGlobalEvent.OnEnemyHitEvent.Invoke();
                 }
             }
-            if (Life.IsDie) { fsm.ChangeState(States.Death); }
+            if (Life.IsDie)
+            {
+                fsm.ChangeState(States.Death);
+            }
             return isDamaged;
         }
 

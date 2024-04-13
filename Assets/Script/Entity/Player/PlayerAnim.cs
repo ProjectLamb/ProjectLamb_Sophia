@@ -36,7 +36,7 @@ public class PlayerAnim : MonoBehaviour
 
     void AttackEnd() // 공격 종료 시점
     {
-        player.ChangeState(PLAYERSTATES.Idle);
+        //player.ChangeState(PLAYERSTATES.Idle);
         DoAttackDash = false;
         IsThirdAttack = false;
     }
@@ -49,7 +49,6 @@ public class PlayerAnim : MonoBehaviour
     void IdleStart() // idle 상태 돌입 시 변수 초기화
     {
         IsExitAttack = false;
-        player.ChangeState(PLAYERSTATES.Idle);
     }
 
     void AttackPro()

@@ -65,8 +65,7 @@ namespace Sophia.Instantiates
                 });
             }
         }
-        public void CollectUserInterfaceAction(Skill skill, UnityAction<bool, KeyCode> action)
-        {
+        public void CollectUserInterfaceAction(Skill skill, UnityAction<bool, KeyCode> action) {
             InGameSkillSelector.Instance.OpenSkillSelector(skill, action);
         }
     }

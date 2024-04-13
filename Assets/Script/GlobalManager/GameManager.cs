@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEditor;
 
@@ -33,7 +34,7 @@ public class GameManager : MonoBehaviour
     public GameObject                          ChapterGenerator;
     public GameObject                          Shop;
     public GameObject                          CurrentStage;
-
+    
     void Awake()
     {
         Application.targetFrameRate = 60;
@@ -48,7 +49,7 @@ public class GameManager : MonoBehaviour
         //DontDestroyOnLoad(gameObject);
     }
     // Update is called once per frame
-    
+
     public void InitializeComponents(){
         if(GlobalEvent == null) GlobalEvent = GetComponentInChildren<GlobalEvent>();
         if(GlobalAudioManager == null) GlobalAudioManager = GetComponentInChildren<GlobalAudioManager>();
