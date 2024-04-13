@@ -20,6 +20,8 @@ namespace Sophia.Entitys
         [SerializeField] Player playerRef;
         [SerializeField] ModelDebugger modelDebuggerRef;
 
+        public TextManager textManager;
+
         static public bool IsMoveAllow = true; //인풋을 받을수 있는지 없는지
         static public bool IsAttackAllow = true; //인풋을 받을수 있는지 없는지
         static public bool IsReversedInput = false; //인풋을 받을수 있는지 없는지
@@ -48,6 +50,11 @@ namespace Sophia.Entitys
                 if(Input.GetKeyDown(KeyCode.R)){playerRef.Use(KeyCode.R);}
                 if(Input.GetMouseButtonDown(0)){playerRef.Attack();}
             }
+            //텍스트 테스트용
+            if(Input.GetKeyDown(KeyCode.C)){
+                textManager.TextAction();
+                Debug.Log("성공적");
+                }
         }
     }
 }

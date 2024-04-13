@@ -2,21 +2,12 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using MonsterLove.StateMachine;
 using FMODPlus;
 
 using Sophia;
 using Component = UnityEngine.Component;
 using Random = UnityEngine.Random;
-
-
-public enum PLAYERSTATES // 플레이어 상태 
-    {
-        Idle = 0,
-        Move,
-        Attack,
-        GetDamaged,
-        Die,
-    }   
 
 public class Player : Entity {
 
@@ -69,12 +60,13 @@ public class Player : Entity {
     private Vector3                 mMoveVec;
     private Quaternion              mRotate;
     private bool                    mIsBorder;
-    private bool                    mIsDashed;
+    private bool                    mIsDashed;          
     
     public  bool                    IsExitAttack; // 공격 중 탈출가능시점
     public  bool                    DoAttackDash; // 공격하면서 앞으로 조금 대쉬하는 시점
     public  bool                    attackProTime; // 공격 이펙트 출현시점
-    public  bool                    IsThirdAttack;
+    public  bool                    mIsDie; // 플레이어 사망여부
+    public  bool                    mIsAttack; // 플레이어 공격여부
 
     [HideInInspector] Animator anim;
     
@@ -83,8 +75,17 @@ public class Player : Entity {
     IEnumerator mCoWaitDash;        // StopCorutine을 사용하기 위해서는 코루틴 변수가 필요하다. 
     public ParticleSystem DieParticle;
 
-    public State [] states; // 상태 배열
-    public State    currentState; // 현재 상태
+    public enum PLAYERSTATES // 플레이어 상태 
+    {
+        Idle,
+        Move,
+        Attack,
+        GetDamaged,
+        Die,
+    }   
+
+    StateMachine<PLAYERSTATES> playerfsm;
+
 
     protected override void Awake(){
         /*아래 3줄은 절때 활성화 하지마라. base.Awake() 에서 이미 이걸 하고 있다.*/
@@ -95,34 +96,18 @@ public class Player : Entity {
         base.Awake();
         model.TryGetComponent<Animator>(out anim);
         model.TryGetComponent<PlayerAnim>(out playerAnim);
-      
+
         //kabocha
-        states                         = new State[5];
-        states[(int)PLAYERSTATES.Idle] = new PlayerState.Idle();
-        states[(int)PLAYERSTATES.Move] = new PlayerState.Move();
-        states[(int)PLAYERSTATES.Attack] = new PlayerState.Attack();
-        states[(int)PLAYERSTATES.GetDamaged] = new PlayerState.GetDamaged();
-        states[(int)PLAYERSTATES.Die] = new PlayerState.Die();
- 
-        //시작할 때 플레이어 상태 idle 상태로 지정
-        currentState = states[(int)PLAYERSTATES.Idle];
+        playerfsm = new StateMachine<PLAYERSTATES>(this);
+        playerfsm.ChangeState(PLAYERSTATES.Idle);
       
         Life = new Sophia.Composite.LifeComposite(PlayerDataManager.GetEntityData().MaxHP);
     }
 
     private void Start() {
-
         DashSkillAbility = new Sophia.Composite.DashSkill(entityRigidbody, DashDataSender, 500);
         DashSkillAbility.SetAudioSource(DashSource);
         MasterData.MaxStaminaInject(DashSkillAbility.MaxStamina);
-    }
-
-    //매 프레임마다 플레이어 현재 상태의 Update 함수 호출
-    public void Update(){
-        if(currentState != null)
-        {
-            currentState.Update(this);
-        }
     }
     
 #region 
@@ -134,7 +119,7 @@ public class Player : Entity {
         Life.Damaged(damageInfo);
         PlayerDataManager.GetEntityData().HitState.Invoke();
         anim.SetTrigger("GetDamaged");
-        ChangeState(PLAYERSTATES.GetDamaged);
+        //ChangeState(PLAYERSTATES.GetDamaged);
         if(Life.CurrentHealth <= 0) Die(); // 체력이 0 이하면 사망 처리
     }
 
@@ -145,12 +130,12 @@ public class Player : Entity {
         damageInfo.damageRatio = 1;
         Life.Damaged(damageInfo);
         PlayerDataManager.GetEntityData().HitState.Invoke();
-        anim.SetTrigger("GetDamaged");
         visualModulator.InteractByVFX(obj);
     }
 
     public override void Die() {
-        ChangeState(PLAYERSTATES.Die);
+        mIsDie = true;
+        //ChangeState(PLAYERSTATES.Die);
         anim.SetTrigger("Die");
     }
 
@@ -182,7 +167,7 @@ public class Player : Entity {
             Vector3 rbVel = mMoveVec * moveSpeed;
             this.entityRigidbody.velocity = rbVel;
             if(mMoveVec != Vector3.zero){
-                ChangeState(PLAYERSTATES.Move);
+                //ChangeState(PLAYERSTATES.Move);
                 mRotate = Quaternion.LookRotation(mMoveVec);
                 transform.rotation = Quaternion.Slerp(transform.rotation,mRotate, 0.6f);
             }
@@ -233,7 +218,8 @@ public class Player : Entity {
     public void Attack()
     {
         anim.SetTrigger("DoAttack");
-        ChangeState(PLAYERSTATES.Attack);
+        mIsAttack = true;
+        playerfsm.ChangeState(PLAYERSTATES.Attack);
         //Turning(() => weaponManager.weapon.Use(PlayerDataManager.GetEntityData().Power));
     }
     
@@ -286,7 +272,7 @@ public class Player : Entity {
             // 마우스가 "Enemy" 태그를 가진 collider와 충돌했을때
             if(hit.collider.tag == "Enemy"){
                 // 공격중이라면
-                if(currentState == states[(int)PLAYERSTATES.Attack]){
+                if(mIsAttack){
                     // RAYCASTHIT가 닿은 대상의 중심을 바라본다
                     transform.rotation = Quaternion.LookRotation(hit.collider.transform.position - this.transform.position);
                     }
@@ -298,20 +284,18 @@ public class Player : Entity {
     {
         IsExitAttack = PlayerAnim.IsExitAttack;
         DoAttackDash = PlayerAnim.DoAttackDash;
-        IsThirdAttack = PlayerAnim.IsThirdAttack;
-
         // 공격중이라면
-        if(currentState == states[(int)PLAYERSTATES.Attack]){
-            anim.SetBool("isAttack",true);
+        if(mIsAttack){
+            anim.SetBool("IsAttack",true);
         }
         else{
-            anim.SetBool("isAttack",false);
+            anim.SetBool("IsAttack",false);
         }
 
         //공격 중 이동이 감지되었다면
         if(IsExitAttack && inputVec != Vector2.zero)
         {
-            ChangeState(PLAYERSTATES.Idle);
+            //ChangeState(PLAYERSTATES.Idle);
             anim.SetBool("IsExitAttack",true);
         }
         else if(!IsExitAttack)
@@ -319,26 +303,7 @@ public class Player : Entity {
             anim.SetBool("IsExitAttack",false);
         }
 
-        if(currentState == states[(int)PLAYERSTATES.Idle]) // Idle 상태면 Attack 트리거 reset
+        if(!mIsAttack) // Idle 상태면 Attack 트리거 reset
             anim.ResetTrigger("DoAttack");
-    }
-
-    public void ChangeState(PLAYERSTATES newState)
-    {
-        //새로 바꾸려는 상태가 비어있으면 그냥 return;
-        if(states[(int)newState] == null) {
-            Debug.Log("텅 비엇내");
-            return;
-        }
-
-        // 현재 재생중인 상태 있으면 exit 호출
-        if(currentState != null)
-        {
-            currentState.Exit(this);
-        }
-
-        //새로운 상태로 변경, 새로 바뀐 상태의 enter 호출
-        currentState = states[(int)newState];
-        currentState.Enter(this);
     }
 }

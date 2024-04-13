@@ -94,6 +94,7 @@ namespace Sophia.Entitys
                 () => {Debug.Log("기어 획득");}
             );
             _affectorManager.Init(_basePlayerData.Tenacity);
+
         }
 
         protected override void Start()
@@ -255,6 +256,5 @@ namespace Sophia.Entitys
         public override void Recover(Affector affector) => this._affectorManager.Recover(affector);
 
 #endregion
-
     }
 }
