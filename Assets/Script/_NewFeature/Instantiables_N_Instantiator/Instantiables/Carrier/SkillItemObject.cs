@@ -21,8 +21,8 @@ namespace Sophia.Instantiates
         [SerializeField] public SerialUserInterfaceData     _userInterfaceData;
         [SerializeField] public SerialAffectorData          _affectorData;
         [SerializeField] public SerialOnDamageExtrasModifierDatas _damageModifierData;
-        [SerializeField] public SerialOnConveyAffectExtrasModifierDatas _conveyAffectModifierData; 
-        [SerializeField] public SerialProjectileInstantiateData _projectileInstantiateData; 
+        [SerializeField] public SerialOnConveyAffectExtrasModifierDatas _conveyAffectModifierData;
+        [SerializeField] public SerialProjectileInstantiateData _projectileInstantiateData;
         public Skill skill  { get; private set; }
         public bool ISDEBUG = true;
 
@@ -55,7 +55,7 @@ namespace Sophia.Instantiates
                 });
             }
         }
-        public void CollectUserInterfaceAction(Skill skill, UnityAction<bool, KeyCode> action) { 
+        public void CollectUserInterfaceAction(Skill skill, UnityAction<bool, KeyCode> action) {
             InGameSkillSelector.Instance.OpenSkillSelector(skill, action);
         }
     }
