@@ -55,6 +55,7 @@ public class TypingManager : MonoBehaviour
             dialogsSave = null;
             tmpSave = null;
             dialogNumber = 0;
+            textObj.text = "";
         }
     }
  
@@ -67,6 +68,7 @@ public class TypingManager : MonoBehaviour
             if (isTypingEnd)
             {
                 tmpSave.text = ""; //비어있는 문장 넘겨서 초기화. 
+                GetInputUp();
                 Typing(dialogsSave, tmpSave);
             }
             else

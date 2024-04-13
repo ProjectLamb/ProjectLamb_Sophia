@@ -46,4 +46,23 @@ public class TextManager : MonoBehaviour
         talkText.text = "";
         TypingManager.instance.Typing(dialogStrings, talkText);
     }
+
+    private void Start()
+    {
+        _playerHealthBar.SetActive(false);
+        _playerBarrierBar.SetActive(false);
+        _playerStaminaBar.SetActive(false);
+        _playerWealthBar.SetActive(false);
+        _playerSkillCool.SetActive(false);
+
+        talkPanel.SetActive(true);
+        TypingManager.instance.Typing(dialogStrings, talkText);
+    }
+
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.C)){
+            TypingManager.instance.GetInputDown();
+        }
+    }
 }

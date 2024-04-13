@@ -50,13 +50,6 @@ namespace Sophia.Entitys
                 if(Input.GetKeyDown(KeyCode.R)){playerRef.Use(KeyCode.R);}
                 if(Input.GetMouseButtonDown(0)){playerRef.Attack();}
             }
-            //텍스트 테스트용
-            if(Input.GetKeyDown(KeyCode.C)){
-                IsMoveAllow = false;
-                IsAttackAllow = false;
-                IsReversedInput = false;
-                textManager.TextAction();
-                }
         }
     }
 }
