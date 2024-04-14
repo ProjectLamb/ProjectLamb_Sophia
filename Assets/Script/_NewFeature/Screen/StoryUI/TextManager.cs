@@ -14,7 +14,8 @@ public class TextManager : MonoBehaviour
     public TextMeshProUGUI talkText;
     public string[] dialogStrings;
     TalkData[] talkDatas;
-    private int currentPage = 0;
+    private int currentPage = 0; // 대화문 개수 변수
+    public bool IsStory = false;
 
     [SerializeField] public GameObject _playerHealthBar;
     [SerializeField] public GameObject _playerBarrierBar;
@@ -52,6 +53,7 @@ public class TextManager : MonoBehaviour
     */
     private void Start()
     {
+        IsStory = true;
         TextBarOn();
         talkDatas = this.GetComponent<Dialogue>().GetObjectDialogue();
         TypingManager.instance.Typing(talkDatas[0].contexts, talkText);
@@ -60,14 +62,16 @@ public class TextManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.C))
+        if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
         {
 
             TypingManager.instance.GetInputDown();
             if (TypingManager.instance.isTypingEnd)
             {
-                if(currentPage == talkDatas.Length && TypingManager.instance.isDialogEnd)
+                if(currentPage == talkDatas.Length && TypingManager.instance.isDialogEnd){
                     TextBarOff();
+                    IsStory = false;
+                }
                 TypingManager.instance.Typing(talkDatas[currentPage].contexts, talkText);
                 currentPage++;
             }
