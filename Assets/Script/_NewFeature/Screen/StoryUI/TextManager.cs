@@ -64,5 +64,20 @@ public class TextManager : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.C)){
             TypingManager.instance.GetInputDown();
         }
+        TalkData[] talkDatas = this.GetComponent<Dialogue>().GetObjectDialogue();
+                // 대사가 null이 아니면 대사 출력
+        if(talkDatas != null) DebugDialogue(talkDatas);
+    }
+
+    void DebugDialogue(TalkData[] talkDatas)
+    {
+        for (int i = 0; i < talkDatas.Length; i++)
+        {
+            // 캐릭터 이름 출력
+            Debug.Log(talkDatas[i].name);
+            // 대사들 출력
+            foreach (string context in talkDatas[i].contexts) 
+            	Debug.Log(context);
+        }
     }
 }
