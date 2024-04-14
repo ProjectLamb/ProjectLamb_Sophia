@@ -8,10 +8,10 @@ public class DialogueParse : MonoBehaviour
 public static Dictionary<string, TalkData[]> DialogueDictionary = 
 				new Dictionary<string, TalkData[]>();
 [SerializeField] private TextAsset csvFile = null;
-[SerializeField] List<DebugTalkData> DebugTalkDataList = 
-					    new List<DebugTalkData>();
+[SerializeField] List<ShowTalkData> ShowTalkDataList = 
+					    new List<ShowTalkData>();
                         
-void SetDebugTalkData()
+void SetShowTalkData()
 {
     // 딕셔너리의 키 값들을 가진 리스트
     List<string> eventNames = 
@@ -23,10 +23,10 @@ void SetDebugTalkData()
     // 딕셔너리의 크기만큼 추가
     for(int i = 0; i < eventNames.Count; i++)
     {
-        DebugTalkData debugTalk = 
-        	new DebugTalkData (eventNames[i], talkDatasList[i]);
+        ShowTalkData showTalk = 
+        	new ShowTalkData (eventNames[i], talkDatasList[i]);
         
-        DebugTalkDataList.Add(debugTalk);
+        ShowTalkDataList.Add(showTalk);
     }
  }
 
@@ -38,6 +38,7 @@ public static TalkData[] GetDialogue(string eventName)
 private void Awake()
 {
     SetTalkDictionary();
+    SetShowTalkData();
 }
 public void SetTalkDictionary()
 {

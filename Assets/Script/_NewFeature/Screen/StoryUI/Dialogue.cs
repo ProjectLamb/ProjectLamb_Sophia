@@ -8,12 +8,12 @@ public struct TalkData
 }
 
 [System.Serializable]
-public class DebugTalkData
+public class ShowTalkData
 {
     public string eventName;
     public TalkData[] talkDatas;
     
-    public DebugTalkData(string name, TalkData[] td)
+    public ShowTalkData(string name, TalkData[] td)
     {
         eventName = name;
         talkDatas = td;

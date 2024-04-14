@@ -13,18 +13,21 @@ public class TextManager : MonoBehaviour
     public GameObject talkPanel;
     public TextMeshProUGUI talkText;
     public string[] dialogStrings;
+    TalkData[] talkDatas;
+    private int currentPage = 0;
 
-    [SerializeField] public GameObject          _playerHealthBar;
-    [SerializeField] public GameObject          _playerBarrierBar;
-    [SerializeField] public GameObject          _playerStaminaBar;
-    [SerializeField] public GameObject          _playerWealthBar;
-    [SerializeField] public GameObject          _playerSkillCool;
+    [SerializeField] public GameObject _playerHealthBar;
+    [SerializeField] public GameObject _playerBarrierBar;
+    [SerializeField] public GameObject _playerStaminaBar;
+    [SerializeField] public GameObject _playerWealthBar;
+    [SerializeField] public GameObject _playerSkillCool;
 
     private static TextManager _instance;
     public static TextManager Instance
     {
-        get {
-            if(_instance == null)
+        get
+        {
+            if (_instance == null)
             {
                 _instance = FindFirstObjectByType(typeof(TextManager)) as TextManager;
 
@@ -34,50 +37,59 @@ public class TextManager : MonoBehaviour
             return _instance;
         }
     }
+    /*
+        public void TextAction(){
+            _playerHealthBar.SetActive(false);
+            _playerBarrierBar.SetActive(false);
+            _playerStaminaBar.SetActive(false);
+            _playerWealthBar.SetActive(false);
+            _playerSkillCool.SetActive(false);
 
-    public void TextAction(){
-        _playerHealthBar.SetActive(false);
-        _playerBarrierBar.SetActive(false);
-        _playerStaminaBar.SetActive(false);
-        _playerWealthBar.SetActive(false);
-        _playerSkillCool.SetActive(false);
-
-        talkPanel.SetActive(true);
-        talkText.text = "";
-        TypingManager.instance.Typing(dialogStrings, talkText);
-    }
-
+            talkPanel.SetActive(true);
+            talkText.text = "";
+            TypingManager.instance.Typing(dialogStrings, talkText);
+        }
+    */
     private void Start()
     {
-        _playerHealthBar.SetActive(false);
-        _playerBarrierBar.SetActive(false);
-        _playerStaminaBar.SetActive(false);
-        _playerWealthBar.SetActive(false);
-        _playerSkillCool.SetActive(false);
-
-        talkPanel.SetActive(true);
-        TypingManager.instance.Typing(dialogStrings, talkText);
+        TextBarOn();
+        talkDatas = this.GetComponent<Dialogue>().GetObjectDialogue();
+        TypingManager.instance.Typing(talkDatas[0].contexts, talkText);
+        currentPage++;
     }
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.C)){
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+
             TypingManager.instance.GetInputDown();
+            if (TypingManager.instance.isTypingEnd)
+            {
+                if(currentPage == talkDatas.Length && TypingManager.instance.isDialogEnd)
+                    TextBarOff();
+                TypingManager.instance.Typing(talkDatas[currentPage].contexts, talkText);
+                currentPage++;
+            }
         }
-        TalkData[] talkDatas = this.GetComponent<Dialogue>().GetObjectDialogue();
-                // 대사가 null이 아니면 대사 출력
-        if(talkDatas != null) DebugDialogue(talkDatas);
     }
 
-    void DebugDialogue(TalkData[] talkDatas)
+    private void TextBarOff()
     {
-        for (int i = 0; i < talkDatas.Length; i++)
-        {
-            // 캐릭터 이름 출력
-            Debug.Log(talkDatas[i].name);
-            // 대사들 출력
-            foreach (string context in talkDatas[i].contexts) 
-            	Debug.Log(context);
-        }
+        talkPanel.SetActive(false);
+        _playerHealthBar.SetActive(true);
+        _playerBarrierBar.SetActive(true);
+        _playerStaminaBar.SetActive(true);
+        _playerWealthBar.SetActive(true);
+        _playerSkillCool.SetActive(true);
+    }
+    private void TextBarOn()
+    {
+        talkPanel.SetActive(true);
+        _playerHealthBar.SetActive(false);
+        _playerBarrierBar.SetActive(false);
+        _playerStaminaBar.SetActive(false);
+        _playerWealthBar.SetActive(false);
+        _playerSkillCool.SetActive(false);
     }
 }
