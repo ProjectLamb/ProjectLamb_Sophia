@@ -12,6 +12,7 @@ public class TextManager : MonoBehaviour
 {
     public GameObject talkPanel;
     public TextMeshProUGUI talkText;
+    public TextMeshProUGUI nameText;
     public string[] dialogStrings;
     TalkData[] talkDatas;
     private int currentPage = 0; // 대화문 개수 변수
@@ -38,25 +39,13 @@ public class TextManager : MonoBehaviour
             return _instance;
         }
     }
-    /*
-        public void TextAction(){
-            _playerHealthBar.SetActive(false);
-            _playerBarrierBar.SetActive(false);
-            _playerStaminaBar.SetActive(false);
-            _playerWealthBar.SetActive(false);
-            _playerSkillCool.SetActive(false);
-
-            talkPanel.SetActive(true);
-            talkText.text = "";
-            TypingManager.instance.Typing(dialogStrings, talkText);
-        }
-    */
     private void Start()
     {
         IsStory = true;
         TextBarOn();
         talkDatas = this.GetComponent<Dialogue>().GetObjectDialogue();
         TypingManager.instance.Typing(talkDatas[0].contexts, talkText);
+        nameText.text = talkDatas[0].name;
         currentPage++;
     }
 
@@ -72,10 +61,15 @@ public class TextManager : MonoBehaviour
                     TextBarOff();
                     IsStory = false;
                 }
+                nameText.text = talkDatas[currentPage].name;
                 TypingManager.instance.Typing(talkDatas[currentPage].contexts, talkText);
                 currentPage++;
             }
         }
+        if(GameManager.Instance.GlobalEvent.IsGamePaused)
+            talkPanel.SetActive(false);
+        else if(!GameManager.Instance.GlobalEvent.IsGamePaused && IsStory)
+            talkPanel.SetActive(true);
     }
 
     private void TextBarOff()
