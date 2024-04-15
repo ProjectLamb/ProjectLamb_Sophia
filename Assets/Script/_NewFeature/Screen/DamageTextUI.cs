@@ -125,7 +125,7 @@ namespace Sophia.UserInterface
             StopCoroutine(CurrentDestroyCoroutine);
 
             int currentDamage = DamageAmount;
-            int newDamage = damageInfo.GetAmount();
+            int newDamage = currentDamage;
             //int newDamage = currentDamage + damageInfo.GetAmount();
             _rigid.velocity = Vector3.zero;
             Sequence ReactivateSeq = DOTween.Sequence();

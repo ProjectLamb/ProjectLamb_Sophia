@@ -100,6 +100,10 @@ namespace Sophia.UserInterface
             collectedSkillButton[1].SetUserInterfaceData(skillManager.GetSkillInfoByKey(KeyCode.E), KeyCode.E);
             collectedSkillButton[2].SetUserInterfaceData(skillManager.GetSkillInfoByKey(KeyCode.R), KeyCode.R);
 
+            InGameScreenUI.Instance._playerSkillCoolUIs[0].DrawForce();
+            InGameScreenUI.Instance._playerSkillCoolUIs[1].DrawForce();
+            InGameScreenUI.Instance._playerSkillCoolUIs[2].DrawForce();
+
             if (!currentSkillButtonGameObject.activeSelf) {  // currentSkillButton 오브젝트가 비활성화 되어있는 경우 => 창 종료
                 StartCoroutine(GlobalAsync.PerformUnScaled(0.5f, CloseSkillSelector));
             }

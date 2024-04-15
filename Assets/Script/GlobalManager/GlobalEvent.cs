@@ -99,7 +99,7 @@ public class GlobalEvent : MonoBehaviour
     {
         if (arrvieStage.GetComponent<Stage>().Type == "boss")
         {
-            InGameScreenUI.Instance._videoController.StartVideo();
+            InGameScreenUI.Instance._videoController.StartVideo(VideoController.E_VIDEO_NAME.ElderOne);
         }
 
         OnStageEnter.ForEach(E => E.Invoke(departStage.GetComponent<Stage>(), arrvieStage.GetComponent<Stage>()));

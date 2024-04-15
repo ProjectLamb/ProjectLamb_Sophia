@@ -9,6 +9,7 @@ namespace Sophia.Instantiates {
     using Sophia.Composite.RenderModels;
     using Sophia.Instantiates.Skills;
     using Sophia.Composite;
+    using Sophia.UserInterface;
 
     public abstract class Skill : IUserInterfaceAccessible, IUpdatorBindable
     {

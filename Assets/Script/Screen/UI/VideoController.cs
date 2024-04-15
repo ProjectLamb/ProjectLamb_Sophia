@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using FMODPlus;
 using Michsky.DreamOS;
+using NUnit.Framework.Constraints;
 using Sophia.UserInterface;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,19 +10,23 @@ using UnityEngine.Video;
 
 public class VideoController : MonoBehaviour
 {
-    [SerializeField] VideoPlayer vid;
-    [SerializeField] RawImage image;
+    public enum E_VIDEO_NAME { None, Opening, ElderOne, }
+    E_VIDEO_NAME currentVideo = E_VIDEO_NAME.None;
+    [SerializeField] GameObject[] videoList;
+    VideoPlayer vid;
+    RawImage image;
     [SerializeField] FMODAudioSource fMODAudioSource;
     [SerializeField] CommandSender commandStarter;
     [SerializeField] CommandSender commandEnder;
-    // Start is called before the first frame update
-    void Start()
+
+    public void StartVideo(E_VIDEO_NAME video)
     {
+        image = videoList[(int)video].transform.GetChild(0).GetComponent<RawImage>();
+        vid = videoList[(int)video].transform.GetChild(1).GetComponent<VideoPlayer>();
+        currentVideo = video;
+        fMODAudioSource = videoList[(int)video].transform.GetChild(1).GetComponent<FMODAudioSource>();
         vid.loopPointReached += VideoEnd;
-        image.enabled = false;
-    }
-    public void StartVideo()
-    {
+
         StartCoroutine(CoFadeIn(0.02f, 0.1f));
     }
 
@@ -35,25 +40,31 @@ public class VideoController : MonoBehaviour
         commandEnder.SendCommand();
         vid.Play();
         fMODAudioSource?.Play();
-        
+
         float passedTime = 0;
-        while(passedTime < fadeDuration) {
+        while (passedTime < fadeDuration)
+        {
             Color c = image.color;
-            c = (new Vector4(1,1,1,0) * (passedTime / fadeDuration)) + new Vector4(0,0,0,1);
+            c = (new Vector4(1, 1, 1, 0) * (passedTime / fadeDuration)) + new Vector4(0, 0, 0, 1);
             image.color = c;
             passedTime += fadeTime;
             yield return new WaitForSecondsRealtime(fadeTime);
-        }        
+        }
     }
 
     void VideoEnd(UnityEngine.Video.VideoPlayer vp)
     {
-        Debug.Log("Video End");
-
         InGameScreenUI.Instance._fadeUI.AddBindingAction(() =>
         {
             GameManager.Instance.GlobalEvent.IsGamePaused = false;
-            InGameScreenUI.Instance._bossHealthBar.SetActive(true);
+
+            switch (currentVideo)
+            {
+                case E_VIDEO_NAME.ElderOne:
+                    InGameScreenUI.Instance._bossHealthBar.SetActive(true);
+                    break;
+            }
+
             commandStarter.SendCommand();
             image.enabled = false;
             vid.Stop();
