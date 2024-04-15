@@ -37,6 +37,7 @@ public class GameManager : MonoBehaviour
     
     void Awake()
     {
+        Resources.UnloadUnusedAssets();
         Application.targetFrameRate = 60;
 
         if (_instance == null) {
