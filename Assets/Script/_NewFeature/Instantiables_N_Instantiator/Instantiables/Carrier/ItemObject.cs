@@ -4,6 +4,7 @@ using UnityEngine;
 namespace Sophia.Instantiates
 {
     using DG.Tweening;
+    using FMODPlus;
     using Sophia.DataSystem;
     using Sophia.DataSystem.Modifiers;
     using Sophia.DataSystem.Modifiers.ConcreteEquipment;
@@ -17,6 +18,7 @@ namespace Sophia.Instantiates
         [SerializeField] protected bool           _isDestroyable = true;
         [SerializeField] protected GameObject     _destroyEffect = null;
         [SerializeField] protected GameObject     _playerGameObject = null;
+        [SerializeField] protected FMODAudioSource _audioSource;
 
         public bool IsInitialized       { get; protected set; }
         public bool IsActivated         { get; protected set; }

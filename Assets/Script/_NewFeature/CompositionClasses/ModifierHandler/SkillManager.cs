@@ -130,6 +130,28 @@ namespace Sophia.Composite
             else { return false; }
         }
 
+        /*
+
+        public bool SwapSkill(KeyCode keyA, KeyCode keyB) {
+            if (collectedSkill.ContainsKey(keyA) && collectedSkill.ContainsKey(keyB)) {
+                (collectedSkill[keyA], collectedSkill[keyB]) = (collectedSkill[keyB], collectedSkill[keyA]);
+                if (collectedSkill[keyA] != null)
+                    Collect(collectedSkill[keyA], keyA);
+                else
+                    Drop(keyA);
+
+                if (collectedSkill[keyB] != null)
+                    Collect(collectedSkill[keyB], keyB);
+                else
+                    Drop(keyB);
+
+                return true;
+            }
+            throw new System.Exception("올바른 스킬 키보드 접근이 아님 QER 중 하나로..");
+        }
+
+        */
+
         public bool SwapSkill(KeyCode keyA, KeyCode keyB)
         {
             int KeyAUiIndex = -1;
