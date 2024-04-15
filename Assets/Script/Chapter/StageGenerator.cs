@@ -532,13 +532,13 @@ public class StageGenerator : MonoBehaviour
         switch (stageSizeRandom)
         {
             case 1:
-                obstacleAmount = rand.Next(0, 11);
+                obstacleAmount = rand.Next(0, 6);
                 break;
             case 2:
-                obstacleAmount = rand.Next(0, 21);
+                obstacleAmount = rand.Next(0, 16);
                 break;
             case 3:
-                obstacleAmount = rand.Next(10, 31);
+                obstacleAmount = rand.Next(10, 26);
                 break;
         }
     }

@@ -48,39 +48,30 @@ namespace Sophia
 
         void AttackStart() // 공격 시작 시점
         {
-            //DoAttack 선입력 해제
-            if (animator.GetFloat("attackAnimSpeed") <= 1.5f)
-            {
-                animator.ResetTrigger("DoAttack");
-            }
-            animator.SetFloat("Move", 0);
+            // //DoAttack 선입력 해제
+            // if (animator.GetFloat("attackAnimSpeed") <= 1.5f)
+            // {
+            //     animator.ResetTrigger("DoAttack");
+            // }
             isAttack = true;
-            animator.SetBool("isAttack", true);
-
             canExitAttack = false;
-            animator.SetBool("canExitAttack", false);
             canNextAttack = false;
-            animator.SetBool("canNextAttack", false);
         }
 
         void AttackEnd() // 공격 종료 시점
         {
             isAttack = false;
-            animator.SetBool("isAttack", false);
         }
 
         void NextAttack()
         {
             canNextAttack = true;
-            animator.SetBool("canNextAttack", true);
             canExitAttack = false;
-            animator.SetBool("canExitAttack", false);
         }
 
         void ExitAttack() // 공격 애니메이션 중 이동 입력 시 탈출
         {
             animator.ResetTrigger("DoAttack");
-
             canExitAttack = true;
             animator.SetBool("canExitAttack", true);
         }
@@ -90,12 +81,17 @@ namespace Sophia
             animator.SetFloat("attackAnimSpeed", attackAnimSpeed);
             animator.ResetTrigger("DoAttack");
             canNextAttack = true;
-            animator.SetBool("canNextAttack", true);
             canExitAttack = true;
             animator.SetBool("canExitAttack", true);
             isAttack = false;
-            animator.SetBool("isAttack", false);
             attackProTime = false;
+        }
+
+        void ResetMove()
+        {
+            animator.ResetTrigger("DoAttack");
+            canNextAttack = true;
+            isAttack = false;
         }
 
         void AttackPro()
@@ -106,7 +102,6 @@ namespace Sophia
         void thrAttackExit()
         {
             animator.ResetTrigger("DoAttack");
-
             canExitAttack = true;
             animator.SetBool("canExitAttack", true);
         }
@@ -114,14 +109,45 @@ namespace Sophia
         void thrAttackEnd()
         {
             animator.ResetTrigger("DoAttack");
-
             isAttack = false;
-            animator.SetBool("isAttack", false);
         }
 
-        private void Update() {
+        public void CheckAttack()
+        {
+            // 공격중이라면
+            if (isAttack)
+            {
+                animator.SetBool("isAttack", true);
+            }
+            else
+            {
+                animator.SetBool("isAttack", false);
+            }
+
+            //공격 중 이동이 감지되었다면
+            if (canExitAttack && player.MoveInput.magnitude >= 0.01f)
+            {
+                animator.SetBool("canExitAttack", true);
+            }
+            else if (!canExitAttack)
+            {
+                animator.SetBool("canExitAttack", false);
+            }
+
+            if (canNextAttack)
+            {
+                animator.SetBool("canNextAttack", true);
+            }
+            else
+            {
+                animator.SetBool("canNextAttack", false);
+            }
+        }
+
+        private void Update()
+        {
+            CheckAttack();
             attackAnimSpeed = weapon.CurrentRatioAttackSpeed + attackSpeedWeight;
         }
     }
-
 }

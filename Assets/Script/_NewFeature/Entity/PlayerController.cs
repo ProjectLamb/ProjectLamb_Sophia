@@ -19,6 +19,7 @@ namespace Sophia.Entitys
     {
         [SerializeField] Player playerRef;
         [SerializeField] ModelDebugger modelDebuggerRef;
+        [SerializeField] PlayerInput playerInput;
 
         public TextManager textManager; // 텍스트 매니저
 
@@ -29,6 +30,8 @@ namespace Sophia.Entitys
         private void Awake()
         {
             IsMoveAllow = true;
+            IsAttackAllow = true;
+            TryGetComponent<PlayerInput>(out playerInput);
         }
 
         private void FixedUpdate()
@@ -43,7 +46,6 @@ namespace Sophia.Entitys
 
         private void Update()
         {
-
             if (GameManager.Instance.GlobalEvent.IsGamePaused) return;
             //playerRef.AimAssist();
             //playerRef.CheckAttack();
@@ -56,6 +58,7 @@ namespace Sophia.Entitys
             {
                 AllowInput();
             }
+            
             if (Input.GetKeyDown(KeyCode.Tab)) modelDebuggerRef.ToggleMenu();
 
             if (IsMoveAllow)

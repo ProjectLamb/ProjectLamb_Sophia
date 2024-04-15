@@ -55,6 +55,7 @@ namespace Sophia.Instantiates
         public List<ItemObject> InstantiateReward()
         {
             int index = Gacha();
+            System.Random random = new System.Random();
             Debug.Log(index);
             ItemObject item = gachaItemList[index].item;
             List<ItemObject> res = new List<ItemObject>();
@@ -71,9 +72,13 @@ namespace Sophia.Instantiates
                     case GearItemObject:
                         res.Add(_bucket.InstantablePositioning(Instantiate(item)).Init());
                         break;
+                    case SkillItemObject:
+                        item = ItemPool.Instance._skillItems[random.Next(0, ItemPool.Instance._skillItems.Count)];
+                        Debug.Log(item.name);
+                        res.Add(_bucket.InstantablePositioning(Instantiate(item)).Init());
+                        break;
                     case EquipmentItemObject:
-                        System.Random random = new System.Random();
-                        item = ItemPool.Instance._equipmentItems[random.Next(0, ItemPool.Instance._equipmentItems.Count)];//.GetRandomItem("Equipment").Clone();
+                        item = ItemPool.Instance._equipmentItems[random.Next(0, ItemPool.Instance._equipmentItems.Count)];
                         res.Add(_bucket.InstantablePositioning(Instantiate(item)).Init());
                         break;
                 }
