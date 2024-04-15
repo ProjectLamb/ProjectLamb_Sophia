@@ -12,7 +12,7 @@ namespace Sophia.Instantiates.Skills
         protected string name;
         protected string description;
         protected Sprite icon;
-        protected float baseCoolTime = 10f;
+        protected float baseCoolTime = 15f;
         protected int baseStackAmount = 1;
         public CoolTimeComposite TimerComposite { get; protected set; }
         public override CoolTimeComposite GetCoolTimeComposite() => this.TimerComposite;

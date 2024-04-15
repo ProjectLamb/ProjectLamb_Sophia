@@ -21,7 +21,7 @@ namespace Sophia.Entitys
         [SerializeField] ModelDebugger modelDebuggerRef;
         [SerializeField] PlayerInput playerInput;
 
-        public TextManager textManager;
+        public TextManager textManager; // 텍스트 매니저
 
         static public bool IsMoveAllow = true; //인풋을 받을수 있는지 없는지
         static public bool IsAttackAllow = true; //인풋을 받을수 있는지 없는지
@@ -36,6 +36,11 @@ namespace Sophia.Entitys
 
         private void FixedUpdate()
         {
+            if (TextManager.Instance.IsStory)
+            {
+                DisallowInput();
+                return;
+            }
             playerRef.MoveTick();
         }
 
@@ -44,6 +49,16 @@ namespace Sophia.Entitys
             if (GameManager.Instance.GlobalEvent.IsGamePaused) return;
             //playerRef.AimAssist();
             //playerRef.CheckAttack();
+            if (TextManager.Instance.IsStory) // 스토리대사가 진행중이면 입력 제한
+            {
+                DisallowInput();
+                return;
+            }
+            else if (!TextManager.Instance.IsStory) // 스토리대사가 끝나면 입력 복구
+            {
+                AllowInput();
+            }
+            
             if (Input.GetKeyDown(KeyCode.Tab)) modelDebuggerRef.ToggleMenu();
 
             if (IsMoveAllow)
@@ -58,11 +73,18 @@ namespace Sophia.Entitys
                 if (Input.GetKeyDown(KeyCode.R)) { playerRef.Use(KeyCode.R); }
                 if (Input.GetMouseButtonDown(0)) { playerRef.Attack(); }
             }
-            //텍스트 테스트용
-            if(Input.GetKeyDown(KeyCode.C)){
-                textManager.TextAction();
-                Debug.Log("성공적");
-                }
+        }
+        private void DisallowInput()
+        {
+            IsMoveAllow = false;
+            IsAttackAllow = false;
+            IsReversedInput = false;
+        }
+        private void AllowInput()
+        {
+            IsMoveAllow = true;
+            IsAttackAllow = true;
+            IsReversedInput = true;
         }
     }
 }

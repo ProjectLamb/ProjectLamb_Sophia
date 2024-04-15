@@ -5,6 +5,7 @@ using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using FMODPlus;
 using Cysharp.Threading.Tasks;
+using UnityEngine.SceneManagement;
 
 namespace Sophia.Entitys
 {
@@ -144,7 +145,8 @@ namespace Sophia.Entitys
             entityCollider.enabled = false;
             _modelManager.GetAnimator().SetTrigger("Die");
 
-
+            InGameScreenUI.Instance._fadeUI.AddBindingAction(() => { SceneManager.LoadScene(0); });
+            InGameScreenUI.Instance._fadeUI.FadeOut(0.02f, 1.0f);
             //OnDieEvent.Invoke();
 
             return true;

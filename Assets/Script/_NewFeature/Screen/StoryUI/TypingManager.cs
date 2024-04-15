@@ -20,9 +20,8 @@ public class TypingManager : MonoBehaviour
     string[] dialogsSave;
     TextMeshProUGUI tmpSave;
  
-    public static bool isDialogEnd;
- 
-    bool isTypingEnd = false; //타이핑이 끝났는가?
+    public bool isDialogEnd;
+    public bool isTypingEnd = false; //타이핑이 끝났는가?
     int dialogNumber = 0; //대화 문단 숫자.
  
     float timer; //내부적으로 돌아가는 시간 타이머
@@ -55,6 +54,7 @@ public class TypingManager : MonoBehaviour
             dialogsSave = null;
             tmpSave = null;
             dialogNumber = 0;
+            textObj.text = "";
         }
     }
  
@@ -67,6 +67,7 @@ public class TypingManager : MonoBehaviour
             if (isTypingEnd)
             {
                 tmpSave.text = ""; //비어있는 문장 넘겨서 초기화. 
+                GetInputUp();
                 Typing(dialogsSave, tmpSave);
             }
             else
