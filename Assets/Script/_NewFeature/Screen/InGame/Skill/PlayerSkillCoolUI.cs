@@ -33,6 +33,13 @@ namespace Sophia.UserInterface
         }
 
         public void RemoveSkill() {
+            if(TimerRef!=null) {
+                TimerRef.RemoveOnTickingEvent(UpdateFillAmount)
+                        .RemoveOnUseEvent(UseStack)
+                        .RemoveOnFinishedEvent(RecoverStack)
+                        .RemoveOnInitialized(ResetUI);
+            }
+                    
             TimerRef = null;
             StartCoroutine(GlobalAsync.PerformAndRenderUI(() => { 
                 fill.fillAmount = 1;

@@ -24,8 +24,8 @@ namespace Sophia.Composite
 
         #region Member
 
-        private Dictionary<KeyCode, Skill> collectedSkill = new Dictionary<KeyCode, Skill>();
-        private Dictionary<KeyCode, IUserInterfaceAccessible> collectedSkillInfo = new Dictionary<KeyCode, IUserInterfaceAccessible>();
+        public Dictionary<KeyCode, Skill> collectedSkill = new Dictionary<KeyCode, Skill>();
+        public Dictionary<KeyCode, IUserInterfaceAccessible> collectedSkillInfo = new Dictionary<KeyCode, IUserInterfaceAccessible>();
         public float QcoolTime = 10;
         public float EcoolTime = 10;
         public float RcoolTime = 20;
