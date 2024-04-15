@@ -76,12 +76,9 @@ namespace Sophia.UserInterface
             // 없을 경우 currentSkillButton 비활성화
             Skill tempSkill = skillManager.GetSkillByKey(AssignedKey);
             if (_currentSkill != null) {
-                skillManager.collectedSkill[AssignedKey] = _currentSkill;
-                skillManager.collectedSkillInfo[AssignedKey] = _currentSkill;
                 player.CollectSkill(_currentSkill, AssignedKey);
             } else {
-                skillManager.collectedSkill[AssignedKey] = null;
-                skillManager.collectedSkillInfo[AssignedKey] = EmptySkill.Instance;
+                player.DropSkill(AssignedKey);
             }
             if (tempSkill != null) {
                 _currentSkill = tempSkill;
@@ -99,6 +96,10 @@ namespace Sophia.UserInterface
             collectedSkillButton[0].SetUserInterfaceData(skillManager.GetSkillInfoByKey(KeyCode.Q), KeyCode.Q);
             collectedSkillButton[1].SetUserInterfaceData(skillManager.GetSkillInfoByKey(KeyCode.E), KeyCode.E);
             collectedSkillButton[2].SetUserInterfaceData(skillManager.GetSkillInfoByKey(KeyCode.R), KeyCode.R);
+
+            InGameScreenUI.Instance._playerSkillCoolUIs[0].DrawForce();
+            InGameScreenUI.Instance._playerSkillCoolUIs[1].DrawForce();
+            InGameScreenUI.Instance._playerSkillCoolUIs[2].DrawForce();
 
             if (!currentSkillButtonGameObject.activeSelf) {  // currentSkillButton 오브젝트가 비활성화 되어있는 경우 => 창 종료
                 StartCoroutine(GlobalAsync.PerformUnScaled(0.5f, CloseSkillSelector));

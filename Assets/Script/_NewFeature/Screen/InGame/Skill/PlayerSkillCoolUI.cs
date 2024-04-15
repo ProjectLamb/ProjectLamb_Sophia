@@ -33,6 +33,13 @@ namespace Sophia.UserInterface
         }
 
         public void RemoveSkill() {
+            if(TimerRef!=null) {
+                TimerRef.RemoveOnTickingEvent(UpdateFillAmount)
+                        .RemoveOnUseEvent(UseStack)
+                        .RemoveOnFinishedEvent(RecoverStack)
+                        .RemoveOnInitialized(ResetUI);
+            }
+                    
             TimerRef = null;
             StartCoroutine(GlobalAsync.PerformAndRenderUI(() => { 
                 fill.fillAmount = 1;
@@ -54,7 +61,10 @@ namespace Sophia.UserInterface
 
         public void DrawForce()
         {
-            StartCoroutine(GlobalAsync.PerformAndRenderUI(() => { textMeshPro.text = TimerRef.stackCounter.BaseStacksCount.ToString(); }));
+            StartCoroutine(GlobalAsync.PerformAndRenderUI(() => {
+                fill.fillAmount = 1f - TimerRef.GetProgressAmount();
+                textMeshPro.text = TimerRef.stackCounter.CurrentStacksCount.ToString(); 
+            }));
         }
 
         private void UseStack()

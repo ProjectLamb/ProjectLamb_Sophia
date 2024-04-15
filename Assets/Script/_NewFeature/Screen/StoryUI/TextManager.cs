@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEditor;
 using TMPro;
+using Sophia.UserInterface;
 
 public class TextManager : MonoBehaviour
 {
@@ -17,6 +18,8 @@ public class TextManager : MonoBehaviour
     TalkData[] talkDatas;
     private int currentPage = 0; // 대화문 개수 변수
     public bool IsStory = false;
+    public bool IsSkipStory;
+    bool IsOnce = false;
 
     [SerializeField] public GameObject _playerHealthBar;
     [SerializeField] public GameObject _playerBarrierBar;
@@ -41,12 +44,15 @@ public class TextManager : MonoBehaviour
     }
     private void Start()
     {
-        IsStory = true;
-        TextBarOn();
-        talkDatas = this.GetComponent<Dialogue>().GetObjectDialogue();
-        TypingManager.instance.Typing(talkDatas[0].contexts, talkText);
-        nameText.text = talkDatas[0].name;
-        currentPage++;
+        if (!IsSkipStory)
+        {
+            IsStory = true;
+            TextBarOn();
+            talkDatas = this.GetComponent<Dialogue>().GetObjectDialogue();
+            TypingManager.instance.Typing(talkDatas[0].contexts, talkText);
+            nameText.text = talkDatas[0].name;
+            currentPage++;
+        }
     }
 
     private void Update()
@@ -57,18 +63,27 @@ public class TextManager : MonoBehaviour
             TypingManager.instance.GetInputDown();
             if (TypingManager.instance.isTypingEnd)
             {
-                if(currentPage == talkDatas.Length && TypingManager.instance.isDialogEnd){
-                    TextBarOff();
-                    IsStory = false;
+                if (currentPage == talkDatas.Length && TypingManager.instance.isDialogEnd)
+                {
+                    if (!IsOnce)
+                    {
+                        TextBarOff();
+                        IsStory = false;
+
+                        //1챕 튜토리얼 한정
+                        InGameScreenUI.Instance._videoController.StartVideo(VideoController.E_VIDEO_NAME.Opening);
+
+                        IsOnce = true;
+                    }
                 }
                 nameText.text = talkDatas[currentPage].name;
                 TypingManager.instance.Typing(talkDatas[currentPage].contexts, talkText);
                 currentPage++;
             }
         }
-        if(GameManager.Instance.GlobalEvent.IsGamePaused)
+        if (GameManager.Instance.GlobalEvent.IsGamePaused)
             talkPanel.SetActive(false);
-        else if(!GameManager.Instance.GlobalEvent.IsGamePaused && IsStory)
+        else if (!GameManager.Instance.GlobalEvent.IsGamePaused && IsStory)
             talkPanel.SetActive(true);
     }
 

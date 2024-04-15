@@ -26,6 +26,7 @@ namespace Sophia.Entitys
         RaycastHit hit;
         NavMeshHit navHit;
         private bool IsRush;
+        Sophia.Instantiates.ProjectileObject rushProjectileObject;
         #endregion
         // Start is called before the first frame update
 
@@ -37,8 +38,8 @@ namespace Sophia.Entitys
         protected override void Start()
         {
             base.Start();
-            //CurrentInstantiatedStage.mobGenerator.AddMob(this.gameObject);
-            //transform.parent = CurrentInstantiatedStage.transform.GetChild((int)Stage.STAGE_CHILD.MOB);
+            CurrentInstantiatedStage.mobGenerator.AddMob(this.gameObject);
+            transform.parent = CurrentInstantiatedStage.transform.GetChild((int)Stage.STAGE_CHILD.MOB);
         }
 
         // Update is called once per frame
@@ -64,11 +65,11 @@ namespace Sophia.Entitys
 
         public void UseProjectile_DashAttack()
         {
-            Sophia.Instantiates.ProjectileObject useProjectile = ProjectilePool.GetObject(_attckProjectiles[(int)ANIME_STATE.JUMP]).Init(this);
-            useProjectile.SetPositioningType(serialProjectileInstantiateData._positioningType)
+            rushProjectileObject = ProjectilePool.GetObject(_attckProjectiles[(int)ANIME_STATE.JUMP]).Init(this);
+            rushProjectileObject.SetPositioningType(serialProjectileInstantiateData._positioningType)
                             .SetDurateTimeByRatio(serialProjectileInstantiateData._DurateTimeByRatio);
 
-            _projectileBucketManager.InstantablePositioning((int)ANIME_STATE.JUMP, useProjectile)
+            _projectileBucketManager.InstantablePositioning((int)ANIME_STATE.JUMP, rushProjectileObject)
                                     .SetProjectilePower((int)GetStat(E_NUMERIC_STAT_TYPE.Power).GetValueForce())
                                     .Activate();
         }
@@ -98,8 +99,8 @@ namespace Sophia.Entitys
             .AddOnFinishedEvent(SetUnReadyRush);
             rushDistance = RushRange * 1.5f;
 
-            //Sophia.Instantiates.VisualFXObject visualFX = VisualFXObjectPool.GetObject(_spawnParticleRef).Init();
-            //GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
+            Sophia.Instantiates.VisualFXObject visualFX = VisualFXObjectPool.GetObject(_spawnParticleRef).Init();
+            GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
 
             fsm.ChangeState(States.Idle);
         }
@@ -290,6 +291,7 @@ namespace Sophia.Entitys
             if (!IsRush)
             {
                 GetModelManager().GetAnimator().SetTrigger("DoRushQuit");
+                Destroy(rushProjectileObject);
             }
             if (GetModelManager().GetAnimator().GetBool("IsRushEnd"))
             {

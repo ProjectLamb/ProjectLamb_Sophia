@@ -31,6 +31,10 @@ namespace Sophia.UserInterface
         [SerializeField] public PlayerSkillCoolUI[]     _playerSkillCoolUIs;
         [SerializeField] public HitCanvasShadeScript    _hitCanvasShadeScript;
         [SerializeField] public EquipmentDescriptionUI  _equipmentDescriptionUI;
-
+        [SerializeField] public FadeUI                  _fadeUI;
+        [SerializeField] public VideoController         _videoController;
+        [SerializeField] public GameObject              _bossHealthBar;
+        //Demo Version
+        [SerializeField] public GameObject              demoClear;
     }
 }

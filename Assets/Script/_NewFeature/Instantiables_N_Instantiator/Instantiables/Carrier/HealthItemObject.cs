@@ -22,7 +22,7 @@ namespace Sophia.Instantiates
                     if (!_purchaseComponent.Purchase(player)) return;
                 }
                 player.GetLifeComposite().Healed(Health);
-
+                _audioSource?.Play();
                 _lootVFX.Stop();
                 _lootObject.SetActive(false);
                 IsReadyToTrigger = false;

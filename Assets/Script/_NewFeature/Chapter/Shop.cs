@@ -8,12 +8,14 @@ using System;
 namespace Sophia
 {
     using Instantiates;
+    using TMPro;
+
     public class Shop : MonoBehaviour
     {
         public GameObject equipmentPivot;
         public GameObject skillPivot;
         public GameObject heartPivot;
-        public GameObject rerollMachine;
+        //public GameObject rerollMachine;
         public GameObject vendingMachine;
         private int equipmentCount = 0;
         public int EquipmentCount
@@ -33,16 +35,20 @@ namespace Sophia
             get { return skillCount; }
             set { skillCount = value; }
         }
-        private int equipmentPrice = 25;
-        private int heartPrice = 10;
-        private int skillPrice = 50;
+        private int equipmentPrice = 15;
+        private int heartPrice = 5;
+        private int skillPrice = 25;
         public ItemObject[] ItemArray;
+
+        //UI
+        [SerializeField] TextMeshProUGUI[] priceText;
 
         private UnityAction<int> instantiateItemEvent;
 
         void Awake()
         {
             ItemArray = new ItemObject[3];
+
             vendingMachine.GetComponent<VendingMachine>().price = 10;
             //rerollMachine.GetComponent<RerollMachine>().price = 5;
         }
@@ -82,25 +88,30 @@ namespace Sophia
         }
 
         //public void instantiateItemEvent;
-        private ItemObject GetRandomItem(string str) {
+        private ItemObject GetRandomItem(string str)
+        {
             System.Random random = new System.Random();
             ItemPool itemPoolRef = ItemPool.Instance;
             int equipmentCount = itemPoolRef._equipmentItems.Count;
             int skillCount = itemPoolRef._skillItems.Count;
-            switch(str) {
-                case "Equipment" :  {
-                    var randIdx= random.Next(0, equipmentCount);
-                    Debug.Log(randIdx);
-                    return Instantiate(itemPoolRef.GetRandomEquipment(E_EQUIPMENT_TYPE.Shop)).Init();
-                }
-                case "Skill" :  {
-                    var randIdx= random.Next(0, skillCount);
-                    Debug.Log(randIdx);
-                    return Instantiate(itemPoolRef._skillItems[randIdx]).Init();
-                }
-                case "Heart" :  {
-                    return Instantiate(itemPoolRef._healthItem).Init();
-                }
+            switch (str)
+            {
+                case "Equipment":
+                    {
+                        var randIdx = random.Next(0, equipmentCount);
+                        Debug.Log(randIdx);
+                        return Instantiate(itemPoolRef.GetRandomEquipment(E_EQUIPMENT_TYPE.Shop)).Init();
+                    }
+                case "Skill":
+                    {
+                        var randIdx = random.Next(0, skillCount);
+                        Debug.Log(randIdx);
+                        return Instantiate(itemPoolRef._skillItems[randIdx]).Init();
+                    }
+                case "Heart":
+                    {
+                        return Instantiate(itemPoolRef._healthItem).Init();
+                    }
             }
             return null;
         }
@@ -113,6 +124,8 @@ namespace Sophia
                 temp = GetRandomItem("Equipment");
                 temp.gameObject.AddComponent<PurchaseComponent>();
                 temp.GetComponent<PurchaseComponent>().price = equipmentPrice + equipmentCount * 5;
+                priceText[0].text = (equipmentPrice + equipmentCount * 5).ToString();
+                priceText[0].text += "G";
 
                 temp.GetComponent<PurchaseComponent>().OnPurchasedEvent += () => { this.EquipmentCount++; };
                 temp.GetComponent<PurchaseComponent>().OnPurchasedEvent += () => { this.InstantiateOnDelayItemByFlag(0, 1); };
@@ -129,6 +142,8 @@ namespace Sophia
                 temp = GetRandomItem("Skill");
                 temp.gameObject.AddComponent<PurchaseComponent>();
                 temp.GetComponent<PurchaseComponent>().price = skillPrice;
+                priceText[1].text = skillPrice.ToString();
+                priceText[1].text += "G";
 
                 temp.GetComponent<PurchaseComponent>().OnPurchasedEvent += () => { this.SkillCount++; };
                 //temp.GetComponent<PurchaseComponent>().OnPurchasedEvent += () => {this.InstantiateOnDelayItemByFlag(1, 1);};
@@ -146,6 +161,8 @@ namespace Sophia
 
                 temp.gameObject.AddComponent<PurchaseComponent>();
                 temp.GetComponent<PurchaseComponent>().price = heartPrice + heartCount * 5;
+                priceText[2].text = (heartPrice + heartCount * 5).ToString();
+                priceText[2].text += "G";
 
                 temp.GetComponent<PurchaseComponent>().OnPurchasedEvent += () => { this.InstantiateOnDelayItemByFlag(2, 1); };
                 temp.GetComponent<PurchaseComponent>().OnPurchasedEvent += () => { this.HeartCount++; };

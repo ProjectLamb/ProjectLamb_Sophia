@@ -106,12 +106,7 @@ namespace Sophia.Composite
             {
                 case KeyCode.Q: { InGameScreenUI.Instance._playerSkillCoolUIs[0].SetSkill(collectedSkill[KeyCode.Q]); break; }
                 case KeyCode.E: { InGameScreenUI.Instance._playerSkillCoolUIs[1].SetSkill(collectedSkill[KeyCode.E]); break; }
-                case KeyCode.R:
-                    {
-                        skill.SetUltCoolTime();
-                        InGameScreenUI.Instance._playerSkillCoolUIs[2].SetSkill(collectedSkill[KeyCode.R]);
-                        break;
-                    }
+                case KeyCode.R: { InGameScreenUI.Instance._playerSkillCoolUIs[2].SetSkill(collectedSkill[KeyCode.R]); break; }
             }
             return true;
         }
@@ -135,8 +130,47 @@ namespace Sophia.Composite
             else { return false; }
         }
 
+        /*
+
+        public bool SwapSkill(KeyCode keyA, KeyCode keyB) {
+            if (collectedSkill.ContainsKey(keyA) && collectedSkill.ContainsKey(keyB)) {
+                (collectedSkill[keyA], collectedSkill[keyB]) = (collectedSkill[keyB], collectedSkill[keyA]);
+                if (collectedSkill[keyA] != null)
+                    Collect(collectedSkill[keyA], keyA);
+                else
+                    Drop(keyA);
+
+                if (collectedSkill[keyB] != null)
+                    Collect(collectedSkill[keyB], keyB);
+                else
+                    Drop(keyB);
+
+                return true;
+            }
+            throw new System.Exception("올바른 스킬 키보드 접근이 아님 QER 중 하나로..");
+        }
+
+        */
+
         public bool SwapSkill(KeyCode keyA, KeyCode keyB)
         {
+            int KeyAUiIndex = -1;
+            int KeyBUiIndex = -1;
+            switch (keyA)
+            {
+                case KeyCode.Q: { KeyAUiIndex = 0; break; }
+                case KeyCode.E: { KeyAUiIndex = 1; break; }
+                case KeyCode.R: { KeyAUiIndex = 2; break; }
+            }
+            switch (keyB)
+            {
+                case KeyCode.Q: { KeyBUiIndex = 0; break; }
+                case KeyCode.E: { KeyBUiIndex = 1; break; }
+                case KeyCode.R: { KeyBUiIndex = 2; break; }
+            }
+            
+            if (KeyAUiIndex == -1 || KeyBUiIndex == -1) throw new System.Exception("Key Index 코드가 잘 안됨");
+
             if (collectedSkill.ContainsKey(keyA) && collectedSkill.ContainsKey(keyB))
             {
                 Skill temp = collectedSkill[keyA];
@@ -144,6 +178,14 @@ namespace Sophia.Composite
                 collectedSkill[keyB] = temp;
                 collectedSkillInfo[keyA] = collectedSkill[keyA];
                 collectedSkillInfo[keyB] = collectedSkill[keyB];
+                
+                InGameScreenUI.Instance._playerSkillCoolUIs[KeyAUiIndex].RemoveSkill();
+                InGameScreenUI.Instance._playerSkillCoolUIs[KeyAUiIndex].SetSkill(collectedSkill[keyA]);
+                InGameScreenUI.Instance._playerSkillCoolUIs[KeyAUiIndex].DrawForce();
+
+                InGameScreenUI.Instance._playerSkillCoolUIs[KeyBUiIndex].RemoveSkill();
+                InGameScreenUI.Instance._playerSkillCoolUIs[KeyBUiIndex].SetSkill(collectedSkill[keyB]);
+                InGameScreenUI.Instance._playerSkillCoolUIs[KeyBUiIndex].DrawForce();
                 return true;
             }
             throw new System.Exception("올바른 스킬 키보드 접근이 아님 QER 중 하나로..");

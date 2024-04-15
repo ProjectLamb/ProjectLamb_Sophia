@@ -456,7 +456,7 @@ public class ChapterGenerator : MonoBehaviour
     {
         System.Random rand = new System.Random();
         waitingTime = 0.5f;
-        stageAmount = rand.Next(stageAmount, stageAmount + 6);
+        stageAmount = rand.Next(stageAmount, stageAmount + 3);
         minimumDistanceOfEndStage = 2;
         GenerateStage(stageAmount);
     }
