@@ -84,44 +84,55 @@ namespace Sophia.Composite
 
         public bool Collect(Skill skill, KeyCode key)
         {
-            if(!collectedSkillInfo.ContainsKey(key)) 
+            if (!collectedSkillInfo.ContainsKey(key))
                 throw new System.Exception("올바른 스킬 키보드 접근이 아님 QER 중 하나로..");
-            if(collectedSkillInfo[key] != EmptySkill.Instance)  { Drop(key); }
+            if (collectedSkillInfo[key] != EmptySkill.Instance)  { Drop(key); }
             collectedSkill[key] = skill;
-            collectedSkill[key].GetCoolTimeComposite().AddOnUseEvent(() => _ownerPlayer.GetModelManager().GetAnimator().Play("PlaySkillAction"));
+            collectedSkill[key].GetCoolTimeComposite().AddOnUseEvent(() =>
+                _ownerPlayer.GetModelManager().GetAnimator().Play("PlaySkillAction"));
             collectedSkillInfo[key] = skill;
-            switch(key) {
+
+            switch (key) {
                 case KeyCode.Q : {InGameScreenUI.Instance._playerSkillCoolUIs[0].SetSkill(collectedSkill[KeyCode.Q]); break;}
                 case KeyCode.E : {InGameScreenUI.Instance._playerSkillCoolUIs[1].SetSkill(collectedSkill[KeyCode.E]); break;}
                 case KeyCode.R : {InGameScreenUI.Instance._playerSkillCoolUIs[2].SetSkill(collectedSkill[KeyCode.R]); break;}
             }
+
+            _ownerPlayer._hasSkill[key] = true;
             return true;
         }
 
         public bool Drop(KeyCode key)
         {
-            if(!collectedSkill.ContainsKey(key)) 
+            if (!collectedSkill.ContainsKey(key))
                 throw new System.Exception("올바른 스킬 키보드 접근이 아님 QER 중 하나로..");
-            if(collectedSkillInfo[key] != EmptySkill.Instance) {
+            if (collectedSkillInfo[key] != EmptySkill.Instance) {
                 collectedSkill[key] = null;
                 collectedSkillInfo[key] = EmptySkill.Instance;
-                switch(key) {
+                switch (key) {
                     case KeyCode.Q : {InGameScreenUI.Instance._playerSkillCoolUIs[0].RemoveSkill(); break;}
                     case KeyCode.E : {InGameScreenUI.Instance._playerSkillCoolUIs[1].RemoveSkill(); break;}
                     case KeyCode.R : {InGameScreenUI.Instance._playerSkillCoolUIs[2].RemoveSkill(); break;}
                 }
+                _ownerPlayer._hasSkill[key] = false;
                 return true;
             }
-            else {return false;}
+            return false;
         }
 
         public bool SwapSkill(KeyCode keyA, KeyCode keyB) {
-            if(collectedSkill.ContainsKey(keyA) && collectedSkill.ContainsKey(keyB)) {
-                Skill temp = collectedSkill[keyA];
-                collectedSkill[keyA] = collectedSkill[keyB];
-                collectedSkill[keyB] = temp;
-                collectedSkillInfo[keyA] = collectedSkill[keyA];
-                collectedSkillInfo[keyB] = collectedSkill[keyB];
+            if (collectedSkill.ContainsKey(keyA) && collectedSkill.ContainsKey(keyB)) {
+                (collectedSkill[keyA], collectedSkill[keyB]) = (collectedSkill[keyB], collectedSkill[keyA]);
+                if (collectedSkill[keyA] != null)
+                    Collect(collectedSkill[keyA], keyA);
+                else
+                    Drop(keyA);
+
+                if (collectedSkill[keyB] != null)
+                    Collect(collectedSkill[keyB], keyB);
+                else
+                    Drop(keyB);
+
                 return true;
             }
             throw new System.Exception("올바른 스킬 키보드 접근이 아님 QER 중 하나로..");
