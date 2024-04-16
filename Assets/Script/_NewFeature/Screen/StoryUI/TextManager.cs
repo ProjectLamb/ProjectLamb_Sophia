@@ -16,7 +16,7 @@ public class TextManager : MonoBehaviour
     public string[] dialogStrings;
     TalkData[] talkDatas;
     private int currentPage = 0; // 대화문 개수 변수
-    public bool IsStory = false;
+    private bool IsStory = false;
 
     [SerializeField] public GameObject _playerHealthBar;
     [SerializeField] public GameObject _playerBarrierBar;
@@ -44,7 +44,7 @@ public class TextManager : MonoBehaviour
         IsStory = true;
         TextBarOn();
         talkDatas = this.GetComponent<Dialogue>().GetObjectDialogue();
-        TypingManager.instance.Typing(talkDatas[0].contexts, talkText);
+        TypingManager._instance.Typing(talkDatas[0].contexts, talkText);
         nameText.text = talkDatas[0].name;
         currentPage++;
     }
@@ -54,22 +54,26 @@ public class TextManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
         {
 
-            TypingManager.instance.GetInputDown();
-            if (TypingManager.instance.isTypingEnd)
+            TypingManager._instance.GetInputDown();
+            if (TypingManager._instance.isTypingEnd)
             {
-                if(currentPage == talkDatas.Length && TypingManager.instance.isDialogEnd){
+                if(currentPage == talkDatas.Length && TypingManager._instance.isDialogEnd){
                     SceneManager.LoadScene("_01_Chapter_Tutorial");
-                    //TextBarOff();
                     IsStory = false;
                 }
                 nameText.text = talkDatas[currentPage].name;
-                TypingManager.instance.Typing(talkDatas[currentPage].contexts, talkText);
+                TypingManager._instance.Typing(talkDatas[currentPage].contexts, talkText);
                 currentPage++;
             }
         }
         if(GameManager.Instance.GlobalEvent.IsGamePaused)
             talkPanel.SetActive(false);
         else if(!GameManager.Instance.GlobalEvent.IsGamePaused && IsStory)
+            talkPanel.SetActive(true);
+        
+        if(!StoryManager.Instance.IsTutorial)
+            talkPanel.SetActive(false);
+        else
             talkPanel.SetActive(true);
 
     }

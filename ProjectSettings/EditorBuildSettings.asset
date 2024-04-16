@@ -18,7 +18,7 @@ EditorBuildSettings:
     path: Assets/Resources/Scenes/02-1_DEBUG_Chapter_1.unity
     guid: 2fa1a7ad0caffdf45b630b60dbd0d928
   - enabled: 1
-    path: Assets/Resources/Workspace/kabocha/Scenes/02_Chapter_1_kabocha.unity
+    path: Assets/Resources/Workspace/kabocha/Scenes/_01_Chapter_kabocha.unity
     guid: c270f701a81c24148a41c0d8c3460999
   - enabled: 1
     path: Assets/Resources/Workspace/kabocha/Scenes/_Chapter_TA_Escatrgot_.unity
