@@ -23,6 +23,8 @@ public class TextManager : MonoBehaviour
     [SerializeField] public GameObject _playerStaminaBar;
     [SerializeField] public GameObject _playerWealthBar;
     [SerializeField] public GameObject _playerSkillCool;
+    [SerializeField] public GameObject _dissolvePanel;
+
 
     private static TextManager _instance;
     public static TextManager Instance
@@ -72,9 +74,15 @@ public class TextManager : MonoBehaviour
             talkPanel.SetActive(true);
         
         if(!StoryManager.Instance.IsTutorial)
+        {
             talkPanel.SetActive(false);
+            _dissolvePanel.SetActive(true);
+        }
         else
+        {
             talkPanel.SetActive(true);
+            _dissolvePanel.SetActive(false);
+        }
 
     }
 
