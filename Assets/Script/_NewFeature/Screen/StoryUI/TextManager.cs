@@ -58,7 +58,8 @@ public class TextManager : MonoBehaviour
             if (TypingManager.instance.isTypingEnd)
             {
                 if(currentPage == talkDatas.Length && TypingManager.instance.isDialogEnd){
-                    TextBarOff();
+                    SceneManager.LoadScene("_01_Chapter_Tutorial");
+                    //TextBarOff();
                     IsStory = false;
                 }
                 nameText.text = talkDatas[currentPage].name;
@@ -70,6 +71,7 @@ public class TextManager : MonoBehaviour
             talkPanel.SetActive(false);
         else if(!GameManager.Instance.GlobalEvent.IsGamePaused && IsStory)
             talkPanel.SetActive(true);
+
     }
 
     private void TextBarOff()
