@@ -10,7 +10,8 @@ using System;
 
 namespace Sophia.UserInterface
 {
-    public class InGameSkillSelector : MonoBehaviour {
+    public class InGameSkillSelector : MonoBehaviour
+    {
         private static InGameSkillSelector _instance;
         
         public static InGameSkillSelector Instance {
@@ -35,8 +36,8 @@ namespace Sophia.UserInterface
         [SerializeField] GameObject     currentSkillButtonGameObject;
         [SerializeField] UnityAction<bool, KeyCode> actionFromItem;
 
-        Skill _currentSkill;
-        bool _isAlreadyInvoked;
+        private Skill _currentSkill;
+        private bool _isAlreadyInvoked;
 
         private void OnEnable() {
             StartCoroutine(GlobalAsync.PerformAndRenderUIUnScaled(() => {
@@ -111,7 +112,7 @@ namespace Sophia.UserInterface
             pauseMenu.CloseMenu();
         }
 
-        public void MoveCurrentHovering(KeyCode key){  // 스킬 선택 창에서 획득한 스킬을 Q, E, R 스킬창 옆으로 호버링시키는 함수
+        public void MoveCurrentHovering(KeyCode key) {  // 스킬 선택 창에서 획득한 스킬을 Q, E, R 스킬창 옆으로 호버링시키는 함수
             RectTransform destRect;
             switch(key) {
                 case KeyCode.Q : {

@@ -100,14 +100,18 @@ namespace Sophia.Composite
                 throw new System.Exception("올바른 스킬 키보드 접근이 아님 QER 중 하나로..");
             if (collectedSkillInfo[key] != EmptySkill.Instance) { Drop(key); }
             collectedSkill[key] = skill;
-            collectedSkill[key].GetCoolTimeComposite().AddOnUseEvent(() => _ownerPlayer.GetModelManager().GetAnimator().Play("PlaySkillAction"));
+            collectedSkill[key].GetCoolTimeComposite().AddOnUseEvent(() =>
+                _ownerPlayer.GetModelManager().GetAnimator().Play("PlaySkillAction"));
             collectedSkillInfo[key] = skill;
+            
             switch (key)
             {
                 case KeyCode.Q: { InGameScreenUI.Instance._playerSkillCoolUIs[0].SetSkill(collectedSkill[KeyCode.Q]); break; }
                 case KeyCode.E: { InGameScreenUI.Instance._playerSkillCoolUIs[1].SetSkill(collectedSkill[KeyCode.E]); break; }
                 case KeyCode.R: { InGameScreenUI.Instance._playerSkillCoolUIs[2].SetSkill(collectedSkill[KeyCode.R]); break; }
             }
+
+            _ownerPlayer._hasSkill[key] = true;
             return true;
         }
 
@@ -125,6 +129,7 @@ namespace Sophia.Composite
                     case KeyCode.E: { InGameScreenUI.Instance._playerSkillCoolUIs[1].RemoveSkill(); break; }
                     case KeyCode.R: { InGameScreenUI.Instance._playerSkillCoolUIs[2].RemoveSkill(); break; }
                 }
+                _ownerPlayer._hasSkill[key] = false;
                 return true;
             }
             else { return false; }
@@ -144,7 +149,6 @@ namespace Sophia.Composite
                     Collect(collectedSkill[keyB], keyB);
                 else
                     Drop(keyB);
-
                 return true;
             }
             throw new System.Exception("올바른 스킬 키보드 접근이 아님 QER 중 하나로..");
