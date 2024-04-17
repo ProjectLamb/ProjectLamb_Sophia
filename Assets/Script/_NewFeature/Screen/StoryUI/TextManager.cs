@@ -80,8 +80,10 @@ public class TextManager : MonoBehaviour
                 currentPage++;
             }
         }
-        if(GameManager.Instance.GlobalEvent.IsGamePaused)
+        if(GameManager.Instance.GlobalEvent.IsGamePaused){
             talkPanel.SetActive(false);
+        }
+
         else if(!GameManager.Instance.GlobalEvent.IsGamePaused && IsStory)
             talkPanel.SetActive(true);
         
@@ -90,7 +92,7 @@ public class TextManager : MonoBehaviour
             talkPanel.SetActive(false);
             _dissolvePanel.SetActive(true);
         }
-        else
+        else if(StoryManager.Instance.IsTutorial && !GameManager.Instance.GlobalEvent.IsGamePaused)
         {
             talkPanel.SetActive(true);
             _dissolvePanel.SetActive(false);
