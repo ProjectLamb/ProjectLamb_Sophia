@@ -10,14 +10,22 @@ using TMPro;
 
 public class TextManager : MonoBehaviour
 {
+
+    [Header("StoryUI")]
     public GameObject talkPanel;
     public TextMeshProUGUI talkText;
     public TextMeshProUGUI nameText;
+    public Sprite decussSprite;
+    public Sprite OffusiaSprite;
+    public Image storyBarImage;
+    public Animator storyImageAnimator;
     public string[] dialogStrings;
     TalkData[] talkDatas;
     private int currentPage = 0; // 대화문 개수 변수
     private bool IsStory = false;
+    private bool IsSpriteChange = false;
 
+    [Header("PlayerUI")]
     [SerializeField] public GameObject _playerHealthBar;
     [SerializeField] public GameObject _playerBarrierBar;
     [SerializeField] public GameObject _playerStaminaBar;
@@ -63,6 +71,10 @@ public class TextManager : MonoBehaviour
                     SceneManager.LoadScene("_01_Chapter_Tutorial");
                     IsStory = false;
                 }
+
+                if(nameText.text != talkDatas[currentPage].name) // 스토리 진행 중 화자 변경 시 이미지 변경
+                    ChangeSprite();
+
                 nameText.text = talkDatas[currentPage].name;
                 TypingManager._instance.Typing(talkDatas[currentPage].contexts, talkText);
                 currentPage++;
@@ -82,6 +94,12 @@ public class TextManager : MonoBehaviour
         {
             talkPanel.SetActive(true);
             _dissolvePanel.SetActive(false);
+        }
+        
+        if(IsSpriteChange)
+        {
+            storyImageAnimator.SetTrigger("DoChange");
+            IsSpriteChange = false;
         }
 
     }
@@ -104,4 +122,20 @@ public class TextManager : MonoBehaviour
         _playerWealthBar.SetActive(false);
         _playerSkillCool.SetActive(false);
     }
+
+
+    private void ChangeSprite()
+    {
+        if(this.storyBarImage.sprite == decussSprite){
+            this.storyBarImage.sprite = OffusiaSprite;
+            IsSpriteChange = true;
+        }
+
+        else if(this.storyBarImage.sprite == OffusiaSprite){                 
+            this.storyBarImage.sprite = decussSprite;
+            IsSpriteChange = true;
+        }
+    }
+
+    
 }
