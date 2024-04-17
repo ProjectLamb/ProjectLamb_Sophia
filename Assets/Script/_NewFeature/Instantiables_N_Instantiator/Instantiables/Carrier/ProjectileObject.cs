@@ -16,7 +16,8 @@ namespace Sophia.Instantiates
 
     /*변하는 녀석*/
     [System.Serializable]
-    public struct SerialProjectileInstantiateData {
+    public struct SerialProjectileInstantiateData
+    {
         [SerializeField] public ProjectileObject _projectileObjectRefer;
         [SerializeField] public E_INSTANTIATE_TYPE _InstantiateType;
         [SerializeField] public int _bucketIndex;
@@ -36,59 +37,66 @@ namespace Sophia.Instantiates
     }
 
     [System.Serializable]
-    public struct SerialProjectileIntervalData {
-        [SerializeField] public float  _baseIntervalTime;
-        [SerializeField] public float  _baseIntervalCheckTime;
-        [SerializeField] public float  _baseIntervalMuls;
-        [SerializeField] public bool   _isIntervalTrigger;
-        [SerializeField] public bool   _isIntervalDamage;
-        [SerializeField] public bool   _isIntervalExtrasConvey;
-        [SerializeField] public bool   _isIntervalExtrasWeaponConvey;
-        [SerializeField] public bool   _isIntervalExtrasSkillConvey;
-        [HideInInspector] public bool   IsTriggerOnceOnStay;
-        [HideInInspector] public float  triggerCountTime;
-        [HideInInspector] public float  checkCountTime;
+    public struct SerialProjectileIntervalData
+    {
+        [SerializeField] public float _baseIntervalTime;
+        [SerializeField] public float _baseIntervalCheckTime;
+        [SerializeField] public float _baseIntervalMuls;
+        [SerializeField] public bool _isIntervalTrigger;
+        [SerializeField] public bool _isIntervalDamage;
+        [SerializeField] public bool _isIntervalExtrasConvey;
+        [SerializeField] public bool _isIntervalExtrasWeaponConvey;
+        [SerializeField] public bool _isIntervalExtrasSkillConvey;
+        [HideInInspector] public bool IsTriggerOnceOnStay;
+        [HideInInspector] public float triggerCountTime;
+        [HideInInspector] public float checkCountTime;
 
         private float intervalMuls;
         private float currentIntervalTime;
 
         public float GetCheckTime() => Time.fixedDeltaTime;
-        
-        public float GetCurrentIntervalTime() { 
-            if(!_isIntervalTrigger) return 1000f;
-            return currentIntervalTime; 
+
+        public float GetCurrentIntervalTime()
+        {
+            if (!_isIntervalTrigger) return 1000f;
+            return currentIntervalTime;
         }
 
         public void SetCurrentIntervalTime(float value)
         {
-            if(!_isIntervalTrigger) {currentIntervalTime = 1000f; return;}
-            if(value <= 0.05f)
+            if (!_isIntervalTrigger) { currentIntervalTime = 1000f; return; }
+            if (value <= 0.05f)
             {
-                currentIntervalTime = 0.05f; 
+                currentIntervalTime = 0.05f;
                 return;
             }
             currentIntervalTime = value;
         }
-        public float    GetIntervalMuls() => _baseIntervalMuls;
-        public void     SetIntervalMuls(float muls) {
+        public float GetIntervalMuls() => _baseIntervalMuls;
+        public void SetIntervalMuls(float muls)
+        {
             intervalMuls = muls;
             SetCurrentIntervalTime(currentIntervalTime * intervalMuls);
         }
 
     }
 
-    public enum E_INSTANTIATE_TYPE {
+    public enum E_INSTANTIATE_TYPE
+    {
         None, Enemy, Weapon, Skill
     }
 
-    public class GroundComposite {
+    public class GroundComposite
+    {
         public Transform transformRef;
         public float detectingDistance = 0.1f;
-        public GroundComposite(Transform transform, float Distance) {
-            transformRef  = transform; 
+        public GroundComposite(Transform transform, float Distance)
+        {
+            transformRef = transform;
             detectingDistance = Distance;
         }
-        public void FixedTick() {
+        public void FixedTick()
+        {
             RaycastHit hit;
             Vector3 distance = new Vector3(transformRef.position.x, transformRef.position.y + 1, transformRef.position.z);
             if (Physics.Raycast(distance, transformRef.TransformDirection(-Vector3.up), out hit, detectingDistance))
@@ -106,65 +114,65 @@ namespace Sophia.Instantiates
     public class ProjectileObject : Carrier, IPoolAccesable
     {
 
-#region SerializeMember
+        #region SerializeMember
 
         [SerializeField] private E_AFFECT_TYPE _affectType = E_AFFECT_TYPE.None;
         [SerializeField] private E_INSTANTIATE_STACKING_TYPE _stackingType = E_INSTANTIATE_STACKING_TYPE.Stack;
         [SerializeField] private E_INSTANTIATE_POSITION_TYPE _positioningType = E_INSTANTIATE_POSITION_TYPE.Outer;
-        [SerializeField] private DamageInfo         _baseProjectileDamage;
-        [SerializeField] private float              _baseDurateTime = 5f; //파티클 기본 지속 시간
-        [SerializeField] private float              _baseSize = 1f;
-        [SerializeField] private float              _baseSimulateSpeed = 1f;
-        [SerializeField] private float              _baseForwardingSpeed = 5f; //파티클 기본 지속 시간
-        [SerializeField] private bool               _DeactivateForce; //파티클 기본 지속 시간
+        [SerializeField] private DamageInfo _baseProjectileDamage;
+        [SerializeField] private float _baseDurateTime = 5f; //파티클 기본 지속 시간
+        [SerializeField] private float _baseSize = 1f;
+        [SerializeField] private float _baseSimulateSpeed = 1f;
+        [SerializeField] private float _baseForwardingSpeed = 5f; //파티클 기본 지속 시간
+        [SerializeField] private bool _DeactivateForce; //파티클 기본 지속 시간
         [SerializeField] private SerialProjectileIntervalData _serialProjectileIntervalData;
-        [SerializeField] private Collider           _carrierCollider = null;
-        [SerializeField] private Rigidbody          _carrierRigidBody = null;
-        [SerializeField] private FMODAudioSource  _audioSource;
+        [SerializeField] private Collider _carrierCollider = null;
+        [SerializeField] private Rigidbody _carrierRigidBody = null;
+        [SerializeField] private FMODAudioSource _audioSource;
 
-#region Projectile Visual
+        #region Projectile Visual
 
-        [SerializeField] private VisualFXObject     _destroyEffect = null;
-        [SerializeField] private VisualFXObject     _hitEffect = null;
-        [SerializeField] private ParticleSystem     ProjectileParticle = null;
-        [SerializeField] private VisualEffect       ProjectileVFXGraph = null;
-        [SerializeField] private Animator           ProjectileAnimator = null;
-        [SerializeField] private bool               UseAnimator;
-        [SerializeField] private Material           ParticleMaterial = null;
+        [SerializeField] private VisualFXObject _destroyEffect = null;
+        [SerializeField] private VisualFXObject _hitEffect = null;
+        [SerializeField] private ParticleSystem ProjectileParticle = null;
+        [SerializeField] private VisualEffect ProjectileVFXGraph = null;
+        [SerializeField] private Animator ProjectileAnimator = null;
+        [SerializeField] private bool UseAnimator;
+        [SerializeField] private Material ParticleMaterial = null;
 
-#endregion
+        #endregion
 
         [SerializeField] private SerialAffectorData _serialAffectorData;
 
 
-#endregion
+        #endregion
 
-#region Member
-        public int ProjectileID {get; private set;}
+        #region Member
+        public int ProjectileID { get; private set; }
 
-        public E_AFFECT_TYPE AffectType { get {return this._affectType;} private set{} }
-        public E_INSTANTIATE_STACKING_TYPE StackingType { get {return this._stackingType;} private set{} }
-        public E_INSTANTIATE_POSITION_TYPE PositioningType { get {return this._positioningType;} private set{} }
-        public E_INSTANTIATE_TYPE instantiateType {get; private set;}
+        public E_AFFECT_TYPE AffectType { get { return this._affectType; } private set { } }
+        public E_INSTANTIATE_STACKING_TYPE StackingType { get { return this._stackingType; } private set { } }
+        public E_INSTANTIATE_POSITION_TYPE PositioningType { get { return this._positioningType; } private set { } }
+        public E_INSTANTIATE_TYPE instantiateType { get; private set; }
         public Entity OwnerRef { get; private set; }
-        public Affector     NaturallyInherentAffector;
+        public Affector NaturallyInherentAffector;
 
         private DamageInfo mCurrentProjectileDamage;
-        public DamageInfo CurrentProjectileDamage 
-        { 
-            get {return mCurrentProjectileDamage;}
-            private set {mCurrentProjectileDamage = value;}
+        public DamageInfo CurrentProjectileDamage
+        {
+            get { return mCurrentProjectileDamage; }
+            private set { mCurrentProjectileDamage = value; }
         }
 
         private float mCurrentDurateTime;
-        public float CurrentDurateTime 
+        public float CurrentDurateTime
         {
             get { return mCurrentDurateTime; }
-            private set 
+            private set
             {
-                if(value <= 0.05f)
+                if (value <= 0.05f)
                 {
-                    mCurrentDurateTime = 0.05f; 
+                    mCurrentDurateTime = 0.05f;
                     return;
                 }
                 mCurrentDurateTime = value;
@@ -174,55 +182,58 @@ namespace Sophia.Instantiates
 
         private Vector3 NomalizeScaleVector = Vector3.zero;
         private float mCurrentSize;
-        public float CurrentSize 
+        public float CurrentSize
         {
-            get {return mCurrentSize;}
-            private set 
+            get { return mCurrentSize; }
+            private set
             {
-                if(value <= 0) {
+                if (value <= 0)
+                {
                     mCurrentSize = 0;
                     transform.localScale = Vector3.zero;
                     return;
                 }
                 mCurrentSize = value;
-                if(NomalizeScaleVector == Vector3.zero) {NomalizeScaleVector = Vector3.Normalize(transform.localScale);}
+                if (NomalizeScaleVector == Vector3.zero) { NomalizeScaleVector = Vector3.Normalize(transform.localScale); }
                 transform.localScale = NomalizeScaleVector * mCurrentSize;
-            }    
+            }
         }
 
         private float mCurrentForwardingSpeed;
         public float CurrentForwardingSpeed
         {
-            get {return mCurrentForwardingSpeed;}
-            private set 
+            get { return mCurrentForwardingSpeed; }
+            private set
             {
                 mCurrentForwardingSpeed = value;
-            }    
+            }
         }
 
         private float mCurrentSimulateSpeed;
         public float CurrentSimulateSpeed
         {
-            get {return mCurrentSimulateSpeed;}
-            private set 
+            get { return mCurrentSimulateSpeed; }
+            private set
             {
-                if(value >= 0.01f) {
+                if (value >= 0.01f)
+                {
                     mCurrentSimulateSpeed = value;
                     SetParticleSimTime(transform, mCurrentSimulateSpeed);
-                    if(ProjectileVFXGraph!=null)ProjectileVFXGraph.playRate = mCurrentSimulateSpeed;
+                    if (ProjectileVFXGraph != null) ProjectileVFXGraph.playRate = mCurrentSimulateSpeed;
                     return;
                 }
 
                 mCurrentSimulateSpeed = 1f;
-                ProjectileMainModule.simulationSpeed  = 1f;
-                if(ProjectileVFXGraph!=null)ProjectileVFXGraph.playRate = 1f;
-            }    
+                ProjectileMainModule.simulationSpeed = 1f;
+                if (ProjectileVFXGraph != null) ProjectileVFXGraph.playRate = 1f;
+            }
         }
 
         private ProjectileVisualData mCurrentProjectileVisualData;
-        public ProjectileVisualData CurrnetProjectileVisualData {
-            get {return mCurrentProjectileVisualData;}
-            private set 
+        public ProjectileVisualData CurrnetProjectileVisualData
+        {
+            get { return mCurrentProjectileVisualData; }
+            private set
             {
                 mCurrentProjectileVisualData = value;
                 // ParticleRendererModule.material.SetColor("_Color", mCurrentProjectileVisualData.ShaderUnderbarColor);
@@ -230,21 +241,21 @@ namespace Sophia.Instantiates
             }
         }
 
-        
+
         public bool IsInitialized { get; private set; }
         public bool IsActivated { get; private set; }
-        
+
         public bool IsMoveStoped { get; private set; }
 
-        public      ParticleSystem.MainModule       ProjectileMainModule;
-        public      ParticleSystem.EmissionModule   ParticleEmissionModule;
-        public      ParticleSystem.TriggerModule    ParticleTriggerModule;
-        public      ParticleSystem.CollisionModule  ParticleColliderModule;
+        public ParticleSystem.MainModule ProjectileMainModule;
+        public ParticleSystem.EmissionModule ParticleEmissionModule;
+        public ParticleSystem.TriggerModule ParticleTriggerModule;
+        public ParticleSystem.CollisionModule ParticleColliderModule;
         // public      ParticleSystemRenderer          ParticleRendererModule;
 
-#endregion
+        #endregion
 
-#region ObjectPool
+        #region ObjectPool
 
         private IObjectPool<ProjectileObject> poolRefer { get; set; }
         public void SetIndex(int id) => ProjectileID = id;
@@ -267,51 +278,51 @@ namespace Sophia.Instantiates
             ResetSettings();
             return;
         }
-        
+
         public event UnityAction OnActivated;
         public event UnityAction OnRelease;
 
         public void SetPoolEvents(UnityAction activated, UnityAction release)
         {
-            OnActivated     = activated;
-            OnRelease       = release;
+            OnActivated = activated;
+            OnRelease = release;
         }
 
 
-#endregion
+        #endregion
 
-#region Getter
+        #region Getter
 
         public Entity GetOwner() => OwnerRef;
-        public bool GetIsInitialized() => IsInitialized;        
+        public bool GetIsInitialized() => IsInitialized;
         public Collider GetOwnerCollider() => OwnerRef.entityCollider;
 
-#endregion
+        #endregion
 
-#region Setter
+        #region Setter
 
         /* 생성자를 통해서 하자 */
         public ProjectileObject Init(Entity owner)
         {
             if (GetIsInitialized() == true) { throw new System.Exception("이미 초기화가 됨."); }
-            if(owner == null) throw new System.Exception("투사체 생성 엔티티가 NULL임");
+            if (owner == null) throw new System.Exception("투사체 생성 엔티티가 NULL임");
 
-            OwnerRef                    = owner;
-            AffectType                  = _affectType;
-            StackingType                = _stackingType;
-            PositioningType             = _positioningType;
-            CurrentSize                 = _baseSize;
-            CurrentDurateTime           = _baseDurateTime;
-            CurrentProjectileDamage     = _baseProjectileDamage;
-            CurrentForwardingSpeed      = _baseForwardingSpeed;
-            CurrentSimulateSpeed        = _baseSimulateSpeed;
+            OwnerRef = owner;
+            AffectType = _affectType;
+            StackingType = _stackingType;
+            PositioningType = _positioningType;
+            CurrentSize = _baseSize;
+            CurrentDurateTime = _baseDurateTime;
+            CurrentProjectileDamage = _baseProjectileDamage;
+            CurrentForwardingSpeed = _baseForwardingSpeed;
+            CurrentSimulateSpeed = _baseSimulateSpeed;
             // ProjectileVisualData data = new ProjectileVisualData {
             //     ShaderUnderbarColor = ParticleMaterial.GetColor("_Color"),
             //     ShaderUnderbarColorPower = ParticleMaterial.GetFloat("_ColorPower"),
             //     DestroyEffect = _destroyEffect,
             //     HitEffect = _hitEffect
             // };
-// 
+            // 
             // CurrnetProjectileVisualData = data;
 
 
@@ -321,20 +332,24 @@ namespace Sophia.Instantiates
             return this;
         }
 
-        public ProjectileObject SetInstantiateType(E_INSTANTIATE_TYPE type) {
+        public ProjectileObject SetInstantiateType(E_INSTANTIATE_TYPE type)
+        {
             instantiateType = type;
             return this;
         }
 
-        public ProjectileObject SetAffectType(E_AFFECT_TYPE type) {
+        public ProjectileObject SetAffectType(E_AFFECT_TYPE type)
+        {
             AffectType = type;
             return this;
         }
-        public ProjectileObject SetStackingType(E_INSTANTIATE_STACKING_TYPE type) {
+        public ProjectileObject SetStackingType(E_INSTANTIATE_STACKING_TYPE type)
+        {
             StackingType = type;
             return this;
         }
-        public ProjectileObject SetPositioningType(E_INSTANTIATE_POSITION_TYPE type) {
+        public ProjectileObject SetPositioningType(E_INSTANTIATE_POSITION_TYPE type)
+        {
             PositioningType = type;
             return this;
         }
@@ -345,34 +360,37 @@ namespace Sophia.Instantiates
             return this;
         }
 
-        public ProjectileObject SetSimulateSpeedByRatio(float muls) {
+        public ProjectileObject SetSimulateSpeedByRatio(float muls)
+        {
             CurrentSimulateSpeed = _baseSimulateSpeed * muls;
             return this;
         }
 
-        public ProjectileObject SetIntervalData(in SerialProjectileIntervalData ProjectileIntervalData) {
+        public ProjectileObject SetIntervalData(in SerialProjectileIntervalData ProjectileIntervalData)
+        {
             _serialProjectileIntervalData = ProjectileIntervalData;
-            if(_serialProjectileIntervalData._isIntervalTrigger == true) {
+            if (_serialProjectileIntervalData._isIntervalTrigger == true)
+            {
                 _serialProjectileIntervalData.IsTriggerOnceOnStay = true;
                 _serialProjectileIntervalData.SetCurrentIntervalTime(_serialProjectileIntervalData._baseIntervalTime);
                 _serialProjectileIntervalData.SetIntervalMuls(_serialProjectileIntervalData._baseIntervalMuls);
             }
             return this;
         }
-        
+
         public ProjectileObject SetScaleOverrideByRatio(float sizeRatio)
         {
             CurrentSize = _baseSize * sizeRatio;
             return this;
         }
-        
+
         public ProjectileObject SetScaleMultiplyByRatio(float sizeMulRatio)
         {
             CurrentSize *= sizeMulRatio;
             return this;
         }
 
-        public ProjectileObject SetForwardingSpeedByRatio(float speedRatio) 
+        public ProjectileObject SetForwardingSpeedByRatio(float speedRatio)
         {
             CurrentForwardingSpeed = _baseForwardingSpeed * speedRatio;
             // Vector3 moveVec = (transform.forward * - Mathf.Log(1 / this._carrierRigidBody.drag)).normalized;
@@ -384,35 +402,39 @@ namespace Sophia.Instantiates
         /*
         이거 같은 경우는 플레이어가 자체 프로젝타일 사용 안할 수 도 있기 떄문임
         */
-        public ProjectileObject SetProjectilePower(int power) 
+        public ProjectileObject SetProjectilePower(int power)
         {
             mCurrentProjectileDamage.damageAmount = power;
             return this;
         }
 
-        public ProjectileObject SetProjectileDamageInfoByWaepon(Extras<DamageInfo> weaponUse) 
+        public ProjectileObject SetProjectileDamageInfoByWaepon(Extras<DamageInfo> weaponUse)
         {
             weaponUse.PerformStartFunctionals(ref mCurrentProjectileDamage);
             return this;
         }
-        
-        public ProjectileObject SetProjectileDamageInfoBySkill(Extras<DamageInfo> skillUse) 
+
+        public ProjectileObject SetProjectileDamageInfoBySkill(Extras<DamageInfo> skillUse)
         {
             skillUse.PerformStartFunctionals(ref mCurrentProjectileDamage);
             return this;
         }
 
-        public ProjectileObject SetProjectileVisual(ProjectileVisualData pvd) {
+        public ProjectileObject SetProjectileVisual(ProjectileVisualData pvd)
+        {
             CurrnetProjectileVisualData = pvd;
             return this;
         }
 
-        private void SetParticleSimTime(Transform parent, float simMuls) {
-            if(parent.TryGetComponent<ParticleSystem>(out ParticleSystem particle)) {
+        private void SetParticleSimTime(Transform parent, float simMuls)
+        {
+            if (parent.TryGetComponent<ParticleSystem>(out ParticleSystem particle))
+            {
                 var mainModule = particle.main;
                 mainModule.simulationSpeed *= simMuls;
-                if(parent.childCount == 0) return;
-                foreach(Transform child in parent) {
+                if (parent.childCount == 0) return;
+                foreach (Transform child in parent)
+                {
                     SetParticleSimTime(child, simMuls);
                 }
             }
@@ -430,9 +452,11 @@ namespace Sophia.Instantiates
             AffectType = _affectType;
             StackingType = _stackingType;
             PositioningType = _positioningType;
-            _carrierCollider.enabled = true;  // 이중 데미지 방지
+            if (transform.tag != "PlayerProjectile")
+                _carrierCollider.enabled = true;  // 이중 데미지 방지
 
-            if (UseAnimator) {
+            if (UseAnimator)
+            {
                 ProjectileAnimator.ResetTrigger("DoHit");
                 ProjectileAnimator.SetBool("IsDestructEnd", false);
             }
@@ -445,7 +469,7 @@ namespace Sophia.Instantiates
             // };
             // CurrnetProjectileVisualData = data;
 
-            
+
             AffectType = E_AFFECT_TYPE.None;
             instantiateType = E_INSTANTIATE_TYPE.None;
 
@@ -460,9 +484,9 @@ namespace Sophia.Instantiates
             this.transform.position = Vector3.zero;
         }
 
-#endregion
+        #endregion
 
-#region Event
+        #region Event
 
         public event UnityAction OnProjectileCreated = null;
         public ProjectileObject SetOnProjectileCreatedEvent(UnityAction action)
@@ -503,25 +527,25 @@ namespace Sophia.Instantiates
             OnProjectileReleased = null;
             OnProjectileForwarding = null;
 
-            OnActivated             ??= () => {};
-            OnRelease               ??= () => {};
-            
-            OnProjectileCreated     ??= () => {};
-            OnProjectileTriggerd    ??= () => {};
-            OnProjectileReleased    ??= () => {};
-            OnProjectileForwarding  ??= () => {};
+            OnActivated ??= () => { };
+            OnRelease ??= () => { };
+
+            OnProjectileCreated ??= () => { };
+            OnProjectileTriggerd ??= () => { };
+            OnProjectileReleased ??= () => { };
+            OnProjectileForwarding ??= () => { };
         }
 
-#endregion
+        #endregion
 
-#region Bindings
+        #region Bindings
 
         public void Activate()
         {
             gameObject.SetActive(true);
             OnActivated?.Invoke();
             IsActivated = true;
-            if(_audioSource != null ) _audioSource.Play();
+            if (_audioSource != null) _audioSource.Play();
             if (UseAnimator)
                 StartCoroutine(WaitForDurateTime(CurrentDurateTime));
             if (_DeactivateForce == true)
@@ -534,51 +558,55 @@ namespace Sophia.Instantiates
             poolRefer.Release(this);
         }
 
-#endregion
+        #endregion
 
         private void Awake()
         {
             TryGetComponent<FMODAudioSource>(out _audioSource);
-            ProjectileMainModule                = ProjectileParticle.main;
-            ParticleEmissionModule              = ProjectileParticle.emission;
-            ParticleTriggerModule               = ProjectileParticle.trigger;
-            ParticleColliderModule              = ProjectileParticle.collision;
+            ProjectileMainModule = ProjectileParticle.main;
+            ParticleEmissionModule = ProjectileParticle.emission;
+            ParticleTriggerModule = ProjectileParticle.trigger;
+            ParticleColliderModule = ProjectileParticle.collision;
 
             // if(ParticleRendererModule != null && ParticleMaterial != null) {
             //     ParticleRendererModule.material     = ParticleMaterial;
             // }
-            
+
             AffectType = _affectType;
             StackingType = _stackingType;
             PositioningType = _positioningType;
-            mCurrentProjectileDamage            = _baseProjectileDamage;
-            mCurrentDurateTime                  = _baseDurateTime;
-            mCurrentSimulateSpeed             = _baseSimulateSpeed;
-            mCurrentSize                        = _baseSize;
-            mCurrentForwardingSpeed             = _baseForwardingSpeed;
-            
+            mCurrentProjectileDamage = _baseProjectileDamage;
+            mCurrentDurateTime = _baseDurateTime;
+            mCurrentSimulateSpeed = _baseSimulateSpeed;
+            mCurrentSize = _baseSize;
+            mCurrentForwardingSpeed = _baseForwardingSpeed;
+
             ProjectileParticle.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             ProjectileMainModule.stopAction = ParticleSystemStopAction.Callback;
 
             NomalizeScaleVector = Vector3.Normalize(this.transform.localScale);
         }
-        
-        private void OnParticleSystemStopped() {
+
+        private void OnParticleSystemStopped()
+        {
             Debug.Log("OnParticleSystemStopped");
             DeActivate();
         }
 
         protected override void OnTriggerLogic(Collider entity)
         {
-            if(CheckIsOwnerCollider(entity)) {return;}
-            if(CheckIsSameTag(entity)) {return;}
+            if (CheckIsOwnerCollider(entity)) { return; }
+            if (CheckIsSameTag(entity)) { return; }
             if (entity.TryGetComponent<Entity>(out Entity targetEntity))
             {
-                if(targetEntity.GetDamaged(CurrentProjectileDamage)) {
-                    _carrierCollider.enabled = false;  // 이중 데미지 방지
+                if (targetEntity.GetDamaged(CurrentProjectileDamage))
+                {
+                    if (transform.tag != "PlayerProjectile")
+                        _carrierCollider.enabled = false;  // 이중 데미지 방지
                     _carrierRigidBody.velocity = Vector3.zero;
 
-                    if (UseAnimator) {
+                    if (UseAnimator)
+                    {
                         StartCoroutine(StartDestruct());
                     }
 
@@ -594,15 +622,18 @@ namespace Sophia.Instantiates
             }
         }
 
-        private void OnTriggerStay(Collider other) {
-            if(CheckIsOwnerCollider(other)) {return;}
-            if(!_serialProjectileIntervalData.IsTriggerOnceOnStay) return;
+        private void OnTriggerStay(Collider other)
+        {
+            if (CheckIsOwnerCollider(other)) { return; }
+            if (!_serialProjectileIntervalData.IsTriggerOnceOnStay) return;
             if (other.TryGetComponent<Entity>(out Entity targetEntity))
             {
-                if(_serialProjectileIntervalData._isIntervalDamage && targetEntity.GetDamaged(CurrentProjectileDamage)) {
-                    if(_serialProjectileIntervalData._isIntervalExtrasConvey) OwnerRef.GetExtras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.ConveyAffect)?.PerformStartFunctionals(ref targetEntity);
+                if (_serialProjectileIntervalData._isIntervalDamage && targetEntity.GetDamaged(CurrentProjectileDamage))
+                {
+                    if (_serialProjectileIntervalData._isIntervalExtrasConvey) OwnerRef.GetExtras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.ConveyAffect)?.PerformStartFunctionals(ref targetEntity);
 
-                    if (UseAnimator) {
+                    if (UseAnimator)
+                    {
                         // StartCoroutine(StartDestruct());
                     }
 
@@ -612,33 +643,42 @@ namespace Sophia.Instantiates
 
                     OnProjectileTriggerd.Invoke();
                 }
-            }     
+            }
         }
-        private void Update() {
-            if(!_serialProjectileIntervalData._isIntervalTrigger) return;
-            if(_serialProjectileIntervalData.IsTriggerOnceOnStay == false){
-                if(_serialProjectileIntervalData.triggerCountTime < _serialProjectileIntervalData.GetCurrentIntervalTime()) {
+        private void Update()
+        {
+            if (!_serialProjectileIntervalData._isIntervalTrigger) return;
+            if (_serialProjectileIntervalData.IsTriggerOnceOnStay == false)
+            {
+                if (_serialProjectileIntervalData.triggerCountTime < _serialProjectileIntervalData.GetCurrentIntervalTime())
+                {
                     _serialProjectileIntervalData.triggerCountTime += Time.deltaTime;
                 }
-                else {
+                else
+                {
                     _serialProjectileIntervalData.IsTriggerOnceOnStay = true;
                     _serialProjectileIntervalData.triggerCountTime = 0;
                 }
             }
-            else {                
-                if(_serialProjectileIntervalData.checkCountTime < _serialProjectileIntervalData.GetCheckTime()) {
+            else
+            {
+                if (_serialProjectileIntervalData.checkCountTime < _serialProjectileIntervalData.GetCheckTime())
+                {
                     _serialProjectileIntervalData.IsTriggerOnceOnStay = true;
                     _serialProjectileIntervalData.checkCountTime += Time.deltaTime;
                 }
-                else {
+                else
+                {
                     _serialProjectileIntervalData.IsTriggerOnceOnStay = false;
                     _serialProjectileIntervalData.checkCountTime = 0;
                 }
             }
         }
 
-        private void FixedUpdate() {
-            if(!IsMoveStoped) {
+        private void FixedUpdate()
+        {
+            if (!IsMoveStoped)
+            {
                 OnProjectileForwarding?.Invoke();
             }
         }
@@ -658,38 +698,43 @@ namespace Sophia.Instantiates
             poolRefer.Release(this);
         }
 
-#region Helper
+        #region Helper
 
         public bool CheckIsSameOwner(Entity owner)
         {
             throw new System.NotImplementedException();
         }
-        
+
         private bool CheckIsSameTag(Collider entity)
         {
             return entity.gameObject.tag == OwnerRef.gameObject.tag;
         }
-        
+
         public bool CheckIsOwnerCollider(Collider target)
         {
-            if(OwnerRef == null) {return false;}
+            if (OwnerRef == null) { return false; }
             return OwnerRef.entityCollider.Equals(target);
         }
 
-        public void GetExtrasWithProjectileInstantiatedType(ref Entity targetEntity) {
+        public void GetExtrasWithProjectileInstantiatedType(ref Entity targetEntity)
+        {
             Extras<Entity> targetAffectedExtras;
-            switch(instantiateType) {
-                case E_INSTANTIATE_TYPE.Weapon  : {
-                    targetAffectedExtras = OwnerRef.GetExtras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.WeaponConveyAffect);
-                    break;
-                }
-                case E_INSTANTIATE_TYPE.Skill   : {
-                    targetAffectedExtras = OwnerRef.GetExtras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.SkillConveyAffect);
-                    break;
-                }
-                default : {
-                    return;
-                }
+            switch (instantiateType)
+            {
+                case E_INSTANTIATE_TYPE.Weapon:
+                    {
+                        targetAffectedExtras = OwnerRef.GetExtras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.WeaponConveyAffect);
+                        break;
+                    }
+                case E_INSTANTIATE_TYPE.Skill:
+                    {
+                        targetAffectedExtras = OwnerRef.GetExtras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.SkillConveyAffect);
+                        break;
+                    }
+                default:
+                    {
+                        return;
+                    }
             }
             targetAffectedExtras?.PerformStartFunctionals(ref targetEntity);
         }

@@ -23,6 +23,7 @@ public class SkillManager : MonoBehaviour {
     public void DumpSkill(SKILL_KEY _key){
         skills[(int)_key] = null;
     }
+    
     public void RankUp(){
         for(int i = 0; i < 3; i++){
             if(skills[i] == null) continue;

@@ -12,6 +12,8 @@ namespace Sophia.Instantiates.Skills
         protected string name;
         protected string description;
         protected Sprite icon;
+        protected float baseCoolTime = 15f;
+        protected int baseStackAmount = 1;
         public CoolTimeComposite TimerComposite { get; protected set; }
         public override CoolTimeComposite GetCoolTimeComposite() => this.TimerComposite;
         public Entitys.Player ownerEntity { get; protected set; }
@@ -21,6 +23,11 @@ namespace Sophia.Instantiates.Skills
             name = userInterfaceData._name;
             description = userInterfaceData._description;
             icon = userInterfaceData._icon;
+        }
+
+        public override void SetUltCoolTime()
+        {
+            TimerComposite = new CoolTimeComposite(baseCoolTime * 2, baseStackAmount);
         }
 
         #region User Interface
@@ -73,11 +80,16 @@ namespace Sophia.Instantiates.Skills
             #endregion
             public Barrier(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
             {
-                TimerComposite = new CoolTimeComposite(15f, 1);
+                TimerComposite = new CoolTimeComposite(baseCoolTime, baseStackAmount);
                 TimerComposite.AddBindingAction(Activate);
             }
 
             #region Setter
+            public override void SetUltCoolTime()
+            {
+                base.SetUltCoolTime();
+                TimerComposite.AddBindingAction(Activate);
+            }
             public Barrier SetBarrierData(in SerialAffectorData affectorData)
             {
                 audio = new DataSystem.Atomics.AudioAtomics(in affectorData._audioData);
@@ -90,7 +102,7 @@ namespace Sophia.Instantiates.Skills
                 ownerEntity = entity;
                 return this;
             }
-            
+
             #endregion
             public async void Activate()
             {
@@ -114,11 +126,16 @@ namespace Sophia.Instantiates.Skills
 
             public MoveFaster(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
             {
-                TimerComposite = new CoolTimeComposite(15f, 1);
+                TimerComposite = new CoolTimeComposite(baseCoolTime, baseStackAmount);
                 TimerComposite.AddBindingAction(Activate);
             }
 
             #region Setter
+            public override void SetUltCoolTime()
+            {
+                base.SetUltCoolTime();
+                TimerComposite.AddBindingAction(Activate);
+            }
             public MoveFaster SetMoveFasterAffect(in SerialAffectorData affectorData)
             {
                 moveFasterAffect = new DataSystem.Modifiers.ConcreteAffector.MoveFasterAffect(affectorData);
@@ -150,11 +167,16 @@ namespace Sophia.Instantiates.Skills
 
             public WeaponStun(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
             {
-                TimerComposite = new CoolTimeComposite(15f, 1);
+                TimerComposite = new CoolTimeComposite(baseCoolTime, baseStackAmount);
                 TimerComposite.AddBindingAction(Activate);
             }
 
             #region Setter
+            public override void SetUltCoolTime()
+            {
+                base.SetUltCoolTime();
+                TimerComposite.AddBindingAction(Activate);
+            }
 
             public WeaponStun SetStunData(in SerialAffectorData AffectData)
             {
@@ -193,11 +215,16 @@ namespace Sophia.Instantiates.Skills
 
             public WeaponAdditionalDamage(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
             {
-                TimerComposite = new CoolTimeComposite(15f, 1);
+                TimerComposite = new CoolTimeComposite(baseCoolTime, baseStackAmount);
                 TimerComposite.AddBindingAction(Activate);
             }
 
             #region Setter
+            public override void SetUltCoolTime()
+            {
+                base.SetUltCoolTime();
+                TimerComposite.AddBindingAction(Activate);
+            }
 
             public WeaponAdditionalDamage SetDamageInfoData(in SerialOnDamageExtrasModifierDatas modifierDatas)
             {
@@ -232,11 +259,16 @@ namespace Sophia.Instantiates.Skills
             #endregion
             public PowerUp(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
             {
-                TimerComposite = new CoolTimeComposite(15f, 1);
+                TimerComposite = new CoolTimeComposite(baseCoolTime, baseStackAmount);
                 TimerComposite.AddBindingAction(Activate);
             }
 
             #region Setter
+            public override void SetUltCoolTime()
+            {
+                base.SetUltCoolTime();
+                TimerComposite.AddBindingAction(Activate);
+            }
             public PowerUp SetPowerUpAffect(in SerialAffectorData affectorData)
             {
                 powerUpAffect = new DataSystem.Modifiers.ConcreteAffector.PowerUpAffect(affectorData);
@@ -266,11 +298,16 @@ namespace Sophia.Instantiates.Skills
 
             public Lava(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
             {
-                TimerComposite = new CoolTimeComposite(15f, 1);
+                TimerComposite = new CoolTimeComposite(baseCoolTime, baseStackAmount);
                 TimerComposite.AddBindingAction(Activate);
             }
 
             #region Setter
+            public override void SetUltCoolTime()
+            {
+                base.SetUltCoolTime();
+                TimerComposite.AddBindingAction(Activate);
+            }
 
             public Lava SetInstantiationData(in SerialProjectileInstantiateData serialProjectileInstantiateData)
             {
@@ -316,11 +353,16 @@ namespace Sophia.Instantiates.Skills
 
             public BlackWhiteHole(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
             {
-                TimerComposite = new CoolTimeComposite(15f, 1);
+                TimerComposite = new CoolTimeComposite(baseCoolTime, baseStackAmount);
                 TimerComposite.AddBindingAction(Activate);
             }
 
             #region Setter
+            public override void SetUltCoolTime()
+            {
+                base.SetUltCoolTime();
+                TimerComposite.AddBindingAction(Activate);
+            }
 
             public BlackWhiteHole SetInstantiationData(in SerialProjectileInstantiateData serialProjectileInstantiateData)
             {
@@ -368,11 +410,16 @@ namespace Sophia.Instantiates.Skills
 
             public DoubleShot(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
             {
-                TimerComposite = new CoolTimeComposite(15f, 1);
+                TimerComposite = new CoolTimeComposite(baseCoolTime, baseStackAmount);
                 TimerComposite.AddBindingAction(Activate);
             }
 
             #region Setter
+            public override void SetUltCoolTime()
+            {
+                base.SetUltCoolTime();
+                TimerComposite.AddBindingAction(Activate);
+            }
 
             public DoubleShot SetInstantiationData(in SerialProjectileInstantiateData serialProjectileInstantiateData)
             {
@@ -402,8 +449,8 @@ namespace Sophia.Instantiates.Skills
                                 .SetAffectType(projectileInstantiateData._AffectType)
                                 .SetIntervalData(in projectileInstantiateData._intervalData)
                                 .Activate();
-                
-                await UniTask.Delay(100); 
+
+                await UniTask.Delay(100);
 
                 ProjectileObject useProjectile2 = ProjectilePool.GetObject(projectileInstantiateData._projectileObjectRefer).Init(ownerEntity);
                 instantiatorRef.InstantablePositioning(useProjectile2, Vector3.zero, Vector3.forward * -30)
@@ -432,11 +479,16 @@ namespace Sophia.Instantiates.Skills
 
             public Piercing(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
             {
-                TimerComposite = new CoolTimeComposite(15f, 1);
+                TimerComposite = new CoolTimeComposite(baseCoolTime, baseStackAmount);
                 TimerComposite.AddBindingAction(Activate);
             }
 
             #region Setter
+            public override void SetUltCoolTime()
+            {
+                base.SetUltCoolTime();
+                TimerComposite.AddBindingAction(Activate);
+            }
 
             public Piercing SetInstantiationData(in SerialProjectileInstantiateData serialProjectileInstantiateData)
             {
@@ -444,7 +496,8 @@ namespace Sophia.Instantiates.Skills
                 return this;
             }
 
-            public Piercing SetPhysics(in SerialAffectorData affectorData) {
+            public Piercing SetPhysics(in SerialAffectorData affectorData)
+            {
                 PhysicsData = affectorData._physicsData;
                 return this;
             }
@@ -453,13 +506,14 @@ namespace Sophia.Instantiates.Skills
             {
                 ownerEntity = player;
                 DashAtomics = new DataSystem.Atomics.DashAtomics(
-                    player.entityRigidbody, 
+                    player.entityRigidbody,
                     player.GetMovementComposite().GetMovemenCompositetData,
                     player.GetStat(E_NUMERIC_STAT_TYPE.DashForce).GetValueForce
                 );
-                TimerComposite.AddOnUseEvent(async () => {
+                TimerComposite.AddOnUseEvent(async () =>
+                {
                     player.GetMovementComposite().SetMovableState(false);
-                    await UniTask.Delay(500); 
+                    await UniTask.Delay(500);
                     player.GetMovementComposite().SetMovableState(true);
                 });
                 return this;
@@ -484,7 +538,7 @@ namespace Sophia.Instantiates.Skills
             }
 
         }
-    
+
         public class RotateSlash : SkillAbstractConcrete
         {
             #region Member
@@ -496,11 +550,16 @@ namespace Sophia.Instantiates.Skills
 
             public RotateSlash(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
             {
-                TimerComposite = new CoolTimeComposite(15f, 1);
+                TimerComposite = new CoolTimeComposite(baseCoolTime, baseStackAmount);
                 TimerComposite.AddBindingAction(Activate);
             }
 
             #region Setter
+            public override void SetUltCoolTime()
+            {
+                base.SetUltCoolTime();
+                TimerComposite.AddBindingAction(Activate);
+            }
 
             public RotateSlash SetInstantiationData(in SerialProjectileInstantiateData serialProjectileInstantiateData)
             {
@@ -532,7 +591,8 @@ namespace Sophia.Instantiates.Skills
             }
         }
 
-        public class ThrowSlash : SkillAbstractConcrete {
+        public class ThrowSlash : SkillAbstractConcrete
+        {
             #region Member
 
             private ProjectileBucket instantiatorRef;
@@ -542,11 +602,16 @@ namespace Sophia.Instantiates.Skills
 
             public ThrowSlash(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
             {
-                TimerComposite = new CoolTimeComposite(15f, 1);
+                TimerComposite = new CoolTimeComposite(baseCoolTime, baseStackAmount);
                 TimerComposite.AddBindingAction(Activate);
             }
 
             #region Setter
+            public override void SetUltCoolTime()
+            {
+                base.SetUltCoolTime();
+                TimerComposite.AddBindingAction(Activate);
+            }
 
             public ThrowSlash SetInstantiationData(in SerialProjectileInstantiateData serialProjectileInstantiateData)
             {
@@ -600,7 +665,7 @@ namespace Sophia.Instantiates.Skills
                                 .Activate();
             }
         }
-    
+
         public class DashSlash : SkillAbstractConcrete
         {
             #region Member
@@ -613,11 +678,17 @@ namespace Sophia.Instantiates.Skills
 
             public DashSlash(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
             {
-                TimerComposite = new CoolTimeComposite(5, 3)
+                baseStackAmount = 3;
+                TimerComposite = new CoolTimeComposite(baseCoolTime, baseStackAmount)
                                         .AddBindingAction(Activate);
             }
 
             #region Setter
+            public override void SetUltCoolTime()
+            {
+                base.SetUltCoolTime();
+                TimerComposite.AddBindingAction(Activate);
+            }
 
             public DashSlash SetInstantiationData(in SerialProjectileInstantiateData serialProjectileInstantiateData)
             {
@@ -625,7 +696,8 @@ namespace Sophia.Instantiates.Skills
                 return this;
             }
 
-            public DashSlash SetPhysics(in SerialAffectorData affectorData) {
+            public DashSlash SetPhysics(in SerialAffectorData affectorData)
+            {
                 PhysicsData = affectorData._physicsData;
                 return this;
             }
@@ -633,13 +705,14 @@ namespace Sophia.Instantiates.Skills
             {
                 ownerEntity = player;
                 DashAtomics = new DataSystem.Atomics.DashAtomics(
-                    player.entityRigidbody, 
+                    player.entityRigidbody,
                     player.GetMovementComposite().GetMovemenCompositetData,
                     player.GetStat(E_NUMERIC_STAT_TYPE.DashForce).GetValueForce
                 );
-                TimerComposite.AddOnUseEvent(async () => {
+                TimerComposite.AddOnUseEvent(async () =>
+                {
                     player.GetMovementComposite().SetMovableState(false);
-                    await UniTask.Delay(500); 
+                    await UniTask.Delay(500);
                     player.GetMovementComposite().SetMovableState(true);
                 });
                 return this;
@@ -664,7 +737,7 @@ namespace Sophia.Instantiates.Skills
             }
 
         }
-    
+
     }
 
 }

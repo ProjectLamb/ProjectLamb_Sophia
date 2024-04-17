@@ -6,6 +6,7 @@ using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using FMODPlus;
 using Cysharp.Threading.Tasks;
+using UnityEngine.SceneManagement;
 
 namespace Sophia.Entitys
 {
@@ -20,36 +21,39 @@ namespace Sophia.Entitys
     public class Player : Entity, IMovementAccessible, IAffectManagerAccessible, IInstantiatorAccessible
     {
 
-#region SerializeMember 
+        #region SerializeMember 
         [Header("None")]
-//      [SerializeField] private ModelManger  _modelManger;
-//      [SerializeField] private VisualFXBucket  _visualFXBucket;
-        [SerializeField] private SerialBasePlayerData       _basePlayerData;
-        [SerializeField] private ProjectileBucketManager    _projectileBucketManager;
-        [SerializeField] private WeaponManager              _weaponManager;
-        [SerializeField] private EquipmentManager           _equipmentManager;
-        [SerializeField] private AffectorManager            _affectorManager;
-        [SerializeField] private SkillManager               _skillManager;
+        //      [SerializeField] private ModelManger  _modelManger;
+        //      [SerializeField] private VisualFXBucket  _visualFXBucket;
+        [SerializeField] private SerialBasePlayerData _basePlayerData;
+        [SerializeField] private ProjectileBucketManager _projectileBucketManager;
+        [SerializeField] private WeaponManager _weaponManager;
+        [SerializeField] private EquipmentManager _equipmentManager;
+        [SerializeField] private AffectorManager _affectorManager;
+        [SerializeField] private SkillManager _skillManager;
 
-#endregion
+        #endregion
 
-#region Members
-//      [HideInInspector] public Collider entityCollider;
-//      [HideInInspector] public Rigidbody entityRigidbody;
-//      [HideInInspector] protected List<IDataSettable> Settables = new();
+        #region Members
+        //      [HideInInspector] public Collider entityCollider;
+        //      [HideInInspector] public Rigidbody entityRigidbody;
+        //      [HideInInspector] protected List<IDataSettable> Settables = new();
 
         private LifeComposite Life;
         private MovementComposite Movement;
         private DashSkill DashSkillAbility;
+        private LayerMask playerOriginLayer;
         private Stat Power;
         private Extras<int> GearcoinExtras;
 
         public Dictionary<KeyCode, bool> _hasSkill = new();
         public int mPlayerWealth;
         public event UnityAction<int> OnWealthChangeEvent;
-        public int PlayerWealth {
+        public int PlayerWealth
+        {
             get { return mPlayerWealth; }
-            set {
+            set
+            {
                 mPlayerWealth = value;
                 OnWealthChangeEvent.Invoke(mPlayerWealth);
             }
@@ -59,7 +63,8 @@ namespace Sophia.Entitys
         {
             StatReferer.SetRefStat(Power);
             ExtrasReferer.SetRefExtras<int>(GearcoinExtras);
-            this.Settables.ForEach(E => {
+            this.Settables.ForEach(E =>
+            {
                 E.SetStatDataToReferer(StatReferer);
                 E.SetExtrasDataToReferer(ExtrasReferer);
             });
@@ -75,26 +80,27 @@ namespace Sophia.Entitys
             this.Settables.Add(_affectorManager);
             this.Settables.Add(GameManager.Instance.NewFeatureGlobalEvent);
         }
-        
+
         protected override void Awake()
         {
             /**/
             TryGetComponent<Collider>(out entityCollider);
             TryGetComponent<Rigidbody>(out entityRigidbody);
-            StatReferer     = new PlayerStatReferer();
-            ExtrasReferer   = new PlayerExtrasReferer();
+            playerOriginLayer = gameObject.layer;
+            StatReferer = new PlayerStatReferer();
+            ExtrasReferer = new PlayerExtrasReferer();
 
             Life = new LifeComposite(_basePlayerData.MaxHp, _basePlayerData.Defence);
             Movement = new MovementComposite(entityRigidbody, _basePlayerData.MoveSpeed);
             DashSkillAbility = new DashSkill(this.entityRigidbody, Movement.GetMovemenCompositetData, _basePlayerData.DashForce);
-            Power = new Stat(_basePlayerData.Power, 
-                E_NUMERIC_STAT_TYPE.Power, 
-                E_STAT_USE_TYPE.Natural, 
-                OnPowerUpdated 
+            Power = new Stat(_basePlayerData.Power,
+                E_NUMERIC_STAT_TYPE.Power,
+                E_STAT_USE_TYPE.Natural,
+                OnPowerUpdated
             );
             GearcoinExtras = new Extras<int>(
                 E_FUNCTIONAL_EXTRAS_TYPE.GearcoinTriggered,
-                () => {Debug.Log("기어 획득");}
+                () => { Debug.Log("기어 획득"); }
             );
 
             _hasSkill.Add(KeyCode.Q, false);
@@ -102,6 +108,7 @@ namespace Sophia.Entitys
             _hasSkill.Add(KeyCode.R, false);
 
             _affectorManager.Init(_basePlayerData.Tenacity);
+
         }
 
         protected override void Start()
@@ -111,19 +118,20 @@ namespace Sophia.Entitys
             Life.OnDamaged += InGameScreenUI.Instance._hitCanvasShadeScript.Invoke;
 
             InGameScreenUI.Instance._playerWealthBarUI.SetPlayer(this);
-            
+
             DashSkillAbility.SetDependUI(InGameScreenUI.Instance._playerStaminaBarUI);
-            DashSkillAbility.Timer.AddOnUseEvent(() => {
+            DashSkillAbility.Timer.AddOnUseEvent(() =>
+            {
                 this.GetModelManager().EnableTrail();
-                StartCoroutine(actionDelay(this.GetModelManager().DisableTrail));
+                StartCoroutine(actionDelay(DashEnd));
             });
             DashSkillAbility.SetAudioSource(DashSource);
 
             OnWealthChangeEvent.Invoke(mPlayerWealth);
         }
-#endregion
+        #endregion
 
-#region Life Accessible
+        #region Life Accessible
 
         public override LifeComposite GetLifeComposite() => this.Life;
 
@@ -132,24 +140,32 @@ namespace Sophia.Entitys
             bool isDamaged = false;
             if (Life.IsDie) { isDamaged = false; }
             isDamaged = Life.Damaged(damage);
-            if(isDamaged) {GetModelManager().GetAnimator().SetTrigger("GetDamaged");}
+            if (isDamaged) { GetModelManager().GetAnimator().SetTrigger("GetDamaged"); }
             if (Life.IsDie) { Die(); }
             return isDamaged;
         }
 
         public override bool Die()
         {
+            PlayerController.IsAttackAllow = false;
+            PlayerController.IsMoveAllow = false;
+            GetMovementComposite().SetMovableState(false);
             entityCollider.enabled = false;
             _modelManager.GetAnimator().SetTrigger("Die");
-            throw new System.NotImplementedException();
+
+            InGameScreenUI.Instance._fadeUI.AddBindingAction(() => { SceneManager.LoadScene(0); });
+            InGameScreenUI.Instance._fadeUI.FadeOut(0.02f, 1.0f);
+            //OnDieEvent.Invoke();
+
+            return true;
         }
 
-#endregion
+        #endregion
 
-#region Data Accessible
+        #region Data Accessible
 
         public override EntityStatReferer GetStatReferer() => this.StatReferer;
-        
+
         public override Stat GetStat(E_NUMERIC_STAT_TYPE numericType) => StatReferer.GetStat(numericType);
 
         [ContextMenu("GetStatsInfo")]
@@ -164,16 +180,16 @@ namespace Sophia.Entitys
         }
 
         public override EntityExtrasReferer GetExtrasReferer() => ExtrasReferer;
-        
+
         public override Extras<T> GetExtras<T>(E_FUNCTIONAL_EXTRAS_TYPE functionalType) => ExtrasReferer.GetExtras<T>(functionalType);
 
-#endregion
+        #endregion
 
-#region Movement
+        #region Movement
 
         public MovementComposite GetMovementComposite() => this.Movement;
         public bool GetMoveState() => this.Movement.IsMovable;
-        
+
         public void SetMoveState(bool movableState) => this.Movement.SetMovableState(movableState);
 
         public Vector2 MoveInput;
@@ -185,9 +201,10 @@ namespace Sophia.Entitys
 
         public void MoveTick()
         {
-            if(DashSkillAbility.GetIsDashState()) return;
+            if (DashSkillAbility.GetIsDashState()) return;
             // GetAnimator().SetFloat("Move", this.entityRigidbody.velocity.magnitude);
-            if (!Movement.IsBorder(this.transform) && Sophia.PlayerAttackAnim.canExitAttack) {
+            if (!Movement.IsBorder(this.transform) && Sophia.PlayerAttackAnim.canExitAttack)
+            {
                 Movement.MoveTick(this.transform);
                 GetModelManager().GetAnimator().SetFloat("Move", entityRigidbody.velocity.magnitude);
             }
@@ -196,22 +213,32 @@ namespace Sophia.Entitys
         public async UniTask Turning() { await Movement.Turning(transform, Input.mousePosition); }
         //public void TurningWithCallback(UnityAction action) => Movement.TurningWithCallback(transform,Input.mousePosition,action).Forget();
 
-#endregion
+        #endregion
 
-#region Dash
+        #region Dash
         public DashSkill GetDashAbility() => DashSkillAbility;
         public FMODAudioSource DashSource;
-        
-        public void Dash() => DashSkillAbility.Use();/*m*/
 
-#endregion
+        public void Dash()
+        {
+            DashSkillAbility.Use();
+        }/*m*/
 
-        IEnumerator actionDelay(UnityAction action) {
-            yield return YieldInstructionCache.WaitForSeconds(0.5f);
-            action.Invoke(); 
+        public void DashEnd()
+        {
+            gameObject.layer = playerOriginLayer;
+            this.GetModelManager().DisableTrail();
         }
 
-#region Weapon Handler
+        #endregion
+
+        IEnumerator actionDelay(UnityAction action)
+        {
+            yield return YieldInstructionCache.WaitForSeconds(0.5f);
+            action.Invoke();
+        }
+
+        #region Weapon Handler
         public WeaponManager GetWeaponManager() => _weaponManager;
         public ProjectileBucketManager GetProjectileBucketManager() => _projectileBucketManager;
         public void OnPowerUpdated() { Debug.Log("공격력 변경"); }
@@ -220,7 +247,7 @@ namespace Sophia.Entitys
         {
             try
             {
-                if (!Sophia.PlayerAttackAnim.canNextAttack)
+                if (!GetModelManager().GetAnimator().GetBool("canNextAttack"))
                     return;
                 // if(Sophia.PlayerAttackAnim.canExitAttack || Sophia.PlayerAttackAnim.resetAtkTrigger) return;
                 await Movement.TurningWithAction(transform, Input.mousePosition, () => GetModelManager().GetAnimator().SetTrigger("DoAttack"));
@@ -233,9 +260,9 @@ namespace Sophia.Entitys
         }
 
 
-#endregion
+        #endregion
 
-#region Skill Handler 
+        #region Skill Handler 
 
         public SkillManager GetSkillManager() => this._skillManager;
 
@@ -245,29 +272,35 @@ namespace Sophia.Entitys
         }
 
         public void DropSkill(KeyCode key) => this._skillManager.Drop(key);
-        public async void Use(KeyCode key) {
-            await Movement.TurningWithAction(transform, Input.mousePosition, () => {
+        public async void Use(KeyCode key)  // Using Skill
+        {
+            // 만약 스킬 쿨이 돌지 않았을 때
+            if (_skillManager.GetSkillByKey(key).GetCoolTimeComposite().GetIsReadyToUse())
+            {
+                await Movement.TurningWithAction(transform, Input.mousePosition, () =>
+            {
                 this._skillManager.GetSkillByKey(key)?.Use();
             });
+            }
         }
 
-#endregion
+        #endregion
 
-#region Equip Handler
+        #region Equip Handler
 
         public EquipmentManager GetEquipmentManager() => this._equipmentManager;
         public void EquipEquipment(Equipment equipment) => this._equipmentManager.Equip(equipment);
         public void DropEquipment(Equipment equipment) => this._equipmentManager.Drop(equipment);
 
-#endregion
+        #endregion
 
-#region Affect Handler
+        #region Affect Handler
 
         public override AffectorManager GetAffectorManager() => this._affectorManager ??= GetComponentInChildren<AffectorManager>();
         public override void Affect(Affector affector) => this._affectorManager.Affect(affector);
         public override void Recover(Affector affector) => this._affectorManager.Recover(affector);
 
-#endregion
+        #endregion
 
     }
 }
