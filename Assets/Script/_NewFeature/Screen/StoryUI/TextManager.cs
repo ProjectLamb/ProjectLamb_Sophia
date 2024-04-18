@@ -22,8 +22,7 @@ public class TextManager : MonoBehaviour
     public string[] dialogStrings;
     TalkData[] talkDatas;
     private int currentPage = 0; // 대화문 개수 변수
-    private bool IsStory = false;
-    private bool IsSpriteChange = false;
+    private bool IsStory = false; // 스토리 대화 진행중인지 여부
 
     [Header("PlayerUI")]
     [SerializeField] public GameObject _playerHealthBar;
@@ -57,6 +56,7 @@ public class TextManager : MonoBehaviour
         TypingManager._instance.Typing(talkDatas[0].contexts, talkText);
         nameText.text = talkDatas[0].name;
         currentPage++;
+        storyImageAnimator.SetTrigger("DoChange");
     }
 
     private void Update()
@@ -73,7 +73,10 @@ public class TextManager : MonoBehaviour
                 }
 
                 if(nameText.text != talkDatas[currentPage].name) // 스토리 진행 중 화자 변경 시 이미지 변경
+                { 
                     ChangeSprite();
+                    storyImageAnimator.SetTrigger("DoChange");
+                }
 
                 nameText.text = talkDatas[currentPage].name;
                 TypingManager._instance.Typing(talkDatas[currentPage].contexts, talkText);
@@ -97,13 +100,6 @@ public class TextManager : MonoBehaviour
             talkPanel.SetActive(true);
             _dissolvePanel.SetActive(false);
         }
-        
-        if(IsSpriteChange)
-        {
-            storyImageAnimator.SetTrigger("DoChange");
-            IsSpriteChange = false;
-        }
-
     }
 
     private void TextBarOff()
@@ -130,12 +126,10 @@ public class TextManager : MonoBehaviour
     {
         if(this.storyBarImage.sprite == decussSprite){
             this.storyBarImage.sprite = OffusiaSprite;
-            IsSpriteChange = true;
         }
 
         else if(this.storyBarImage.sprite == OffusiaSprite){                 
             this.storyBarImage.sprite = decussSprite;
-            IsSpriteChange = true;
         }
     }
 

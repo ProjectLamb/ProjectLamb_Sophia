@@ -13,7 +13,6 @@ public class VideoManger : MonoBehaviour
     private void Awake()
     {
         renderTexture.Release();
-        video.Prepare();
     }
     private void Start()
     {
@@ -24,13 +23,6 @@ public class VideoManger : MonoBehaviour
     {
         StoryManager.Instance.IsTutorial = false;
         SceneManager.LoadScene("_01_Chapter_kabocha");
-    }
-    private void Update()
-    {
-        if(Input.GetKeyUp(KeyCode.Space)){
-            StoryManager.Instance.IsTutorial = false;
-            SceneManager.LoadScene("_01_Chapter_kabocha");
-        }
     }
 
 }
