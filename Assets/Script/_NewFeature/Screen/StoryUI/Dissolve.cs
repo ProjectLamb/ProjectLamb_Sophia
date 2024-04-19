@@ -25,7 +25,7 @@ public class Dissolve : MonoBehaviour
     IEnumerator DissolveEffect()
     {
         Color color = rwImage.color;                     
-        color.a -= Time.deltaTime * 0.075f;             
+        color.a -= Time.deltaTime * 0.05f;             
         rwImage.color = color;    
                                     
         if (rwImage.color.a <= 0)                   

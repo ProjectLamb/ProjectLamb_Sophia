@@ -24,5 +24,4 @@ public class VideoManger : MonoBehaviour
         StoryManager.Instance.IsTutorial = false;
         SceneManager.LoadScene("_01_Chapter_kabocha");
     }
-
 }
