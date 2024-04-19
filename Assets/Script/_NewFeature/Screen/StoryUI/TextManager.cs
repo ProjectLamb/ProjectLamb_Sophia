@@ -90,12 +90,13 @@ public class TextManager : MonoBehaviour
         else if(!GameManager.Instance.GlobalEvent.IsGamePaused && IsStory)
             talkPanel.SetActive(true);
         
-        if(!StoryManager.Instance.IsTutorial)
+        if(!StoryManager.Instance.IsTutorial) // 튜토리얼이 끝났다면
         {
-            talkPanel.SetActive(false);
+            TextBarOff();
             _dissolvePanel.SetActive(true);
+
         }
-        else if(StoryManager.Instance.IsTutorial && !GameManager.Instance.GlobalEvent.IsGamePaused)
+        else if(StoryManager.Instance.IsTutorial && !GameManager.Instance.GlobalEvent.IsGamePaused) // 튜토리얼이 끝나지 않은 상태에서 게임 일시정지
         {
             talkPanel.SetActive(true);
             _dissolvePanel.SetActive(false);
