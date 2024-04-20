@@ -73,7 +73,8 @@ namespace Sophia.UserInterface
             for (int i = 0; i < skillButtonTransform.Length; i++) {
                 if (RectTransformUtility.RectangleContainsScreenPoint(skillButtonTransform[i], eventData.position)) {
                     _dragStartSkillKey = collectedSkillButton[i].skillKey;
-                    if (!player._hasSkill[_dragStartSkillKey])
+                    skillManager.collectedSkill.TryGetValue(_dragStartSkillKey, out var dragStartSkill);
+                    if (dragStartSkill == null)
                         return;
                     _dragStartIndex = i;
                     _dragButtonContent = collectedSkillButton[i].transform.Find("ButtonContent").gameObject;
