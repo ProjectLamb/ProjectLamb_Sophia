@@ -5,9 +5,21 @@ using FMODUnity;
 using FMODPlus;
 using UnityEngine;
 using AudioType = FMODPlus.AudioType;
+using AYellowpaper.SerializedCollections;
+using UnityEngine.SceneManagement;
 
 public class GlobalAudioManager : MonoBehaviour
 {
+    #region 
+    [SerializedDictionary("Mixer Type", "오디오 믹서")]
+    [SerializeField]
+    private SerializedDictionary<string, AudioSetterUIComponent> _audioSetters;
+    
+    [SerializeField]
+    private CommandSenderLink _commandSenderLink;
+
+    #endregion
+    
     #region Public
 
     public FMODAudioSource AMBAudioSource;
@@ -40,6 +52,77 @@ public class GlobalAudioManager : MonoBehaviour
         AMBBus     = RuntimeManager.GetBus(AMBBusPath);
         BGMBus     = RuntimeManager.GetBus(BGMBusPath);
         SFXBus     = RuntimeManager.GetBus(SFXBusPath);
+        
+        if(_audioSetters == null ) throw new Exception("오디오 믹서 연결 안함.");
+
+        if(
+            _audioSetters["Master"].AudioSlider.maxValue >= 99f || 
+            _audioSetters[AudioType.BGM.ToString()].AudioSlider.maxValue >= 99f ||
+            _audioSetters[AudioType.SFX.ToString()].AudioSlider.maxValue >= 99f
+        ) {
+            _audioSetters["Master"].AudioSlider.onValueChanged.AddListener(SetMasterBySliderVolume);
+            _audioSetters[AudioType.BGM.ToString()].AudioSlider.onValueChanged.AddListener(SetBGMBySliderVolume);
+            _audioSetters[AudioType.SFX.ToString()].AudioSlider.onValueChanged.AddListener(SetSFXBySliderVolume);
+        }
+        else if(
+            _audioSetters["Master"].AudioSlider.maxValue <= 1f || 
+            _audioSetters[AudioType.BGM.ToString()].AudioSlider.maxValue <= 1f ||
+            _audioSetters[AudioType.SFX.ToString()].AudioSlider.maxValue <= 1f
+        ) {
+            _audioSetters["Master"].AudioSlider.onValueChanged.AddListener(SetMasterVolume);
+            _audioSetters[AudioType.BGM.ToString()].AudioSlider.onValueChanged.AddListener(SetBGMVolume);
+            _audioSetters[AudioType.SFX.ToString()].AudioSlider.onValueChanged.AddListener(SetSFXVolume);
+        }
+
+        SceneManager.activeSceneChanged += LoadCommandSenderLinkByScene;
+    }
+
+    public void LoadCommandSenderLinkByScene(Scene current, Scene next) {
+        _commandSenderLink = FindFirstObjectByType<CommandSenderLink>();
+        if(_commandSenderLink != null)
+            _commandSenderLink.Init();
+        else 
+            Debug.LogError("_commandSenderLink를 못찾음");
+    }
+
+    private void Start() {
+        _commandSenderLink = FindFirstObjectByType<CommandSenderLink>();
+        if(_commandSenderLink != null)
+            _commandSenderLink.Init();
+        else 
+            Debug.LogError("_commandSenderLink를 못찾음");
+           
+    }
+
+    private void SetMasterBySliderVolume(float value) {
+        if(0<=value && value <= 100.0f) {
+            SetMasterVolume(value/100f); return;
+        }
+        if(value < 0){
+            SetMasterVolume(0); return;
+        }
+        if(100.0f < value)
+            throw new Exception("볼륨소리가 가 1을 초과했음 세상 끔찍한 소리가 들리는 버그가 들어올 것이니 조심하셈");
+    }
+    private void SetBGMBySliderVolume(float value) {
+        if(0<=value && value <= 100.0f) {
+            SetBGMVolume(value/100f); return;
+        }
+        if(value < 0){
+            SetBGMVolume(0); return;
+        }
+        if(100.0f < value)
+            throw new Exception("볼륨소리가 가 1을 초과했음 세상 끔찍한 소리가 들리는 버그가 들어올 것이니 조심하셈");
+    }
+    private void SetSFXBySliderVolume(float value) {
+        if(0<=value && value < 100.0f) {
+            SetSFXVolume(value/100f); return;
+        }
+        if(value < 0){
+            SetSFXVolume(0); return;
+        }
+        if(100.0f < value)
+            throw new Exception("볼륨소리가 가 1을 초과했음 세상 끔찍한 소리가 들리는 버그가 들어올 것이니 조심하셈");
     }
 
     /// <summary>

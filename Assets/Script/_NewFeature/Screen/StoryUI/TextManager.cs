@@ -73,7 +73,7 @@ public class TextManager : MonoBehaviour
             TypingManager._instance.GetInputDown();
             if (TypingManager._instance.isTypingEnd)
             {
-                if (currentPage == talkDatas.Length && TypingManager.instance.isDialogEnd)
+                if (currentPage == talkDatas.Length && TypingManager._instance.isDialogEnd)
                 {
                     if (!IsOnce)
                     {
