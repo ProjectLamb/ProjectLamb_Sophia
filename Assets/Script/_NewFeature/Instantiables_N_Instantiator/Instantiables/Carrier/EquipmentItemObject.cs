@@ -20,6 +20,7 @@ namespace Sophia.Instantiates
         private void Start()
         {
             if (ISDEBUG) { DEBUG_Activate(); }
+            Invoke("StopVFX", 1f);
         }
 
 
@@ -30,15 +31,14 @@ namespace Sophia.Instantiates
             {
                 if (TryGetComponent<PurchaseComponent>(out _purchaseComponent))
                 {
-                    if(!_purchaseComponent.Purchase(player)) return;
+                    if (!_purchaseComponent.Purchase(player)) return;
                 }
                 equipment = FactoryConcreteEquipment.GetEquipmentByID(in _equipmentData, GameManager.Instance.PlayerGameObject.GetComponent<Player>());
                 if (EquipUserInterface())
                 {
                     player.EquipEquipment(equipment);
 
-                    this._lootVFX.playRate *= 2;
-                    _lootVFX.Stop();
+                    //_lootVFX.Stop();
                     _lootObject.SetActive(false);
                     IsReadyToTrigger = false;
 
@@ -49,6 +49,11 @@ namespace Sophia.Instantiates
                     if (this._isDestroyable) Destroy(this.gameObject, 2);
                 }
             }
+        }
+
+        void StopVFX()
+        {
+            _lootVFX.Stop();
         }
 
         public bool EquipUserInterface() { return true; }

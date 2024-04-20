@@ -230,6 +230,11 @@ namespace Sophia.Entitys
             Destroy(gameObject, 0.5f);
         }
 
+        public void PlayRaptorFootStep()
+        {
+            _audioSources[(int)E_RAPTOR_AUDIO_INDEX.FootStep].Play();
+        }
+
         #endregion
 
         #region Data Accessible

@@ -6,7 +6,7 @@ using AYellowpaper.SerializedCollections;
 
 public enum ANIME_STATE
 {
-    IDLE, ATTACK, JUMP, DIE
+    IDLE, ATTACK, JUMP, DIE, FootStep
 }
 
 public class AnimEventInvoker : MonoBehaviour
@@ -20,4 +20,5 @@ public class AnimEventInvoker : MonoBehaviour
     public void JumpStart(){animCallback[(int)ANIME_STATE.JUMP].Invoke();}
     //public void JumpEnd(){animCallback[(int)ANIME_STATE.Jump]?.Invoke();}
     public void DieStart(){animCallback[(int)ANIME_STATE.DIE].Invoke();}
+    public void FootStep(){animCallback[(int)ANIME_STATE.FootStep].Invoke();}
 }

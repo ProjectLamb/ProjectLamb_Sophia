@@ -55,7 +55,8 @@ namespace Sophia.Entitys
             set
             {
                 mPlayerWealth = value;
-                OnWealthChangeEvent.Invoke(mPlayerWealth);
+                InGameScreenUI.Instance._playerWealthBarUI.CountingNumber = mPlayerWealth;
+                OnWealthChangeEvent.Invoke(value - mPlayerWealth);
             }
         }
 
@@ -133,6 +134,7 @@ namespace Sophia.Entitys
 
         #region Life Accessible
 
+        public FMODAudioSource DeathSource;
         public override LifeComposite GetLifeComposite() => this.Life;
 
         public override bool GetDamaged(DamageInfo damage)
@@ -149,9 +151,12 @@ namespace Sophia.Entitys
         {
             PlayerController.IsAttackAllow = false;
             PlayerController.IsMoveAllow = false;
+
             GetMovementComposite().SetMovableState(false);
             entityCollider.enabled = false;
             _modelManager.GetAnimator().SetTrigger("Die");
+
+            DeathSource.Play();
 
             InGameScreenUI.Instance._fadeUI.AddBindingAction(() => { SceneManager.LoadScene(0); });
             InGameScreenUI.Instance._fadeUI.FadeOut(0.02f, 1.0f);
@@ -202,8 +207,9 @@ namespace Sophia.Entitys
         public void MoveTick()
         {
             if (DashSkillAbility.GetIsDashState()) return;
+            if (!Sophia.PlayerAttackAnim.canExitAttack) return;
             // GetAnimator().SetFloat("Move", this.entityRigidbody.velocity.magnitude);
-            if (!Movement.IsBorder(this.transform) && Sophia.PlayerAttackAnim.canExitAttack)
+            if (!Movement.IsBorder(this.transform))
             {
                 Movement.MoveTick(this.transform);
                 GetModelManager().GetAnimator().SetFloat("Move", entityRigidbody.velocity.magnitude);

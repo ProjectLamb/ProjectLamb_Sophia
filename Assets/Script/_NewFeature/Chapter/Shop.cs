@@ -7,6 +7,7 @@ using System;
 
 namespace Sophia
 {
+    using FMODPlus;
     using Instantiates;
     using TMPro;
 
@@ -184,6 +185,11 @@ namespace Sophia
         {
             await UniTask.Delay(TimeSpan.FromSeconds(_waitSecondTime));
             instantiateItemEvent.Invoke(_id);
+        }
+
+        public void PlayPurchaseSound()
+        {
+            GetComponent<FMODAudioSource>().Play();
         }
     }
 }

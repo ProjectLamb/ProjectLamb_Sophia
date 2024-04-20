@@ -6,6 +6,7 @@ using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Drawing.Drawing2D;
+using FMODPlus;
 
 namespace Sophia.Instantiates
 {
@@ -35,10 +36,8 @@ namespace Sophia.Instantiates
 
         private void OnCollisionStay(Collision other)
         {
-            Debug.Log("Collision");
             if (other.transform.TryGetComponent(out Entitys.Player player))
             {
-                Debug.Log("Player");
                 if (!IsReady)
                     return;
                 if (!pc.Purchase(player))
@@ -52,6 +51,7 @@ namespace Sophia.Instantiates
                     }
                 }
                 AsyncWaitUse(2).Forget();
+                GetComponent<FMODAudioSource>().Play();
             }
         }
 
@@ -59,7 +59,7 @@ namespace Sophia.Instantiates
         {
             Sequence mySequence = DOTween.Sequence();
             System.Random random = new System.Random();
-            Vector3 EndPosForward   = endPos.transform.right;
+            Vector3 EndPosForward = endPos.transform.right;
             var randomAngle = random.Next(-180, 180);
             Vector3[] rotateMatrix = new Vector3[] {
                 new Vector3(Mathf.Cos(randomAngle), 0 , Mathf.Sin(randomAngle)),
@@ -74,7 +74,7 @@ namespace Sophia.Instantiates
             var randomForce = (float)random.NextDouble();
             var randomTime = (float)(random.NextDouble() * 2 + 0.5);
             Debug.Log(retatedVec * randomDist);
-            Tween jumpTween = itemObject.transform.DOLocalJump((retatedVec * randomDist) + endPos.transform.position,randomForce * 25,1, randomTime).SetEase(Ease.OutBounce);
+            Tween jumpTween = itemObject.transform.DOLocalJump((retatedVec * randomDist) + endPos.transform.position, randomForce * 25, 1, randomTime).SetEase(Ease.OutBounce);
             return mySequence.Append(jumpTween);
         }
 

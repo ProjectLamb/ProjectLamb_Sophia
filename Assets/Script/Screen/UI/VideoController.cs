@@ -18,6 +18,7 @@ public class VideoController : MonoBehaviour
     [SerializeField] FMODAudioSource fMODAudioSource;
     [SerializeField] CommandSender commandStarter;
     [SerializeField] CommandSender commandEnder;
+    [SerializeField] private bool isSkippable;
 
     public void StartVideo(E_VIDEO_NAME video)
     {
@@ -27,7 +28,18 @@ public class VideoController : MonoBehaviour
         fMODAudioSource = videoList[(int)video].transform.GetChild(1).GetComponent<FMODAudioSource>();
         vid.loopPointReached += VideoEnd;
 
-        StartCoroutine(CoFadeIn(0.02f, 0.1f));
+        StartCoroutine(CoFadeIn(0.02f, 1f));
+    }
+
+    void Update()
+    {
+        if(isSkippable)
+        {
+            if(Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetMouseButtonDown(0))
+            {
+                VideoEnd(vid);
+            }
+        }
     }
 
     IEnumerator CoFadeIn(float fadeTime, float fadeDuration)
@@ -63,6 +75,9 @@ public class VideoController : MonoBehaviour
                 case E_VIDEO_NAME.ElderOne:
                     InGameScreenUI.Instance._bossHealthBar.SetActive(true);
                     break;
+                case E_VIDEO_NAME.Opening:
+                    StoryManager.Instance.IsTutorial = false;
+                    break;
             }
 
             commandStarter.SendCommand();
@@ -70,6 +85,6 @@ public class VideoController : MonoBehaviour
             vid.Stop();
         });
 
-        InGameScreenUI.Instance._fadeUI.FadeOut(0.02f, 0.5f);
+        InGameScreenUI.Instance._fadeUI.FadeOut(0.02f, 1.5f);
     }
 }
