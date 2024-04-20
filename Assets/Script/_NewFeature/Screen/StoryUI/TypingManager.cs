@@ -6,7 +6,7 @@ using TMPro;
  
 public class TypingManager : MonoBehaviour
 {
-    public static TypingManager instance;
+    public static TypingManager _instance;
  
     [Header("Times for each character")]
     public float timeForCharacter; //0.08이 기본.
@@ -28,9 +28,9 @@ public class TypingManager : MonoBehaviour
  
     private void Awake()
     {
-        if (instance == null)
+        if (_instance == null)
         {
-            instance = this;
+            _instance = this;
         }
         timer = timeForCharacter;
         characterTime = timeForCharacter;
