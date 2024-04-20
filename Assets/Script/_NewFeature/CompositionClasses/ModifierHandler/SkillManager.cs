@@ -111,7 +111,6 @@ namespace Sophia.Composite
                 case KeyCode.R: { InGameScreenUI.Instance._playerSkillCoolUIs[2].SetSkill(collectedSkill[KeyCode.R]); break; }
             }
 
-            _ownerPlayer._hasSkill[key] = true;
             return true;
         }
 
@@ -129,7 +128,6 @@ namespace Sophia.Composite
                     case KeyCode.E: { InGameScreenUI.Instance._playerSkillCoolUIs[1].RemoveSkill(); break; }
                     case KeyCode.R: { InGameScreenUI.Instance._playerSkillCoolUIs[2].RemoveSkill(); break; }
                 }
-                _ownerPlayer._hasSkill[key] = false;
                 return true;
             }
             else { return false; }
