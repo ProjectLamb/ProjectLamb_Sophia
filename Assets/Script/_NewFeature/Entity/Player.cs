@@ -1,10 +1,12 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using FMODPlus;
 using Cysharp.Threading.Tasks;
+using UnityEngine.SceneManagement;
 
 namespace Sophia.Entitys
 {
@@ -43,6 +45,8 @@ namespace Sophia.Entitys
         private LayerMask playerOriginLayer;
         private Stat Power;
         private Extras<int> GearcoinExtras;
+
+        public Dictionary<KeyCode, bool> _hasSkill = new();
         public int mPlayerWealth;
         public event UnityAction<int> OnWealthChangeEvent;
         public int PlayerWealth
@@ -98,6 +102,11 @@ namespace Sophia.Entitys
                 E_FUNCTIONAL_EXTRAS_TYPE.GearcoinTriggered,
                 () => { Debug.Log("기어 획득"); }
             );
+
+            _hasSkill.Add(KeyCode.Q, false);
+            _hasSkill.Add(KeyCode.E, false);
+            _hasSkill.Add(KeyCode.R, false);
+
             _affectorManager.Init(_basePlayerData.Tenacity);
 
         }
@@ -144,7 +153,8 @@ namespace Sophia.Entitys
             entityCollider.enabled = false;
             _modelManager.GetAnimator().SetTrigger("Die");
 
-
+            InGameScreenUI.Instance._fadeUI.AddBindingAction(() => { SceneManager.LoadScene(0); });
+            InGameScreenUI.Instance._fadeUI.FadeOut(0.02f, 1.0f);
             //OnDieEvent.Invoke();
 
             return true;
@@ -255,7 +265,12 @@ namespace Sophia.Entitys
         #region Skill Handler 
 
         public SkillManager GetSkillManager() => this._skillManager;
-        public void CollectSkill(Skill skill, KeyCode key) => this._skillManager.Collect(skill, key);
+
+        public void CollectSkill(Skill skill, KeyCode key)
+        {
+            _skillManager.Collect(skill, key);
+        }
+
         public void DropSkill(KeyCode key) => this._skillManager.Drop(key);
         public async void Use(KeyCode key)  // Using Skill
         {

@@ -36,7 +36,7 @@ namespace Sophia.Entitys
         {
             if (StoryManager.Instance.IsTutorial)
             {
-                ReverseInput();
+                DisallowInput();
                 return;
             }
             playerRef.MoveTick();
@@ -49,7 +49,7 @@ namespace Sophia.Entitys
             //playerRef.CheckAttack();
             if (StoryManager.Instance.IsTutorial) // 스토리대사가 진행중이면 입력 제한
             {
-                ReverseInput();
+                DisallowInput();
                 return;
             }
             else if (!StoryManager.Instance.IsTutorial) // 스토리대사가 끝나면 입력 복구
@@ -72,7 +72,7 @@ namespace Sophia.Entitys
                 if (Input.GetMouseButtonDown(0)) { playerRef.Attack(); }
             }
         }
-        private void ReverseInput()
+        private void DisallowInput()
         {
             IsMoveAllow = false;
             IsAttackAllow = false;

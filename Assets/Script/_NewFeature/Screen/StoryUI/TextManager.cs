@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEditor;
 using TMPro;
+using Sophia.UserInterface;
 
 public class TextManager : MonoBehaviour
 {
@@ -22,7 +23,9 @@ public class TextManager : MonoBehaviour
     public string[] dialogStrings;
     TalkData[] talkDatas;
     private int currentPage = 0; // 대화문 개수 변수
-    private bool IsStory = false; // 스토리 대화 진행중인지 여부
+    public bool IsStory = false; // 스토리 대화 진행중인지 여부
+    public bool IsSkipStory;
+    bool IsOnce = false;
 
     [Header("PlayerUI")]
     [SerializeField] public GameObject _playerHealthBar;
@@ -50,13 +53,16 @@ public class TextManager : MonoBehaviour
     }
     private void Start()
     {
-        IsStory = true;
+        if (!IsSkipStory)
+        {
+            IsStory = true;
         TextBarOn();
         talkDatas = this.GetComponent<Dialogue>().GetObjectDialogue();
         TypingManager._instance.Typing(talkDatas[0].contexts, talkText);
         nameText.text = talkDatas[0].name;
         currentPage++;
         storyImageAnimator.SetTrigger("DoChange");
+        }
     }
 
     private void Update()
@@ -67,9 +73,18 @@ public class TextManager : MonoBehaviour
             TypingManager._instance.GetInputDown();
             if (TypingManager._instance.isTypingEnd)
             {
-                if(currentPage == talkDatas.Length && TypingManager._instance.isDialogEnd){
-                    SceneManager.LoadScene("_01_Chapter_Tutorial");
-                    IsStory = false;
+                if (currentPage == talkDatas.Length && TypingManager.instance.isDialogEnd)
+                {
+                    if (!IsOnce)
+                    {
+                        TextBarOff();
+                        IsStory = false;
+
+                        //1챕 튜토리얼 한정
+                        InGameScreenUI.Instance._videoController.StartVideo(VideoController.E_VIDEO_NAME.Opening);
+
+                        IsOnce = true;
+                    }
                 }
 
                 if(nameText.text != talkDatas[currentPage].name) // 스토리 진행 중 화자 변경 시 이미지 변경
@@ -86,7 +101,6 @@ public class TextManager : MonoBehaviour
         if(GameManager.Instance.GlobalEvent.IsGamePaused){
             talkPanel.SetActive(false);
         }
-
         else if(!GameManager.Instance.GlobalEvent.IsGamePaused && IsStory)
             talkPanel.SetActive(true);
         

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Sophia.UserInterface;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -15,19 +16,19 @@ using UnityEngine.Events;
 
 public class GlobalEvent : MonoBehaviour
 {
-    public List<UnityAction>                OnEnemyDieEvent;
-    public List<UnityAction>                OnEnemyHitEvent;
-    public List<UnityAction<Stage>>         OnStageClear;
-    public List<UnityAction<Stage, Stage>>  OnStageEnter;
+    public List<UnityAction> OnEnemyDieEvent;
+    public List<UnityAction> OnEnemyHitEvent;
+    public List<UnityAction<Stage>> OnStageClear;
+    public List<UnityAction<Stage, Stage>> OnStageEnter;
 
     private void Awake()
     {
         OnEnemyDieEvent = new List<UnityAction>();
         OnEnemyHitEvent = new List<UnityAction>();
-        OnStageClear    = new List<UnityAction<Stage>>();
-        OnStageEnter    = new List<UnityAction<Stage, Stage>>();
+        OnStageClear = new List<UnityAction<Stage>>();
+        OnStageEnter = new List<UnityAction<Stage, Stage>>();
     }
-    
+
     void Update()
     {
         Time.timeScale = GameTimeScale;
@@ -35,14 +36,14 @@ public class GlobalEvent : MonoBehaviour
 
     /////////////////////////////////////////////////////////////////////////////////
 
-#region TimeScaleEventHandler
+    #region TimeScaleEventHandler
     [Range(0, 1)]
-    public UnityEvent       PausedEvent;
-    public float            GameTimeScale = 1f;
-    public float            TimeHoldingDuration;
-    float                   mCurrentTimeScale = 1f;
-    bool                    mIsGamePaused = false;
-    bool                    mIsSlowed = false;
+    public UnityEvent PausedEvent;
+    public float GameTimeScale = 1f;
+    public float TimeHoldingDuration;
+    float mCurrentTimeScale = 1f;
+    bool mIsGamePaused = false;
+    bool mIsSlowed = false;
 
     public bool IsGamePaused
     {
@@ -66,7 +67,7 @@ public class GlobalEvent : MonoBehaviour
 
         StartCoroutine(SlowTimeCoroutine());
     }
-    
+
     //DotTween 사용해서 증가 커브 설정하기
     IEnumerator SlowTimeCoroutine()
     {
@@ -89,13 +90,18 @@ public class GlobalEvent : MonoBehaviour
         GameTimeScale = mCurrentTimeScale;
         mIsSlowed = false;
     }
-#endregion
+    #endregion
 
     /////////////////////////////////////////////////////////////////////////////////
 
-#region MapEventHandler 
+    #region MapEventHandler 
     public void PlayerMoveStage(GameObject departStage, GameObject arrvieStage, Vector3 warpPos)
     {
+        if (arrvieStage.GetComponent<Stage>().Type == "boss")
+        {
+            InGameScreenUI.Instance._videoController.StartVideo(VideoController.E_VIDEO_NAME.ElderOne);
+        }
+
         OnStageEnter.ForEach(E => E.Invoke(departStage.GetComponent<Stage>(), arrvieStage.GetComponent<Stage>()));
 
         arrvieStage.GetComponent<Stage>().SetOnStage();
@@ -107,10 +113,8 @@ public class GlobalEvent : MonoBehaviour
         //UI 반영하는 코드
         GameObject minimapUI = GameObject.Find("Minimap");
         minimapUI.transform.GetChild(0).GetComponent<Minimap>().ChangeCurrentPosition(departStage.GetComponent<Stage>().StageNumber, arrvieStage.GetComponent<Stage>().StageNumber);
-        
-        //
     }
-#endregion
+    #endregion
 
     /////////////////////////////////////////////////////////////////////////////////
 }

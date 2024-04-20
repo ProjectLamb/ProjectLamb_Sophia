@@ -8,15 +8,17 @@ using UnityEngine.UI;
 
 namespace Sophia.UserInterface
 {
-    public class SkillButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler{
+    public class SkillButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler {
         [SerializeField] KeyCode            skillKey;
         [SerializeField] Image              backgroundImageObj;
         [SerializeField] TextMeshProUGUI    nameObj;
         [SerializeField] TextMeshProUGUI    descriptionObj;
         [SerializeField] Image              skillIconObj;
         [SerializeField] TextMeshProUGUI    skillKeyObj;
+        [SerializeField] Sprite defaultSkillIcon;
         public UnityAction<bool, KeyCode> func;
         public UnityAction<KeyCode> HoverFunc;
+
 
         public void OnPointerClick(PointerEventData eventData)
         {
@@ -28,17 +30,13 @@ namespace Sophia.UserInterface
             HoverFunc?.Invoke(skillKey);
         }
 
-        public void SetUserInterfaceData(IUserInterfaceAccessible userInterfaceData, KeyCode key) {
+        public void SetUserInterfaceData(IUserInterfaceAccessible userInterfaceData, KeyCode key)
+        {
             StartCoroutine(GlobalAsync.PerformAndRenderUIUnScaled(()=>{
                 nameObj.text        = userInterfaceData.GetName();
                 descriptionObj.text = userInterfaceData.GetDescription();
-                if(userInterfaceData.GetSprite() != null) skillIconObj.sprite = userInterfaceData.GetSprite();
-                if(key != KeyCode.None){
-                    skillKeyObj.text = skillKey.ToString();
-                }
-                else {
-                    skillKeyObj.text = "";
-                }
+                skillIconObj.sprite = userInterfaceData.GetSprite() ? userInterfaceData.GetSprite() : defaultSkillIcon;
+                skillKeyObj.text = key == KeyCode.None ? "" : skillKey.ToString();
             }));
         }
 
