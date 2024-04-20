@@ -10,7 +10,8 @@ using System;
 
 namespace Sophia.UserInterface
 {
-    public class InGameSkillSelector : MonoBehaviour {
+    public class InGameSkillSelector : MonoBehaviour
+    {
         private static InGameSkillSelector _instance;
         
         public static InGameSkillSelector Instance {
@@ -32,7 +33,11 @@ namespace Sophia.UserInterface
         [SerializeField] SkillButton[]   collectedSkillButton = new SkillButton[3];
         [SerializeField] QuitSkillButton quitSkillButton;
         [SerializeField] SkillButton     currentSkillButton;
+        [SerializeField] GameObject     currentSkillButtonGameObject;
         [SerializeField] UnityAction<bool, KeyCode> actionFromItem;
+
+        private Skill _currentSkill;
+        private bool _isAlreadyInvoked;
 
         private void OnEnable() {
             StartCoroutine(GlobalAsync.PerformAndRenderUIUnScaled(() => {
@@ -45,26 +50,61 @@ namespace Sophia.UserInterface
                 collectedSkillButton[0].HoverFunc   = MoveCurrentHovering;
                 collectedSkillButton[1].HoverFunc   = MoveCurrentHovering;
                 collectedSkillButton[2].HoverFunc   = MoveCurrentHovering;
-                quitSkillButton.func                = SendSelectData;
+                quitSkillButton.func                = CloseSkillSelector;
             }));
         }
 
-        public void OpenSkillSelector(Skill skill, UnityAction<bool, KeyCode> action) {
+        public void OpenSkillSelector(Skill skill, UnityAction<bool, KeyCode> action)
+        {
+            _isAlreadyInvoked = false;
             actionFromItem = action;
             pauseMenu.OpenMenu(gameObject);
 
             StartCoroutine(GlobalAsync.PerformAndRenderUIUnScaled(() => {
-                currentSkillButton.SetUserInterfaceData(skill, KeyCode.None);
+                currentSkillButtonGameObject.SetActive(true);
+                _currentSkill = skill;
+                currentSkillButton.SetUserInterfaceData(_currentSkill, KeyCode.None);
                 currentSkillButton.transform.localPosition = Vector3.zero;
             }));
         }
 
-        public void SendSelectData(bool isSelected, KeyCode assignedKey) {
+        public void SendSelectData(bool isSelected, KeyCode assignedKey)
+        {
             bool IsSelected = isSelected;
             KeyCode AssignedKey = assignedKey;
-            Debug.Log($"{IsSelected} {AssignedKey}");
-            actionFromItem.Invoke(IsSelected, AssignedKey);
-            StartCoroutine(GlobalAsync.PerformUnScaled(0.5f, CloseSkillSelector));
+
+            // 할당하려는 KeyCode에 이미 스킬이 있을 경우, currentSkillButton과 스왑
+            // 없을 경우 currentSkillButton 비활성화
+            Skill tempSkill = skillManager.GetSkillByKey(AssignedKey);
+            if (_currentSkill != null) {
+                player.CollectSkill(_currentSkill, AssignedKey);
+            } else {
+                player.DropSkill(AssignedKey);
+            }
+            if (tempSkill != null) {
+                _currentSkill = tempSkill;
+                currentSkillButton.SetUserInterfaceData(_currentSkill, KeyCode.None);
+            } else {
+                currentSkillButtonGameObject.SetActive(false);
+            }
+
+            if (!_isAlreadyInvoked) {
+                actionFromItem.Invoke(IsSelected, AssignedKey);
+                Debug.Log($"{IsSelected} {AssignedKey}");
+                _isAlreadyInvoked = true;
+            }
+
+            collectedSkillButton[0].SetUserInterfaceData(skillManager.GetSkillInfoByKey(KeyCode.Q), KeyCode.Q);
+            collectedSkillButton[1].SetUserInterfaceData(skillManager.GetSkillInfoByKey(KeyCode.E), KeyCode.E);
+            collectedSkillButton[2].SetUserInterfaceData(skillManager.GetSkillInfoByKey(KeyCode.R), KeyCode.R);
+
+            InGameScreenUI.Instance._playerSkillCoolUIs[0].DrawForce();
+            InGameScreenUI.Instance._playerSkillCoolUIs[1].DrawForce();
+            InGameScreenUI.Instance._playerSkillCoolUIs[2].DrawForce();
+
+            if (!currentSkillButtonGameObject.activeSelf) {  // currentSkillButton 오브젝트가 비활성화 되어있는 경우 => 창 종료
+                StartCoroutine(GlobalAsync.PerformUnScaled(0.5f, CloseSkillSelector));
+            }
         }
 
         public void CloseSkillSelector() {
@@ -72,7 +112,7 @@ namespace Sophia.UserInterface
             pauseMenu.CloseMenu();
         }
 
-        public void MoveCurrentHovering(KeyCode key){
+        public void MoveCurrentHovering(KeyCode key) {  // 스킬 선택 창에서 획득한 스킬을 Q, E, R 스킬창 옆으로 호버링시키는 함수
             RectTransform destRect;
             switch(key) {
                 case KeyCode.Q : {

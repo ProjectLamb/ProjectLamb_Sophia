@@ -7,7 +7,8 @@ using Sophia.DataSystem;
 using Sophia.Composite;
 using Cysharp.Threading.Tasks;
 using UnityEngine.AI;
-
+using Sophia.UserInterface;
+using UnityEngine.SceneManagement;
 
 namespace Sophia.Entitys
 {
@@ -125,6 +126,7 @@ namespace Sophia.Entitys
             if (Life.CurrentHealth <= Life.MaxHp / 2)
             {
                 phase = 2;
+                nav.speed = _baseEntityData.MoveSpeed * 2;
                 isPhaseChanged = true;
             }
         }
@@ -208,13 +210,28 @@ namespace Sophia.Entitys
 
         void OnElderOneEnterDie()
         {
+            Sophia.Instantiates.VisualFXObject visualFX = VisualFXObjectPool.GetObject(_dieParticleRef).Init();
+            GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
+            
             CurrentInstantiatedStage.mobGenerator.RemoveMob(this.gameObject);
         }
-        public override bool Die() { Life.Died(); return true; }
+        public override bool Die() { 
+            Life.Died(); 
+            return true; }
 
+        public void DisableModel() {
+            _modelManager.gameObject.SetActive(false);
+            entityCollider.enabled = false;
+        }
+        
         void OnElderOneExitDie()
         {
-            Destroy(gameObject, 0.5f);
+            Invoke("DisableModel", 0.5f);
+            InGameScreenUI.Instance._fadeUI.AddBindingAction(() => {
+                SceneManager.LoadScene("03_Demo_Clear");
+            });
+
+            InGameScreenUI.Instance._fadeUI.FadeOut(0.2f, 3f);
         }
 
         #region Attack

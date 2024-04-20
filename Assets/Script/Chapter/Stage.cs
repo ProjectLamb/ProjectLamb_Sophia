@@ -5,6 +5,8 @@ using UnityEngine.AI;
 using Sophia_Carriers;
 using System.Drawing;
 using Sophia.Entitys;
+using Sophia.Instantiates;
+using Sophia;
 
 public class Stage : MonoBehaviour
 {
@@ -23,6 +25,7 @@ public class Stage : MonoBehaviour
     public StageGenerator stageGenerator;
     public MobGenerator mobGenerator;
     public Sophia.Instantiates.GachaComponent gachaComponent;
+    public Sophia.Instantiates.ItemObjectBucket itemObjectBucket;
     //GachaComponent gachaComponent;
 
     #region Serial Member
@@ -109,15 +112,15 @@ public class Stage : MonoBehaviour
 
         stageGenerator.InitStageGenerator(stageSizeRandom);
 
-        if (Type == "normal")
-        {
-            stageGenerator.SetFloorType();
-        }
+        // // 스테이지 타일 랜덤화
+        // if (Type == "normal")
+        // {
+        //     stageGenerator.SetFloorType();
+        // }
 
         stageGenerator.InstantiateTile();
         stageGenerator.InstantiateWall();
         stageGenerator.InstantiatePortal();
-        stageGenerator.GenerateNevMesh();
 
         if (Type == "normal")
         {
@@ -160,6 +163,8 @@ public class Stage : MonoBehaviour
             mobGenerator.InitMobGenerator();
             mobGenerator.InstantiateBoss();
         }
+        stageGenerator.GenerateNevMesh();
+
         if (mType == "start")
         {
             GameObject character = GameManager.Instance.PlayerGameObject;
@@ -219,22 +224,30 @@ public class Stage : MonoBehaviour
         }
         if (Type == "normal")
         {
-            // gachaComponent.instantPivot.position = transform.position;
-            // gachaComponent.InstantiateReward(gachaComponent.instantPivot);
-            List<Sophia.Instantiates.ItemObject> positionedItem = gachaComponent.InstantiateReward();
-            if (positionedItem.Count == 0) return;
-            foreach (var item in gachaComponent.InstantiateReward())
-            {
-                item.Activate();
-            }
+            // // gachaComponent.instantPivot.position = transform.position;
+            // // gachaComponent.InstantiateReward(gachaComponent.instantPivot);
+            // List<Sophia.Instantiates.ItemObject> positionedItem = gachaComponent.InstantiateReward();
+            // if (positionedItem.Count == 0) return;
+            // foreach (var item in gachaComponent.InstantiateReward())
+            // {
+            //     item.Activate();
+            // }
         }
         else if (Type == "boss")
         {
+            ItemObject itemObject = null;
+            itemObject = ItemPool.Instance.GetRandomEquipment(E_EQUIPMENT_TYPE.Boss);
 
+            itemObjectBucket.InstantablePositioning(itemObject = Instantiate(itemObject).Init()).Activate();
+            itemObject.transform.parent = itemObjectBucket.transform;
         }
         else if (Type == "hidden")
         {
+            ItemObject itemObject = null;
+            itemObject = ItemPool.Instance.GetRandomEquipment(E_EQUIPMENT_TYPE.Hidden);
 
+            itemObjectBucket.InstantablePositioning(itemObject = Instantiate(itemObject).Init()).Activate();
+            itemObject.transform.parent = itemObjectBucket.transform;
         }
     }
 }

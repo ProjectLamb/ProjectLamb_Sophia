@@ -11,13 +11,23 @@ namespace Sophia.Entitys
     {
         #region Serial Member
         [SerializeField] private float RushRange;
-        [SerializeField] private float RushForce;
         [SerializeField] private float RushTime;
 
         #endregion
+
         float originDrag;
+
+        #region Rush Member
         CoolTimeComposite rushTimer;
+        float rushDistance;
+        float currentRushTime;
+        Vector3 rushDestination;
+        Ray rushRay;
+        RaycastHit hit;
+        NavMeshHit navHit;
         private bool IsRush;
+        Sophia.Instantiates.ProjectileObject rushProjectileObject;
+        #endregion
         // Start is called before the first frame update
 
         protected override void Awake()
@@ -35,8 +45,8 @@ namespace Sophia.Entitys
         // Update is called once per frame
         protected override void Update()
         {
-            rushTimer.TickRunning();
             base.Update();
+            rushTimer.TickRunning();
         }
 
         protected override void FixedUpdate()
@@ -55,11 +65,11 @@ namespace Sophia.Entitys
 
         public void UseProjectile_DashAttack()
         {
-            Sophia.Instantiates.ProjectileObject useProjectile = ProjectilePool.GetObject(_attckProjectiles[(int)ANIME_STATE.JUMP]).Init(this);
-            useProjectile.SetPositioningType(serialProjectileInstantiateData._positioningType)
+            rushProjectileObject = ProjectilePool.GetObject(_attckProjectiles[(int)ANIME_STATE.JUMP]).Init(this);
+            rushProjectileObject.SetPositioningType(serialProjectileInstantiateData._positioningType)
                             .SetDurateTimeByRatio(serialProjectileInstantiateData._DurateTimeByRatio);
 
-            _projectileBucketManager.InstantablePositioning((int)ANIME_STATE.JUMP, useProjectile)
+            _projectileBucketManager.InstantablePositioning((int)ANIME_STATE.JUMP, rushProjectileObject)
                                     .SetProjectilePower((int)GetStat(E_NUMERIC_STAT_TYPE.Power).GetValueForce())
                                     .Activate();
         }
@@ -87,6 +97,10 @@ namespace Sophia.Entitys
             rushTimer = new CoolTimeComposite(RushTime, 1)
             .AddBindingAction(SetReadyRush)
             .AddOnFinishedEvent(SetUnReadyRush);
+            rushDistance = RushRange * 1.5f;
+
+            Sophia.Instantiates.VisualFXObject visualFX = VisualFXObjectPool.GetObject(_spawnParticleRef).Init();
+            GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
 
             fsm.ChangeState(States.Idle);
         }
@@ -146,7 +160,7 @@ namespace Sophia.Entitys
 
         void Wander_FixedUpdate()
         {
-            if (IsWandering)
+            if (IsWandering && isMovable)
             {
                 this.GetModelManager().GetAnimator().SetBool("IsWalk", true);
                 transform.DOLookAt(wanderPosition, TurnSpeed);
@@ -185,8 +199,11 @@ namespace Sophia.Entitys
 
         void Chase_FixedUpdate()
         {
-            transform.DOLookAt(_objectiveEntity.transform.position, TurnSpeed);
-            _nav.SetDestination(_objectiveEntity.transform.position);
+            if (isMovable)
+            {
+                transform.DOLookAt(_objectiveEntity.transform.position, TurnSpeed);
+                _nav.SetDestination(_objectiveEntity.transform.position);
+            }
         }
 
         void Chase_Exit()
@@ -199,7 +216,8 @@ namespace Sophia.Entitys
         {
             Debug.Log("Attack_Enter");
 
-            SetMoveState(false);
+            _nav.SetDestination(transform.position);
+            _nav.isStopped = true;
 
             transform.DOLookAt(_objectiveEntity.transform.position, TurnSpeed / 2);
             DoAttack();
@@ -224,13 +242,17 @@ namespace Sophia.Entitys
         {
             Debug.Log("Tap_Enter");
 
-            SetMoveState(false);
+            _nav.SetDestination(transform.position);
+            _nav.isStopped = true;
+            currentRushTime = RushTime;
 
             DoRush();
         }
 
         void Tap_Update()
         {
+            rushRay = new Ray(transform.position, transform.forward);
+
             if (this.GetModelManager().GetAnimator().GetBool("IsTapEnd"))
             {
                 fsm.ChangeState(States.Rush);
@@ -240,6 +262,12 @@ namespace Sophia.Entitys
         void Tap_FixedUpdate()
         {
             transform.DOLookAt(_objectiveEntity.transform.position, TurnSpeed / 2);
+
+            if (NavMesh.SamplePosition(rushRay.GetPoint(rushDistance), out navHit, rushDistance, NavMesh.AllAreas))
+            {
+                rushDestination = navHit.position;
+                currentRushTime = RushTime * (Vector3.Distance(rushDestination, transform.position) / rushDistance);
+            }
         }
 
         void Tap_Exit()
@@ -253,8 +281,7 @@ namespace Sophia.Entitys
         {
             Debug.Log("Rush_Enter");
 
-            SetMoveState(true);
-            entityRigidbody.constraints = RigidbodyConstraints.FreezePositionY;
+            transform.DOMove(rushDestination, currentRushTime).SetEase(Ease.OutQuad);
             rushTimer.ActionStart();
             UseProjectile_DashAttack();
         }
@@ -264,6 +291,7 @@ namespace Sophia.Entitys
             if (!IsRush)
             {
                 GetModelManager().GetAnimator().SetTrigger("DoRushQuit");
+                Destroy(rushProjectileObject);
             }
             if (GetModelManager().GetAnimator().GetBool("IsRushEnd"))
             {
@@ -271,22 +299,11 @@ namespace Sophia.Entitys
             }
         }
 
-        void Rush_FixedUpdate()
-        {
-            if (IsRush)
-            {
-                entityRigidbody.AddForce(transform.forward * RushForce, ForceMode.Acceleration);
-            }
-            else
-            {
-                entityRigidbody.drag += 0.1f;
-            }
-        }
-
         void Rush_Exit()
         {
             GetModelManager().GetAnimator().SetBool("IsRushEnd", false);
-            _nav.enabled = false;
+            _nav.SetDestination(transform.position);
+            _nav.isStopped = true;
             entityRigidbody.drag = originDrag;
             entityRigidbody.velocity = Vector3.zero;
             entityRigidbody.constraints = RigidbodyConstraints.FreezeAll;

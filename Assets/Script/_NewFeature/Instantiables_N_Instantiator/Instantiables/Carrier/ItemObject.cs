@@ -4,6 +4,7 @@ using UnityEngine;
 namespace Sophia.Instantiates
 {
     using DG.Tweening;
+    using FMODPlus;
     using Sophia.DataSystem;
     using Sophia.DataSystem.Modifiers;
     using Sophia.DataSystem.Modifiers.ConcreteEquipment;
@@ -16,7 +17,9 @@ namespace Sophia.Instantiates
         [SerializeField] protected VisualEffect    _lootVFX;
         [SerializeField] protected bool           _isDestroyable = true;
         [SerializeField] protected GameObject     _destroyEffect = null;
-        
+        [SerializeField] protected GameObject     _playerGameObject = null;
+        [SerializeField] protected FMODAudioSource _audioSource;
+
         public bool IsInitialized       { get; protected set; }
         public bool IsActivated         { get; protected set; }
         public bool IsReadyToTrigger    { get; protected set; }
@@ -37,7 +40,11 @@ namespace Sophia.Instantiates
             this.IsActivated = false;
             this.TriggerTime = 0;
             this.IsReadyToTrigger = true;
-            if(_lootVFX != null) this._lootVFX?.Stop();
+            if(_lootVFX != null)
+            {
+                this._lootVFX.playRate *= 2;
+                this._lootVFX?.Stop();
+            }
             return this;
         }
 
