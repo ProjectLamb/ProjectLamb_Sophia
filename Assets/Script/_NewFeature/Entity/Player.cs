@@ -46,7 +46,6 @@ namespace Sophia.Entitys
         private Stat Power;
         private Extras<int> GearcoinExtras;
 
-        public Dictionary<KeyCode, bool> _hasSkill = new();
         public int mPlayerWealth;
         public event UnityAction<int> OnWealthChangeEvent;
         public int PlayerWealth
@@ -102,10 +101,6 @@ namespace Sophia.Entitys
                 E_FUNCTIONAL_EXTRAS_TYPE.GearcoinTriggered,
                 () => { Debug.Log("기어 획득"); }
             );
-
-            _hasSkill.Add(KeyCode.Q, false);
-            _hasSkill.Add(KeyCode.E, false);
-            _hasSkill.Add(KeyCode.R, false);
 
             _affectorManager.Init(_basePlayerData.Tenacity);
 

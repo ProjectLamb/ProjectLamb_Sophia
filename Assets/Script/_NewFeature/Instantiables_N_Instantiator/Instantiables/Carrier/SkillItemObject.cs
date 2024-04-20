@@ -24,6 +24,8 @@ namespace Sophia.Instantiates
         [SerializeField] public SerialOnConveyAffectExtrasModifierDatas _conveyAffectModifierData;
         [SerializeField] public SerialProjectileInstantiateData _projectileInstantiateData;
         [SerializeField] PurchaseComponent _purchaseComponent;
+        [SerializeField] Composite.SkillManager _skillManager;
+
         public Skill skill { get; private set; }
         public bool ISDEBUG = true;
 
@@ -35,6 +37,7 @@ namespace Sophia.Instantiates
         protected override void OnTriggerLogic(Collider entity)
         {
             if (!IsReadyToTrigger) return;
+
             if (entity.TryGetComponent<Entitys.Player>(out Entitys.Player player))
             {
                 if (TryGetComponent<PurchaseComponent>(out _purchaseComponent))
@@ -48,6 +51,15 @@ namespace Sophia.Instantiates
                     in _conveyAffectModifierData,
                     in _projectileInstantiateData
                 );
+
+                // 스킬 중복 획득 방지 코드
+                _skillManager.collectedSkill.TryGetValue(KeyCode.Q, out var skillQ);
+                if (skillQ != null && skillQ.GetName() == skill.GetName()) return;
+                _skillManager.collectedSkill.TryGetValue(KeyCode.E, out var skillE);
+                if (skillE != null && skillE.GetName() == skill.GetName()) return;
+                _skillManager.collectedSkill.TryGetValue(KeyCode.R, out var skillR);
+                if (skillR != null && skillR.GetName() == skill.GetName()) return;
+
                 CollectUserInterfaceAction(skill, (bool selected, KeyCode key) =>
                 {
                     if (selected)
