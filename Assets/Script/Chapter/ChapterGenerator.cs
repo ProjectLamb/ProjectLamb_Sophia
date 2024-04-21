@@ -426,7 +426,15 @@ public class ChapterGenerator : MonoBehaviour
                 GameObject instance;
                 bool[] portal = new bool[4]; //east, west, south, north
                 instance = Instantiate(obj, stagePos, Quaternion.identity);
-                instance.GetComponent<Stage>().Type = stage[i].Type;
+                //start, normal, shop, boss, boundary, hidden
+                switch (stage[i].Type)
+                {
+                    case "start": instance.GetComponent<Stage>().Type = Stage.STAGE_TYPE.START; break;
+                    case "normal": instance.GetComponent<Stage>().Type = Stage.STAGE_TYPE.NORMAL; break;
+                    case "shop": instance.GetComponent<Stage>().Type = Stage.STAGE_TYPE.SHOP; break;
+                    case "boss": instance.GetComponent<Stage>().Type = Stage.STAGE_TYPE.BOSS; break;
+                    case "hidden": instance.GetComponent<Stage>().Type = Stage.STAGE_TYPE.HIDDEN; break;
+                }
                 instance.GetComponent<Stage>().StageNumber = stage[i].StageNumber;
                 instance.transform.parent = transform;
 

@@ -97,7 +97,7 @@ public class GlobalEvent : MonoBehaviour
     #region MapEventHandler 
     public void PlayerMoveStage(GameObject departStage, GameObject arrvieStage, Vector3 warpPos)
     {
-        if (arrvieStage.GetComponent<Stage>().Type == "boss")
+        if (arrvieStage.GetComponent<Stage>().Type == Stage.STAGE_TYPE.BOSS)
         {
             InGameScreenUI.Instance._videoController.StartVideo(VideoController.E_VIDEO_NAME.ElderOne);
         }
