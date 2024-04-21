@@ -131,6 +131,7 @@ namespace Sophia.Entitys
             if (Life.CurrentHealth <= Life.MaxHp / 2)
             {
                 phase = 2;
+                GameManager.Instance.DonDestroyObjectReferer.DontDestroyGameManager.AudioManager.audioStateSender._bossPhaseSender[1].SendCommand();
                 nav.speed = _baseEntityData.MoveSpeed * 2;
                 isPhaseChanged = true;
             }
@@ -218,6 +219,7 @@ namespace Sophia.Entitys
             Sophia.Instantiates.VisualFXObject visualFX = VisualFXObjectPool.GetObject(_dieParticleRef).Init();
             GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
             _audioSource[(int)E_ELDERONE_AUDIO_INDEX.Death].Play();
+            GameManager.Instance.DonDestroyObjectReferer.DontDestroyGameManager.AudioManager.audioStateSender._bossPhaseSender[2].SendCommand();
 
             CurrentInstantiatedStage.mobGenerator.RemoveMob(this.gameObject);
         }

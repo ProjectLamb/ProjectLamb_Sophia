@@ -18,6 +18,7 @@ public class VideoController : MonoBehaviour
     [SerializeField] FMODAudioSource fMODAudioSource;
     [SerializeField] CommandSender commandStarter;
     [SerializeField] CommandSender commandEnder;
+    [SerializeField] CommandSender bossStateStarter;
     [SerializeField] private bool isSkippable;
 
     public void StartVideo(E_VIDEO_NAME video)
@@ -81,6 +82,7 @@ public class VideoController : MonoBehaviour
             }
 
             commandStarter.SendCommand();
+            bossStateStarter.SendCommand();
             image.enabled = false;
             vid.Stop();
         });

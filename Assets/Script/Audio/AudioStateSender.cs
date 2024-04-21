@@ -5,12 +5,15 @@ using UnityEngine.Events;
 
 public class AudioStateSender : MonoBehaviour {
 
+    public CommandSender _playSender;
+    public CommandSender _stopSender;
     public CommandSender _battleStartSender;
     public CommandSender _battleEndSender;
     public CommandSender _chapterStateSender;
     public CommandSender _shopStateSender;
     public CommandSender _dataStateSender;
     public CommandSender _bossStateSender;
+    public CommandSender[] _bossPhaseSender;
 
     private bool IsInitialized = false;
 
@@ -32,21 +35,26 @@ public class AudioStateSender : MonoBehaviour {
 
     public void EnterStage(Stage departStage, Stage arriveStage) {
         switch (arriveStage.Type) {
-            case "normal"   : {
-                if(!arriveStage.IsClear) {_battleStartSender.SendCommand(); break;}
-                if(departStage.Type == "shop") {_chapterStateSender.SendCommand(); break;}
+            case Stage.STAGE_TYPE.NORMAL   : {
+                if(!arriveStage.IsClear) {
+                    _battleStartSender.SendCommand(); break;
+                }
+                if(departStage.Type == Stage.STAGE_TYPE.SHOP) {
+                    _chapterStateSender.SendCommand(); break;
+                }
                 break;
             }
-            case "shop"     : {
+            case Stage.STAGE_TYPE.SHOP     : {
                 _shopStateSender.SendCommand();
                 break;
             }
-            case "hidden"   : {
+            case Stage.STAGE_TYPE.HIDDEN   : {
                 
                 break;
             }
-            case "boss"     : {
+            case Stage.STAGE_TYPE.BOSS     : {
                 _bossStateSender.SendCommand();
+                _bossPhaseSender[0].SendCommand();
                 // 이 커맨드 샌더를 멈춰야 하는지 아니면 플레이를 해도 되는지 좀 확인해야 할듯.
                 break;
             }
@@ -71,6 +79,7 @@ public class AudioStateSender : MonoBehaviour {
             }
             case "Boss"     : {
                 _bossStateSender.SendCommand();
+                _bossPhaseSender[0].SendCommand();
                 // 이 커맨드 샌더를 멈춰야 하는지 아니면 플레이를 해도 되는지 좀 확인해야 할듯.
                 break;
             }
