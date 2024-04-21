@@ -1,6 +1,7 @@
 
 using System;
 using FMODPlus;
+using UnityEditor.Searcher;
 using UnityEngine;
 using AudioType = FMODPlus.AudioType;
 
@@ -12,14 +13,17 @@ public class CommandSenderLink : MonoBehaviour
 
     [Tooltip("Audio Manager에 있는 오디오 타입을 선택합니다.")]
     public AudioType AudioType = AudioType.BGM;
+    public bool Initialized = false; 
 
     private void Awake()
     {
         // Init()
     }
 
+    public void Reset() => Initialized = false;
     public void Init()
     {
+        if(Initialized) return;
             _senders = GetComponentsInChildren<CommandSender>();
 
             foreach (CommandSender sender in _senders)
@@ -41,7 +45,12 @@ public class CommandSenderLink : MonoBehaviour
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
+
+                if(sender.name == "Command Sender Starter") {
+                    sender.SendCommand();
+                }
             }
+        Initialized = true;
     }
 
     public void KeyOff()

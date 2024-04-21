@@ -22,6 +22,8 @@ public class DontDestroyGameManager : MonoBehaviour
     private void Awake() {
         DontDestroyOnLoad(gameObject);
     }
+    [SerializeField] private GameObject _audioSetterScreen;
+    public GameObject AudioSetterScreenObject => _audioSetterScreen;
 
     [SerializeField] private GlobalAudioManager _audioManager;
 

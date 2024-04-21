@@ -79,16 +79,19 @@ public class GlobalAudioManager : MonoBehaviour
 
     public void LoadCommandSenderLinkByScene(Scene current, Scene next) {
         _commandSenderLink = FindFirstObjectByType<CommandSenderLink>();
-        if(_commandSenderLink != null)
+        if(_commandSenderLink != null) {
+            _commandSenderLink.Reset();
             _commandSenderLink.Init();
+        }
         else 
             Debug.LogError("_commandSenderLink를 못찾음");
     }
 
     private void Start() {
         _commandSenderLink = FindFirstObjectByType<CommandSenderLink>();
-        if(_commandSenderLink != null)
+        if(_commandSenderLink != null){
             _commandSenderLink.Init();
+        }
         else 
             Debug.LogError("_commandSenderLink를 못찾음");
            
