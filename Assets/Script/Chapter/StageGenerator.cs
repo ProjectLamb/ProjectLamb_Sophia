@@ -450,7 +450,7 @@ public class StageGenerator : MonoBehaviour
     {
         GameObject portalModel = portal[(int)Stage.PORTAL_TYPE.NORMAL];
         GameObject instance;
-        if(stage.Type == "boss")
+        if(stage.Type == Stage.STAGE_TYPE.BOSS)
         {
             //portalModel = portal[(int)Stage.PORTAL_TYPE.BOSS];
         }
