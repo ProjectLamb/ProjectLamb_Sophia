@@ -28,6 +28,11 @@ public class FadeUI : MonoBehaviour
         StartCoroutine(CoFadeOut(fadeTime, fadeDuration));
     }
 
+    public void FadePanelOff()
+    {
+        fadePanel.gameObject.SetActive(false);
+    }
+
     IEnumerator CoFadeIn(float fadeTime, float fadeDuration)
     {
         fadePanel.gameObject.SetActive(true);
@@ -43,7 +48,6 @@ public class FadeUI : MonoBehaviour
         
         if(onCompleteCallback != null)
             onCompleteCallback.Invoke();
-        fadePanel.gameObject.SetActive(false);
     }
 
     IEnumerator CoFadeOut(float fadeTime, float fadeDuration)
@@ -61,6 +65,10 @@ public class FadeUI : MonoBehaviour
 
         if(onCompleteCallback != null)
             onCompleteCallback.Invoke();
-        fadePanel.gameObject.SetActive(false);
+
+        if(!StoryManager.Instance.IsTutorial){
+            fadePanel.gameObject.SetActive(false);
+        }
     }
+
 }

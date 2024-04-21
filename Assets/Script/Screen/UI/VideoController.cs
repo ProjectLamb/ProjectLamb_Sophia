@@ -27,7 +27,6 @@ public class VideoController : MonoBehaviour
         currentVideo = video;
         fMODAudioSource = videoList[(int)video].transform.GetChild(1).GetComponent<FMODAudioSource>();
         vid.loopPointReached += VideoEnd;
-
         StartCoroutine(CoFadeIn(0.02f, 1f));
     }
 
@@ -46,13 +45,11 @@ public class VideoController : MonoBehaviour
     {
         GameManager.Instance.GlobalEvent.IsGamePaused = true;
         yield return new WaitForEndOfFrame();
-
         image.color = Color.black;
         image.enabled = true;
         commandEnder.SendCommand();
         vid.Play();
         fMODAudioSource?.Play();
-
         float passedTime = 0;
         while (passedTime < fadeDuration)
         {
@@ -62,6 +59,7 @@ public class VideoController : MonoBehaviour
             passedTime += fadeTime;
             yield return new WaitForSecondsRealtime(fadeTime);
         }
+        InGameScreenUI.Instance._fadeUI.FadePanelOff();
     }
 
     void VideoEnd(UnityEngine.Video.VideoPlayer vp)
@@ -84,7 +82,6 @@ public class VideoController : MonoBehaviour
             image.enabled = false;
             vid.Stop();
         });
-
         InGameScreenUI.Instance._fadeUI.FadeOut(0.02f, 1.5f);
     }
 }
