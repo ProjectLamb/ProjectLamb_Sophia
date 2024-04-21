@@ -75,6 +75,7 @@ public class TextManager : MonoBehaviour
             {
                 if (currentPage == talkDatas.Length && TypingManager._instance.isDialogEnd)
                 {
+                    currentPage = talkDatas.Length;
                     if (!IsOnce)
                     {
                         TextBarOff();
