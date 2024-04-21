@@ -15,6 +15,6 @@ public class DonDestroyObjectReferer : MonoBehaviour
     }
 
     public void ActivateAudioScreenObject() {
-        DontDestroyGameManager.AudioSetterScreenObject.SetActive(true);
+        FindFirstObjectByType<PauseMenu>().OpenMenu(DontDestroyGameManager.AudioSetterScreenObject);
     }
 }

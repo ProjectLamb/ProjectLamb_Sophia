@@ -67,6 +67,7 @@ public class TextManager : MonoBehaviour
 
     private void Update()
     {
+        if(IsSkipStory && !StoryManager.Instance.IsTutorial) {return;}
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
         {
 

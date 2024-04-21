@@ -18,6 +18,8 @@ public class GlobalAudioManager : MonoBehaviour
     [SerializeField]
     private CommandSenderLink _commandSenderLink;
 
+    public AudioStateSender audioStateSender;
+
     #endregion
     
     #region Public
@@ -82,6 +84,9 @@ public class GlobalAudioManager : MonoBehaviour
         if(_commandSenderLink != null) {
             _commandSenderLink.Reset();
             _commandSenderLink.Init();
+            audioStateSender ??= FindFirstObjectByType<AudioStateSender>();
+            if(audioStateSender != null)
+                audioStateSender.InitByStage();
         }
         else 
             Debug.LogError("_commandSenderLink를 못찾음");
