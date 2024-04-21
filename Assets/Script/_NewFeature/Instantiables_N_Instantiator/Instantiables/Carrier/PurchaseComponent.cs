@@ -11,7 +11,7 @@ namespace Sophia.Instantiates
         public int price;
         private void Awake() {
             OnPurchasedEvent        += () => {
-                //Play purchase FMOD
+                GameManager.Instance.Shop.GetComponent<Shop>().PlayPurchaseSound();
                 //VFX
             };
             OnPurchasedDenyEvent    += () => {

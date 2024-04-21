@@ -9,9 +9,14 @@ using Cysharp.Threading.Tasks;
 using UnityEngine.AI;
 using Sophia.UserInterface;
 using UnityEngine.SceneManagement;
+using FMODPlus;
 
 namespace Sophia.Entitys
 {
+    public enum E_ELDERONE_AUDIO_INDEX
+    {
+        AttackBoth, AttackOne, Swing, Death, FootStep, PhaseTransition
+    }
     public class ElderOne : Boss, IMovable
     {
         List<string> animBoolParamList;
@@ -24,8 +29,8 @@ namespace Sophia.Entitys
         private int turnSpeed = 2;
         private bool isPhaseChanged = false;
         private bool IsMovable;
-        [SerializeField]
-        private bool IsInvincible;
+        [SerializeField] private bool IsInvincible;
+        [SerializeField] FMODAudioSource[] _audioSource;
         private NavMeshAgent nav;
 
         // Start is called before the first frame update
@@ -212,26 +217,52 @@ namespace Sophia.Entitys
         {
             Sophia.Instantiates.VisualFXObject visualFX = VisualFXObjectPool.GetObject(_dieParticleRef).Init();
             GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
-            
+            _audioSource[(int)E_ELDERONE_AUDIO_INDEX.Death].Play();
+
             CurrentInstantiatedStage.mobGenerator.RemoveMob(this.gameObject);
         }
-        public override bool Die() { 
-            Life.Died(); 
-            return true; }
+        public override bool Die()
+        {
+            Life.Died();
+            return true;
+        }
 
-        public void DisableModel() {
+        public void DisableModel()
+        {
             _modelManager.gameObject.SetActive(false);
             entityCollider.enabled = false;
         }
-        
+
         void OnElderOneExitDie()
         {
             Invoke("DisableModel", 0.5f);
-            InGameScreenUI.Instance._fadeUI.AddBindingAction(() => {
+            InGameScreenUI.Instance._fadeUI.AddBindingAction(() =>
+            {
                 SceneManager.LoadScene("03_Demo_Clear");
             });
 
             InGameScreenUI.Instance._fadeUI.FadeOut(0.2f, 3f);
+        }
+
+        [ContextMenu("PlayFootStepSound")]
+        public void PlayFootStepSound()
+        {
+            _audioSource[(int)E_ELDERONE_AUDIO_INDEX.FootStep].Play();
+        }
+        [ContextMenu("PlaySwingSound")]
+        public void PlaySwingSound()
+        {
+            _audioSource[(int)E_ELDERONE_AUDIO_INDEX.Swing].Play();
+        }
+        [ContextMenu("PlayAttackOneSound")]
+        public void PlayAttackOneSound()
+        {
+            _audioSource[(int)E_ELDERONE_AUDIO_INDEX.AttackOne].Play();
+        }
+        [ContextMenu("PlayAttackBothSound")]
+        public void PlayAttackBothSound()
+        {
+            _audioSource[(int)E_ELDERONE_AUDIO_INDEX.AttackBoth].Play();
         }
 
         #region Attack

@@ -9,7 +9,6 @@ namespace Sophia {
     {
         [SerializeField] TextMeshProUGUI _gearWealthText; 
         [SerializeField] float _countSpeed = 1f;
-
         private int pervNumber = 0;
         private int countingNumber = 0;
         public int CountingNumber {

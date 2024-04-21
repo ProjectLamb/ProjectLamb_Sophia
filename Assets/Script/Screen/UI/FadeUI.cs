@@ -10,10 +10,6 @@ public class FadeUI : MonoBehaviour
     private UnityAction onCompleteCallback;
 
     // Start is called before the first frame update
-    void Start()
-    {
-        fadePanel.gameObject.SetActive(false);
-    }
 
     public FadeUI AddBindingAction(UnityAction unityAction)
     {
@@ -45,7 +41,8 @@ public class FadeUI : MonoBehaviour
             yield return new WaitForSecondsRealtime(fadeTime);
         }
         
-        onCompleteCallback.Invoke();
+        if(onCompleteCallback != null)
+            onCompleteCallback.Invoke();
         fadePanel.gameObject.SetActive(false);
     }
 
@@ -62,7 +59,8 @@ public class FadeUI : MonoBehaviour
             yield return new WaitForSecondsRealtime(fadeTime);
         }
 
-        onCompleteCallback.Invoke();
+        if(onCompleteCallback != null)
+            onCompleteCallback.Invoke();
         fadePanel.gameObject.SetActive(false);
     }
 }

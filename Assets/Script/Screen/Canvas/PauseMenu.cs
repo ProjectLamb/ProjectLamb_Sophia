@@ -15,6 +15,7 @@ public class PauseMenu : MonoBehaviour
         if(menuStack.Count == 0) {
             GameManager.Instance.GlobalEvent.IsGamePaused = true;
         }
+        OpenUnityEvent.Invoke();
         menuStack.Push(_canvas);
         var topMenu = menuStack.Peek();
         topMenu.SetActive(true);

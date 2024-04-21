@@ -15,7 +15,7 @@ namespace Sophia.Instantiates
                 player.PlayerWealth += Gear;
                 int WealthRefer = player.PlayerWealth;
                 player.GetExtras<int>(E_FUNCTIONAL_EXTRAS_TYPE.GearcoinTriggered).PerformStartFunctionals(ref WealthRefer);
-                //audioSource?.Play();
+                _audioSource?.Play();
                 IsReadyToTrigger = false;
                 if(this._isDestroyable) {
                     Instantiate(_destroyEffect, transform.position, Quaternion.identity);
