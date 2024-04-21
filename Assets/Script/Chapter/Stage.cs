@@ -8,6 +8,7 @@ using Sophia.Entitys;
 using Sophia.Instantiates;
 using Sophia;
 
+
 public class Stage : MonoBehaviour
 {
     #region Enum Members
