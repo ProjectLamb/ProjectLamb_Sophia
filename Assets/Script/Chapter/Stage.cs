@@ -8,10 +8,10 @@ using Sophia.Entitys;
 using Sophia.Instantiates;
 using Sophia;
 
+
 public class Stage : MonoBehaviour
 {
     #region Enum Members
-
     public enum PORTAL_TYPE { NORMAL, BOSS, }
     public enum STAGE_CHILD { TILE, WALL, PORTAL, OBSTACLE, MOB, }
     public enum STAGE_SIZE { SMALL, MIDDLE, BIG };
