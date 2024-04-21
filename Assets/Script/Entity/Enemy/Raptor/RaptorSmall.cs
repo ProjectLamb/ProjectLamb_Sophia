@@ -54,8 +54,16 @@ namespace Sophia.Entitys
             base.FixedUpdate();
         }
 
-        public void SetReadyRush() => IsRush = true;
-        public void SetUnReadyRush() => IsRush = false;
+        public void SetReadyRush()
+        {
+            IsRush = true;
+            gameObject.layer = LayerMask.NameToLayer("Dash");
+        }
+        public void SetUnReadyRush()
+        {
+            IsRush = false;
+            gameObject.layer = LayerMask.NameToLayer("Entity");
+        }
 
         public override void SetNavMeshData()
         {
@@ -66,8 +74,7 @@ namespace Sophia.Entitys
         public void UseProjectile_DashAttack()
         {
             rushProjectileObject = ProjectilePool.GetObject(_attckProjectiles[(int)ANIME_STATE.JUMP]).Init(this);
-            rushProjectileObject.SetPositioningType(serialProjectileInstantiateData._positioningType)
-                            .SetDurateTimeByRatio(serialProjectileInstantiateData._DurateTimeByRatio);
+            rushProjectileObject.SetPositioningType(serialProjectileInstantiateData._positioningType);
 
             _projectileBucketManager.InstantablePositioning((int)ANIME_STATE.JUMP, rushProjectileObject)
                                     .SetProjectilePower((int)GetStat(E_NUMERIC_STAT_TYPE.Power).GetValueForce())

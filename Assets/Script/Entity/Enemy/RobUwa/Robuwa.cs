@@ -18,7 +18,7 @@ namespace Sophia.Entitys
 {
     public enum E_ROBUWA_AUDIO_INDEX
     {
-        Kaooo, Attack, MoveattackMode
+        Kaooo, AttackOne, AttackBoth, Hit, MoveAttackMode
     }
     public class Robuwa : Enemy, IMovable
     {
@@ -44,6 +44,7 @@ namespace Sophia.Entitys
         [SerializeField] private bool isMovable = true;
         [SerializeField] private int wanderingCoolTime = 3;
         [SerializeField] private EQS eqs;
+        [SerializeField] protected List<FMODAudioSource> _audioSources;
         #endregion
 
         public enum States
@@ -115,10 +116,10 @@ namespace Sophia.Entitys
         {
             Sophia.Instantiates.VisualFXObject visualFX = VisualFXObjectPool.GetObject(_dieParticleRef).Init();
             GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
-            
-            for(int i = 0; i < 4; i++)
+
+            for (int i = 0; i < 4; i++)
             {
-                if(_projectileBucketManager.GetProjectileBucket(i) != null)
+                if (_projectileBucketManager.GetProjectileBucket(i) != null)
                     _projectileBucketManager.GetProjectileBucket(i).gameObject.SetActive(false);
             }
 
@@ -174,15 +175,15 @@ namespace Sophia.Entitys
             {
                 case 0:
                     this.GetModelManager().GetAnimator().SetTrigger("DoAttackLeft");
-                    _audioSources[(int)E_ROBUWA_AUDIO_INDEX.Attack].Play();
+                    _audioSources[(int)E_ROBUWA_AUDIO_INDEX.AttackOne].Play();
                     break;
                 case 1:
                     this.GetModelManager().GetAnimator().SetTrigger("DoAttackRight");
-                    _audioSources[(int)E_ROBUWA_AUDIO_INDEX.Attack].Play();
+                    _audioSources[(int)E_ROBUWA_AUDIO_INDEX.AttackOne].Play();
                     break;
                 case 2:
                     this.GetModelManager().GetAnimator().SetTrigger("DoAttackJump");
-                    _audioSources[(int)E_ROBUWA_AUDIO_INDEX.Attack].Play();
+                    _audioSources[(int)E_ROBUWA_AUDIO_INDEX.AttackBoth].Play();
                     break;
             }
         }
@@ -327,7 +328,7 @@ namespace Sophia.Entitys
         {
             Debug.Log("Move_Enter");
             this.GetModelManager().GetAnimator().SetBool("IsWalk", true);
-            _audioSources[(int)E_ROBUWA_AUDIO_INDEX.MoveattackMode].Play();
+            _audioSources[(int)E_ROBUWA_AUDIO_INDEX.MoveAttackMode].Play();
             nav.enabled = true;
             nav.isStopped = false;
         }
@@ -359,7 +360,7 @@ namespace Sophia.Entitys
 
         void Move_Exit()
         {
-            _audioSources[(int)E_ROBUWA_AUDIO_INDEX.MoveattackMode].Stop();
+            _audioSources[(int)E_ROBUWA_AUDIO_INDEX.MoveAttackMode].Stop();
             this.GetModelManager().GetAnimator().SetBool("IsWalk", false);
         }
 
@@ -439,12 +440,35 @@ namespace Sophia.Entitys
 
             foreach (Sophia.Instantiates.ItemObject itemObject in itemObjects)
             {
-                itemObject.Activate();
+                itemObject.SetTriggerTime(1f).SetTweenSequence(SetSequnce(itemObject)).Activate();
             }
             Die();
         }
 
         #endregion
+
+        public Sequence SetSequnce(Sophia.Instantiates.ItemObject itemObject)
+        {
+            Sequence mySequence = DOTween.Sequence();
+            System.Random random = new System.Random();
+            Vector3 EndPosForward = transform.right;
+            var randomAngle = random.Next(-180, 180);
+            Vector3[] rotateMatrix = new Vector3[] {
+                new Vector3(Mathf.Cos(randomAngle), 0 , Mathf.Sin(randomAngle)),
+                new Vector3(0, 1 , 0),
+                new Vector3(-Mathf.Sin(randomAngle), 0 , Mathf.Cos(randomAngle))
+            };
+            Vector3 retatedVec = Vector3.zero + Vector3.up;
+            retatedVec += EndPosForward.x * rotateMatrix[0];
+            retatedVec += EndPosForward.y * rotateMatrix[1];
+            retatedVec += EndPosForward.z * rotateMatrix[2];
+            var randomDist = (float)random.NextDouble() * 7;
+            var randomForce = (float)random.NextDouble();
+            var randomTime = (float)(random.NextDouble() * 2 + 0.5);
+            Debug.Log(retatedVec * randomDist);
+            Tween jumpTween = itemObject.transform.DOLocalJump((retatedVec * randomDist) + transform.position, randomForce * 25, 1, randomTime).SetEase(Ease.OutBounce);
+            return mySequence.Append(jumpTween);
+        }
 
         #region Inherited Functions From Enemy Class
         protected override void SetDataToReferer()
@@ -478,6 +502,7 @@ namespace Sophia.Entitys
             {
                 if (isDamaged = Life.Damaged(damage))
                 {
+                    _audioSources[(int)E_ROBUWA_AUDIO_INDEX.Hit].Play();
                     GameManager.Instance.NewFeatureGlobalEvent.OnEnemyHitEvent.Invoke();
                 }
             }
@@ -536,6 +561,5 @@ namespace Sophia.Entitys
         }
 
         #endregion
-        [SerializeField] protected List<FMODAudioSource> _audioSources;
     }
 }

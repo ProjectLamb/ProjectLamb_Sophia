@@ -448,17 +448,25 @@ public class StageGenerator : MonoBehaviour
     }
     public void InstantiatePortal()
     {
+        GameObject portalModel = portal[(int)Stage.PORTAL_TYPE.NORMAL];
         GameObject instance;
+        if(stage.Type == "boss")
+        {
+            //portalModel = portal[(int)Stage.PORTAL_TYPE.BOSS];
+        }
+
         if (mPortalE)
         {
-            instance = Instantiate(portal[(int)Stage.PORTAL_TYPE.NORMAL], tileGameObjectArray[1, (1 + height) / 2].transform.position, Quaternion.Euler(0, 90, 0));
+            instance = Instantiate(portalModel, tileGameObjectArray[1, (1 + height) / 2].transform.position, Quaternion.Euler(0, 90, 0));
+            tileGameObjectArray[1, (1 + height) / 2].gameObject.tag = "Portal";
             instance.GetComponent<Portal>().PortalType = "east";
             instance.transform.parent = transform.GetChild((int)Stage.STAGE_CHILD.PORTAL);
             portalArray[0] = instance;
         }
         if (mPortalW)
         {
-            instance = Instantiate(portal[(int)Stage.PORTAL_TYPE.NORMAL], tileGameObjectArray[width, (1 + height) / 2].transform.position, Quaternion.Euler(0, -90, 0));
+            instance = Instantiate(portalModel, tileGameObjectArray[width, (1 + height) / 2].transform.position, Quaternion.Euler(0, -90, 0));
+            tileGameObjectArray[width, (1 + height) / 2].gameObject.tag = "Portal";
             instance.GetComponent<Portal>().PortalType = "west";
             instance.transform.parent = transform.GetChild((int)Stage.STAGE_CHILD.PORTAL);
             portalArray[1] = instance;
@@ -466,7 +474,8 @@ public class StageGenerator : MonoBehaviour
         }
         if (mPortalN)
         {
-            instance = Instantiate(portal[(int)Stage.PORTAL_TYPE.NORMAL], tileGameObjectArray[(1 + width) / 2, 1].transform.position, Quaternion.identity);
+            instance = Instantiate(portalModel, tileGameObjectArray[(1 + width) / 2, 1].transform.position, Quaternion.identity);
+            tileGameObjectArray[(1 + width) / 2, 1].gameObject.tag = "Portal";
             instance.GetComponent<Portal>().PortalType = "north";
             instance.transform.parent = transform.GetChild((int)Stage.STAGE_CHILD.PORTAL);
             portalArray[2] = instance;
@@ -474,7 +483,8 @@ public class StageGenerator : MonoBehaviour
         }
         if (mPortalS)
         {
-            instance = Instantiate(portal[(int)Stage.PORTAL_TYPE.NORMAL], tileGameObjectArray[(1 + width) / 2, height].transform.position, Quaternion.Euler(0, 180, 0));
+            instance = Instantiate(portalModel, tileGameObjectArray[(1 + width) / 2, height].transform.position, Quaternion.Euler(0, 180, 0));
+            tileGameObjectArray[(1 + width) / 2, height].gameObject.tag = "Portal";
             instance.GetComponent<Portal>().PortalType = "south";
             instance.transform.parent = transform.GetChild((int)Stage.STAGE_CHILD.PORTAL);
             portalArray[3] = instance;
@@ -507,6 +517,7 @@ public class StageGenerator : MonoBehaviour
             float randomDegree = (float)rand.NextDouble() * 360;
             instance = Instantiate(Props[randomIndex], tileGameObjectArray[i, j].transform.position, Quaternion.Euler(0, randomDegree, 0));
             instance.transform.parent = transform.GetChild((int)Stage.STAGE_CHILD.OBSTACLE);
+            tileGameObjectArray[i, j].gameObject.tag = "Obstacle";
             temp--;
         }
     }

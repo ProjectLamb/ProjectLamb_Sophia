@@ -33,7 +33,7 @@ namespace Sophia.Entitys
 
                 if (stage.stageGenerator.tileArray[i, j] == 0 || stage.stageGenerator.tileArray[i, j] == 2)
                     continue;
-                if (stage.stageGenerator.tileGameObjectArray[i, j].tag == "Portal")
+                if (stage.stageGenerator.tileGameObjectArray[i, j].tag == "Portal" || stage.stageGenerator.tileGameObjectArray[i, j].tag == "Obstacle")
                     continue;
 
                 int randomValue = RandomMobPercent();
