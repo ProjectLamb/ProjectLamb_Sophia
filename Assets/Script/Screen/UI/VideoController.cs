@@ -34,9 +34,9 @@ public class VideoController : MonoBehaviour
 
     void Update()
     {
-        if(isSkippable)
+        if (isSkippable)
         {
-            if(Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetMouseButtonDown(0))
+            if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetMouseButtonDown(0))
             {
                 VideoEnd(vid);
             }
@@ -75,14 +75,15 @@ public class VideoController : MonoBehaviour
             {
                 case E_VIDEO_NAME.ElderOne:
                     InGameScreenUI.Instance._bossHealthBar.SetActive(true);
+                    commandStarter.SendCommand();
+                    bossStateStarter.SendCommand();
                     break;
                 case E_VIDEO_NAME.Opening:
                     StoryManager.Instance.IsTutorial = false;
+                    commandStarter.SendCommand();
                     break;
             }
 
-            commandStarter.SendCommand();
-            bossStateStarter.SendCommand();
             image.enabled = false;
             vid.Stop();
         });
