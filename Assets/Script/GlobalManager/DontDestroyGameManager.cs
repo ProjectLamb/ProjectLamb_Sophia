@@ -20,7 +20,12 @@ public class DontDestroyGameManager : MonoBehaviour
     }
 
     private void Awake() {
-        DontDestroyOnLoad(gameObject);
+        if(_instance != this && _instance == null) {
+            DontDestroyOnLoad(gameObject);
+        }
+        else {
+            Destroy(gameObject);
+        }
     }
     [SerializeField] private GameObject _audioSetterScreen;
     public GameObject AudioSetterScreenObject => _audioSetterScreen;
