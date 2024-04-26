@@ -164,7 +164,13 @@ namespace Sophia
             public event UnityAction<float> OnBarrier = null;
             public event UnityAction OnBreakBarrier = null;
 
-            protected void OnMaxHpUpdated()         => Debug.Log("최대체력 변경됨!");
+            protected void OnMaxHpUpdated(){
+                Debug.Log("최대체력 변경됨!");
+                if(CurrentHealth > MaxHp.GetValueByNature())
+                {
+                    CurrentHealth = MaxHp.GetValueByNature();
+                }
+            }
             protected void OnDefenceUpdated()       => Debug.Log("방어력 변경됨!");
             protected void OnBarrierRatioUpdated()  => Debug.Log("배리어 변경됨!");
             protected void OnHitExtrasUpdated()     => Debug.Log("닿음 추가 동작 변경됨!");
