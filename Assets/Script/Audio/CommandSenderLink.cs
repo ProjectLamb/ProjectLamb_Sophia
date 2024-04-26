@@ -1,7 +1,6 @@
 
 using System;
 using FMODPlus;
-using UnityEditor.Searcher;
 using UnityEngine;
 using AudioType = FMODPlus.AudioType;
 

@@ -71,6 +71,7 @@ namespace Sophia.UserInterface
             StartCoroutine(GlobalAsync.PerformAndRenderUI(() => {
                 stringBuilder.Clear();
                 healthSlider.maxValue                 = lifeCompositeRef.MaxHp.GetValueByNature();
+                healthSlider.value                    = lifeCompositeRef.MaxHp.GetValueByNature();
                 barrierSlider.maxValue                = lifeCompositeRef.MaxHp.GetValueByNature();
                 stringBuilder.Append(lifeCompositeRef.CurrentHealth + lifeCompositeRef.CurrentBarrier + " / " + lifeCompositeRef.MaxHp.GetValueByNature());
                 valueText.text = stringBuilder.ToString();

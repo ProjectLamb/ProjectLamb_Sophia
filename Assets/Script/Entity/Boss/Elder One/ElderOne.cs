@@ -238,12 +238,6 @@ namespace Sophia.Entitys
         void OnElderOneExitDie()
         {
             Invoke("DisableModel", 0.5f);
-            InGameScreenUI.Instance._fadeUI.AddBindingAction(() =>
-            {
-                SceneManager.LoadScene("03_Demo_Clear");
-            });
-
-            InGameScreenUI.Instance._fadeUI.FadeOut(0.2f, 3f);
         }
 
         [ContextMenu("PlayFootStepSound")]
