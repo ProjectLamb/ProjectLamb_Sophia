@@ -23,7 +23,7 @@ public class TextManager : MonoBehaviour
     public string[] dialogStrings;
     TalkData[] talkDatas;
     private int currentPage = 0; // 대화문 개수 변수
-    public bool IsStory = false; // 스토리 대화 진행중인지 여부
+    public bool IsStory = true;
     public bool IsSkipStory;
     bool IsOnce = false;
 
@@ -79,10 +79,11 @@ public class TextManager : MonoBehaviour
                     currentPage = talkDatas.Length;
                     if (!IsOnce)
                     {
-                        TextBarOff();
+                        talkPanel.SetActive(false);
+                        //TextBarOff();
                         //1챕 튜토리얼 한정
-                        InGameScreenUI.Instance._fadeUI.AddBindingAction(() => { InGameScreenUI.Instance._videoController.StartVideo(VideoController.E_VIDEO_NAME.Opening); });
                         InGameScreenUI.Instance._fadeUI.FadeOut(0.02f, 1.5f);
+                        InGameScreenUI.Instance._fadeUI.AddBindingAction(() => { InGameScreenUI.Instance._videoController.StartVideo(VideoController.E_VIDEO_NAME.Opening); });
                         IsStory = false;
                         IsOnce = true;
                     }
@@ -110,7 +111,7 @@ public class TextManager : MonoBehaviour
         {
             TextBarOff();
         }
-        else if (StoryManager.Instance.IsTutorial && !GameManager.Instance.GlobalEvent.IsGamePaused) // 튜토리얼이 끝나지 않은 상태에서 게임 일시정지
+        else if (IsStory && !GameManager.Instance.GlobalEvent.IsGamePaused) // 튜토리얼이 끝나지 않은 상태에서 게임 일시정지
         {
             talkPanel.SetActive(true);
             //_dissolvePanel.SetActive(false);
