@@ -78,6 +78,7 @@ crashlytics-build.properties
 Assets/Plugins/*
 Assets/Packages/*
 Assets/Resources/*
+Assets/ResourcesHelper/*
 Assets/FmodProject/*
 Assets/ARTnGAME/*
 Assets/BundleDemos/*
