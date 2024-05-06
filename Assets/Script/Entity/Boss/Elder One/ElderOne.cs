@@ -28,11 +28,14 @@ namespace Sophia.Entitys
 
         private int turnSpeed = 2;
         private bool isPhaseChanged = false;
-        private bool IsMovable;
+
         [SerializeField] private bool IsInvincible;
         [SerializeField] FMODAudioSource[] _audioSource;
         [SerializeField] private Material emissionMaterial;
         private NavMeshAgent nav;
+        #region Move
+        private bool isMovable;
+        #endregion
 
         #region Rush
         private bool isRushOnce = false;
@@ -43,9 +46,14 @@ namespace Sophia.Entitys
         private float currentRushTime;
         Vector3 rushDestination;
         Ray rushRay;
-        RaycastHit hit;
         NavMeshHit navHit;
         LayerMask RushStopMask;
+        #endregion
+
+        #region Skill
+        private bool isWalkReady = false;
+        private bool isWalkReturn = false;
+        private bool isSkillOnce = false;
         #endregion
 
         // Start is called before the first frame update
@@ -55,7 +63,8 @@ namespace Sophia.Entitys
             Idle,
             Move,
             Attack,
-            Skill,
+            SkillWalk,
+            SkillPhase,
             Rush,
             Death,
         }
@@ -151,6 +160,7 @@ namespace Sophia.Entitys
                 phase = 2;
                 //GameManager.Instance.DonDestroyObjectReferer.DontDestroyGameManager.AudioManager.audioStateSender._bossPhaseSender[1].SendCommand();
                 nav.speed = _baseEntityData.MoveSpeed * 2;
+                this.GetModelManager().GetAnimator().SetFloat("MoveSpeed", 2);
                 rushTime /= 2;
                 //눈 색깔 바꾸기
                 isPhaseChanged = true;
@@ -224,12 +234,11 @@ namespace Sophia.Entitys
             {
                 if (this.GetModelManager().GetAnimator().GetInteger("phaseSkill") % 2 == 0)
                 {
-                    this.GetModelManager().GetAnimator().SetTrigger(animTriggerParamList[7]);
+                    fsm.ChangeState(States.SkillWalk);
                 }
-                else
+                else    //2Phase
                 {
-                    IsInvincible = true;
-                    this.GetModelManager().GetAnimator().SetTrigger(animTriggerParamList[8]);
+                    fsm.ChangeState(States.SkillPhase);
                 }
             }
         }
@@ -434,10 +443,7 @@ namespace Sophia.Entitys
         {
             if (this.GetModelManager().GetAnimator().GetBool("IsAttackEnd"))
             {
-                if (this.GetModelManager().GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("skill"))
-                    fsm.ChangeState(States.Skill);
-                else
-                    fsm.ChangeState(States.Idle);
+                fsm.ChangeState(States.Idle);
             }
         }
 
@@ -446,42 +452,107 @@ namespace Sophia.Entitys
             this.GetModelManager().GetAnimator().SetBool("IsAttackEnd", false);
         }
 
-        void Skill_Enter()
+        void SkillWalk_Enter()
         {
-            Debug.Log("Skill_Enter");
-            IsInvincible = false;
-            if (!this.GetModelManager().GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("walk"))
+            Debug.Log("SkillWalk_Enter");
+
+            this.SetMoveState(true);
+            this.GetModelManager().GetAnimator().SetTrigger(animTriggerParamList[7]);
+        }
+
+        void SkillWalk_Update()
+        {
+            if (this.GetModelManager().GetAnimator().GetBool("IsAttackEnd"))
             {
-                nav.SetDestination(transform.position);
-                nav.isStopped = true;
-                transform.DOKill();
-                nav.SetDestination(transform.position);
+                isWalkReady = true;
+                this.GetModelManager().GetAnimator().SetBool("IsAttackEnd", false);
+            }
+            if (this.GetModelManager().GetAnimator().GetBool("IsSkillWalkEnd"))
+            {
+                isWalkReady = false;
+                this.GetModelManager().GetAnimator().SetBool("IsSkillWalkEnd", false);
+            }
+            if (this.GetModelManager().GetAnimator().GetBool("IsSkillEnd"))
+            {
+                fsm.ChangeState(States.Idle);
+                this.GetModelManager().GetAnimator().SetBool("IsSkillEnd", false);
             }
         }
 
-        void Skill_FixedUpdate()
+        void SkillWalk_FixedUpdate()
         {
-            if (this.GetModelManager().GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("walk"))
+            if (isWalkReady)
             {
+                this.SetMoveState(true);
                 transform.DOLookAt(_objectiveEntity.transform.position, turnSpeed);
                 nav.SetDestination(_objectiveEntity.transform.position);
             }
         }
 
-        void Skill_Update()
+        void SkillWalk_Exit()
         {
+            this.GetModelManager().GetAnimator().SetBool("IsAttackEnd", false);
+            this.GetModelManager().GetAnimator().SetBool("IsSkillWalkEnd", false);
+            this.GetModelManager().GetAnimator().SetBool("IsSkillEnd", false);
+        }
+
+        void SkillPhase_Enter()
+        {
+            Debug.Log("SkillPhase_Enter");
+
+            SetMoveState(true);
+            recognize.CurrentViewAngle = 0;
+            nav.stoppingDistance = 0;
+            isWalkReturn = true;
+            this.GetModelManager().GetAnimator().SetBool("IsWalk", true);
+            transform.DOLookAt(CurrentInstantiatedStage.transform.position, turnSpeed);
+            nav.SetDestination(CurrentInstantiatedStage.transform.position);
+        }
+
+        void SkillPhase_Update()
+        {
+            if (this.GetModelManager().GetAnimator().GetBool("IsAttackEnd"))
+            {
+                IsInvincible = false;
+                this.GetModelManager().GetAnimator().SetBool("IsAttackEnd", false);
+            }
+
+            if (isWalkReturn)
+            {
+                if ((transform.position.x == 0 && transform.position.z == 0) && !isSkillOnce)
+                {
+                    this.GetModelManager().GetAnimator().SetBool("IsWalk", false);
+                    IsInvincible = true;
+                    nav.SetDestination(transform.position);
+                    nav.isStopped = true;
+                    transform.DOLookAt(_objectiveEntity.transform.position, turnSpeed);
+                    this.GetModelManager().GetAnimator().SetTrigger(animTriggerParamList[8]);
+                    isSkillOnce = true;
+                }
+            }
+
             if (this.GetModelManager().GetAnimator().GetBool("IsSkillEnd"))
             {
-                if (this.GetModelManager().GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("walk"))
-                    fsm.ChangeState(States.Skill);
-                else
-                    fsm.ChangeState(States.Idle);
+                fsm.ChangeState(States.Idle);
             }
         }
 
-        void Skill_Exit()
+        void SkillPhase_FixedUpdate()
         {
-            this.GetModelManager().GetAnimator().SetBool("IsSkillEnd", false);
+            if (isWalkReturn)
+            {
+                SetMoveState(true);
+                nav.SetDestination(CurrentInstantiatedStage.transform.position);
+            }
+        }
+
+        void SkillPhase_Exit()
+        {
+            recognize.CurrentViewAngle = 360;
+            isWalkReturn = false;
+            isSkillOnce = false;
+            nav.stoppingDistance = attackRange;
+            this.GetModelManager().GetAnimator().SetBool("IsWalk", false);
         }
 
         void Rush_Enter()
@@ -584,13 +655,13 @@ namespace Sophia.Entitys
 
         #region Move
         private Stat moveSpeed;
-        public bool GetMoveState() => IsMovable;
+        public bool GetMoveState() => isMovable;
 
         public void SetMoveState(bool movableState)
         {
             nav.enabled = true;
 
-            IsMovable = movableState;
+            isMovable = movableState;
             nav.isStopped = !movableState;
             if (!movableState)
             {
