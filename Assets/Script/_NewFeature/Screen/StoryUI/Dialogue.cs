@@ -5,6 +5,7 @@ public struct TalkData
 {
     public string name; // 대사 치는 캐릭터 이름
     public string[] contexts; // 대사 내용
+    public string emotionState; // 캐릭터 감정상태
 }
 
 [System.Serializable]
