@@ -48,6 +48,7 @@ public class FadeUI : MonoBehaviour
         
         if(onCompleteCallback != null)
             onCompleteCallback.Invoke();
+        fadePanel.gameObject.SetActive(false);
     }
 
     IEnumerator CoFadeOut(float fadeTime, float fadeDuration)
@@ -68,6 +69,7 @@ public class FadeUI : MonoBehaviour
 
         if(!StoryManager.Instance.IsTutorial){
             fadePanel.gameObject.SetActive(false);
+            FadeIn(0.01f,3.0f);
         }
     }
 

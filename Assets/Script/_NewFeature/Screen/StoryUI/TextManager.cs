@@ -13,17 +13,16 @@ public class TextManager : MonoBehaviour
 
     [Header("StoryUI")]
     public GameObject talkPanel;
+    public SpeakerImage speakerImage;
     public TextMeshProUGUI talkText;
     public TextMeshProUGUI nameText;
-    public Sprite decussSprite;
-    public Sprite OffusiaSprite;
-    public Image storyBarImage;
     public Animator storyImageAnimator;
     public string[] dialogStrings;
     TalkData[] talkDatas;
     private int currentPage = 0; // 대화문 개수 변수
     public bool IsStory = true;
     public bool IsSkipStory;
+    public bool IsGameStart;
     bool IsOnce = false;
 
     [Header("PlayerUI")]
@@ -66,10 +65,9 @@ public class TextManager : MonoBehaviour
 
     private void Update()
     {
-        if(IsSkipStory && !StoryManager.Instance.IsTutorial) {return;}
-        if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
+        //if(IsSkipStory && !StoryManager.Instance.IsTutorial) {return;}
+        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0) ) && IsStory)
         {
-
             TypingManager._instance.GetInputDown();
             if (TypingManager._instance.isTypingEnd)
             {
@@ -90,7 +88,7 @@ public class TextManager : MonoBehaviour
 
                 if (nameText.text != talkDatas[currentPage].name) // 스토리 진행 중 화자 변경 시 이미지 변경
                 {
-                    ChangeSprite();
+                    speakerImage.ChangeSprite(talkDatas[currentPage].name, talkDatas[currentPage].emotionState);
                     storyImageAnimator.SetTrigger("DoChange");
                 }
 
@@ -136,19 +134,5 @@ public class TextManager : MonoBehaviour
         _playerWealthBar.SetActive(false);
         _playerSkillCool.SetActive(false);
         _minimap.SetActive(false);
-    }
-
-
-    private void ChangeSprite()
-    {
-        if (this.storyBarImage.sprite == decussSprite)
-        {
-            this.storyBarImage.sprite = OffusiaSprite;
-        }
-
-        else if (this.storyBarImage.sprite == OffusiaSprite)
-        {
-            this.storyBarImage.sprite = decussSprite;
-        }
     }
 }
