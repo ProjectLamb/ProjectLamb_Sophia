@@ -10,7 +10,17 @@ public class SpeakerImage : MonoBehaviour
     string speaker; // 화자
 
     [Header("OffusiaSprite")]
-    public Sprite offusiaSprite;
+    public Sprite offusia_Default;
+    public Sprite offusia_Default2;
+    public Sprite offusia_Angry;
+    public Sprite offusia_Angry2;
+    public Sprite offusia_Curious;
+    public Sprite offusia_Sad;
+    public Sprite offusia_Sad2;
+    public Sprite offusia_Sad3;
+    public Sprite offusia_Smile;
+    public Sprite offusia_Smile2;
+    public Sprite offusia_Smile3;
 
     [Header("DecussSprite")]
     public Sprite decuss_Default;
@@ -43,7 +53,29 @@ public class SpeakerImage : MonoBehaviour
         // decuss -> offusia로 스프라이트 변환
         if (speaker.Equals("오프시아")) 
         {
-            this.speakerImage.sprite = offusiaSprite;
+            if(emotionState.Equals("Default"))
+                this.speakerImage.sprite = offusia_Default;
+            else if(emotionState.Equals("Default2"))
+                this.speakerImage.sprite = offusia_Default2;
+            else if(emotionState.Equals("Angry"))
+                this.speakerImage.sprite = offusia_Angry;
+            else if(emotionState.Equals("Angry2"))
+                this.speakerImage.sprite = offusia_Angry2;
+            else if(emotionState.Equals("Curious"))
+                this.speakerImage.sprite = offusia_Curious;
+            else if(emotionState.Equals("Sad"))
+                this.speakerImage.sprite = offusia_Sad;
+            else if(emotionState.Equals("Sad2"))
+                this.speakerImage.sprite = offusia_Sad2;
+            else if(emotionState.Equals("Sad3"))
+                this.speakerImage.sprite = offusia_Sad3;
+            else if(emotionState.Equals("Smile"))
+                this.speakerImage.sprite = offusia_Smile;
+            else if(emotionState.Equals("Smile2"))
+                this.speakerImage.sprite = offusia_Smile2;
+            else if(emotionState.Equals("Smile3"))
+                this.speakerImage.sprite = offusia_Smile3;
+            
         }
 
         // offusia -> decuss로 스프라이트 변환

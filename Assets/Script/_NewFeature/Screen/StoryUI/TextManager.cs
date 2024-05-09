@@ -23,6 +23,7 @@ public class TextManager : MonoBehaviour
     private int currentPage = 0; // 대화문 개수 변수
     public bool IsStory = true;
     public bool IsSkipStory;
+    public bool IsGameStart;
     bool IsOnce = false;
 
     [Header("PlayerUI")]
@@ -65,9 +66,8 @@ public class TextManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
+        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0) ) && IsStory)
         {
-
             TypingManager._instance.GetInputDown();
             if (TypingManager._instance.isTypingEnd)
             {

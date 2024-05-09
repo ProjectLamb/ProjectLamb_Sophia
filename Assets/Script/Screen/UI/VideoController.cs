@@ -19,7 +19,6 @@ public class VideoController : MonoBehaviour
     [SerializeField] CommandSender commandStarter;
     [SerializeField] CommandSender commandEnder;
     [SerializeField] private bool isSkippable;
-
     public void StartVideo(E_VIDEO_NAME video)
     {
         image = videoList[(int)video].transform.GetChild(0).GetComponent<RawImage>();
