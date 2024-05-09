@@ -8,7 +8,6 @@ using Sophia.Composite;
 using Cysharp.Threading.Tasks;
 using UnityEngine.AI;
 using Sophia.UserInterface;
-using UnityEngine.SceneManagement;
 using FMODPlus;
 
 namespace Sophia.Entitys
