@@ -95,10 +95,10 @@ public class TextManager : MonoBehaviour
 
                 if (nameText.text != talkDatas[currentPage].name) // 스토리 진행 중 화자 변경 시 이미지 변경
                 {
-                    speakerImage.ChangeSprite(talkDatas[currentPage].name, talkDatas[currentPage].emotionState);
                     storyImageAnimator.SetTrigger("DoChange");
                 }
 
+                speakerImage.ChangeSprite(talkDatas[currentPage].name, talkDatas[currentPage].emotionState);
                 nameText.text = talkDatas[currentPage].name;
                 TypingManager._instance.Typing(talkDatas[currentPage].contexts, talkText);
                 currentPage++;
