@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class HandleButtons : MonoBehaviour
 {
+    public string LoadSceneString;
     public PauseMenu pauseMenu;
     private void Awake() {
     }
@@ -16,7 +17,11 @@ public class HandleButtons : MonoBehaviour
     IEnumerator enumerator() {
         GameManager.Instance.GlobalEvent.IsGamePaused = false;
         yield return new WaitForSecondsRealtime(0.01f);
-        SceneManager.LoadScene("01_Loading_");
+        if(LoadSceneString == "")
+            SceneManager.LoadScene("01_Loading_");
+        else {
+            SceneManager.LoadScene(LoadSceneString);
+        }
     }
     public void HandleRestart(){
         StartCoroutine(enumerator());
