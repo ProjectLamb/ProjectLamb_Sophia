@@ -19,7 +19,7 @@ using UnityEngine;
             }
         }
 
-        private void Awake() {
+        private void OnEnable() {
             if(_instance != this && _instance == null) {
                 DontDestroyOnLoad(gameObject);
             }

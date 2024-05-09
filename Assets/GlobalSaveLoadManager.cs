@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Sophia.DB;
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 using UnityEngine.Events;
 
 
@@ -13,11 +14,26 @@ public class GlobalSaveLoadManager : MonoBehaviour
     private string      PATH;
     public  UserData    Data;
     public bool GetIsDataExist() {
-        return File.Exists(PATH);
+        if(File.Exists(PATH)) {
+            return true;
+        }
+        else {
+            if(Data.IsOnceUsed == true) {return true;}
+            else {return false;}
+        }
     }
 
     private void Awake() {
-        PATH = Path.Combine(Application.dataPath, "Resources" ,"DB", "UserData.json");
+        Debug.Log(Application.dataPath);
+        Debug.Log(Application.persistentDataPath);
+
+#if UNITY_EDITOR
+        PATH = Path.Combine(Application.dataPath, "UserData.json");
+        Application.quitting += SaveAsJson;
+#else
+        PATH = Path.Combine(Application.persistentDataPath, "UserData.json");
+#endif
+
     }
 
     private void Start() {
@@ -37,13 +53,14 @@ public class GlobalSaveLoadManager : MonoBehaviour
         yield return new WaitForEndOfFrame();
         yield return new WaitWhile(() => {return File.Exists(PATH);});   
         Data = new UserData();
+        Data.IsOnceUsed = true;
     }
 
-    public void LoadFromJson() 
+    public async void LoadFromJson() 
     {
         if (File.Exists(PATH))
         {
-            string json = File.ReadAllText(PATH);
+            string json = await File.ReadAllTextAsync(PATH);
             Debug.Log(json);
             Data = JsonConvert.DeserializeObject<UserData>(json);
         }
@@ -52,10 +69,10 @@ public class GlobalSaveLoadManager : MonoBehaviour
         }
     }
 
-    public void SaveAsJson() 
+    public async void SaveAsJson() 
     {
         string json = JsonConvert.SerializeObject(Data, Formatting.Indented);
-        File.WriteAllText(PATH, json);
+        await File.WriteAllTextAsync(PATH, json);
     }
 }
 
@@ -64,11 +81,13 @@ namespace Sophia.DB
 
     [Serializable]
     public class UserData {
+        public bool IsOnceUsed;
         public bool IsTutorial;
         public CutSceneSaveData CutSceneSaveData;
 
         public UserData() {
             CutSceneSaveData = new CutSceneSaveData();
+            IsOnceUsed = false;
             IsTutorial = true;
             CutSceneSaveData.IsSkipStory = false;
         }

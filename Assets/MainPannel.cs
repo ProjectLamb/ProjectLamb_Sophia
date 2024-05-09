@@ -9,11 +9,13 @@ public class MainPannel : MonoBehaviour
     [SerializeField] private GameObject SettingElement;
     [SerializeField] private GameObject ExitElement;
 
-    private void Awake() {
-            
+    private void OnEnable() {
+        StartCoroutine(StartAtNextFrame());
     }
 
-    private void OnEnable() {
+    IEnumerator StartAtNextFrame() {
+        yield return new WaitForEndOfFrame();
+        
         if(!DontDestroyGameManager.Instance.SaveLoadManager.GetIsDataExist()) {
             // 컨티뉴 버튼 비활성화
             ContinueGameElement.SetActive(false);
@@ -29,6 +31,6 @@ public class MainPannel : MonoBehaviour
     }
 
     public void Continue() {
-        DontDestroyGameManager.Instance.SaveLoadManager.LoadFromJson();
+        // 
     }
 }

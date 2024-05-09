@@ -53,7 +53,7 @@ public class TextManager : MonoBehaviour
     private void Start()
     {
         IsSkipStory = DontDestroyGameManager.Instance.SaveLoadManager.Data.CutSceneSaveData.IsSkipStory; // IsTutorial
-        if (!IsSkipStory)
+        if (!(IsSkipStory && !StoryManager.Instance.IsTutorial))
         {
             InGameScreenUI.Instance._fadeUI.FadeIn(0.02f, 2f);
             IsStory = true;

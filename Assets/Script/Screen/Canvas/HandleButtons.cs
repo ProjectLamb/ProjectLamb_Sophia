@@ -28,6 +28,7 @@ public class HandleButtons : MonoBehaviour
     }
     public void HandleQuit(){
         SceneManager.LoadScene(0);
+        GameManager.Instance.GlobalEvent.IsGamePaused = false;
         // #if UNITY_EDITOR
         //     // Application.Quit() does not work in the editor so
         //     // UnityEditor.EditorApplication.isPlaying need to be set to false to end the game
