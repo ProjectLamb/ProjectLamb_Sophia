@@ -15,7 +15,7 @@ namespace Sophia.Entitys
 {
     public enum E_ELDERONE_AUDIO_INDEX
     {
-        AttackBoth, AttackOne, Swing, Death, FootStep, PhaseTransition
+        AttackBoth, AttackOne, Swing, Death, FootStep, PhaseTransition, Dirt
     }
     public class ElderOne : Boss, IMovable
     {
@@ -28,10 +28,33 @@ namespace Sophia.Entitys
 
         private int turnSpeed = 2;
         private bool isPhaseChanged = false;
-        private bool IsMovable;
+
         [SerializeField] private bool IsInvincible;
         [SerializeField] FMODAudioSource[] _audioSource;
+        [SerializeField] private Material emissionMaterial;
         private NavMeshAgent nav;
+        #region Move
+        private bool isMovable;
+        #endregion
+
+        #region Rush
+        private bool isRushOnce = false;
+        private int rushRange = 75;
+        private int rushDistance = 200;
+        private int rushStopDistance = 15;
+        private float rushTime = 2.5f;
+        private float currentRushTime;
+        Vector3 rushDestination;
+        Ray rushRay;
+        NavMeshHit navHit;
+        LayerMask RushStopMask;
+        #endregion
+
+        #region Skill
+        private bool isWalkReady = false;
+        private bool isWalkReturn = false;
+        private bool isSkillOnce = false;
+        #endregion
 
         // Start is called before the first frame update
         public enum States
@@ -40,7 +63,9 @@ namespace Sophia.Entitys
             Idle,
             Move,
             Attack,
-            Skill,
+            SkillWalk,
+            SkillPhase,
+            Rush,
             Death,
         }
 
@@ -63,6 +88,8 @@ namespace Sophia.Entitys
 
             TryGetComponent<NavMeshAgent>(out nav);
             _objectiveEntity = GameManager.Instance.PlayerGameObject.GetComponent<Entitys.Entity>();
+
+            RushStopMask = LayerMask.GetMask("Wall");
 
             fsm = new StateMachine<States>(this);
             fsm.ChangeState(States.Init);
@@ -131,7 +158,11 @@ namespace Sophia.Entitys
             if (Life.CurrentHealth <= Life.MaxHp / 2)
             {
                 phase = 2;
+                //GameManager.Instance.DonDestroyObjectReferer.DontDestroyGameManager.AudioManager.audioStateSender._bossPhaseSender[1].SendCommand();
                 nav.speed = _baseEntityData.MoveSpeed * 2;
+                this.GetModelManager().GetAnimator().SetFloat("MoveSpeed", 2);
+                rushTime /= 2;
+                //눈 색깔 바꾸기
                 isPhaseChanged = true;
             }
         }
@@ -203,12 +234,11 @@ namespace Sophia.Entitys
             {
                 if (this.GetModelManager().GetAnimator().GetInteger("phaseSkill") % 2 == 0)
                 {
-                    this.GetModelManager().GetAnimator().SetTrigger(animTriggerParamList[7]);
+                    fsm.ChangeState(States.SkillWalk);
                 }
-                else
+                else    //2Phase
                 {
-                    IsInvincible = true;
-                    this.GetModelManager().GetAnimator().SetTrigger(animTriggerParamList[8]);
+                    fsm.ChangeState(States.SkillPhase);
                 }
             }
         }
@@ -218,6 +248,7 @@ namespace Sophia.Entitys
             Sophia.Instantiates.VisualFXObject visualFX = VisualFXObjectPool.GetObject(_dieParticleRef).Init();
             GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
             _audioSource[(int)E_ELDERONE_AUDIO_INDEX.Death].Play();
+            GameManager.Instance.DonDestroyObjectReferer.DontDestroyGameManager.AudioManager.audioStateSender._bossPhaseSender[2].SendCommand();
 
             CurrentInstantiatedStage.mobGenerator.RemoveMob(this.gameObject);
         }
@@ -236,33 +267,27 @@ namespace Sophia.Entitys
         void OnElderOneExitDie()
         {
             Invoke("DisableModel", 0.5f);
-            InGameScreenUI.Instance._fadeUI.AddBindingAction(() =>
-            {
-                SceneManager.LoadScene("03_Demo_Clear");
-            });
-
-            InGameScreenUI.Instance._fadeUI.FadeOut(0.2f, 3f);
         }
 
-        [ContextMenu("PlayFootStepSound")]
         public void PlayFootStepSound()
         {
             _audioSource[(int)E_ELDERONE_AUDIO_INDEX.FootStep].Play();
         }
-        [ContextMenu("PlaySwingSound")]
         public void PlaySwingSound()
         {
             _audioSource[(int)E_ELDERONE_AUDIO_INDEX.Swing].Play();
         }
-        [ContextMenu("PlayAttackOneSound")]
         public void PlayAttackOneSound()
         {
             _audioSource[(int)E_ELDERONE_AUDIO_INDEX.AttackOne].Play();
         }
-        [ContextMenu("PlayAttackBothSound")]
         public void PlayAttackBothSound()
         {
             _audioSource[(int)E_ELDERONE_AUDIO_INDEX.AttackBoth].Play();
+        }
+        public void PlayDirtSound()
+        {
+            _audioSource[(int)E_ELDERONE_AUDIO_INDEX.Dirt].Play();
         }
 
         #region Attack
@@ -284,6 +309,25 @@ namespace Sophia.Entitys
                                     .Activate();
         }
 
+        public void UseProjectile_WaveAttack()
+        {
+            StartCoroutine(CoWaveAttack());
+        }
+
+        IEnumerator CoWaveAttack()
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                Sophia.Instantiates.ProjectileObject useProjectile = ProjectilePool.GetObject(_attckProjectiles[3]).Init(this);
+
+                _projectileBucketManager.InstantablePositioning((int)ANIME_STATE.JUMP, useProjectile)
+                                        .SetProjectilePower(GetStat(E_NUMERIC_STAT_TYPE.Power) * (5 - i))
+                                        .SetScaleMultiplyByRatio(i + 1)
+                                        .Activate();
+                yield return new WaitForSeconds(0.25f);
+            }
+        }
+
         #endregion
 
         ////////////////////////////////////////FSM Functions////////////////////////////////////////
@@ -303,7 +347,8 @@ namespace Sophia.Entitys
         {
             Debug.Log("Idle_Enter");
             ResetAnimParam();
-            SetMoveState(false);
+            nav.SetDestination(transform.position);
+            nav.isStopped = true;
         }
 
         void Idle_Update()
@@ -318,6 +363,8 @@ namespace Sophia.Entitys
                 float dist = Vector3.Distance(transform.position, _objectiveEntity.transform.position);
                 if (dist <= attackRange)
                     fsm.ChangeState(States.Attack);
+                else if (dist >= rushRange)
+                    fsm.ChangeState(States.Rush);
                 else
                     fsm.ChangeState(States.Move);
             }
@@ -345,6 +392,8 @@ namespace Sophia.Entitys
                         float dist = Vector3.Distance(transform.position, _objectiveEntity.transform.position);
                         if (dist <= attackRange)
                             fsm.ChangeState(States.Attack);
+                        else if (dist >= rushRange)
+                            fsm.ChangeState(States.Rush);
                         break;
                     }
                 case E_RECOG_TYPE.Lose:
@@ -356,6 +405,8 @@ namespace Sophia.Entitys
                         float dist = Vector3.Distance(transform.position, _objectiveEntity.transform.position);
                         if (dist <= attackRange)
                             fsm.ChangeState(States.Attack);
+                        else if (dist >= rushRange)
+                            fsm.ChangeState(States.Rush);
                         break;
                     }
             }
@@ -382,7 +433,8 @@ namespace Sophia.Entitys
             else
                 DoAttack(phase);
 
-            SetMoveState(false);
+            nav.SetDestination(transform.position);
+            nav.isStopped = true;
 
             transform.DOLookAt(_objectiveEntity.transform.position, turnSpeed / 2);
         }
@@ -391,10 +443,7 @@ namespace Sophia.Entitys
         {
             if (this.GetModelManager().GetAnimator().GetBool("IsAttackEnd"))
             {
-                if (this.GetModelManager().GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("skill"))
-                    fsm.ChangeState(States.Skill);
-                else
-                    fsm.ChangeState(States.Idle);
+                fsm.ChangeState(States.Idle);
             }
         }
 
@@ -403,41 +452,166 @@ namespace Sophia.Entitys
             this.GetModelManager().GetAnimator().SetBool("IsAttackEnd", false);
         }
 
-        void Skill_Enter()
+        void SkillWalk_Enter()
         {
-            Debug.Log("Skill_Enter");
-            IsInvincible = false;
-            if (!this.GetModelManager().GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("walk"))
+            Debug.Log("SkillWalk_Enter");
+
+            this.SetMoveState(true);
+            this.GetModelManager().GetAnimator().SetTrigger(animTriggerParamList[7]);
+        }
+
+        void SkillWalk_Update()
+        {
+            if (this.GetModelManager().GetAnimator().GetBool("IsAttackEnd"))
             {
-                SetMoveState(false);
-                transform.DOKill();
-                nav.SetDestination(transform.position);
+                isWalkReady = true;
+                this.GetModelManager().GetAnimator().SetBool("IsAttackEnd", false);
+            }
+            if (this.GetModelManager().GetAnimator().GetBool("IsSkillWalkEnd"))
+            {
+                isWalkReady = false;
+                this.GetModelManager().GetAnimator().SetBool("IsSkillWalkEnd", false);
+            }
+            if (this.GetModelManager().GetAnimator().GetBool("IsSkillEnd"))
+            {
+                fsm.ChangeState(States.Idle);
+                this.GetModelManager().GetAnimator().SetBool("IsSkillEnd", false);
             }
         }
 
-        void Skill_FixedUpdate()
+        void SkillWalk_FixedUpdate()
         {
-            if (this.GetModelManager().GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("walk"))
+            if (isWalkReady)
             {
+                this.SetMoveState(true);
                 transform.DOLookAt(_objectiveEntity.transform.position, turnSpeed);
                 nav.SetDestination(_objectiveEntity.transform.position);
             }
         }
 
-        void Skill_Update()
+        void SkillWalk_Exit()
         {
+            this.GetModelManager().GetAnimator().SetBool("IsAttackEnd", false);
+            this.GetModelManager().GetAnimator().SetBool("IsSkillWalkEnd", false);
+            this.GetModelManager().GetAnimator().SetBool("IsSkillEnd", false);
+        }
+
+        void SkillPhase_Enter()
+        {
+            Debug.Log("SkillPhase_Enter");
+
+            SetMoveState(true);
+            recognize.CurrentViewAngle = 0;
+            nav.stoppingDistance = 0;
+            isWalkReturn = true;
+            this.GetModelManager().GetAnimator().SetBool("IsWalk", true);
+            transform.DOLookAt(CurrentInstantiatedStage.transform.position, turnSpeed);
+            nav.SetDestination(CurrentInstantiatedStage.transform.position);
+        }
+
+        void SkillPhase_Update()
+        {
+            if (this.GetModelManager().GetAnimator().GetBool("IsAttackEnd"))
+            {
+                IsInvincible = false;
+                this.GetModelManager().GetAnimator().SetBool("IsAttackEnd", false);
+            }
+
+            if (isWalkReturn)
+            {
+                if ((transform.position.x == 0 && transform.position.z == 0) && !isSkillOnce)
+                {
+                    this.GetModelManager().GetAnimator().SetBool("IsWalk", false);
+                    IsInvincible = true;
+                    nav.SetDestination(transform.position);
+                    nav.isStopped = true;
+                    transform.DOLookAt(_objectiveEntity.transform.position, turnSpeed);
+                    this.GetModelManager().GetAnimator().SetTrigger(animTriggerParamList[8]);
+                    isSkillOnce = true;
+                }
+            }
+
             if (this.GetModelManager().GetAnimator().GetBool("IsSkillEnd"))
             {
-                if (this.GetModelManager().GetAnimator().GetCurrentAnimatorStateInfo(0).IsTag("walk"))
-                    fsm.ChangeState(States.Skill);
-                else
-                    fsm.ChangeState(States.Idle);
+                fsm.ChangeState(States.Idle);
             }
         }
 
-        void Skill_Exit()
+        void SkillPhase_FixedUpdate()
         {
-            this.GetModelManager().GetAnimator().SetBool("IsSkillEnd", false);
+            if (isWalkReturn)
+            {
+                SetMoveState(true);
+                nav.SetDestination(CurrentInstantiatedStage.transform.position);
+            }
+        }
+
+        void SkillPhase_Exit()
+        {
+            recognize.CurrentViewAngle = 360;
+            isWalkReturn = false;
+            isSkillOnce = false;
+            nav.stoppingDistance = attackRange;
+            this.GetModelManager().GetAnimator().SetBool("IsWalk", false);
+        }
+
+        void Rush_Enter()
+        {
+            Debug.Log("Rush_Enter");
+            this.GetModelManager().GetAnimator().SetTrigger("DoRush");
+            nav.SetDestination(transform.position);
+            nav.isStopped = true;
+        }
+
+        void Rush_Update()
+        {
+            if (this.GetModelManager().GetAnimator().GetBool("IsRush"))
+            {
+                if (!isRushOnce)
+                {
+                    transform.DOMove(rushDestination, rushTime).SetEase(Ease.InQuad);
+                    isRushOnce = true;
+                }
+
+                if (Physics.Raycast(transform.position, transform.forward, rushStopDistance, RushStopMask) || transform.position == rushDestination)
+                {
+                    Debug.Log("RushStop");
+                    _objectiveEntity.transform.GetComponent<Player>().SetMoveState(true);
+                    _objectiveEntity.transform.parent = null;
+                    transform.DOKill();
+                    this.GetModelManager().GetAnimator().SetBool("IsRush", false);
+                }
+            }
+            else
+            {
+                rushRay = new Ray(transform.position, transform.forward);
+            }
+
+            if (this.GetModelManager().GetAnimator().GetBool("IsRushEnd"))
+            {
+                fsm.ChangeState(States.Idle);
+            }
+        }
+
+        void Rush_FixedUpdate()
+        {
+            if (!this.GetModelManager().GetAnimator().GetBool("IsRush"))
+            {
+                transform.DOLookAt(_objectiveEntity.transform.position, turnSpeed / 2);
+
+                if (NavMesh.SamplePosition(rushRay.GetPoint(rushDistance), out navHit, rushDistance, NavMesh.AllAreas))
+                {
+                    rushDestination = navHit.position;
+                    currentRushTime = rushTime * (Vector3.Distance(rushDestination, transform.position) / rushDistance);
+                    //GameObject.Find("Cube").transform.position = rushDestination;
+                }
+            }
+        }
+
+        void Rush_Exit()
+        {
+            this.GetModelManager().GetAnimator().SetBool("IsRushEnd", false);
+            isRushOnce = false;
         }
 
         /** Death State */
@@ -481,13 +655,13 @@ namespace Sophia.Entitys
 
         #region Move
         private Stat moveSpeed;
-        public bool GetMoveState() => IsMovable;
+        public bool GetMoveState() => isMovable;
 
         public void SetMoveState(bool movableState)
         {
             nav.enabled = true;
 
-            IsMovable = movableState;
+            isMovable = movableState;
             nav.isStopped = !movableState;
             if (!movableState)
             {
@@ -506,6 +680,20 @@ namespace Sophia.Entitys
         {
             //Currently using DoTween.DoLookAt
             throw new System.NotImplementedException();
+        }
+
+        private void OnCollisionEnter(Collision other)
+        {
+            if (!this.GetModelManager().GetAnimator().GetBool("IsRush"))
+            {
+                return;
+            }
+
+            if (other.transform.tag == "Player")
+            {
+                other.transform.GetComponent<Player>().SetMoveState(false);
+                other.transform.parent = this.transform;
+            }
         }
 
         #endregion

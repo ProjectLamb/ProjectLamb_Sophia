@@ -10,7 +10,7 @@ public class StageEnterSender : MonoBehaviour
     private void OnEnable() {
         GameManager.Instance.GlobalEvent.OnStageClear.Add(
             new UnityAction<Stage>((currentStage) => {
-                if(currentStage.GetComponent<Stage>().Type == "shop")
+                if(currentStage.GetComponent<Stage>().Type == Stage.STAGE_TYPE.SHOP)
                     _shopEnterSender.SendCommand();
             })
         );

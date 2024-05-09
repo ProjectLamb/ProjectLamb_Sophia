@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using UnityEditor;
 
 
 public class GameManager : MonoBehaviour
@@ -23,10 +22,10 @@ public class GameManager : MonoBehaviour
             return _instance;
         }
     }
-
+    public DonDestroyObjectReferer DonDestroyObjectReferer;
     public GlobalEvent GlobalEvent;
     public Sophia.GlobalEvent                  NewFeatureGlobalEvent;
-    public GlobalAudioManager                  GlobalAudioManager;
+    // public GlobalAudioManager                  GlobalAudioManager;
     //public GlobalCarrierManger                 GlobalCarrierManager;
     public GlobalSceneLoader                   GlobalSceneLoader;
     public Sophia.GlobalTimeUpdator            GlobalTimeUpdator;
@@ -53,6 +52,6 @@ public class GameManager : MonoBehaviour
 
     public void InitializeComponents(){
         if(GlobalEvent == null) GlobalEvent = GetComponentInChildren<GlobalEvent>();
-        if(GlobalAudioManager == null) GlobalAudioManager = GetComponentInChildren<GlobalAudioManager>();
+        // if(GlobalAudioManager == null) GlobalAudioManager = GetComponentInChildren<GlobalAudioManager>();
     }
 }
