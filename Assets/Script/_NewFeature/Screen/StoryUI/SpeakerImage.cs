@@ -36,7 +36,7 @@ public class SpeakerImage : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        speakerImage.sprite = decuss_Default;
+        speakerImage.sprite = decuss_Panic;
         speaker = "Decuss";
     }
 
