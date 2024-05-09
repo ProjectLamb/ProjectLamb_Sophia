@@ -129,6 +129,8 @@ namespace Sophia.Instantiates
         [SerializeField] private Collider _carrierCollider = null;
         [SerializeField] private Rigidbody _carrierRigidBody = null;
         [SerializeField] private FMODAudioSource _audioSource;
+        [SerializeField] private bool _useColliderDelay = false;
+        [SerializeField] private float _colliderActivateDelay = 0f;
 
         #region Projectile Visual
 
@@ -440,6 +442,8 @@ namespace Sophia.Instantiates
             }
         }
 
+        public void SetColliderActivate() => _carrierCollider.enabled = true;
+
         private void ResetSettings()
         {
             if (IsActivated != false) { throw new System.Exception("아직 사용중임 리셋 불가능"); }
@@ -545,6 +549,10 @@ namespace Sophia.Instantiates
             gameObject.SetActive(true);
             OnActivated?.Invoke();
             IsActivated = true;
+            if(_useColliderDelay == true) {
+                _carrierCollider.enabled = false;
+                Invoke("SetColliderActivate", _colliderActivateDelay);
+            }
             if (_audioSource != null) _audioSource.Play();
             if (UseAnimator)
                 StartCoroutine(WaitForDurateTime(CurrentDurateTime));

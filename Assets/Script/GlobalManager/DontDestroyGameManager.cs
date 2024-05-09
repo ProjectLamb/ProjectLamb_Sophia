@@ -27,6 +27,7 @@ public class DontDestroyGameManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+    
     [SerializeField] private GameObject _audioSetterScreen;
     public GameObject AudioSetterScreenObject => _audioSetterScreen;
 

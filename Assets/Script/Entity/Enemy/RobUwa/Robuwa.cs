@@ -18,7 +18,7 @@ namespace Sophia.Entitys
 {
     public enum E_ROBUWA_AUDIO_INDEX
     {
-        Kaooo, AttackOne, AttackBoth, Hit, MoveAttackMode
+        Kaooo, AttackOne, AttackBoth, Hit, MoveAttackMode, Death, Reset
     }
     public class Robuwa : Enemy, IMovable
     {
@@ -116,6 +116,8 @@ namespace Sophia.Entitys
         {
             Sophia.Instantiates.VisualFXObject visualFX = VisualFXObjectPool.GetObject(_dieParticleRef).Init();
             GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
+            // Dead 
+            _audioSources[(int)E_ROBUWA_AUDIO_INDEX.Death].Play();
 
             for (int i = 0; i < 4; i++)
             {
@@ -216,12 +218,29 @@ namespace Sophia.Entitys
         #region Attack
 
         private Stat power;
+        [SerializeField] protected Instantiates.ProjectileObject[]         _attckProjectileDirection;
 
         public void UseProjectile_NormalAttack()
         {
             Sophia.Instantiates.ProjectileObject useProjectile = ProjectilePool.GetObject(_attckProjectiles[(int)ANIME_STATE.ATTACK]).Init(this);
 
             _projectileBucketManager.InstantablePositioning((int)ANIME_STATE.ATTACK, useProjectile)
+                                    .SetProjectilePower(GetStat(E_NUMERIC_STAT_TYPE.Power))
+                                    .Activate();
+        }
+        public void UseProjectile_LeftAttack()
+        {
+            Sophia.Instantiates.ProjectileObject useProjectile = ProjectilePool.GetObject(_attckProjectileDirection[0]).Init(this);
+
+            _projectileBucketManager.InstantablePositioning(1, useProjectile)
+                                    .SetProjectilePower(GetStat(E_NUMERIC_STAT_TYPE.Power))
+                                    .Activate();
+        }
+        public void UseProjectile_RightAttack()
+        {
+            Sophia.Instantiates.ProjectileObject useProjectile = ProjectilePool.GetObject(_attckProjectileDirection[1]).Init(this);
+
+            _projectileBucketManager.InstantablePositioning(1, useProjectile)
                                     .SetProjectilePower(GetStat(E_NUMERIC_STAT_TYPE.Power))
                                     .Activate();
         }

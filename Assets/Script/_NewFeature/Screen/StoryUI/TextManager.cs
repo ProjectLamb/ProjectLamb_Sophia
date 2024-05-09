@@ -27,6 +27,7 @@ public class TextManager : MonoBehaviour
     bool IsOnce = false;
 
     [Header("PlayerUI")]
+
     [SerializeField] public GameObject _playerHealthBar;
     [SerializeField] public GameObject _playerBarrierBar;
     [SerializeField] public GameObject _playerStaminaBar;
@@ -49,6 +50,7 @@ public class TextManager : MonoBehaviour
             return _instance;
         }
     }
+
     private void Start()
     {
         if (!IsSkipStory)
@@ -64,9 +66,14 @@ public class TextManager : MonoBehaviour
         }
     }
 
+    // State Pattern으로 변경하기.
+    // 코루틴으로 바꾸는것이 좋아 보인다.
+
     private void Update()
     {
         if(IsSkipStory && !StoryManager.Instance.IsTutorial) {return;}
+
+        // 인풋 키
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
         {
 
@@ -99,6 +106,8 @@ public class TextManager : MonoBehaviour
                 currentPage++;
             }
         }
+
+        // 
         if (GameManager.Instance.GlobalEvent.IsGamePaused)
         {
             talkPanel.SetActive(false);
@@ -127,6 +136,7 @@ public class TextManager : MonoBehaviour
         _playerSkillCool.SetActive(true);
         _minimap.SetActive(true);
     }
+
     private void TextBarOn()
     {
         talkPanel.SetActive(true);

@@ -112,6 +112,11 @@ namespace Sophia.Entitys
             base.Start();
             Life.SetDependUI(InGameScreenUI.Instance._playerHealthBarUI);
             Life.OnDamaged += InGameScreenUI.Instance._hitCanvasShadeScript.Invoke;
+            
+            // Hit Audio 
+            
+            Life.OnHit += HitSource.Play;
+            Life.OnEnterDie += DeathSource.Play;
 
             InGameScreenUI.Instance._playerWealthBarUI.SetPlayer(this);
 
@@ -129,6 +134,7 @@ namespace Sophia.Entitys
 
         #region Life Accessible
 
+        public FMODAudioSource HitSource;
         public FMODAudioSource DeathSource;
         public override LifeComposite GetLifeComposite() => this.Life;
 
@@ -150,8 +156,6 @@ namespace Sophia.Entitys
             GetMovementComposite().SetMovableState(false);
             entityCollider.enabled = false;
             _modelManager.GetAnimator().SetTrigger("Die");
-
-            DeathSource.Play();
 
             InGameScreenUI.Instance._fadeUI.AddBindingAction(() => { 
                 DontDestroyGameManager.Instance.AudioManager.audioStateSender._stopSender.SendCommand();

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DonDestroyObjectReferer : MonoBehaviour
+public class DontDestroyObjectReferer : MonoBehaviour
 {
     [SerializeField] private DontDestroyGameManager _dontDestroyGameManager;
     public DontDestroyGameManager DontDestroyGameManager {
