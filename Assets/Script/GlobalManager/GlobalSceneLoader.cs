@@ -39,6 +39,7 @@ public class GlobalSceneLoader : MonoBehaviour {
             }
             else
             {
+                DontDestroyGameManager.Instance.SaveLoadManager.SaveAsJson();
                 _progressBar.value = Mathf.Lerp(_progressBar.value, 1f, timer);
                 if (_progressBar.value == 1.0f)
                 {

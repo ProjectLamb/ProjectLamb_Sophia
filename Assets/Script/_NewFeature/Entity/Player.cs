@@ -159,7 +159,7 @@ namespace Sophia.Entitys
 
             InGameScreenUI.Instance._fadeUI.AddBindingAction(() => { 
                 DontDestroyGameManager.Instance.AudioManager.audioStateSender._stopSender.SendCommand();
-                SceneManager.LoadScene(0);
+                SceneManager.LoadScene(1);
             });
             InGameScreenUI.Instance._fadeUI.FadeOut(0.02f, 1.0f);
             //OnDieEvent.Invoke();

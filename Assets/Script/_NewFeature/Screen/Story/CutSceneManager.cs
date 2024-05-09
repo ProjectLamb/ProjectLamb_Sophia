@@ -5,7 +5,15 @@ using UnityEngine.Events;
 namespace Sophia.CutScene {
     // Enter → Running         → Exit
     //         WaitingInput    ↗
-    public class CutSceneQueue : MonoBehaviour
+    public class CutSceneQueue {
+        public string CutSceneName {get; set;}
+        private Queue<ICutScene> CutScenes;
+        public CutSceneQueue(string cutSceneName) {
+            CutSceneName = cutSceneName;
+        }
+    }
+
+    public class CutSceneManager : MonoBehaviour
     {
         private Dictionary<string, Queue<ICutScene>> cutScenes;
         public Queue<ICutScene> CurrentCutScene;
@@ -39,6 +47,5 @@ namespace Sophia.CutScene {
         public void Enter() => CurrentCutScene.Peek().Enter();
         public void Run() => CurrentCutScene.Peek().Run();
         public void NextScene() => CurrentCutScene.Dequeue().Enter();
-
     }
 }
