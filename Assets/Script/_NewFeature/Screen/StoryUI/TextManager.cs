@@ -17,8 +17,9 @@ public class TextManager : MonoBehaviour
     public TextMeshProUGUI talkText;
     public TextMeshProUGUI nameText;
     public Animator storyImageAnimator;
-    public string[] dialogStrings;
+    string[] dialogStrings;
     TalkData[] talkDatas;
+    public string eventName;
     private int currentPage = 0; // 대화문 개수 변수
     public bool IsStory = true;
     public bool IsSkipStory;
@@ -55,12 +56,17 @@ public class TextManager : MonoBehaviour
             InGameScreenUI.Instance._fadeUI.FadeIn(0.02f, 2f);
             IsStory = true;
             TextBarOn();
-            talkDatas = this.GetComponent<Dialogue>().GetObjectDialogue();
-            TypingManager._instance.Typing(talkDatas[0].contexts, talkText);
-            nameText.text = talkDatas[0].name;
-            currentPage++;
-            storyImageAnimator.SetTrigger("DoChange");
+            SetDialogue();
         }
+    }
+    private void SetDialogue()
+    {
+        eventName = "Prologue";
+        talkDatas = this.GetComponent<Dialogue>().GetObjectDialogue();
+        TypingManager._instance.Typing(talkDatas[0].contexts, talkText);
+        nameText.text = talkDatas[0].name;
+        currentPage++;
+        storyImageAnimator.SetTrigger("DoChange");
     }
 
     private void Update()
@@ -106,6 +112,7 @@ public class TextManager : MonoBehaviour
         if (!StoryManager.Instance.IsTutorial) // 튜토리얼이 끝났다면
         {
             TextBarOff();
+            currentPage = 0;
         }
         else if (IsStory && !GameManager.Instance.GlobalEvent.IsGamePaused) // 튜토리얼이 끝나지 않은 상태에서 게임 일시정지
         {

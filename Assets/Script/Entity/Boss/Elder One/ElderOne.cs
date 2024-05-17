@@ -249,7 +249,8 @@ namespace Sophia.Entitys
             GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
             _audioSource[(int)E_ELDERONE_AUDIO_INDEX.Death].Play();
             GameManager.Instance.DonDestroyObjectReferer.DontDestroyGameManager.AudioManager.audioStateSender._bossPhaseSender[2].SendCommand();
-
+            StoryManager.Instance.IsBossClear = true;
+            
             CurrentInstantiatedStage.mobGenerator.RemoveMob(this.gameObject);
         }
         public override bool Die()
