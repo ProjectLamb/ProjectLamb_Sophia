@@ -97,7 +97,6 @@ public class TextManager : MonoBehaviour
                 {
                     storyImageAnimator.SetTrigger("DoChange");
                 }
-
                 speakerImage.ChangeSprite(talkDatas[currentPage].name, talkDatas[currentPage].emotionState);
                 nameText.text = talkDatas[currentPage].name;
                 TypingManager._instance.Typing(talkDatas[currentPage].contexts, talkText);
