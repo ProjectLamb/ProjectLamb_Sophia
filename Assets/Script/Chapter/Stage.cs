@@ -243,7 +243,7 @@ public class Stage : MonoBehaviour
             itemObjectBucket.InstantablePositioning(itemObject = Instantiate(itemObject).Init()).Activate();
             itemObject.transform.parent = itemObjectBucket.transform;
 
-            Sophia.UserInterface.InGameScreenUI.Instance._fadeUI.AddBindingAction(() => UnityEngine.SceneManagement.SceneManager.LoadScene("03_Demo_Clear"));
+            Sophia.UserInterface.InGameScreenUI.Instance._fadeUI.AddBindingAction(() => UnityEngine.SceneManagement.SceneManager.LoadScene("05_Demo_Clear"));
             Sophia.UserInterface.InGameScreenUI.Instance._fadeUI.FadeOut(0.2f, 3f);
         }
         else if (Type == STAGE_TYPE.HIDDEN)

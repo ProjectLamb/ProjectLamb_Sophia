@@ -75,9 +75,10 @@ public class VideoController : MonoBehaviour
                     commandStarter.SendCommand();
                     bossStateStarter.SendCommand();
                     break;
-                case E_VIDEO_NAME.Opening:
+                case E_VIDEO_NAME.Opening :
                     StoryManager.Instance.IsTutorial = false;
                     commandStarter.SendCommand();
+                    DontDestroyGameManager.Instance.SaveLoadManager.Data.IsTutorial = false;
                     break;
             }
 
