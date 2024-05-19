@@ -68,7 +68,6 @@ namespace Sophia.Entitys
             Rush,
             Death,
         }
-
         StateMachine<States> fsm;
         // Start is called before the first frame update
         protected override void Awake()
@@ -626,8 +625,8 @@ namespace Sophia.Entitys
         void Death_Update()
         {
             if(!TextManager.Instance.IsStory && !StoryManager.Instance.IsBossClear){
-                Sophia.UserInterface.InGameScreenUI.Instance._fadeUI.AddBindingAction(() => UnityEngine.SceneManagement.SceneManager.LoadScene("03_Demo_Clear"));
                 Sophia.UserInterface.InGameScreenUI.Instance._fadeUI.FadeOut(0.05f, 2f);
+                Sophia.UserInterface.InGameScreenUI.Instance._fadeUI.AddBindingAction(() => UnityEngine.SceneManagement.SceneManager.LoadScene("03_Demo_Clear"));
                 StoryManager.Instance.IsBossClear = true;
             }
             //check animation end
