@@ -28,6 +28,6 @@ public class Dialogue : MonoBehaviour
 
     public TalkData[] GetObjectDialogue()
     {
-        return DialogueParse.GetDialogue(TextManager.Instance.eventName);
+        return DialogueParse.GetDialogue(TextManager.Instance.storyEventName);
     }
 }
