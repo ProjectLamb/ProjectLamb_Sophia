@@ -132,9 +132,10 @@ namespace Sophia.Entitys
                 {
                     float dist = Vector3.Distance(transform.position, _objectiveEntity.transform.position);
 
-                    if (dist <= AttackRange)
-                        fsm.ChangeState(States.Attack);
-                    else if (dist <= RushRange)
+                    // if (dist <= AttackRange) //근접 공격
+                    //     fsm.ChangeState(States.Attack);
+                    // else 
+                    if (dist <= RushRange)
                         fsm.ChangeState(States.Tap);
                     else
                         fsm.ChangeState(States.Chase);

@@ -130,7 +130,9 @@ namespace Sophia.Instantiates
         [SerializeField] private Rigidbody _carrierRigidBody = null;
         [SerializeField] private FMODAudioSource _audioSource;
         [SerializeField] private bool _useColliderDelay = false;
+        [SerializeField] private bool _useColliderDeactivateDelay = false;
         [SerializeField] private float _colliderActivateDelay = 0f;
+        [SerializeField] private float _colliderDeactivateDelay = 0f;
 
         #region Projectile Visual
 
@@ -443,6 +445,7 @@ namespace Sophia.Instantiates
         }
 
         public void SetColliderActivate() => _carrierCollider.enabled = true;
+        public void SetColliderDeactivate() => _carrierCollider.enabled = false;
 
         private void ResetSettings()
         {
@@ -552,6 +555,11 @@ namespace Sophia.Instantiates
             if(_useColliderDelay == true) {
                 _carrierCollider.enabled = false;
                 Invoke("SetColliderActivate", _colliderActivateDelay);
+            }
+            if(_useColliderDeactivateDelay == true)
+            {
+                _carrierCollider.enabled = true;
+                Invoke("SetColliderDeactivate", _colliderDeactivateDelay);
             }
             if (_audioSource != null) _audioSource.Play();
             if (UseAnimator)

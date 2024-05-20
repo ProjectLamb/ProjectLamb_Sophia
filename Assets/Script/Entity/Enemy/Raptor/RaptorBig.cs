@@ -63,6 +63,7 @@ namespace Sophia.Entitys
 
         void DoHowl()
         {
+            System.Random random = new System.Random();
             int currentRaptorCount = 0;
             GetModelManager().GetAnimator().SetTrigger("DoHowl");
             _audioSources[(int)E_RAPTOR_AUDIO_INDEX.Howling].Play();
@@ -76,7 +77,7 @@ namespace Sophia.Entitys
             }
 
             if (currentRaptorCount == 0)
-                InstantiateRaptorSmall(spawnRaptorAmount);
+                InstantiateRaptorSmall(random.Next(spawnRaptorAmount - 1, spawnRaptorAmount + 2));
             else
             {
                 DoBuff();

@@ -112,7 +112,12 @@ public class Stage : MonoBehaviour
         //     }
         // }
 
-        stageGenerator.InitStageGenerator(stageSizeRandom);
+        if(Type == STAGE_TYPE.BOSS)
+        {
+            stageGenerator.InitStageGenerator(2);
+        }
+        else
+            stageGenerator.InitStageGenerator(stageSizeRandom);
 
         // // 스테이지 타일 랜덤화
         // if (Type == "normal")
