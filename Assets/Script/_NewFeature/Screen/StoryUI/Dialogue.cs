@@ -23,13 +23,11 @@ public class ShowTalkData
 
 public class Dialogue : MonoBehaviour
 {
-    // 대화 이벤트 이름
-    [SerializeField] string eventName;
     // 위에서 선언한 TalkData 배열 
     [SerializeField] TalkData[] talkDatas;
 
     public TalkData[] GetObjectDialogue()
     {
-        return DialogueParse.GetDialogue(eventName);
+        return DialogueParse.GetDialogue(TextManager.Instance.storyEventName);
     }
 }

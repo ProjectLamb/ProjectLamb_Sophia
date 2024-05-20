@@ -7,7 +7,7 @@ public class DialogueParse : MonoBehaviour
 
 public static Dictionary<string, TalkData[]> DialogueDictionary = 
 				new Dictionary<string, TalkData[]>();
-[SerializeField] private TextAsset csvFile = null;
+[SerializeField] public TextAsset csvFile = null;
 [SerializeField] List<ShowTalkData> ShowTalkDataList = 
 					    new List<ShowTalkData>();
                         

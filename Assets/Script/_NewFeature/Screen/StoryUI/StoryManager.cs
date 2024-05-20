@@ -21,6 +21,8 @@ public class StoryManager : MonoBehaviour
     }
 
     public bool IsTutorial = true;
+    public bool IsBossClear = false;
+    
     void Awake()
     {
         if (_instance == null) {

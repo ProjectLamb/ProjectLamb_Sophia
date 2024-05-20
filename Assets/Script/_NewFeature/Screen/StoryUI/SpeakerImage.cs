@@ -37,7 +37,7 @@ public class SpeakerImage : MonoBehaviour
     void Start()
     {
         speakerImage.sprite = decuss_Panic;
-        speaker = "Decuss";
+        speaker = "데커스";
     }
 
     // Update is called once per frame

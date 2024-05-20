@@ -70,7 +70,6 @@ namespace Sophia.Entitys
             Rush,
             Death,
         }
-
         StateMachine<States> fsm;
         // Start is called before the first frame update
         protected override void Awake()
@@ -252,12 +251,11 @@ namespace Sophia.Entitys
         }
 
         void OnElderOneEnterDie()
-        {
+        {         
             Sophia.Instantiates.VisualFXObject visualFX = VisualFXObjectPool.GetObject(_dieParticleRef).Init();
             GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
             _audioSource[(int)E_ELDERONE_AUDIO_INDEX.Death].Play();
             GameManager.Instance.DonDestroyObjectReferer.DontDestroyGameManager.AudioManager.audioStateSender._bossPhaseSender[2].SendCommand();
-
             CurrentInstantiatedStage.mobGenerator.RemoveMob(this.gameObject);
         }
         public override bool Die()
@@ -654,12 +652,20 @@ namespace Sophia.Entitys
         /** Death State */
         void Death_Enter()
         {
+            TextManager.Instance.IsStory = true;
+            TextManager.Instance.storyEventName = "AfterBoss";
+            TextManager.Instance.SetDialogue();
             Debug.Log("Death_Enter");
             Die();
         }
 
         void Death_Update()
         {
+            if(!TextManager.Instance.IsStory && !StoryManager.Instance.IsBossClear){
+                Sophia.UserInterface.InGameScreenUI.Instance._fadeUI.FadeOut(0.05f, 2f);
+                Sophia.UserInterface.InGameScreenUI.Instance._fadeUI.AddBindingAction(() => UnityEngine.SceneManagement.SceneManager.LoadScene("03_Demo_Clear"));
+                StoryManager.Instance.IsBossClear = true;
+            }
             //check animation end
         }
 
