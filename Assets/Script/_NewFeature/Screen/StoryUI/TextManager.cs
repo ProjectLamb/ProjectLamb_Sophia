@@ -17,8 +17,9 @@ public class TextManager : MonoBehaviour
     public TextMeshProUGUI talkText;
     public TextMeshProUGUI nameText;
     public Animator storyImageAnimator;
-    public string[] dialogStrings;
+    string[] dialogStrings;
     TalkData[] talkDatas;
+    public string storyEventName;
     private int currentPage = 0; // 대화문 개수 변수
     public bool IsStory = true;
     public bool IsSkipStory;
@@ -58,12 +59,18 @@ public class TextManager : MonoBehaviour
             InGameScreenUI.Instance._fadeUI.FadeIn(0.02f, 2f);
             IsStory = true;
             TextBarOn();
-            talkDatas = this.GetComponent<Dialogue>().GetObjectDialogue();
-            TypingManager._instance.Typing(talkDatas[0].contexts, talkText);
-            nameText.text = talkDatas[0].name;
-            currentPage++;
-            storyImageAnimator.SetTrigger("DoChange");
+            storyEventName = "Prologue";
+            SetDialogue();
         }
+    }
+    public void SetDialogue()
+    {
+        talkDatas = this.GetComponent<Dialogue>().GetObjectDialogue();
+        TypingManager._instance.Typing(talkDatas[0].contexts, talkText);
+        nameText.text = talkDatas[0].name;
+        speakerImage.ChangeSprite(talkDatas[0].name, talkDatas[0].emotionState);
+        currentPage++;
+        storyImageAnimator.SetTrigger("DoChange");
     }
 
     // State Pattern으로 변경하기.
@@ -91,6 +98,7 @@ public class TextManager : MonoBehaviour
                         IsOnce = true;
                         DontDestroyGameManager.Instance.SaveLoadManager.Data.CutSceneSaveData.IsSkipStory = true;
                     }
+                    IsStory = false;
                 }
 
                 if (nameText.text != talkDatas[currentPage].name) // 스토리 진행 중 화자 변경 시 이미지 변경
@@ -112,13 +120,14 @@ public class TextManager : MonoBehaviour
         else if (!GameManager.Instance.GlobalEvent.IsGamePaused && IsStory)
             talkPanel.SetActive(true);
 
-        if (!StoryManager.Instance.IsTutorial) // 튜토리얼이 끝났다면
+        if (!StoryManager.Instance.IsTutorial && !IsStory) // 튜토리얼이 끝났다면
         {
             TextBarOff();
+            currentPage = 0;
         }
-        else if (IsStory && !GameManager.Instance.GlobalEvent.IsGamePaused) // 튜토리얼이 끝나지 않은 상태에서 게임 일시정지
+        else if (IsStory && !GameManager.Instance.GlobalEvent.IsGamePaused)
         {
-            talkPanel.SetActive(true);
+            TextBarOn();
             //_dissolvePanel.SetActive(false);
         }
     }

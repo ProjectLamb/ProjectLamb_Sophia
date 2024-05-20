@@ -47,12 +47,12 @@ namespace Sophia.Entitys
             if (GameManager.Instance.GlobalEvent.IsGamePaused) return;
             //playerRef.AimAssist();
             //playerRef.CheckAttack();
-            if (StoryManager.Instance.IsTutorial) // 스토리대사가 진행중이면 입력 제한
+            if (StoryManager.Instance.IsTutorial || TextManager.Instance.IsStory) // 스토리대사가 진행중이면 입력 제한
             {
                 DisallowInput();
                 return;
             }
-            else if (!StoryManager.Instance.IsTutorial) // 스토리대사가 끝나면 입력 복구
+            else if (!StoryManager.Instance.IsTutorial && !TextManager.Instance.IsStory) // 스토리대사가 끝나면 입력 복구
             {
                 AllowInput();
             }
