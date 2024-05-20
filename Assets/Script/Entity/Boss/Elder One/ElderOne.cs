@@ -8,7 +8,6 @@ using Sophia.Composite;
 using Cysharp.Threading.Tasks;
 using UnityEngine.AI;
 using Sophia.UserInterface;
-using UnityEngine.SceneManagement;
 using FMODPlus;
 
 namespace Sophia.Entitys
@@ -290,11 +289,29 @@ namespace Sophia.Entitys
 
         #region Attack
         private Stat power;
+        [SerializeField] protected Instantiates.ProjectileObject[]         _attckProjectileDirection;
+
         public void UseProjectile_NormalAttack()
         {
             Sophia.Instantiates.ProjectileObject useProjectile = ProjectilePool.GetObject(_attckProjectiles[(int)ANIME_STATE.ATTACK]).Init(this);
 
             _projectileBucketManager.InstantablePositioning((int)ANIME_STATE.ATTACK, useProjectile)
+                                    .SetProjectilePower(GetStat(E_NUMERIC_STAT_TYPE.Power))
+                                    .Activate();
+        }
+        public void UseProjectile_LeftAttack()
+        {
+            Sophia.Instantiates.ProjectileObject useProjectile = ProjectilePool.GetObject(_attckProjectileDirection[0]).Init(this);
+
+            _projectileBucketManager.InstantablePositioning(4, useProjectile)
+                                    .SetProjectilePower(GetStat(E_NUMERIC_STAT_TYPE.Power))
+                                    .Activate();
+        }
+        public void UseProjectile_RightAttack()
+        {
+            Sophia.Instantiates.ProjectileObject useProjectile = ProjectilePool.GetObject(_attckProjectileDirection[1]).Init(this);
+
+            _projectileBucketManager.InstantablePositioning(4, useProjectile)
                                     .SetProjectilePower(GetStat(E_NUMERIC_STAT_TYPE.Power))
                                     .Activate();
         }
@@ -319,7 +336,7 @@ namespace Sophia.Entitys
                 Sophia.Instantiates.ProjectileObject useProjectile = ProjectilePool.GetObject(_attckProjectiles[3]).Init(this);
 
                 _projectileBucketManager.InstantablePositioning((int)ANIME_STATE.JUMP, useProjectile)
-                                        .SetProjectilePower(GetStat(E_NUMERIC_STAT_TYPE.Power) * (5 - i))
+                                        .SetProjectilePower((int)(GetStat(E_NUMERIC_STAT_TYPE.Power) * (1 + 0.1f*i)))
                                         .SetScaleMultiplyByRatio(i + 1)
                                         .Activate();
                 yield return new WaitForSeconds(0.25f);

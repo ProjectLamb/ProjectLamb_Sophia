@@ -47,6 +47,7 @@ namespace Sophia.Instantiates
                 {
                     foreach (var item in positionedItem)
                     {
+                        if(item == null) continue;
                         item.SetTriggerTime(1f).SetTweenSequence(SetSequnce(item)).Activate();
                     }
                 }

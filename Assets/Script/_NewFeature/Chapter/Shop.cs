@@ -93,6 +93,7 @@ namespace Sophia
         {
             System.Random random = new System.Random();
             ItemPool itemPoolRef = ItemPool.Instance;
+            ItemObject res = null;
             int equipmentCount = itemPoolRef._equipmentItems.Count;
             int skillCount = itemPoolRef._skillItems.Count;
             switch (str)
@@ -101,13 +102,17 @@ namespace Sophia
                     {
                         var randIdx = random.Next(0, equipmentCount);
                         Debug.Log(randIdx);
-                        return Instantiate(itemPoolRef.GetRandomEquipment(E_EQUIPMENT_TYPE.Shop)).Init();
+                        res = itemPoolRef.GetRandomShopEquipment();
+                        if(res == null) return null;
+                        return Instantiate(res).Init();
                     }
                 case "Skill":
                     {
                         var randIdx = random.Next(0, skillCount);
                         Debug.Log(randIdx);
-                        return Instantiate(itemPoolRef._skillItems[randIdx]).Init();
+                        res = itemPoolRef.GetRandomSkill();
+                        if(res == null) return null;
+                        return Instantiate(res).Init();
                     }
                 case "Heart":
                     {
@@ -120,9 +125,14 @@ namespace Sophia
         {
             ItemObject temp = null;
             ItemObjectBucket itemObjectBucket = null;
-            if (id == 0 && equipmentCount < 3) //equipment
+            if (id == 0) //equipment
             {
                 temp = GetRandomItem("Equipment");
+                itemObjectBucket = equipmentPivot.GetComponent<ItemObjectBucket>();
+                if(temp == null) {
+                    priceText[0].text = "Empty";
+                    return;
+                }
                 temp.gameObject.AddComponent<PurchaseComponent>();
                 temp.GetComponent<PurchaseComponent>().price = equipmentPrice + equipmentCount * 5;
                 priceText[0].text = (equipmentPrice + equipmentCount * 5).ToString();
@@ -135,25 +145,28 @@ namespace Sophia
                     //GameManger.Instance.GlobalEvent.UI.PurchasedDeny();
                 };
 
-                itemObjectBucket = equipmentPivot.GetComponent<ItemObjectBucket>();
                 ItemArray[0] = temp;
             }
             else if (id == 1)   //skill
             {
                 temp = GetRandomItem("Skill");
+                itemObjectBucket = skillPivot.GetComponent<ItemObjectBucket>();
+                if(temp == null) {
+                    priceText[1].text = "Empty";
+                    return;
+                }
                 temp.gameObject.AddComponent<PurchaseComponent>();
-                temp.GetComponent<PurchaseComponent>().price = skillPrice;
-                priceText[1].text = skillPrice.ToString();
+                temp.GetComponent<PurchaseComponent>().price = skillPrice + skillCount * 5;
+                priceText[1].text = (skillPrice + skillCount * 5).ToString();
                 priceText[1].text += "G";
 
                 temp.GetComponent<PurchaseComponent>().OnPurchasedEvent += () => { this.SkillCount++; };
-                //temp.GetComponent<PurchaseComponent>().OnPurchasedEvent += () => {this.InstantiateOnDelayItemByFlag(1, 1);};
+                temp.GetComponent<PurchaseComponent>().OnPurchasedEvent += () => {this.InstantiateOnDelayItemByFlag(1, 1);};
                 temp.GetComponent<PurchaseComponent>().OnPurchasedDenyEvent += () =>
                 {
                     //GameManger.Instance.GlobalEvent.UI.PurchasedDeny();
                 };
 
-                itemObjectBucket = skillPivot.GetComponent<ItemObjectBucket>();
                 ItemArray[1] = temp;
             }
             else if (id == 2)   //heart

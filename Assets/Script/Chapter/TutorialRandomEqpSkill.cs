@@ -30,7 +30,7 @@ public class TutorialRandomEqpSkill : MonoBehaviour
 
         //Skill
         System.Random random = new System.Random();
-        itemObject = ItemPool.Instance._skillItems[random.Next(0, ItemPool.Instance._skillItems.Count)];
+        itemObject = ItemPool.Instance.GetRandomSkill();
         itemObjectBucket[1].InstantablePositioning(itemObject = Instantiate(itemObject).Init()).Activate();
         itemObject.transform.parent = transform.GetChild(1);
     }

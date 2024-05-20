@@ -88,18 +88,13 @@ public class GlobalAudioManager : MonoBehaviour
             if(audioStateSender != null)
                 audioStateSender.InitByStage();
         }
-        else 
-            Debug.LogError("_commandSenderLink를 못찾음");
     }
 
     private void Start() {
         _commandSenderLink = FindFirstObjectByType<CommandSenderLink>();
         if(_commandSenderLink != null){
             _commandSenderLink.Init();
-        }
-        else 
-            Debug.LogError("_commandSenderLink를 못찾음");
-           
+        }  
     }
 
     private void SetMasterBySliderVolume(float value) {

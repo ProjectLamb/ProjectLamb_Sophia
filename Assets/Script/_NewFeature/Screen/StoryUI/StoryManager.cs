@@ -33,4 +33,8 @@ public class StoryManager : MonoBehaviour
         }
         DontDestroyOnLoad(gameObject);
     }
+
+    void Start() {
+        IsTutorial = DontDestroyGameManager.Instance.SaveLoadManager.Data.IsTutorial; // IsTutorial
+    }
 }

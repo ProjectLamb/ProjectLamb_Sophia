@@ -21,4 +21,8 @@ public class AnimEventInvoker : MonoBehaviour
     //public void JumpEnd(){animCallback[(int)ANIME_STATE.Jump]?.Invoke();}
     public void DieStart(){animCallback[(int)ANIME_STATE.DIE].Invoke();}
     public void FootStep(){animCallback[(int)ANIME_STATE.FootStep].Invoke();}
+
+    [SerializedDictionary("String Key", "UnityEvent")]
+    public SerializedDictionary<string, UnityEvent> animCallbackDictionarys;
+    public void InvokeByStringKey(string key) => animCallbackDictionarys[key].Invoke();
 }

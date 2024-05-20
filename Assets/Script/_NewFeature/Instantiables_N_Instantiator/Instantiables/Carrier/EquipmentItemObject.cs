@@ -23,7 +23,6 @@ namespace Sophia.Instantiates
             Invoke("StopVFX", 1f);
         }
 
-
         protected override void OnTriggerLogic(Collider entity)
         {
             if (!IsReadyToTrigger) return;
