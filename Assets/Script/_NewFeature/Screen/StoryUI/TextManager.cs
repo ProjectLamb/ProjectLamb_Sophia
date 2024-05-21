@@ -57,6 +57,7 @@ public class TextManager : MonoBehaviour
         if (!(IsSkipStory && !StoryManager.Instance.IsTutorial))
         {
             InGameScreenUI.Instance._fadeUI.FadeIn(0.02f, 2f);
+            InGameScreenUI.Instance._storyFadePanel.fadeStoryBarOn();
             IsStory = true;
             TextBarOn();
             storyEventName = "Prologue";
@@ -89,7 +90,6 @@ public class TextManager : MonoBehaviour
                     currentPage = talkDatas.Length;
                     if (!IsOnce)
                     {
-                        talkPanel.SetActive(false);
                         //TextBarOff();
                         //1챕 튜토리얼 한정
                         InGameScreenUI.Instance._fadeUI.FadeOut(0.02f, 1.5f);
@@ -117,12 +117,11 @@ public class TextManager : MonoBehaviour
         {
             talkPanel.SetActive(false);
         }
-        else if (!GameManager.Instance.GlobalEvent.IsGamePaused && IsStory)
-            talkPanel.SetActive(true);
 
-        if (!StoryManager.Instance.IsTutorial && !IsStory) // 튜토리얼이 끝났다면
+        else if (!StoryManager.Instance.IsTutorial && !IsStory) // 튜토리얼이 끝났다면
         {
             TextBarOff();
+            nameText.text = "";
             currentPage = 0;
         }
         else if (IsStory && !GameManager.Instance.GlobalEvent.IsGamePaused)
