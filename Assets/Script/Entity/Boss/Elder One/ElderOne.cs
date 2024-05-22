@@ -652,16 +652,15 @@ namespace Sophia.Entitys
         /** Death State */
         void Death_Enter()
         {
-            TextManager.Instance.IsStory = true;
-            TextManager.Instance.storyEventName = "AfterBoss";
-            TextManager.Instance.SetDialogue();
+            Sophia.UserInterface.InGameScreenUI.Instance._storyFadePanel.SetTransparent();
+            Sophia.UserInterface.InGameScreenUI.Instance._storyFadePanel.WaitAfterBoss();
             Debug.Log("Death_Enter");
             Die();
         }
 
         void Death_Update()
         {
-            if(!TextManager.Instance.IsStory && !StoryManager.Instance.IsBossClear){
+            if(!TextManager.Instance.IsStory && !StoryManager.Instance.IsBossClear && Sophia.UserInterface.InGameScreenUI.Instance._storyFadePanel.IsWaitOver){
                 Sophia.UserInterface.InGameScreenUI.Instance._fadeUI.FadeOut(0.05f, 2f);
                 Sophia.UserInterface.InGameScreenUI.Instance._fadeUI.AddBindingAction(() => UnityEngine.SceneManagement.SceneManager.LoadScene("03_Demo_Clear"));
                 StoryManager.Instance.IsBossClear = true;
