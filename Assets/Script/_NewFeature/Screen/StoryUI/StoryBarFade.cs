@@ -80,6 +80,7 @@ public class StoryBar : MonoBehaviour
         TextManager.Instance.storyEventName = "AfterBoss";
         TextManager.Instance.IsStory = true;
         TextManager.Instance.SetDialogue();
+        TextManager.Instance.talkPanel.SetActive(true);
         fadeStoryBarOn();
         IsWaitOver = true;
     }

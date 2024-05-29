@@ -112,7 +112,12 @@ public class Stage : MonoBehaviour
         //     }
         // }
 
-        stageGenerator.InitStageGenerator(stageSizeRandom);
+        if(Type == STAGE_TYPE.BOSS)
+        {
+            stageGenerator.InitStageGenerator(2);
+        }
+        else
+            stageGenerator.InitStageGenerator(stageSizeRandom);
 
         // // 스테이지 타일 랜덤화
         // if (Type == "normal")
@@ -136,23 +141,25 @@ public class Stage : MonoBehaviour
             float y = 0;
             float z = 0;
             GameObject instance;
-            if (stageGenerator.PortalE)
-            {
-                y = 180f;
-            }
-            else if (stageGenerator.PortalW)
-            {
+            // if (stageGenerator.PortalE)
+            // {
+            //     y = 180f;
+            // }
+            // else if (stageGenerator.PortalW)
+            // {
 
-            }
-            else if (stageGenerator.PortalN)
-            {
-                y = 90f;
-            }
-            else if (stageGenerator.PortalS)
-            {
-                y = 270f;
-            }
-            instance = Instantiate(stageGenerator.shop, transform.position, Quaternion.Euler(x, y, z));
+            // }
+            // else if (stageGenerator.PortalN)
+            // {
+            //     y = 90f;
+            // }
+            // else if (stageGenerator.PortalS)
+            // {
+            //     y = 270f;
+            // }
+            Transform middleTile = stageGenerator.tileGameObjectArray[8, 8].transform;
+            Vector3 middlePoint = new Vector3(middleTile.position.x, transform.position.y, middleTile.position.z);
+            instance = Instantiate(stageGenerator.shop, middlePoint, Quaternion.Euler(x, 45, z));
             instance.transform.parent = transform;
             StageClear();
         }
@@ -242,9 +249,6 @@ public class Stage : MonoBehaviour
 
             itemObjectBucket.InstantablePositioning(itemObject = Instantiate(itemObject).Init()).Activate();
             itemObject.transform.parent = itemObjectBucket.transform;
-
-            Sophia.UserInterface.InGameScreenUI.Instance._fadeUI.AddBindingAction(() => UnityEngine.SceneManagement.SceneManager.LoadScene("05_Demo_Clear"));
-            Sophia.UserInterface.InGameScreenUI.Instance._fadeUI.FadeOut(0.2f, 3f);
         }
         else if (Type == STAGE_TYPE.HIDDEN)
         {
