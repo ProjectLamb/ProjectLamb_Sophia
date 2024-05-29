@@ -29,6 +29,7 @@ namespace Sophia.Entitys
 
         private int turnSpeed = 2;
         private bool isPhaseChanged = false;
+        private bool dontTurn = false;
         private float currentAttackTimer;
 
         [SerializeField] private bool IsInvincible;
@@ -56,6 +57,10 @@ namespace Sophia.Entitys
         private bool isWalkReady = false;
         private bool isWalkReturn = false;
         private bool isSkillOnce = false;
+        #endregion
+
+        #region VFX
+        [SerializeField] GameObject barrierVFX;
         #endregion
 
         // Start is called before the first frame update
@@ -246,12 +251,14 @@ namespace Sophia.Entitys
                 else    //2Phase
                 {
                     fsm.ChangeState(States.SkillPhase);
+                    attackRange = 30;
+                    dontTurn = true;
                 }
             }
         }
 
         void OnElderOneEnterDie()
-        {         
+        {
             Sophia.Instantiates.VisualFXObject visualFX = VisualFXObjectPool.GetObject(_dieParticleRef).Init();
             GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
             _audioSource[(int)E_ELDERONE_AUDIO_INDEX.Death].Play();
@@ -450,6 +457,7 @@ namespace Sophia.Entitys
         void Attack_Enter()
         {
             Debug.Log("Attack_Enter");
+            dontTurn = false;
             //Skill
             if (this.GetModelManager().GetAnimator().GetInteger("attackCount") == attackCount)
                 DoSkill(phase);
@@ -461,7 +469,8 @@ namespace Sophia.Entitys
             nav.isStopped = true;
 
             currentAttackTimer = 0;
-            transform.DOLookAt(_objectiveEntity.transform.position, turnSpeed / 2);
+            if (!dontTurn)
+                transform.DOLookAt(_objectiveEntity.transform.position, turnSpeed / 2);
         }
 
         void Attack_Update()
@@ -470,14 +479,18 @@ namespace Sophia.Entitys
             {
                 currentAttackTimer += Time.deltaTime;
 
-                if(currentAttackTimer >= attackInterval)
+                if (currentAttackTimer >= attackInterval)
                     fsm.ChangeState(States.Idle);
             }
         }
 
-        void Attack_End()
+        void Attack_Exit()
         {
             this.GetModelManager().GetAnimator().SetBool("IsAttackEnd", false);
+            if (phase == 2 && this.GetModelManager().GetAnimator().GetInteger("attackCount") == attackCount && this.GetModelManager().GetAnimator().GetInteger("phaseSkill") % 2 != 0)
+            {
+                attackRange *= 2;
+            }
         }
 
         void SkillWalk_Enter()
@@ -499,6 +512,8 @@ namespace Sophia.Entitys
             if (this.GetModelManager().GetAnimator().GetBool("IsSkillWalkEnd"))
             {
                 isWalkReady = false;
+                transform.DOKill();
+                nav.SetDestination(transform.position);
                 this.GetModelManager().GetAnimator().SetBool("IsSkillWalkEnd", false);
             }
             if (this.GetModelManager().GetAnimator().GetBool("IsSkillEnd"))
@@ -530,6 +545,7 @@ namespace Sophia.Entitys
         {
             Debug.Log("SkillPhase_Enter");
 
+            transform.DOKill();
             SetMoveState(true);
             recognize.CurrentViewAngle = 0;
             nav.stoppingDistance = 0;
@@ -555,6 +571,7 @@ namespace Sophia.Entitys
                 {
                     if (!isSkillOnce)
                     {
+                        barrierVFX?.SetActive(true);
                         this.GetModelManager().GetAnimator().SetBool("IsWalk", false);
                         IsInvincible = true;
                         nav.SetDestination(transform.position);
@@ -660,9 +677,10 @@ namespace Sophia.Entitys
 
         void Death_Update()
         {
-            if(!TextManager.Instance.IsStory && !StoryManager.Instance.IsBossClear && Sophia.UserInterface.InGameScreenUI.Instance._storyFadePanel.IsWaitOver){
+            if (!TextManager.Instance.IsStory && !StoryManager.Instance.IsBossClear && Sophia.UserInterface.InGameScreenUI.Instance._storyFadePanel.IsWaitOver)
+            {
                 Sophia.UserInterface.InGameScreenUI.Instance._fadeUI.FadeOut(0.05f, 2f);
-                Sophia.UserInterface.InGameScreenUI.Instance._fadeUI.AddBindingAction(() => UnityEngine.SceneManagement.SceneManager.LoadScene("03_Demo_Clear"));
+                Sophia.UserInterface.InGameScreenUI.Instance._fadeUI.AddBindingAction(() => UnityEngine.SceneManagement.SceneManager.LoadScene("05_Demo_Clear"));
                 StoryManager.Instance.IsBossClear = true;
             }
             //check animation end

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.AI.Navigation;
 using Sophia_Carriers;
+using System;
 
 public class StageGenerator : MonoBehaviour
 {
@@ -26,7 +27,7 @@ public class StageGenerator : MonoBehaviour
 
     Stage stage;
     public GameObject[] portal;
-    public GameObject tile;
+    public GameObject[] tile;
     public GameObject[] WallSet;
     public GameObject transWall;
     public GameObject[] Props;
@@ -398,7 +399,14 @@ public class StageGenerator : MonoBehaviour
     }
     public void InstantiateTile()
     {
-        float interval = tile.transform.localScale.x * 1.5f;   //tile interval
+        GameObject temp = tile[0];
+        float intervalWeight = 1.5f;
+        if (stage.Type == Stage.STAGE_TYPE.SHOP)
+        {
+            temp = tile[1];
+            intervalWeight = 1.5f;
+        }
+        float interval = tile[0].transform.localScale.x * intervalWeight;   //tile interval
         float x = transform.position.x - interval * (width / 2);
         float z = transform.position.z - interval * (height / 2);
         for (int i = 1; i <= width; i++)
@@ -414,8 +422,9 @@ public class StageGenerator : MonoBehaviour
                 }
                 else if (tileArray[i, j] == 1)
                 {
-                    int randomValue = Random.Range(0, 4);
-                    instance = Instantiate(tile, pos, Quaternion.Euler(0, 90 * randomValue, 0));
+                    System.Random random = new System.Random();
+                    int randomValue = random.Next(0, 4);
+                    instance = Instantiate(temp, pos, Quaternion.Euler(0, 90 * randomValue, 0));
                     //instance = Instantiate(tile, pos, Quaternion.Euler(-90, 90 * randomValue, 0));
                     instance.GetComponent<Tile>().i = i;
                     instance.GetComponent<Tile>().j = j;
@@ -429,20 +438,27 @@ public class StageGenerator : MonoBehaviour
     public void InstantiateWall()
     {
         GameObject instance = null;
-        switch (stageSizeRandom)
+        if (stage.Type == Stage.STAGE_TYPE.SHOP)
         {
-            case 1:
-                instance = Instantiate(WallSet[(int)STAGE_SIZE.SMALL - 1], transform.position, Quaternion.identity);
-                break;
-            case 2:
-                instance = Instantiate(WallSet[(int)STAGE_SIZE.MIDDLE - 1], transform.position, Quaternion.identity);
-                break;
-            case 3:
-                instance = Instantiate(WallSet[(int)STAGE_SIZE.BIG - 1], transform.position, Quaternion.identity);
-                break;
-            default:
-                instance = Instantiate(WallSet[(int)STAGE_SIZE.BIG - 1], transform.position, Quaternion.identity);
-                break;
+            instance = Instantiate(WallSet[2], transform.position, Quaternion.identity);
+        }
+        else
+        {
+            switch (stageSizeRandom)
+            {
+                case 1:
+                    instance = Instantiate(WallSet[(int)STAGE_SIZE.SMALL - 1], transform.position, Quaternion.identity);
+                    break;
+                case 2:
+                    instance = Instantiate(WallSet[(int)STAGE_SIZE.MIDDLE - 1], transform.position, Quaternion.identity);
+                    break;
+                case 3:
+                    instance = Instantiate(WallSet[(int)STAGE_SIZE.BIG - 1], transform.position, Quaternion.identity);
+                    break;
+                default:
+                    instance = Instantiate(WallSet[(int)STAGE_SIZE.BIG - 1], transform.position, Quaternion.identity);
+                    break;
+            }
         }
         instance.transform.parent = transform.GetChild((int)Stage.STAGE_CHILD.WALL);
     }
@@ -450,7 +466,7 @@ public class StageGenerator : MonoBehaviour
     {
         GameObject portalModel = portal[(int)Stage.PORTAL_TYPE.NORMAL];
         GameObject instance;
-        if(stage.Type == Stage.STAGE_TYPE.BOSS)
+        if (stage.Type == Stage.STAGE_TYPE.BOSS)
         {
             //portalModel = portal[(int)Stage.PORTAL_TYPE.BOSS];
         }
@@ -497,8 +513,8 @@ public class StageGenerator : MonoBehaviour
         while (temp > 0)
         {
             System.Random rand = new System.Random();
-            int i = Random.Range(1, width + 1);
-            int j = Random.Range(1, height + 1);
+            int i = rand.Next(1, width + 1);
+            int j = rand.Next(1, height + 1);
             if (tileArray[i, j] == 0 || tileArray[i, j] == 2)
                 continue;
             if (mPortalN && (width / 2 - 1 <= i && i <= width / 2 + 2) && (1 <= j && j <= 3))   //포탈 주변 반경일 경우
@@ -511,7 +527,7 @@ public class StageGenerator : MonoBehaviour
                 continue;
             if (i == width / 2 + 1 && j == height / 2 + 1)  //중앙일 경우 -> 클리어 보상 소환 위치
                 continue;
-            
+
             GameObject instance;
             int randomIndex = rand.Next(0, Props.Length);
             float randomDegree = (float)rand.NextDouble() * 360;

@@ -53,8 +53,9 @@ public class TextManager : MonoBehaviour
 
     private void Start()
     {
-        IsSkipStory = DontDestroyGameManager.Instance.SaveLoadManager.Data.CutSceneSaveData.IsSkipStory; // IsTutorial
-        if (!(IsSkipStory && !StoryManager.Instance.IsTutorial))
+        //IsSkipStory = DontDestroyGameManager.Instance.SaveLoadManager.Data.CutSceneSaveData.IsSkipStory; // IsTutorial
+        //if (!(IsSkipStory && !StoryManager.Instance.IsTutorial))
+        if (StoryManager.Instance.IsTutorial)
         {
             InGameScreenUI.Instance._fadeUI.FadeIn(0.02f, 2f);
             InGameScreenUI.Instance._storyFadePanel.fadeStoryBarOn();
@@ -79,7 +80,7 @@ public class TextManager : MonoBehaviour
 
     private void Update()
     {
-        if(IsSkipStory && !StoryManager.Instance.IsTutorial) {return;}
+        //if(IsSkipStory && !StoryManager.Instance.IsTutorial) {return;}
         if ((Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0) ) && IsStory)
         {
             TypingManager._instance.GetInputDown();
@@ -96,7 +97,7 @@ public class TextManager : MonoBehaviour
                         InGameScreenUI.Instance._fadeUI.AddBindingAction(() => { InGameScreenUI.Instance._videoController.StartVideo(VideoController.E_VIDEO_NAME.Opening); });
                         IsStory = false;
                         IsOnce = true;
-                        DontDestroyGameManager.Instance.SaveLoadManager.Data.CutSceneSaveData.IsSkipStory = true;
+                        //DontDestroyGameManager.Instance.SaveLoadManager.Data.CutSceneSaveData.IsSkipStory = true;
                     }
                     IsStory = false;
                 }
@@ -118,7 +119,7 @@ public class TextManager : MonoBehaviour
             talkPanel.SetActive(false);
         }
 
-        else if (!StoryManager.Instance.IsTutorial && !IsStory) // 튜토리얼이 끝났다면
+        else if (!IsStory) // 튜토리얼이 끝났다면
         {
             TextBarOff();
             nameText.text = "";
