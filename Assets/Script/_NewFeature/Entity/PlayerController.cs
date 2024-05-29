@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,6 +15,7 @@ namespace Sophia.Entitys
 {
     using Sophia.Instantiates;
     using Sophia.UserInterface;
+    using UnityEngine.XR;
 
     public class PlayerController : MonoBehaviour
     {
@@ -21,41 +23,50 @@ namespace Sophia.Entitys
         [SerializeField] ModelDebugger modelDebuggerRef;
         [SerializeField] PlayerInput playerInput;
 
-        static public bool IsMoveAllow = true; //인풋을 받을수 있는지 없는지
-        static public bool IsAttackAllow = true; //인풋을 받을수 있는지 없는지
+        private static readonly Dictionary<string, bool> mIsMoveAllow = new Dictionary<string, bool>();
+        private static readonly Dictionary<string, bool> mIsAttackAllow = new Dictionary<string, bool>();
+        private static readonly Dictionary<string, bool> mIsReversedInput = new Dictionary<string, bool>();
+
+        public static bool IsMoveAllow {
+            get {return mIsMoveAllow.All(x => x.Value == true);}
+        }
+        public static bool IsAttackAllow {
+            get {return mIsAttackAllow.All(x => x.Value == true);}
+        }
+
+        public static void SetMoveStateByHandlersString(string handler, bool moveState) {
+            if(!mIsMoveAllow.ContainsKey(handler)) {
+                mIsMoveAllow.TryAdd(handler, moveState); return;
+            }
+            mIsMoveAllow[handler] = moveState;   
+        }
+        public static void SetAttackStateByHandlersString(string handler, bool attackState) {
+            if(!mIsAttackAllow.ContainsKey(handler)) {
+                mIsAttackAllow.TryAdd(handler, attackState); return;
+            }
+            mIsMoveAllow[handler] = attackState;
+        }
+        
         static public bool IsReversedInput = false; //인풋을 받을수 있는지 없는지
 
         private void Awake()
         {
-            IsMoveAllow = true;
-            IsAttackAllow = true;
+            SetMoveStateByHandlersString(this.name, true);
+            SetAttackStateByHandlersString(this.name, true);
             TryGetComponent<PlayerInput>(out playerInput);
         }
 
         private void FixedUpdate()
         {
-            if (StoryManager.Instance.IsTutorial)
-            {
-                DisallowInput();
-                return;
-            }
+            if(IsMoveAllow && IsAttackAllow)
             playerRef.MoveTick();
         }
 
         private void Update()
         {
-            if (GameManager.Instance.GlobalEvent.IsGamePaused) return;
+            // if (GameManager.Instance.GlobalEvent.IsGamePaused) return;
             //playerRef.AimAssist();
             //playerRef.CheckAttack();
-            if (StoryManager.Instance.IsTutorial) // 스토리대사가 진행중이면 입력 제한
-            {
-                DisallowInput();
-                return;
-            }
-            else if (!StoryManager.Instance.IsTutorial) // 스토리대사가 끝나면 입력 복구
-            {
-                AllowInput();
-            }
             
             if (Input.GetKeyDown(KeyCode.Tab)) modelDebuggerRef.ToggleMenu();
 
@@ -72,16 +83,16 @@ namespace Sophia.Entitys
                 if (Input.GetMouseButtonDown(0)) { playerRef.Attack(); }
             }
         }
-        private void DisallowInput()
+        public static void DisallowInput(string handler)
         {
-            IsMoveAllow = false;
-            IsAttackAllow = false;
+            SetMoveStateByHandlersString(handler, false);
+            SetAttackStateByHandlersString(handler, false);
             IsReversedInput = false;
         }
-        private void AllowInput()
+        public static void AllowInput(string handler)
         {
-            IsMoveAllow = true;
-            IsAttackAllow = true;
+            SetMoveStateByHandlersString(handler, true);
+            SetAttackStateByHandlersString(handler, true);
             IsReversedInput = true;
         }
     }

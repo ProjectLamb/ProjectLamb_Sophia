@@ -5,17 +5,20 @@ using UnityEngine;
 
 public class Billboard : MonoBehaviour
 {
-    private Transform mainCam;
-    
-    private void Start()
-    {
-        mainCam = Camera.main.transform;
+    public int Flip = 1;
+    private Camera mainCameraRef;
+    private void Awake() {
+        mainCameraRef = Camera.main;
         if(TryGetComponent<Canvas>(out Canvas canvas)) {
-            canvas.worldCamera = Camera.main;
+            canvas.worldCamera = mainCameraRef;
         }
+        Flip = 1;
     }
-
-    private void LateUpdate() {
-        transform.LookAt(transform.position + mainCam.rotation * Vector3.forward, mainCam.rotation * Vector3.up);
+    void LateUpdate()
+    {
+        SetFront();
     }
+    
+    [ContextMenu("Set Front")]
+    public void SetFront() { transform.forward = mainCameraRef.transform.forward * Flip; }
 }

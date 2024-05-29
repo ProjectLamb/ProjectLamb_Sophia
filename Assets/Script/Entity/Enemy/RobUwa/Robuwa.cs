@@ -574,7 +574,7 @@ namespace Sophia.Entitys
             throw new System.NotImplementedException();
         }
 
-        public UniTask Turning()
+        public UniTask Turning(Vector3 forwardingVector)
         {
             //Currently using DoTween.DoLookAt
             throw new System.NotImplementedException();

@@ -124,7 +124,7 @@ namespace Sophia.Entitys
             entityRigidbody.velocity = ForwardingVector * MoveSpeed.GetValueForce() * Time.fixedDeltaTime;
         }
 
-        public UniTask Turning()
+        public UniTask Turning(Vector3 forwardingVector)
         {
             throw new System.NotImplementedException();
         }

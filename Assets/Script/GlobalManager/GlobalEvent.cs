@@ -27,6 +27,14 @@ public class GlobalEvent : MonoBehaviour
         OnEnemyHitEvent = new List<UnityAction>();
         OnStageClear = new List<UnityAction<Stage>>();
         OnStageEnter = new List<UnityAction<Stage, Stage>>();
+
+        OnPlayEvent     ??= new UnityEvent<string>();
+        OnPausedEvent   ??= new UnityEvent<string>();
+    }
+
+    private void OnEnable() {
+        OnPlayEvent.AddListener(Sophia.Entitys.PlayerController.AllowInput);
+        OnPausedEvent.AddListener(Sophia.Entitys.PlayerController.DisallowInput);
     }
 
     void Update()
@@ -38,7 +46,11 @@ public class GlobalEvent : MonoBehaviour
 
     #region TimeScaleEventHandler
     [Range(0, 1)]
-    public UnityEvent PausedEvent;
+    
+    public UnityEvent<string> OnPlayEvent;
+    public UnityEvent<string> OnPausedEvent;
+
+    public const float PAUSE_SCALE = 0;
     public float GameTimeScale = 1f;
     public float TimeHoldingDuration;
     float mCurrentTimeScale = 1f;
@@ -53,9 +65,15 @@ public class GlobalEvent : MonoBehaviour
         }
         set
         {
-            if (value == true) { GameTimeScale = 0; }
-            else { GameTimeScale = mCurrentTimeScale; }
             mIsGamePaused = value;
+            if (mIsGamePaused == true) { 
+                OnPausedEvent?.Invoke("GlobalEvent");
+                GameTimeScale = PAUSE_SCALE;
+            }
+            else { 
+                OnPlayEvent?.Invoke("GlobalEvent");
+                GameTimeScale = mCurrentTimeScale; 
+            }
             Debug.Log("Time Changed");
         }
     }
