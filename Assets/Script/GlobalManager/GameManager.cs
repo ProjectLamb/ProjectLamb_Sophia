@@ -34,6 +34,7 @@ public class GameManager : MonoBehaviour
     public GameObject                          ChapterGenerator;
     public GameObject                          Shop;
     public GameObject                          CurrentStage;
+    public Test_CameraController               CameraController;
     
     void Awake()
     {
