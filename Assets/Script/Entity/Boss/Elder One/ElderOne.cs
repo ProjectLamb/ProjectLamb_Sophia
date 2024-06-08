@@ -615,7 +615,7 @@ namespace Sophia.Entitys
             nav.SetDestination(transform.position);
             nav.isStopped = true;
 
-            if(GameManager.Instance.CameraController != null)
+            if (GameManager.Instance.CameraController != null)
             {
                 GameManager.Instance.CameraController.SwitchCamera(1);
             }
@@ -671,7 +671,7 @@ namespace Sophia.Entitys
             this.GetModelManager().GetAnimator().SetBool("IsRushEnd", false);
             isRushOnce = false;
 
-            if(GameManager.Instance.CameraController != null)
+            if (GameManager.Instance.CameraController != null)
             {
                 GameManager.Instance.CameraController.SwitchCamera(0);
             }
