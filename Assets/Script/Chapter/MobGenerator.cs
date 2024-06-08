@@ -56,8 +56,10 @@ namespace Sophia.Entitys
             //Boss[]로 바꾸기
             instance = Instantiate(ElderOne, transform.position, Quaternion.identity);
             instance.transform.parent = transform.GetChild((int)Stage.STAGE_CHILD.MOB);
+
             instance.GetComponent<Boss>().CurrentInstantiatedStage = stage;
-            Debug.Log(instance.GetComponent<Boss>().CurrentInstantiatedStage);
+            GameManager.Instance.CameraController.targetGroup.AddMember(instance.transform, 0.5f, 1f);
+            //Debug.Log(instance.GetComponent<Boss>().CurrentInstantiatedStage);
             AddMob(instance);
         }
 
