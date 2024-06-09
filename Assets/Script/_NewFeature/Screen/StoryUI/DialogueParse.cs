@@ -7,7 +7,7 @@ public class DialogueParse : MonoBehaviour
 
 public static Dictionary<string, TalkData[]> DialogueDictionary = 
 				new Dictionary<string, TalkData[]>();
-[SerializeField] private TextAsset csvFile = null;
+[SerializeField] public TextAsset csvFile = null;
 [SerializeField] List<ShowTalkData> ShowTalkDataList = 
 					    new List<ShowTalkData>();
                         
@@ -57,7 +57,7 @@ public void SetTalkDictionary()
         if (rowValues[0].Trim() == "" || rowValues[0].Trim() == "end") continue;
 
         List<TalkData> talkDataList = new List<TalkData>();
-        string eventName = rowValues[0];
+        string eventName = rowValues[0]; // 이벤트 이름
 
         while(rowValues[0].Trim() != "end") // talkDataList 하나를 만드는 반복문
         {
@@ -65,7 +65,8 @@ public void SetTalkDictionary()
             List<string> contextList = new List<string>();
 
             TalkData talkData;
-            talkData.name = rowValues[1]; // 캐릭터 이름이 있는 B열
+            talkData.name = rowValues[1].Trim(); // 캐릭터 이름이 있는 B열
+            talkData.emotionState = rowValues[3].Trim(); // 캐릭터의 감정상태를 나타내는 D열
 
             do // talkData 하나를 만드는 반복문
             {
@@ -73,7 +74,7 @@ public void SetTalkDictionary()
                 if(++i < rows.Length) 
                     rowValues = rows[i].Split(new char[] { ',' });
                 else break;
-            } while (rowValues[1] == "" && rowValues[0] != "end");
+            } while (rowValues[1] == "" && rowValues[0] != "end"); // 화자의 이름이 비어있지 않고, 이벤트가 END가 아닐때까지
 
             talkData.contexts = contextList.ToArray();
             talkDataList.Add(talkData);

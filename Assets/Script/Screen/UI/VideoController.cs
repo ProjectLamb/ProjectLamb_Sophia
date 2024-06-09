@@ -20,7 +20,6 @@ public class VideoController : MonoBehaviour
     [SerializeField] CommandSender commandEnder;
     [SerializeField] CommandSender bossStateStarter;
     [SerializeField] private bool isSkippable;
-
     public void StartVideo(E_VIDEO_NAME video)
     {
         image = videoList[(int)video].transform.GetChild(0).GetComponent<RawImage>();
@@ -76,9 +75,10 @@ public class VideoController : MonoBehaviour
                     commandStarter.SendCommand();
                     bossStateStarter.SendCommand();
                     break;
-                case E_VIDEO_NAME.Opening:
+                case E_VIDEO_NAME.Opening :
                     StoryManager.Instance.IsTutorial = false;
                     commandStarter.SendCommand();
+                    DontDestroyGameManager.Instance.SaveLoadManager.Data.IsTutorial = false;
                     break;
             }
 

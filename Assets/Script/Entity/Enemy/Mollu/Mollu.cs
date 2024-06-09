@@ -512,6 +512,7 @@ namespace Sophia.Entitys
 
             foreach (Sophia.Instantiates.ItemObject itemObject in itemObjects)
             {
+                if(itemObject == null) continue;
                 itemObject.SetTriggerTime(1f).SetTweenSequence(SetSequnce(itemObject)).Activate();
             }
             Die();

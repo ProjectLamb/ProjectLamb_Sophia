@@ -28,13 +28,37 @@ namespace Sophia.UserInterface
         [SerializeField] public Slider                  _playerBarrierBarUI;
         [SerializeField] public PlayerStaminaBarUI      _playerStaminaBarUI;
         [SerializeField] public PlayerWealthBar         _playerWealthBarUI;
-        [SerializeField] public PlayerSkillCoolUI[]     _playerSkillCoolUIs;
+        [SerializeField] public GameObject              _playerSkillCoolUI;
+        [SerializeField] public Minimap                 _chapterMinimap;
+        [SerializeField] public PlayerSkillCoolUI[]     _playerSkillCoolUIElement;
         [SerializeField] public HitCanvasShadeScript    _hitCanvasShadeScript;
         [SerializeField] public EquipmentDescriptionUI  _equipmentDescriptionUI;
         [SerializeField] public FadeUI                  _fadeUI;
+        [SerializeField] public StoryBar                _storyFadePanel;
         [SerializeField] public VideoController         _videoController;
         [SerializeField] public GameObject              _bossHealthBar;
         //Demo Version
         [SerializeField] public GameObject              demoClear;
+
+        public void UIVisibleOn() 
+        {
+            _playerHealthBarUI.gameObject.SetActive(true);
+            _playerBarrierBarUI.gameObject.SetActive(true);
+            _playerStaminaBarUI.gameObject.SetActive(true);
+            _playerWealthBarUI.gameObject.SetActive(true);
+            _chapterMinimap.gameObject.SetActive(true);
+            _playerSkillCoolUI.SetActive(true);
+        }
+
+        public void UIVisibleOff() 
+        {
+            _playerHealthBarUI.gameObject.SetActive(false);
+            _playerBarrierBarUI.gameObject.SetActive(false);
+            _playerStaminaBarUI.gameObject.SetActive(false);
+            _playerWealthBarUI.gameObject.SetActive(false);
+            _chapterMinimap.gameObject.SetActive(false);
+            _playerSkillCoolUI.SetActive(false);
+        }
+
     }
 }

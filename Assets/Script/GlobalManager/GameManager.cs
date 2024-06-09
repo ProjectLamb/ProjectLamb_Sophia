@@ -22,7 +22,8 @@ public class GameManager : MonoBehaviour
             return _instance;
         }
     }
-    public DonDestroyObjectReferer DonDestroyObjectReferer;
+    
+    public DontDestroyObjectReferer DonDestroyObjectReferer;
     public GlobalEvent GlobalEvent;
     public Sophia.GlobalEvent                  NewFeatureGlobalEvent;
     // public GlobalAudioManager                  GlobalAudioManager;
@@ -33,6 +34,7 @@ public class GameManager : MonoBehaviour
     public GameObject                          ChapterGenerator;
     public GameObject                          Shop;
     public GameObject                          CurrentStage;
+    public Test_CameraController               CameraController;
     
     void Awake()
     {

@@ -13,20 +13,21 @@ public class TextManager : MonoBehaviour
 
     [Header("StoryUI")]
     public GameObject talkPanel;
+    public SpeakerImage speakerImage;
     public TextMeshProUGUI talkText;
     public TextMeshProUGUI nameText;
-    public Sprite decussSprite;
-    public Sprite OffusiaSprite;
-    public Image storyBarImage;
     public Animator storyImageAnimator;
-    public string[] dialogStrings;
+    string[] dialogStrings;
     TalkData[] talkDatas;
+    public string storyEventName;
     private int currentPage = 0; // 대화문 개수 변수
     public bool IsStory = true;
     public bool IsSkipStory;
+    public bool IsGameStart;
     bool IsOnce = false;
 
     [Header("PlayerUI")]
+
     [SerializeField] public GameObject _playerHealthBar;
     [SerializeField] public GameObject _playerBarrierBar;
     [SerializeField] public GameObject _playerStaminaBar;
@@ -49,27 +50,38 @@ public class TextManager : MonoBehaviour
             return _instance;
         }
     }
+
     private void Start()
     {
-        if (!IsSkipStory)
+        IsSkipStory = DontDestroyGameManager.Instance.SaveLoadManager.Data.CutSceneSaveData.IsSkipStory; // IsTutorial
+        if (!(IsSkipStory && !StoryManager.Instance.IsTutorial))
         {
             InGameScreenUI.Instance._fadeUI.FadeIn(0.02f, 2f);
+            InGameScreenUI.Instance._storyFadePanel.fadeStoryBarOn();
             IsStory = true;
             TextBarOn();
-            talkDatas = this.GetComponent<Dialogue>().GetObjectDialogue();
-            TypingManager._instance.Typing(talkDatas[0].contexts, talkText);
-            nameText.text = talkDatas[0].name;
-            currentPage++;
-            storyImageAnimator.SetTrigger("DoChange");
+            storyEventName = "Prologue";
+            SetDialogue();
         }
     }
+    public void SetDialogue()
+    {
+        talkDatas = this.GetComponent<Dialogue>().GetObjectDialogue();
+        TypingManager._instance.Typing(talkDatas[0].contexts, talkText);
+        nameText.text = talkDatas[0].name;
+        speakerImage.ChangeSprite(talkDatas[0].name, talkDatas[0].emotionState);
+        currentPage++;
+        storyImageAnimator.SetTrigger("DoChange");
+    }
+
+    // State Pattern으로 변경하기.
+    // 코루틴으로 바꾸는것이 좋아 보인다.
 
     private void Update()
     {
         if(IsSkipStory && !StoryManager.Instance.IsTutorial) {return;}
-        if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
+        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0) ) && IsStory)
         {
-
             TypingManager._instance.GetInputDown();
             if (TypingManager._instance.isTypingEnd)
             {
@@ -78,41 +90,43 @@ public class TextManager : MonoBehaviour
                     currentPage = talkDatas.Length;
                     if (!IsOnce)
                     {
-                        talkPanel.SetActive(false);
                         //TextBarOff();
                         //1챕 튜토리얼 한정
                         InGameScreenUI.Instance._fadeUI.FadeOut(0.02f, 1.5f);
                         InGameScreenUI.Instance._fadeUI.AddBindingAction(() => { InGameScreenUI.Instance._videoController.StartVideo(VideoController.E_VIDEO_NAME.Opening); });
                         IsStory = false;
                         IsOnce = true;
+                        DontDestroyGameManager.Instance.SaveLoadManager.Data.CutSceneSaveData.IsSkipStory = true;
                     }
+                    IsStory = false;
                 }
 
                 if (nameText.text != talkDatas[currentPage].name) // 스토리 진행 중 화자 변경 시 이미지 변경
                 {
-                    ChangeSprite();
                     storyImageAnimator.SetTrigger("DoChange");
                 }
-
+                speakerImage.ChangeSprite(talkDatas[currentPage].name, talkDatas[currentPage].emotionState);
                 nameText.text = talkDatas[currentPage].name;
                 TypingManager._instance.Typing(talkDatas[currentPage].contexts, talkText);
                 currentPage++;
             }
         }
+
+        // 
         if (GameManager.Instance.GlobalEvent.IsGamePaused)
         {
             talkPanel.SetActive(false);
         }
-        else if (!GameManager.Instance.GlobalEvent.IsGamePaused && IsStory)
-            talkPanel.SetActive(true);
 
-        if (!StoryManager.Instance.IsTutorial) // 튜토리얼이 끝났다면
+        else if (!IsStory) // 튜토리얼이 끝났다면
         {
             TextBarOff();
+            nameText.text = "";
+            currentPage = 0;
         }
-        else if (IsStory && !GameManager.Instance.GlobalEvent.IsGamePaused) // 튜토리얼이 끝나지 않은 상태에서 게임 일시정지
+        else if (IsStory && !GameManager.Instance.GlobalEvent.IsGamePaused)
         {
-            talkPanel.SetActive(true);
+            TextBarOn();
             //_dissolvePanel.SetActive(false);
         }
     }
@@ -127,6 +141,7 @@ public class TextManager : MonoBehaviour
         _playerSkillCool.SetActive(true);
         _minimap.SetActive(true);
     }
+
     private void TextBarOn()
     {
         talkPanel.SetActive(true);
@@ -136,19 +151,5 @@ public class TextManager : MonoBehaviour
         _playerWealthBar.SetActive(false);
         _playerSkillCool.SetActive(false);
         _minimap.SetActive(false);
-    }
-
-
-    private void ChangeSprite()
-    {
-        if (this.storyBarImage.sprite == decussSprite)
-        {
-            this.storyBarImage.sprite = OffusiaSprite;
-        }
-
-        else if (this.storyBarImage.sprite == OffusiaSprite)
-        {
-            this.storyBarImage.sprite = decussSprite;
-        }
     }
 }

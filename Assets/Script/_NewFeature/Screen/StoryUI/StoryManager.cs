@@ -21,6 +21,8 @@ public class StoryManager : MonoBehaviour
     }
 
     public bool IsTutorial = true;
+    public bool IsBossClear = false;
+    
     void Awake()
     {
         if (_instance == null) {
@@ -30,5 +32,9 @@ public class StoryManager : MonoBehaviour
             Destroy(gameObject);
         }
         DontDestroyOnLoad(gameObject);
+    }
+
+    void Start() {
+        IsTutorial = DontDestroyGameManager.Instance.SaveLoadManager.Data.IsTutorial; // IsTutorial
     }
 }
