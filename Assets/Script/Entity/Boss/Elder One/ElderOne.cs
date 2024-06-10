@@ -174,7 +174,7 @@ namespace Sophia.Entitys
                 this.GetModelManager().GetAnimator().SetFloat("MoveSpeed", 1.5f);
                 attackInterval /= 2;
                 rushTime /= 2;
-                //눈 색깔 바꾸기
+                emissionMaterial.SetColor("_EmissionColor", Color.red * 12f);
                 isPhaseChanged = true;
             }
         }
@@ -369,6 +369,7 @@ namespace Sophia.Entitys
             //Init Settings
             InitAnimParamList();
             SetNavMeshData();
+            emissionMaterial.SetColor("_EmissionColor", Color.black * 0f);
 
             fsm.ChangeState(States.Idle);
         }
@@ -613,6 +614,11 @@ namespace Sophia.Entitys
             this.GetModelManager().GetAnimator().SetTrigger("DoRush");
             nav.SetDestination(transform.position);
             nav.isStopped = true;
+
+            if (GameManager.Instance.CameraController != null)
+            {
+                GameManager.Instance.CameraController.SwitchCamera(1);
+            }
         }
 
         void Rush_Update()
@@ -664,6 +670,11 @@ namespace Sophia.Entitys
         {
             this.GetModelManager().GetAnimator().SetBool("IsRushEnd", false);
             isRushOnce = false;
+
+            if (GameManager.Instance.CameraController != null)
+            {
+                GameManager.Instance.CameraController.SwitchCamera(0);
+            }
         }
 
         /** Death State */
