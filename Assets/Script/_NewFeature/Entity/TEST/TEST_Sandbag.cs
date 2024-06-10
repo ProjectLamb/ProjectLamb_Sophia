@@ -175,7 +175,7 @@ namespace Sophia.Entitys
         public void SetMoveState(bool movableState){return;}
         public void MoveTick() {return;}
 
-        public UniTask Turning()
+        public UniTask Turning(Vector3 forwardingVector)
         {
             throw new System.NotImplementedException();
         }
