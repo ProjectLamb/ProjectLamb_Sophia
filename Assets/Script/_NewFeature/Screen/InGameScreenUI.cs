@@ -40,6 +40,8 @@ namespace Sophia.UserInterface
         //Demo Version
         [SerializeField] public GameObject              demoClear;
 
+        
+
         public void UIVisibleOn() 
         {
             _playerHealthBarUI.gameObject.SetActive(true);

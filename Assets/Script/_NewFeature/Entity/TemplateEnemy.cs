@@ -107,7 +107,7 @@ namespace Sophia.Entitys
 #region __EnemyParents__
 
     /*********************************************************************************
-        
+    
         [Header("Mob Settings")]
         [SerializeField] protected SerialBaseEntityData       _baseEntityData;
         [SerializeField] protected SerialFieldOfViewData      _fOVData;
@@ -157,7 +157,6 @@ namespace Sophia.Entitys
 
             // Life.OnEnterDie += OnEnterDie;
             // Life.OnExitDie += OnExitDie;
-
         }
     }
 }

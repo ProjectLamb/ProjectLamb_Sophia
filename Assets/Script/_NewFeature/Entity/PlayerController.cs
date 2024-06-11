@@ -15,7 +15,6 @@ namespace Sophia.Entitys
 {
     using Sophia.Instantiates;
     using Sophia.UserInterface;
-    using UnityEngine.XR;
 
     public class PlayerController : MonoBehaviour
     {
@@ -38,13 +37,13 @@ namespace Sophia.Entitys
             if(!mIsMoveAllow.ContainsKey(handler)) {
                 mIsMoveAllow.TryAdd(handler, moveState); return;
             }
-            mIsMoveAllow[handler] = moveState;   
+            mIsMoveAllow[handler] = moveState;
         }
         public static void SetAttackStateByHandlersString(string handler, bool attackState) {
             if(!mIsAttackAllow.ContainsKey(handler)) {
                 mIsAttackAllow.TryAdd(handler, attackState); return;
             }
-            mIsMoveAllow[handler] = attackState;
+            mIsAttackAllow[handler] = attackState;
         }
         
         static public bool IsReversedInput = false; //인풋을 받을수 있는지 없는지
@@ -58,8 +57,7 @@ namespace Sophia.Entitys
 
         private void FixedUpdate()
         {
-            if(IsMoveAllow && IsAttackAllow)
-            playerRef.MoveTick();
+            if(IsMoveAllow && IsAttackAllow) playerRef.MoveTick();
         }
 
         private void Update()
@@ -67,16 +65,7 @@ namespace Sophia.Entitys
             // if (GameManager.Instance.GlobalEvent.IsGamePaused) return;
             //playerRef.AimAssist();
             //playerRef.CheckAttack();
-            if (StoryManager.Instance.IsTutorial || TextManager.Instance.IsStory) // 스토리대사가 진행중이면 입력 제한
-            {
-                DisallowInput();
-                return;
-            }
-            else if (!StoryManager.Instance.IsTutorial && !TextManager.Instance.IsStory) // 스토리대사가 끝나면 입력 복구
-            {
-                AllowInput();
-            }
-            
+
             if (Input.GetKeyDown(KeyCode.Tab)) modelDebuggerRef.ToggleMenu();
 
             if (IsMoveAllow)

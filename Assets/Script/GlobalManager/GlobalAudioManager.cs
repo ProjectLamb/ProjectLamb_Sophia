@@ -8,7 +8,7 @@ using AudioType = FMODPlus.AudioType;
 using AYellowpaper.SerializedCollections;
 using UnityEngine.SceneManagement;
 
-public class GlobalAudioManager : MonoBehaviour
+public class GlobalAudioManager : MonoBehaviour, ISceneChangeHandler
 {
     #region 
     [SerializedDictionary("Mixer Type", "오디오 믹서")]
@@ -76,10 +76,10 @@ public class GlobalAudioManager : MonoBehaviour
             _audioSetters[AudioType.SFX.ToString()].AudioSlider.onValueChanged.AddListener(SetSFXVolume);
         }
 
-        SceneManager.activeSceneChanged += LoadCommandSenderLinkByScene;
+        SceneManager.activeSceneChanged += OnSceneChange;
     }
 
-    public void LoadCommandSenderLinkByScene(Scene current, Scene next) {
+    public void OnSceneChange(Scene current, Scene next) {
         _commandSenderLink = FindFirstObjectByType<CommandSenderLink>();
         if(_commandSenderLink != null) {
             _commandSenderLink.Reset();
@@ -391,5 +391,10 @@ public class GlobalAudioManager : MonoBehaviour
         instance.setVolume(volumeScale);
         instance.start();
         instance.release();
+    }
+
+    public void OnSceneChange()
+    {
+        throw new NotImplementedException();
     }
 }

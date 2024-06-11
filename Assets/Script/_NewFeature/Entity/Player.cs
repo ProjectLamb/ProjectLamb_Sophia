@@ -132,6 +132,7 @@ namespace Sophia.Entitys
 
             PlayerController.AllowInput(this.name);
         }
+
         #endregion
 
         #region Life Accessible

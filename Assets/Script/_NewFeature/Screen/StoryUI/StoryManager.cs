@@ -21,7 +21,6 @@ public class StoryManager : MonoBehaviour
         }
     }
 
-    public bool IsTutorial = true;
     public bool IsBossClear = false;
     
     public UnityEvent<string> OnIsTutorialEnter;
@@ -31,7 +30,6 @@ public class StoryManager : MonoBehaviour
     public bool IsTutorial {
         get {return _isTutorial;}
         set { 
-            
             _isTutorial = value;
             if(_isTutorial == true) {
                 OnIsTutorialEnter?.Invoke("StoryManager");
@@ -67,8 +65,6 @@ public class StoryManager : MonoBehaviour
     }
 
     void Start() {
-
-
         IsTutorial = DontDestroyGameManager.Instance.SaveLoadManager.Data.IsTutorial; // IsTutorial
     }
 }

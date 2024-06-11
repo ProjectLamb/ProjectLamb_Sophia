@@ -1,6 +1,8 @@
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using AYellowpaper.SerializedCollections;
 using Sophia.UserInterface;
 using UnityEngine;
 using UnityEngine.Events;
@@ -46,68 +48,80 @@ public class GlobalEvent : MonoBehaviour
 
     #region TimeScaleEventHandler
     [Range(0, 1)]
-    
+    public float GameTimeScale = 1f;
     public UnityEvent<string> OnPlayEvent;
     public UnityEvent<string> OnPausedEvent;
 
-    public const float PAUSE_SCALE = 0;
-    public float GameTimeScale = 1f;
-    public float TimeHoldingDuration;
-    float mCurrentTimeScale = 1f;
-    bool mIsGamePaused = false;
-    bool mIsSlowed = false;
 
-    public bool IsGamePaused
-    {
-        get
-        {
-            return mIsGamePaused;
+    [SerializedDictionary("PauseCauseKey", "Flags")]
+    private SerializedDictionary<string, bool> _IsGamePaused =  new SerializedDictionary<string, bool>();
+    
+    public const float PAUSE_SCALE = 0;
+
+    public bool IsGamePaused {
+        get {return _IsGamePaused.All(x => x.Value == true); }
+    }
+
+    public void SetTimeStateByHandlersString(string handler, bool timeState) {
+        if(!_IsGamePaused.ContainsKey(handler)) {
+            _IsGamePaused.TryAdd(handler, timeState); return;
         }
-        set
-        {
-            mIsGamePaused = value;
-            if (mIsGamePaused == true) { 
-                OnPausedEvent?.Invoke("GlobalEvent");
-                GameTimeScale = PAUSE_SCALE;
-            }
-            else { 
-                OnPlayEvent?.Invoke("GlobalEvent");
-                GameTimeScale = mCurrentTimeScale; 
-            }
+        _IsGamePaused[handler] = timeState;
+    }
+
+    public void Pause(string handler) {
+        bool PrevTimeState = IsGamePaused;
+        SetTimeStateByHandlersString(handler, false);
+        if(PrevTimeState == false && IsGamePaused == true) {
+            OnPausedEvent?.Invoke(gameObject.name);
+            GameTimeScale = PAUSE_SCALE;
             Debug.Log("Time Changed");
         }
     }
-
-    public void HandleTimeSlow()
-    {
-        if (mIsSlowed) return;
-        Debug.Log("StartSlowed");
-
-        StartCoroutine(SlowTimeCoroutine());
-    }
-
-    //DotTween 사용해서 증가 커브 설정하기
-    IEnumerator SlowTimeCoroutine()
-    {
-        mIsSlowed = true;
-        mCurrentTimeScale = 0.25f;
-        float valueGap = 1f - mCurrentTimeScale;
-        GameTimeScale = mCurrentTimeScale;
-        float passedTime = 0f;
-        while (TimeHoldingDuration > passedTime)
-        {
-            if (!IsGamePaused)
-            {
-                passedTime += (Time.deltaTime / TimeHoldingDuration);
-                mCurrentTimeScale += valueGap * (Time.deltaTime / TimeHoldingDuration);
-                GameTimeScale = mCurrentTimeScale;
-            }
-            yield return null;
+    public void Play(string handler) {
+        bool PrevTimeState = IsGamePaused;
+        SetTimeStateByHandlersString(handler, true);
+        if(PrevTimeState == true && IsGamePaused == false) {
+            OnPlayEvent?.Invoke(gameObject.name);
+            GameTimeScale = mCurrentTimeScale; 
+            Debug.Log("Time Changed");
         }
-        mCurrentTimeScale = 1f;
-        GameTimeScale = mCurrentTimeScale;
-        mIsSlowed = false;
     }
+    public float TimeHoldingDuration;
+    float mCurrentTimeScale = 1f;
+
+    bool mIsSlowed = false;
+
+    // public void HandleTimeSlow()
+    // {
+    //     if (mIsSlowed) return;
+    //     Debug.Log("StartSlowed");
+
+    //     StartCoroutine(SlowTimeCoroutine());
+    // }
+
+    // //DotTween 사용해서 증가 커브 설정하기
+    // IEnumerator SlowTimeCoroutine()
+    // {
+    //     mIsSlowed = true;
+    //     mCurrentTimeScale = 0.25f;
+    //     float valueGap = 1f - mCurrentTimeScale;
+    //     GameTimeScale = mCurrentTimeScale;
+    //     float passedTime = 0f;
+    //     while (TimeHoldingDuration > passedTime)
+    //     {
+    //         if (!IsGamePaused)
+    //         {
+    //             passedTime += (Time.deltaTime / TimeHoldingDuration);
+    //             mCurrentTimeScale += valueGap * (Time.deltaTime / TimeHoldingDuration);
+    //             GameTimeScale = mCurrentTimeScale;
+    //         }
+    //         yield return null;
+    //     }
+    //     mCurrentTimeScale = 1f;
+    //     GameTimeScale = mCurrentTimeScale;
+    //     mIsSlowed = false;
+    // }
     #endregion
 
     /////////////////////////////////////////////////////////////////////////////////

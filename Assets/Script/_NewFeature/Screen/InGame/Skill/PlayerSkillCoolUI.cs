@@ -75,12 +75,5 @@ namespace Sophia.UserInterface
         {
             StartCoroutine(GlobalAsync.PerformAndRenderUI(() => { textMeshPro.text = TimerRef.stackCounter.CurrentStacksCount.ToString(); }));
         }
-
-        private void OnDestroy() {
-            TimerRef.RemoveOnTickingEvent(UpdateFillAmount)
-                    .RemoveOnUseEvent(UseStack)
-                    .RemoveOnFinishedEvent(RecoverStack)
-                    .RemoveOnInitialized(ResetUI);
-        }
     }
 }

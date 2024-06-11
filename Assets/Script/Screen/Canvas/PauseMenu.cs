@@ -13,7 +13,7 @@ public class PauseMenu : MonoBehaviour
     Stack<GameObject> menuStack = new Stack<GameObject>();
     public void OpenMenu(GameObject _canvas){
         if(menuStack.Count == 0) {
-            GameManager.Instance.GlobalEvent.IsGamePaused = true;
+            GameManager.Instance.GlobalEvent.Pause(gameObject.name);
         }
         OpenUnityEvent.Invoke();
         menuStack.Push(_canvas);
@@ -28,14 +28,14 @@ public class PauseMenu : MonoBehaviour
                 var topMenu = menuStack.Peek();
                 topMenu.SetActive(false);
                 menuStack.Pop();
-                if(menuStack.Count == 0) GameManager.Instance.GlobalEvent.IsGamePaused = false;
+                if(menuStack.Count == 0) GameManager.Instance.GlobalEvent.Play(gameObject.name);;
             }));
             return;
         }
         var topMenu = menuStack.Peek();
         topMenu.SetActive(false);
         menuStack.Pop();
-        if(menuStack.Count == 0) {GameManager.Instance.GlobalEvent.IsGamePaused = false;}
+        if(menuStack.Count == 0) {GameManager.Instance.GlobalEvent.Play(gameObject.name);;}
     }
 
     private void Update() {

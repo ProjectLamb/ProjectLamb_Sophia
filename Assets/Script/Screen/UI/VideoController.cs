@@ -43,7 +43,7 @@ public class VideoController : MonoBehaviour
 
     IEnumerator CoFadeIn(float fadeTime, float fadeDuration)
     {
-        GameManager.Instance.GlobalEvent.IsGamePaused = true;
+        GameManager.Instance.GlobalEvent.Pause(gameObject.name);
         yield return new WaitForEndOfFrame();
         image.color = Color.black;
         image.enabled = true;
@@ -66,7 +66,7 @@ public class VideoController : MonoBehaviour
     {
         InGameScreenUI.Instance._fadeUI.AddBindingAction(() =>
         {
-            GameManager.Instance.GlobalEvent.IsGamePaused = false;
+            GameManager.Instance.GlobalEvent.Play(gameObject.name);;
 
             switch (currentVideo)
             {
