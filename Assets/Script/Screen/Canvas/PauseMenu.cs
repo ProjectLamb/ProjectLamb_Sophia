@@ -28,14 +28,14 @@ public class PauseMenu : MonoBehaviour
                 var topMenu = menuStack.Peek();
                 topMenu.SetActive(false);
                 menuStack.Pop();
-                if(menuStack.Count == 0) GameManager.Instance.GlobalEvent.Play(gameObject.name);;
+                if(menuStack.Count == 0) GameManager.Instance.GlobalEvent.Play(gameObject.name);
             }));
             return;
         }
         var topMenu = menuStack.Peek();
         topMenu.SetActive(false);
         menuStack.Pop();
-        if(menuStack.Count == 0) {GameManager.Instance.GlobalEvent.Play(gameObject.name);;}
+        if(menuStack.Count == 0) {GameManager.Instance.GlobalEvent.Play(gameObject.name);}
     }
 
     private void Update() {

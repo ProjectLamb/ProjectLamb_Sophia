@@ -32,6 +32,9 @@ public class GlobalEvent : MonoBehaviour
 
         OnPlayEvent     ??= new UnityEvent<string>();
         OnPausedEvent   ??= new UnityEvent<string>();
+        _IsGamePaused = new SerializedDictionary<string, bool>();
+        
+        _IsGamePaused.Add(gameObject.name, false);
     }
 
     private void OnEnable() {
@@ -54,12 +57,14 @@ public class GlobalEvent : MonoBehaviour
 
 
     [SerializedDictionary("PauseCauseKey", "Flags")]
-    private SerializedDictionary<string, bool> _IsGamePaused =  new SerializedDictionary<string, bool>();
+    private SerializedDictionary<string, bool> _IsGamePaused;
     
     public const float PAUSE_SCALE = 0;
 
     public bool IsGamePaused {
-        get {return _IsGamePaused.All(x => x.Value == true); }
+        get {
+            return !_IsGamePaused.All(x => x.Value == false); 
+        }
     }
 
     public void SetTimeStateByHandlersString(string handler, bool timeState) {
@@ -71,7 +76,8 @@ public class GlobalEvent : MonoBehaviour
 
     public void Pause(string handler) {
         bool PrevTimeState = IsGamePaused;
-        SetTimeStateByHandlersString(handler, false);
+        Debug.Log("TryPause");
+        SetTimeStateByHandlersString(handler, true);
         if(PrevTimeState == false && IsGamePaused == true) {
             OnPausedEvent?.Invoke(gameObject.name);
             GameTimeScale = PAUSE_SCALE;
@@ -80,7 +86,8 @@ public class GlobalEvent : MonoBehaviour
     }
     public void Play(string handler) {
         bool PrevTimeState = IsGamePaused;
-        SetTimeStateByHandlersString(handler, true);
+        Debug.Log("TryPlay");
+        SetTimeStateByHandlersString(handler, false);
         if(PrevTimeState == true && IsGamePaused == false) {
             OnPlayEvent?.Invoke(gameObject.name);
             GameTimeScale = mCurrentTimeScale; 

@@ -29,15 +29,24 @@ public class UIButton : MonoBehaviour, IPointerInteractable
 {
     private EventTrigger ButtonTrigger;
 
-    [SerializeField] PointerInteractableUIButton interactableUIButton;
+    [SerializeField] PointerInteractableUIButton _interactableUIButton;
 
     // List<IPointerInteractable> PointerInteractables = new List<IPointerInteractable>();
 
     private void Awake()
     {
+        if(!transform.TryGetComponent(out PointerInteractableUIButton interactableUIButton)) {
+            Debug.LogError("Can't Find PointerInteractableUIButton");
+            return;
+        }
+        else {
+            _interactableUIButton = interactableUIButton;
+        }
+
         if (!transform.TryGetComponent(out EventTrigger ButtonTrigger))
         {
             Debug.LogError("Can't Find Compoenent EventTrigger");
+            return;
         }
 
         EventTrigger.Entry PointerClick = new EventTrigger.Entry();
@@ -73,14 +82,15 @@ public class UIButton : MonoBehaviour, IPointerInteractable
         PointerUp.eventID = EventTriggerType.PointerUp;
         PointerUp.callback.AddListener((data) => { OnPointerUp(); });
         ButtonTrigger.triggers.Add(PointerUp);
+
     }
 
     #region Controller
-    public void OnPointerClick()    =>  interactableUIButton.OnPointerClick();
-    public void OnPointerEnter()    =>  interactableUIButton.OnPointerEnter();
-    public void OnPointerExit()     =>  interactableUIButton.OnPointerExit();
-    public void OnPointerDown()     =>  interactableUIButton.OnPointerDown();
-    public void OnPointerUp()       =>  interactableUIButton.OnPointerUp();
+    public void OnPointerClick()    =>  _interactableUIButton.OnPointerClick();
+    public void OnPointerEnter()    =>  _interactableUIButton.OnPointerEnter();
+    public void OnPointerExit()     =>  _interactableUIButton.OnPointerExit();
+    public void OnPointerDown()     =>  _interactableUIButton.OnPointerDown();
+    public void OnPointerUp()       =>  _interactableUIButton.OnPointerUp();
 
     public void OnSelected()
     {
