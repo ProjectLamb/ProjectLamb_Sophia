@@ -37,7 +37,10 @@ public abstract class AbstractSkill : MonoBehaviour
                 break;
         }
     }
-    
+    public virtual void Indicate(SKILL_KEY key){
+        Indicate();
+    }
+    protected abstract void Indicate();
     protected abstract void UseQ();
     protected abstract void UseE();
     protected abstract void UseR();

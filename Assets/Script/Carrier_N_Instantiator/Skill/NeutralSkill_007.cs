@@ -47,7 +47,9 @@ public class NeutralSkill_007 : AbstractSkill {
         base.Init(_player);
         skillType = SKILL_TYPE.NEUTRAL;
     }
-
+    protected override void Indicate(){
+        
+    }
     protected override void UseQ(){
         moveFasterState.DurationTime = DurationQ;
         moveFasterState.Ratio = NumericQ[(int)skillRank];

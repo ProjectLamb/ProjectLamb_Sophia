@@ -41,7 +41,9 @@ public class NeutralSkill_002 : AbstractSkill {
         //coolTime?.Add(SKILL_RANK.RARE    , 15f);
         //coolTime?.Add(SKILL_RANK.EPIC    , 15f);
     }
-
+    protected override void Indicate(){
+        
+    }
     public override void Init(Player _player)
     {
         base.Init(_player);

@@ -20,6 +20,7 @@ namespace Sophia.Entitys
         [SerializeField] Player playerRef;
         [SerializeField] ModelDebugger modelDebuggerRef;
         [SerializeField] PlayerInput playerInput;
+        [SerializeField] SkillIndicator skillIndicator;
 
         static public bool IsMoveAllow = true; //인풋을 받을수 있는지 없는지
         static public bool IsAttackAllow = true; //인풋을 받을수 있는지 없는지
@@ -66,9 +67,18 @@ namespace Sophia.Entitys
 
             if (IsAttackAllow)
             {
-                if (Input.GetKeyDown(KeyCode.Q)) { playerRef.Use(KeyCode.Q); }
-                if (Input.GetKeyDown(KeyCode.E)) { playerRef.Use(KeyCode.E); }
-                if (Input.GetKeyDown(KeyCode.R)) { playerRef.Use(KeyCode.R); }
+
+                // 키가 눌려있을때에는 Indicate 함수를 통해 사거리를 띄우고,
+                // 키가 떼어졌을때에는 기존의 Use 함수를 사용하여 스킬을 사용하도록 하자.
+
+                if (Input.GetKeyDown(KeyCode.Q)) { skillIndicator.gameObject.SetActive(true); }
+                if (Input.GetKeyDown(KeyCode.E)) { skillIndicator.gameObject.SetActive(true); }
+                if (Input.GetKeyDown(KeyCode.R)) { skillIndicator.gameObject.SetActive(true); }
+
+                if (Input.GetKeyUp(KeyCode.Q)) { playerRef.Use(KeyCode.Q); skillIndicator.gameObject.SetActive(false);}
+                if (Input.GetKeyUp(KeyCode.E)) { playerRef.Use(KeyCode.E); skillIndicator.gameObject.SetActive(false);}
+                if (Input.GetKeyUp(KeyCode.R)) { playerRef.Use(KeyCode.R); skillIndicator.gameObject.SetActive(false);}
+                
                 if (Input.GetMouseButtonDown(0)) { playerRef.Attack(); }
             }
         }

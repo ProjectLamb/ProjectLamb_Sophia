@@ -41,7 +41,9 @@ public class AttackSkill_001 : AbstractSkill {
         skillType = SKILL_TYPE.ATTACK;
         weapon = _player.weaponManager.weapon;
     }
-
+    protected override void Indicate(){
+        
+    }
     protected override void UseQ() {AsyncUseQ().Forget();}
     protected override void UseE() {AsyncUseE().Forget();}
     protected override void UseR() {AsyncUseR().Forget();}
