@@ -1,6 +1,7 @@
 using UnityEngine;
 namespace Sophia
 {
+    using System;
     using FMODUnity;
     using Instantiates;
     using Sophia.Composite;
@@ -91,7 +92,10 @@ namespace Sophia
     public struct SerialSkinData
     {
         [SerializeField] public float _intervalTime;
-        [SerializeField] public Material _materialRef;
+        [Obsolete] [SerializeField] public Material _materialRef;
+        [SerializeField] public E_MATERIAL_TYPE _materialType;
+        [SerializeField] public E_FUNCTIONAL_EXTRAS_TYPE _entityFunctionActType;
+        [SerializeField] public E_AFFECT_TYPE _affectType;
     }
     
     [System.Serializable]
