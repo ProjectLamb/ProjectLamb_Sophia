@@ -31,6 +31,7 @@ namespace Sophia.Entitys
         [SerializeField] private EquipmentManager _equipmentManager;
         [SerializeField] private AffectorManager _affectorManager;
         [SerializeField] private SkillManager _skillManager;
+        [SerializeField] private SkillIndicator skillIndicator;
 
         #endregion
 
@@ -291,7 +292,15 @@ namespace Sophia.Entitys
             });
             }
         }
-
+        public void Indicate(KeyCode key)
+        {
+            
+            if(this._skillManager.GetSkillByKey(key)?.GetName() != null && _skillManager.GetSkillByKey(key).GetCoolTimeComposite().GetIsReadyToUse()){
+                //쿨타임 아닐때
+                skillIndicator.gameObject.SetActive(true);
+                skillIndicator.Indicate(this._skillManager.GetSkillByKey(key)?.GetName());
+            }
+        }
         #endregion
 
         #region Equip Handler
