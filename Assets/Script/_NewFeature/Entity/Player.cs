@@ -294,10 +294,10 @@ namespace Sophia.Entitys
         }
         public void Indicate(KeyCode key)
         {
-            
             if(this._skillManager.GetSkillByKey(key)?.GetName() != null && _skillManager.GetSkillByKey(key).GetCoolTimeComposite().GetIsReadyToUse()){
                 //쿨타임 아닐때
-                skillIndicator.gameObject.SetActive(true);
+                Debug.Log("스킬명 : "+this._skillManager.GetSkillByKey(key)?.GetName());
+                skillIndicator.changeIndicate(this._skillManager.GetSkillByKey(key)?.GetName());
                 skillIndicator.Indicate(this._skillManager.GetSkillByKey(key)?.GetName());
             }
         }
