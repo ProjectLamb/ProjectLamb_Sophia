@@ -7,7 +7,7 @@ using System.Threading;
 using System;
 
 namespace Sophia.Composite.RenderModels
-{    
+{
 
     /*********************************************************************************
     * ModelManger 
@@ -55,6 +55,8 @@ namespace Sophia.Composite.RenderModels
         }
 
 #region Skin
+        public MaterialVFX GetMaterialVFX() => _materialVFX;
+        
         [Obsolete]
         public async UniTask ChangeSkin(CancellationToken cancellationToken, Material skin) {
             // _materials[1] = skin;
@@ -75,20 +77,20 @@ namespace Sophia.Composite.RenderModels
         }
 
         public async UniTask InvokeChangeMaterial(CancellationToken cancellationToken, E_AFFECT_TYPE affectType) {
-            _materialVFX.InvokeAffectMaterial(affectType);
+            _materialVFX.AffectorMaterialChanger[affectType].InvokeAffectMaterial();
             await UniTask.WaitForEndOfFrame(this, cancellationToken);
         }
         public async UniTask InvokeChangeMaterial(CancellationToken cancellationToken, E_FUNCTIONAL_EXTRAS_TYPE entityFunctionalActType) {
-            _materialVFX.InvokeEntityFunctionalActMaterial(entityFunctionalActType);
+            _materialVFX.FunctionalMaterialChanger[entityFunctionalActType].InvokeEntityFunctionalActMaterial();
             await UniTask.WaitForEndOfFrame(this, cancellationToken);
         }
 
         public async UniTask RevertChangeMaterial(E_AFFECT_TYPE affectType) {
-            _materialVFX.RevertAffectMaterial(affectType);
+            _materialVFX.AffectorMaterialChanger[affectType].RevertAffectMaterial();
             await UniTask.WaitForEndOfFrame(this);
         }
         public async UniTask RevertChangeMaterial(E_FUNCTIONAL_EXTRAS_TYPE entityFunctionalActType) {
-            _materialVFX.RevertEntityFunctionalActMaterial(entityFunctionalActType);
+            _materialVFX.FunctionalMaterialChanger[entityFunctionalActType].RevertEntityFunctionalActMaterial();
             await UniTask.WaitForEndOfFrame(this);
         }
 

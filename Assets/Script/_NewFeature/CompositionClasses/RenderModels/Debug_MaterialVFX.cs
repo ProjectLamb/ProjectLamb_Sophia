@@ -19,11 +19,11 @@ namespace DEBUG
         private void InvokeMaterial() {
             switch(materialType) {
                 case E_MATERIAL_TYPE.FunctionalAct : {
-                    materialVFX.InvokeEntityFunctionalActMaterial(_functionalActType);
+                    materialVFX.FunctionalMaterialChanger[_functionalActType].InvokeEntityFunctionalActMaterial();
                     break;
                 }
                 case E_MATERIAL_TYPE.Affect : {
-                    materialVFX.InvokeAffectMaterial(_affectType);
+                    materialVFX.AffectorMaterialChanger[_affectType].InvokeAffectMaterial();
                     break;
                 }
             }
@@ -33,24 +33,39 @@ namespace DEBUG
         private void RevertMaterial() {
             switch(materialType) {
                 case E_MATERIAL_TYPE.FunctionalAct : {
-                    materialVFX.RevertEntityFunctionalActMaterial(_functionalActType);
+                    materialVFX.FunctionalMaterialChanger[_functionalActType].RevertEntityFunctionalActMaterial();
                     break;
                 }
                 case E_MATERIAL_TYPE.Affect : {
-                    materialVFX.RevertAffectMaterial(_affectType);
+                    materialVFX.AffectorMaterialChanger[_affectType].RevertAffectMaterial();
+                    break;
+                }
+            }
+        }
+
+        [ContextMenu("OneShot")]
+        private void PlayOneShotMaterial() {
+            switch(materialType) {
+                case E_MATERIAL_TYPE.FunctionalAct : {
+                    materialVFX.FunctionalMaterialChanger[_functionalActType].PlayFunctionalActOneShot();
+                    break;
+                }
+                case E_MATERIAL_TYPE.Affect : {
+                    materialVFX.AffectorMaterialChanger[_affectType].PlayAffectOneShot();
                     break;
                 }
             }
         }
         
         private void Update() {
+            if(Input.GetKeyDown(KeyCode.O)) {PlayOneShotMaterial();}
             switch(materialType) {
                 case E_MATERIAL_TYPE.FunctionalAct : {
-                    materialVFX.ChangeAmountEntityFunctionalActMaterial(_functionalActType, _amount);
+                    materialVFX.FunctionalMaterialChanger[_functionalActType].ChangeAmountEntityFunctionalActMaterial(_amount);
                     break;
                 }
                 case E_MATERIAL_TYPE.Affect : {
-                    materialVFX.ChangeAmountAffectMaterial(_affectType, _amount);
+                    materialVFX.AffectorMaterialChanger[_affectType].ChangeAmountAffectMaterial(_amount);
                     break;
                 }
             }
