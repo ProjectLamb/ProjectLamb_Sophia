@@ -62,6 +62,10 @@ namespace Sophia.Entitys
             {
                 currentSkillName = "바람처럼 칼날";
             }
+            else if(skillName == "거침없는 질주")
+            {
+                currentSkillName = "거침없는 질주";
+            }
             else if(skillName == "바람처럼 돌진")
             {
                 currentSkillName = "바람처럼 돌진";
@@ -69,14 +73,6 @@ namespace Sophia.Entitys
             else if(skillName == "갈아버리기")
             {
                 currentSkillName = "갈아버리기";
-            }
-            else if(skillName == "머리가 어질어질")
-            {
-                currentSkillName = "머리가 어질어질";
-            }
-            else if(skillName == "머리에 피가 철철")
-            {
-                currentSkillName = "머리에 피가 철철";
             }
             else if(skillName == "바람의 상처")
             {
@@ -86,22 +82,6 @@ namespace Sophia.Entitys
             {
                 currentSkillName = "빠르게 탈출하기";
             }
-            else if(skillName == "시간은 누구에게나 평등하지")
-            {
-                currentSkillName = "시간은 누구에게나 평등하지";
-            }
-            else if(skillName == "공격력 증폭")
-            {
-                currentSkillName = "공격력 증폭";
-            }
-            else if(skillName == "봄 바람의 보호막")
-            {
-                currentSkillName = "봄 바람의 보호막";
-            }
-            else if(skillName == "이동속도 증폭")
-            {
-                currentSkillName = "이동속도 증폭";
-            }
             else if(skillName == "바닥은 용암이야")
             {
                 currentSkillName = "바닥은 용암이야";
@@ -109,10 +89,6 @@ namespace Sophia.Entitys
             else if(skillName == "모두 발사!")
             {
                 currentSkillName = "모두 발사!";
-            }
-            else if(skillName == "봄 바람을 타고")
-            {
-                currentSkillName = "봄 바람을 타고";
             }
             else
                 currentSkillName = "";
@@ -131,6 +107,10 @@ namespace Sophia.Entitys
             {
                 currentIndicator = arrowIndicator;
             }
+            else if(skillName == "거침없는 질주")
+            {
+                currentIndicator = arrowIndicator;
+            }
             else if(skillName == "바람처럼 돌진")
             {
                 currentIndicator = arrowIndicator;
@@ -147,7 +127,6 @@ namespace Sophia.Entitys
             {
                 currentIndicator = cycleIndicator;
             }
-            
 
         }
         private void turning()
