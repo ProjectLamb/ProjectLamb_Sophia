@@ -15,9 +15,6 @@ public class AttackSkill_004 : AbstractSkill {
         base.Init(_player);
         skillType = SKILL_TYPE.ATTACK;
     }
-    protected override void Indicate(){
-        
-    }
     protected override void UseQ() {
         
     }

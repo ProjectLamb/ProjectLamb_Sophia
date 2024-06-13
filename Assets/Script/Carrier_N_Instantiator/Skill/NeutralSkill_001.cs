@@ -46,9 +46,6 @@ public class NeutralSkill_001 : AbstractSkill {
         base.Init(_player);
         skillType = SKILL_TYPE.NEUTRAL;
     }
-    protected override void Indicate(){
-        
-    }
     protected override void UseQ(){
         barrierState.DurationTime = DurationQ;
         barrierState.Ratio = NumericQ[(int)skillRank];
