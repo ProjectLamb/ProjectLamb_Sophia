@@ -27,12 +27,15 @@ public class GlobalSaveLoadManager : MonoBehaviour
         Debug.Log(Application.dataPath);
         Debug.Log(Application.persistentDataPath);
 
-#if UNITY_EDITOR
+# if UNITY_EDITOR
         PATH = Path.Combine(Application.dataPath, "UserData.json");
         Application.quitting += SaveAsJson;
-#else
+# elif UNITY_STANDALONE_WIN
+        PATH = Path.Combine(Application.dataPath, "UserData.json");
+        Application.quitting += SaveAsJson;
+# elif UNITY_STANDALONE_OSX
         PATH = Path.Combine(Application.persistentDataPath, "UserData.json");
-#endif
+# endif
 
     }
 

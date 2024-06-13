@@ -23,7 +23,7 @@ namespace Sophia.UserInterface
             StartCoroutine(
                 GlobalAsync.PerformAndRenderUI(() => { 
                     int intValue = LifeCompositeRef.MaxHp;
-                    slider.maxValue = (float)intValue;
+                    slider.value = slider.maxValue = (float)intValue;
                     fill.color = gradient.Evaluate(1f); 
                 })
             );

@@ -17,7 +17,6 @@ public class MainPannel : MonoBehaviour
         yield return new WaitForEndOfFrame();
         
         if(!DontDestroyGameManager.Instance.SaveLoadManager.GetIsDataExist()) {
-            // 컨티뉴 버튼 비활성화
             ContinueGameElement.SetActive(false);
         }
         else {
