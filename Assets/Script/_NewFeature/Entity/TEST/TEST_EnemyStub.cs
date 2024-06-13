@@ -57,7 +57,7 @@ namespace Sophia.Entitys
             base.Start();
             Life.OnEnterDie += () => {
                 object NullRef = null;
-                GameManager.Instance.NewFeatureGlobalEvent.EnemyDie.PerformStartFunctionals(ref NullRef);
+                GameManager.Instance.NewFeatureGlobalEvent.EnemyDie.PerformStartFunctionals(ref GlobalHelper.NullRef);
             };
         }
 

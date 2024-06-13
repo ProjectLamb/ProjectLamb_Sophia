@@ -55,6 +55,12 @@ namespace Sophia.Entitys
             TryGetComponent<PlayerInput>(out playerInput);
         }
 
+        private void Start() 
+        {
+            GameManager.Instance.GlobalEvent.OnPlayEvent.AddListener(AllowInput);
+            GameManager.Instance.GlobalEvent.OnPausedEvent.AddListener(DisallowInput);
+        }
+
         private void FixedUpdate()
         {
             if(IsMoveAllow && IsAttackAllow) playerRef.MoveTick();

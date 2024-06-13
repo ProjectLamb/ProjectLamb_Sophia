@@ -7,15 +7,18 @@ using Sophia;
 public class PauseMenu : MonoBehaviour
 {
     public GameObject pauseMenuObject;
-    public UnityEvent OpenUnityEvent;
-    public UnityEvent CloseUnityEvent;
-
+    public UnityEvent OnOpenMenuEvent;
+    public UnityEvent OnCloseMenuEvent;
+    public static UnityEvent OnOpenMenuStaticEvent = new UnityEvent();
+    public static UnityEvent OnCloseMenuStaticEvent = new UnityEvent();
+    
     Stack<GameObject> menuStack = new Stack<GameObject>();
     public void OpenMenu(GameObject _canvas){
         if(menuStack.Count == 0) {
             GameManager.Instance.GlobalEvent.Pause(gameObject.name);
+            OnOpenMenuEvent?.Invoke();
+            OnOpenMenuStaticEvent?.Invoke();
         }
-        OpenUnityEvent.Invoke();
         menuStack.Push(_canvas);
         var topMenu = menuStack.Peek();
         topMenu.SetActive(true);
@@ -24,7 +27,8 @@ public class PauseMenu : MonoBehaviour
     public void CloseMenu(){
         if(menuStack.Peek().name == pauseMenuObject.name) {
             StartCoroutine(GlobalAsync.PerformAndRenderUIUnScaled(() => {
-                CloseUnityEvent.Invoke();
+                OnCloseMenuEvent?.Invoke();
+                OnCloseMenuStaticEvent?.Invoke();
                 var topMenu = menuStack.Peek();
                 topMenu.SetActive(false);
                 menuStack.Pop();

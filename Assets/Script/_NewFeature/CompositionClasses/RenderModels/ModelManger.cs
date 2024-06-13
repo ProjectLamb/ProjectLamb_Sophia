@@ -47,13 +47,14 @@ namespace Sophia.Composite.RenderModels
 
         private void Awake() {
             _model = this.gameObject;
+            _materialVFX.Init();
             
             // foreach(Transform skinTransform in _skins.transform) {
             //     _renderers.Add(skinTransform.GetComponent<Renderer>());
             // }
             // if(_materials.Count == 0) throw new System.Exception("Skin리스트가 없어서 설정하고싶은 스킨이 없음");
         }
-
+        
 #region Skin
         public MaterialVFX GetMaterialVFX() => _materialVFX;
         

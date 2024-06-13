@@ -19,9 +19,9 @@ public abstract class PointerInteractableUIButton : MonoBehaviour, IPointerInter
     public UnityEvent OnDownEvent;
     public UnityEvent OnUpEvent;
     public virtual void OnPointerClick() {OnClickEvent?.Invoke();}
-    public virtual void OnPointerDown() {OnEnterEvent?.Invoke();}
-    public virtual void OnPointerEnter() {OnExitEvent?.Invoke();}
-    public virtual void OnPointerExit() {OnDownEvent?.Invoke();}
+    public virtual void OnPointerEnter() {OnEnterEvent?.Invoke();}
+    public virtual void OnPointerExit() {OnExitEvent?.Invoke();}
+    public virtual void OnPointerDown() {OnDownEvent?.Invoke();}
     public virtual void OnPointerUp() {OnUpEvent?.Invoke();}
 }
 

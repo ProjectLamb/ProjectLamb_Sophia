@@ -38,8 +38,7 @@ public class GlobalEvent : MonoBehaviour
     }
 
     private void OnEnable() {
-        OnPlayEvent.AddListener(Sophia.Entitys.PlayerController.AllowInput);
-        OnPausedEvent.AddListener(Sophia.Entitys.PlayerController.DisallowInput);
+
     }
 
     void Update()

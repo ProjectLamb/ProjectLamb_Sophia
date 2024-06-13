@@ -3,38 +3,7 @@ using AYellowpaper.SerializedCollections;
 using UnityEngine;
 using DG.Tweening;
 using BehaviorDesigner.Runtime.Tasks.Unity.UnityAudioSource;
-using Sophia.DataSystem.Modifiers;
-
-// public enum E_FUNCTIONAL_EXTRAS_TYPE
-// {
-//     None = 0,
-//     ENTITY_TYPE = 10,
-//         Move, Damaged, Attack, ConveyAffect, Dead, Idle, PhysicTriggered,
-//     PLAYER_TYPE = 20,
-//         Dash, Skill, GearcoinTriggered, HealthTriggered,
-//     WEAPON_TYPE = 30, 
-//         WeaponUse, ProjectileRestore, WeaponConveyAffect, 
-//     SKILL_TYPE = 40,
-//         SkillUse, SkillRefilled, SkillConveyAffect,
-//     PROJECTILE_TYPE = 50,
-//         Created, Triggerd, Released, Forwarding,
-//     GLOBAL_TYPE = 60,
-//         EnemyHit, EnemyDie, StageClear, StageEnter
-// }
-
-// public enum E_AFFECT_TYPE {
-//     None = 0,
-
-//     // 화상, 독, 출혈, 수축, 냉기, 혼란, 공포, 스턴, 속박, 처형
-//     // 블랙홀
-//     Debuff = 100,
-//     Burn, Poisoned, Bleed, Contracted, Cold, Confused, Fear, Stun, Bounded, 
-//     Knockback, BlackHole, Airborne, Execution,
-
-//     // 이동속도증가, 고유시간가속, 공격력증가, 보호막상태, CC저항, 은신, 무적, 방어/페링, 투사체생성, 회피,
-//     Buff = 200,
-//     MoveSpeedUp, Accelerated, PowerUp, Barrier, Resist, Invisible, Invincible, Defence, ProjectileGenerate, Dodgeing, 
-// }   
+using Sophia.DataSystem.Modifiers; 
 
 namespace Sophia.Composite.RenderModels
 {
@@ -48,30 +17,47 @@ namespace Sophia.Composite.RenderModels
         /// </summary>
         [SerializedDictionary("MaterialKey", "Renderer")]
         [SerializeField] private SerializedDictionary<Material, List<Renderer>> _originVarientMaterial;
-        
+        [SerializeField] Material CommonFunctionalActMaterial;
+        [SerializeField] Material CommonAffectMaterial;
         public readonly Dictionary<E_FUNCTIONAL_EXTRAS_TYPE, MaterialChanger> FunctionalMaterialChanger = new Dictionary<E_FUNCTIONAL_EXTRAS_TYPE, MaterialChanger>();
         public readonly Dictionary<E_AFFECT_TYPE, MaterialChanger> AffectorMaterialChanger = new Dictionary<E_AFFECT_TYPE, MaterialChanger>();
 
-        public Material CommonFunctionalActMaterial {get; private set;}
-        public Material CommonAffectMaterial {get; private set;}
         private readonly Dictionary<Material, Material[]> sharedMaterialsByVarientMaterial = new Dictionary<Material, Material[]>();
 
-        [ContextMenu("InitMaterials")]
+        [ContextMenu("InitMaterials In EditMode")]
+        private void InitInEditMode() {
+            CommonFunctionalActMaterial = _commonEntityMaterialRefer.CopyFunctionalActMaterialInstant();
+            CommonAffectMaterial        = _commonEntityMaterialRefer.CopyAffectMaterialInstant();
+            if(_originVarientMaterial == null || _originVarientMaterial.Count > 0) _originVarientMaterial = new SerializedDictionary<Material, List<Renderer>>();
+            foreach(Material mat in _entityMaterials) {
+                if(!_originVarientMaterial.ContainsKey(mat)) {
+                    _originVarientMaterial.Add(mat, new List<Renderer>());
+                }
+                sharedMaterialsByVarientMaterial.Add(mat, new Material[3] {mat, CommonFunctionalActMaterial, CommonAffectMaterial});
+            }
+            foreach(Transform skinTransform in _skinObject.transform) {
+                Renderer renderer = skinTransform.GetComponent<Renderer>();
+                foreach(Material mat in _entityMaterials) {
+                    if(mat == renderer.sharedMaterial) {
+                        _originVarientMaterial[mat].Add(renderer);
+                        renderer.sharedMaterials = sharedMaterialsByVarientMaterial[mat];
+                    }
+                }
+            }
+        }
+
         public void Init() {
             CommonFunctionalActMaterial = _commonEntityMaterialRefer.CopyFunctionalActMaterialInstant();
-            CommonAffectMaterial = _commonEntityMaterialRefer.CopyAffectMaterialInstant();
-        
+            CommonAffectMaterial        = _commonEntityMaterialRefer.CopyAffectMaterialInstant();
             InitializeShaderMaterials();
             SetSharedMaterialInRenderer();
             InitializeMaterialChangers();
         }
 
         private void InitializeShaderMaterials() {
-            _originVarientMaterial = new SerializedDictionary<Material, List<Renderer>>();
+            if(_originVarientMaterial == null || _originVarientMaterial.Count > 0) _originVarientMaterial = new SerializedDictionary<Material, List<Renderer>>();
             foreach(Material mat in _entityMaterials) {
-                if(!_originVarientMaterial.ContainsKey(mat)) {
-                    _originVarientMaterial.Add(mat, new List<Renderer>());
-                }
+                if(!_originVarientMaterial.ContainsKey(mat)) { _originVarientMaterial.Add(mat, new List<Renderer>()); }
                 sharedMaterialsByVarientMaterial.Add(mat, new Material[3] {mat, CommonFunctionalActMaterial, CommonAffectMaterial});
             }
         }
