@@ -512,9 +512,9 @@ namespace Sophia.Instantiates.Skills
                 );
                 TimerComposite.AddOnUseEvent(async () =>
                 {
-                    player.GetMovementComposite().SetMovableState(false);
+                    player.GetMovementComposite().SetMoveState(false);
                     await UniTask.Delay(500);
-                    player.GetMovementComposite().SetMovableState(true);
+                    player.GetMovementComposite().SetMoveState(true);
                 });
                 return this;
             }
@@ -711,9 +711,9 @@ namespace Sophia.Instantiates.Skills
                 );
                 TimerComposite.AddOnUseEvent(async () =>
                 {
-                    player.GetMovementComposite().SetMovableState(false);
+                    player.GetMovementComposite().SetMoveState(false);
                     await UniTask.Delay(500);
-                    player.GetMovementComposite().SetMovableState(true);
+                    player.GetMovementComposite().SetMoveState(true);
                 });
                 return this;
             }

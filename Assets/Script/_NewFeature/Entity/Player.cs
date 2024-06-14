@@ -91,7 +91,7 @@ namespace Sophia.Entitys
             ExtrasReferer = new PlayerExtrasReferer();
 
             Life = new LifeComposite(_basePlayerData.MaxHp, _basePlayerData.Defence);
-            Movement = new MovementComposite(entityRigidbody, _basePlayerData.MoveSpeed);
+            Movement = new MovementComposite(this.transform, this.entityRigidbody, _basePlayerData.MoveSpeed);
             DashSkillAbility = new DashSkill(this.entityRigidbody, Movement.GetMovemenCompositetData, _basePlayerData.DashForce);
             Power = new Stat(_basePlayerData.Power,
                 E_NUMERIC_STAT_TYPE.Power,
@@ -129,7 +129,10 @@ namespace Sophia.Entitys
             DashSkillAbility.SetAudioSource(DashSource);
 
             OnWealthChangeEvent.Invoke(mPlayerWealth);
+
+            PlayerController.AllowInput(this.name);
         }
+
         #endregion
 
         #region Life Accessible
@@ -150,10 +153,9 @@ namespace Sophia.Entitys
 
         public override bool Die()
         {
-            PlayerController.IsAttackAllow = false;
-            PlayerController.IsMoveAllow = false;
+            PlayerController.DisallowInput(this.name);
 
-            GetMovementComposite().SetMovableState(false);
+            GetMovementComposite().SetMoveState(false);
             entityCollider.enabled = false;
             _modelManager.GetAnimator().SetTrigger("Die");
 
@@ -197,7 +199,7 @@ namespace Sophia.Entitys
         public MovementComposite GetMovementComposite() => this.Movement;
         public bool GetMoveState() => this.Movement.IsMovable;
 
-        public void SetMoveState(bool movableState) => this.Movement.SetMovableState(movableState);
+        public void SetMoveState(bool movableState) => this.Movement.SetMoveState(movableState);
 
         public Vector2 MoveInput;
         public void OnMove(InputValue _value)
@@ -213,12 +215,12 @@ namespace Sophia.Entitys
             // GetAnimator().SetFloat("Move", this.entityRigidbody.velocity.magnitude);
             if (!Movement.IsBorder(this.transform))
             {
-                Movement.MoveTick(this.transform);
+                Movement.MoveTick();
                 GetModelManager().GetAnimator().SetFloat("Move", entityRigidbody.velocity.magnitude);
             }
         }
 
-        public async UniTask Turning() { await Movement.Turning(transform, Input.mousePosition); }
+        public async UniTask Turning(Vector3 forwardingVector) { await Movement.Turning(Input.mousePosition); }
         //public void TurningWithCallback(UnityAction action) => Movement.TurningWithCallback(transform,Input.mousePosition,action).Forget();
 
         #endregion

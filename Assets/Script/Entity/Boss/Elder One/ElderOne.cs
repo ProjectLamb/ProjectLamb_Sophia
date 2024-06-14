@@ -105,10 +105,17 @@ namespace Sophia.Entitys
         {
             base.Start();
 
+            Life.OnDamaged += OnEnemyHitHandler;
             Life.OnEnterDie += OnElderOneEnterDie;
             Life.OnExitDie += OnElderOneExitDie;
 
             InitAnimParamList();
+        }
+
+        private void OnDisable() {
+            Life.OnDamaged -= OnEnemyHitHandler;
+            Life.OnEnterDie -= OnElderOneEnterDie;
+            Life.OnExitDie -= OnElderOneExitDie;
         }
 
         void Update()
@@ -129,6 +136,11 @@ namespace Sophia.Entitys
             fsm.ChangeState(States.Death);
         }
 
+        public void OnEnemyHitHandler(DamageInfo damageInfo) {
+            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Damaged].PlayFunctionalActOneShot();
+            GameManager.Instance.NewFeatureGlobalEvent.EnemyHit.PerformStartFunctionals(ref GlobalHelper.NullRef);
+        }
+
         void InitAnimParamList()
         {
             for (int i = 0; i < this.GetModelManager().GetAnimator().parameterCount; i++)
@@ -147,6 +159,8 @@ namespace Sophia.Entitys
                 }
             }
         }
+
+
 
         void ResetAnimParam()
         {
@@ -708,7 +722,7 @@ namespace Sophia.Entitys
             // {
             //     if (isDamaged = Life.Damaged(damage)) { GameManager.Instance.GlobalEvent.OnEnemyHitEvent.ForEach(Event => Event.Invoke()); }
             // }
-            if (isDamaged = Life.Damaged(damage)) { GameManager.Instance.GlobalEvent.OnEnemyHitEvent.ForEach(Event => Event.Invoke()); }
+            if (isDamaged = Life.Damaged(damage)) { GameManager.Instance.NewFeatureGlobalEvent.OnEnemyHitEvent.Invoke(); }
             if (Life.IsDie) { fsm.ChangeState(States.Death); }
             return isDamaged;
         }
@@ -747,7 +761,7 @@ namespace Sophia.Entitys
             throw new System.NotImplementedException();
         }
 
-        public UniTask Turning()
+        public UniTask Turning(Vector3 forwardingVector)
         {
             //Currently using DoTween.DoLookAt
             throw new System.NotImplementedException();

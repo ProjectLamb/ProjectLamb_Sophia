@@ -27,7 +27,19 @@ public class VideoController : MonoBehaviour
         currentVideo = video;
         fMODAudioSource = videoList[(int)video].transform.GetChild(1).GetComponent<FMODAudioSource>();
         vid.loopPointReached += VideoEnd;
+        PauseMenu.OnOpenMenuStaticEvent.AddListener(PauseVideo);
+        PauseMenu.OnCloseMenuStaticEvent.AddListener(PlayVideo);
         StartCoroutine(CoFadeIn(0.02f, 1f));
+    }
+
+    public void PauseVideo() {
+        vid.Pause();
+        fMODAudioSource.Pause();
+    }
+
+    public void PlayVideo() {
+        vid.Play();
+        fMODAudioSource.UnPause();
     }
 
     void Update()
@@ -43,7 +55,7 @@ public class VideoController : MonoBehaviour
 
     IEnumerator CoFadeIn(float fadeTime, float fadeDuration)
     {
-        GameManager.Instance.GlobalEvent.IsGamePaused = true;
+        GameManager.Instance.GlobalEvent.Pause(gameObject.name);
         yield return new WaitForEndOfFrame();
         image.color = Color.black;
         image.enabled = true;
@@ -66,7 +78,7 @@ public class VideoController : MonoBehaviour
     {
         InGameScreenUI.Instance._fadeUI.AddBindingAction(() =>
         {
-            GameManager.Instance.GlobalEvent.IsGamePaused = false;
+            GameManager.Instance.GlobalEvent.Play(gameObject.name);;
 
             switch (currentVideo)
             {
@@ -84,6 +96,8 @@ public class VideoController : MonoBehaviour
 
             image.enabled = false;
             vid.Stop();
+            PauseMenu.OnOpenMenuStaticEvent.RemoveListener(PauseVideo);
+            PauseMenu.OnCloseMenuStaticEvent.RemoveListener(PlayVideo);
         });
         InGameScreenUI.Instance._fadeUI.FadeOut(0.02f, 1.5f);
     }

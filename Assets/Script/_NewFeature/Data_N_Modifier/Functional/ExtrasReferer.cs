@@ -6,7 +6,7 @@ namespace Sophia.DataSystem.Referer
     using Sophia.Entitys;
 
     public class EntityExtrasReferer
-    {
+    { 
 #region Life
 
             private Extras<DamageInfo> OnDamaged = null;

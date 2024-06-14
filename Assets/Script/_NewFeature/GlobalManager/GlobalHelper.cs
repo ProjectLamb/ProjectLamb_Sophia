@@ -4,6 +4,9 @@ using UnityEngine.Events;
 
 namespace Sophia
 {
+    public static class GlobalHelper {
+        public static object NullRef = null;
+    }
     public static class GlobalExternal
     {
         public static Vector3 GetSophiaAngleToVector(float _angle)

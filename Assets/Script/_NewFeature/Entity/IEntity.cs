@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using Sophia.Composite;
 using Sophia.Instantiates;
+using UnityEngine;
 using UnityEngine.AI;
 
 namespace Sophia
@@ -22,7 +23,7 @@ namespace Sophia
         public bool GetMoveState();
         public void SetMoveState(bool movableState);
         public void MoveTick();
-        public UniTask Turning();
+        public UniTask Turning(Vector3 forwardingVector);
     }
 
     public interface IMovementAccessible :IMovable {
