@@ -6,7 +6,7 @@ using Unity.Cinemachine;
 
 public class Test_CameraController : MonoBehaviour
 {
-    //0¹ø ÀÏ¹ÝÄ«¸Þ¶ó 1¹ø Å¸°ÙÄ«¸Þ¶ó
+    //0ï¿½ï¿½ ï¿½Ï¹ï¿½Ä«ï¿½Þ¶ï¿½ 1ï¿½ï¿½ Å¸ï¿½ï¿½Ä«ï¿½Þ¶ï¿½
     public GameObject[] cineCamera; 
     public CinemachineTargetGroup targetGroup; 
 
@@ -14,25 +14,25 @@ public class Test_CameraController : MonoBehaviour
 
     void Start()
     {
-        //±âº» Ä«¸Þ¶ó
+        //ï¿½âº» Ä«ï¿½Þ¶ï¿½
         SwitchCamera(0);
-        //Ä«¸Þ¶ó Å¸°Ù ±×·ì¿¡ ÇÃ·¹ÀÌ¾î Ãß°¡
+        //Ä«ï¿½Þ¶ï¿½ Å¸ï¿½ï¿½ ï¿½×·ì¿¡ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ß°ï¿½
         targetGroup.AddMember(GameManager.Instance.PlayerGameObject.transform, 5f, 5f);
-        //½ºÅ×ÀÌÁö º¯°æµÉ ¶§ ¹ß»ýÇÏ´Â ÀÌº¥Æ®¿¡ ÇÔ¼öÃß°¡       
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ß»ï¿½ï¿½Ï´ï¿½ ï¿½Ìºï¿½Æ®ï¿½ï¿½ ï¿½Ô¼ï¿½ï¿½ß°ï¿½       
         GameManager.Instance.GlobalEvent.OnStageEnter.Add(new UnityAction<Stage, Stage>(StartDampingCoroutine));
-        GameManager.Instance.GlobalEvent.OnStageEnter.Add(new UnityAction<Stage, Stage>(CheckStage));   
+        //GameManager.Instance.GlobalEvent.OnStageEnter.Add(new UnityAction<Stage, Stage>(CheckStage));   
     }
 
     public void CheckStage(Stage departStage, Stage arriveStage)
     {
-        //º¸½º¹æÀÌ¸é Ä«¸Þ¶ó º¯°æ
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì¸ï¿½ Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½ï¿½ï¿½
         if (arriveStage.Type == Stage.STAGE_TYPE.BOSS) 
         {
-            //Å¸°Ù Ä«¸Þ¶ó
+            //Å¸ï¿½ï¿½ Ä«ï¿½Þ¶ï¿½
              SwitchCamera(1);  
         }
 
-        StartCoroutine(SetDamping(departStage, arriveStage, arriveStage.Type == Stage.STAGE_TYPE.BOSS ? 1 : 0));
+        StartCoroutine(SetDamping(departStage, arriveStage, arriveStage.Type == Stage.STAGE_TYPE.BOSS ? 2 : 0));
     }
 
 
@@ -49,7 +49,7 @@ public class Test_CameraController : MonoBehaviour
         StartCoroutine(SetDamping(departStage, arriveStage));
     }
 
-    public IEnumerator SetDamping(Stage departStage, Stage arriveStage, float time=0)
+    public IEnumerator SetDamping(Stage departStage, Stage arriveStage, float time = 0)
     {
         yield return new WaitForSeconds(time);
         cineCamera[0].GetComponent<CinemachineFollow>().TrackerSettings.PositionDamping = Vector3.zero;

@@ -187,14 +187,17 @@ namespace Sophia.Entitys
                 case 0:
                     this.GetModelManager().GetAnimator().SetTrigger("DoAttackLeft");
                     _audioSources[(int)E_ROBUWA_AUDIO_INDEX.AttackOne].Play();
+                    GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Attack].PlayFunctionalActOneShotWithDuration(0.8f);
                     break;
                 case 1:
                     this.GetModelManager().GetAnimator().SetTrigger("DoAttackRight");
                     _audioSources[(int)E_ROBUWA_AUDIO_INDEX.AttackOne].Play();
+                    GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Attack].PlayFunctionalActOneShotWithDuration(0.8f);
                     break;
                 case 2:
                     this.GetModelManager().GetAnimator().SetTrigger("DoAttackJump");
                     _audioSources[(int)E_ROBUWA_AUDIO_INDEX.AttackBoth].Play();
+                    GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Attack].PlayFunctionalActOneShotWithDuration(1.4f);
                     break;
             }
         }
@@ -540,7 +543,7 @@ namespace Sophia.Entitys
 
         public void OnEnemyHitHandler(DamageInfo damageInfo) {
             _audioSources[(int)E_ROBUWA_AUDIO_INDEX.Hit].Play();
-            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Damaged].PlayFunctionalActOneShot();
+            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Damaged].PlayFunctionalActOneShotWithDuration(0.3f);
             GameManager.Instance.NewFeatureGlobalEvent.EnemyHit.PerformStartFunctionals(ref GlobalHelper.NullRef);
         } 
 

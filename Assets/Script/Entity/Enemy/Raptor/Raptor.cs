@@ -200,7 +200,7 @@ namespace Sophia.Entitys
         {
             _audioSources[(int)E_RAPTOR_AUDIO_INDEX.Hit].Play();
             GetModelManager().GetAnimator().SetTrigger("DoHit");
-            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Damaged].PlayFunctionalActOneShot();
+            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Damaged].PlayFunctionalActOneShotWithDuration(0.3f);
             GameManager.Instance.NewFeatureGlobalEvent.EnemyHit.PerformStartFunctionals(ref GlobalHelper.NullRef);
         }
 
