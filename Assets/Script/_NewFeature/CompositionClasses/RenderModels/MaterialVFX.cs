@@ -109,13 +109,15 @@ namespace Sophia.Composite.RenderModels
             speed = (serialMaterialData._speed > 0 ) ? serialMaterialData._speed : 0.01f;
             curve = serialMaterialData._curve;
             zeroStartPoint = serialMaterialData._zeroStartPoint;
-            materialRef = material;
             maxAlpha = serialMaterialData._maxAlpha;
-            materialRef.SetFloat(SHADER_PREPOSITIONS + functionalActType.ToString() + MAXALPHA_POSTPOSITIONS, 1);
+            materialRef = material;
+            
 
             StartPoint = zeroStartPoint ? 0 : 1;
             AccelerateSign = zeroStartPoint ? 1 : -1;
             EndPoint = StartPoint + AccelerateSign;
+            
+            materialRef.SetFloat(SHADER_PREPOSITIONS + functionalActType.ToString() + MAXALPHA_POSTPOSITIONS, serialMaterialData._maxAlpha);
         }
 
         public MaterialChanger(E_AFFECT_TYPE at,in DB.SerialMaterialChange serialMaterialData, Material material) {
