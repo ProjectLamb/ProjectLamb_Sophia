@@ -128,6 +128,7 @@ namespace Sophia.Entitys
             Life.OnEnterDie -= OnRaptorEnterDie;
             Life.OnExitDie -= OnRaptorExitDie;
         }
+        
         protected void InitAnimParamList()
         {
             for (int i = 0; i < GetModelManager().GetAnimator().parameterCount; i++)
@@ -154,6 +155,7 @@ namespace Sophia.Entitys
             foreach (string t in animTriggerParamList)
                 this.GetModelManager().GetAnimator().ResetTrigger(t);
         }
+        
         #region Attack
         protected void DoAttack()
         {

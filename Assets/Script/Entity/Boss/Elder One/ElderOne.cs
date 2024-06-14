@@ -275,10 +275,12 @@ namespace Sophia.Entitys
         {
             Sophia.Instantiates.VisualFXObject visualFX = VisualFXObjectPool.GetObject(_dieParticleRef).Init();
             GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
+            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Dead].PlayAffectOneShot(); // 새로 추가 된것!
             _audioSource[(int)E_ELDERONE_AUDIO_INDEX.Death].Play();
             GameManager.Instance.DonDestroyObjectReferer.DontDestroyGameManager.AudioManager.audioStateSender._bossPhaseSender[2].SendCommand();
             CurrentInstantiatedStage.mobGenerator.RemoveMob(this.gameObject);
         }
+        
         public override bool Die()
         {
             Life.Died();
