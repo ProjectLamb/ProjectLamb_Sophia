@@ -285,6 +285,7 @@ namespace Sophia.Entitys
             GameManager.Instance.DonDestroyObjectReferer.DontDestroyGameManager.AudioManager.audioStateSender._bossPhaseSender[2].SendCommand();
             CurrentInstantiatedStage.mobGenerator.RemoveMob(this.gameObject);
         }
+        
         public override bool Die()
         {
             Life.Died();

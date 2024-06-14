@@ -12,10 +12,10 @@ public class HandleButtons : MonoBehaviour
     }
     public void HandleReturn(){
         pauseMenu.CloseMenu();
-        GameManager.Instance.GlobalEvent.Play(gameObject.name);;
+        GameManager.Instance.GlobalEvent.Play(gameObject.name);
     }
-    IEnumerator enumerator() {
-        GameManager.Instance.GlobalEvent.Play(gameObject.name);;
+    IEnumerator CoRestart() {
+        GameManager.Instance.GlobalEvent.ResetForce();
         yield return new WaitForSecondsRealtime(0.01f);
         if(LoadSceneString == "")
             SceneManager.LoadScene(1);
@@ -23,18 +23,16 @@ public class HandleButtons : MonoBehaviour
             SceneManager.LoadScene(LoadSceneString);
         }
     }
+
+    IEnumerator CoExit() {
+        GameManager.Instance.GlobalEvent.ResetForce();
+        yield return new WaitForSecondsRealtime(0.01f);
+        SceneManager.LoadScene(0);
+    }
     public void HandleRestart(){
-        StartCoroutine(enumerator());
+        StartCoroutine(CoRestart());
     }
     public void HandleQuit(){
-        SceneManager.LoadScene(0);
-        GameManager.Instance.GlobalEvent.Play(gameObject.name);;
-        // #if UNITY_EDITOR
-        //     // Application.Quit() does not work in the editor so
-        //     // UnityEditor.EditorApplication.isPlaying need to be set to false to end the game
-        //     UnityEditor.EditorApplication.isPlaying = false;
-        // #else
-        //     Application.Quit();
-        // #endif
+        StartCoroutine(CoExit());
     }
 }

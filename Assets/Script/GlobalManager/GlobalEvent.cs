@@ -32,9 +32,10 @@ public class GlobalEvent : MonoBehaviour
 
         OnPlayEvent     ??= new UnityEvent<string>();
         OnPausedEvent   ??= new UnityEvent<string>();
-        _IsGamePaused = new SerializedDictionary<string, bool>();
-        
-        _IsGamePaused.Add(gameObject.name, false);
+        _IsGamePaused   ??= new SerializedDictionary<string, bool>
+        {
+            { gameObject.name, false }
+        };
     }
 
     private void OnEnable() {
@@ -93,6 +94,17 @@ public class GlobalEvent : MonoBehaviour
             Debug.Log("Time Changed");
         }
     }
+
+    public void ResetForce() {
+        _IsGamePaused = new SerializedDictionary<string, bool>
+        {
+            { gameObject.name, false }
+        };
+        OnPlayEvent?.Invoke(gameObject.name);
+        GameTimeScale = mCurrentTimeScale; 
+        Time.timeScale = GameTimeScale;
+    }
+
     public float TimeHoldingDuration;
     float mCurrentTimeScale = 1f;
 
