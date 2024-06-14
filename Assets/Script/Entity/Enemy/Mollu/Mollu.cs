@@ -165,7 +165,7 @@ namespace Sophia.Entitys
         public void OnMolluHit(DamageInfo damageInfo)
         {
             // GetModelManager().GetAnimator().SetTrigger("DoHit");
-            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Damaged].PlayFunctionalActOneShot();
+            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Damaged].PlayFunctionalActOneShotWithDuration(0.3f);
             GameManager.Instance.NewFeatureGlobalEvent.EnemyHit.PerformStartFunctionals(ref GlobalHelper.NullRef);
         }
 
@@ -474,6 +474,7 @@ namespace Sophia.Entitys
             transform.DOKill();
 
             DoAttack();
+            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Attack].PlayFunctionalActOneShotWithDuration(1.5f);
         }
 
         void Attack_Update()
@@ -514,7 +515,7 @@ namespace Sophia.Entitys
 
             foreach (Sophia.Instantiates.ItemObject itemObject in itemObjects)
             {
-                if(itemObject == null) continue;
+                if (itemObject == null) continue;
                 itemObject.SetTriggerTime(1f).SetTweenSequence(SetSequnce(itemObject)).Activate();
             }
             Die();

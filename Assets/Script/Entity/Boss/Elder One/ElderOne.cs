@@ -112,7 +112,8 @@ namespace Sophia.Entitys
             InitAnimParamList();
         }
 
-        private void OnDisable() {
+        private void OnDisable()
+        {
             Life.OnDamaged -= OnEnemyHitHandler;
             Life.OnEnterDie -= OnElderOneEnterDie;
             Life.OnExitDie -= OnElderOneExitDie;
@@ -136,8 +137,9 @@ namespace Sophia.Entitys
             fsm.ChangeState(States.Death);
         }
 
-        public void OnEnemyHitHandler(DamageInfo damageInfo) {
-            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Damaged].PlayFunctionalActOneShot();
+        public void OnEnemyHitHandler(DamageInfo damageInfo)
+        {
+            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Damaged].PlayFunctionalActOneShotWithDuration(0.3f);
             GameManager.Instance.NewFeatureGlobalEvent.EnemyHit.PerformStartFunctionals(ref GlobalHelper.NullRef);
         }
 
@@ -236,10 +238,12 @@ namespace Sophia.Entitys
                         this.GetModelManager().GetAnimator().SetTrigger(animTriggerParamList[4]);
                         break;
                 }
+                GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Attack].PlayFunctionalActOneShotWithDuration(0.78f);  //애니메이션 프레임 + 0.6
             }
             else if (phase == 2)
             {
                 this.GetModelManager().GetAnimator().SetTrigger(animTriggerParamList[5]);
+                GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Attack].PlayFunctionalActOneShotWithDuration(0.5f);
             }
             else
             {
@@ -255,6 +259,7 @@ namespace Sophia.Entitys
             if (phase == 1)
             {
                 this.GetModelManager().GetAnimator().SetTrigger(animTriggerParamList[6]);
+                GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Attack].PlayFunctionalActOneShotWithDuration(0.78f);
             }
             else if (phase == 2)
             {
@@ -631,10 +636,10 @@ namespace Sophia.Entitys
             nav.SetDestination(transform.position);
             nav.isStopped = true;
 
-            if (GameManager.Instance.CameraController != null)
-            {
-                GameManager.Instance.CameraController.SwitchCamera(1);
-            }
+            // if (GameManager.Instance.CameraController != null)
+            // {
+            //     GameManager.Instance.CameraController.SwitchCamera(1);
+            // }
         }
 
         void Rush_Update()
@@ -687,10 +692,10 @@ namespace Sophia.Entitys
             this.GetModelManager().GetAnimator().SetBool("IsRushEnd", false);
             isRushOnce = false;
 
-            if (GameManager.Instance.CameraController != null)
-            {
-                GameManager.Instance.CameraController.SwitchCamera(0);
-            }
+            // if (GameManager.Instance.CameraController != null)
+            // {
+            //     GameManager.Instance.CameraController.SwitchCamera(0);
+            // }
         }
 
         /** Death State */

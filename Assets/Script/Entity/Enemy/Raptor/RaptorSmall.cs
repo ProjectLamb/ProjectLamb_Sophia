@@ -250,6 +250,7 @@ namespace Sophia.Entitys
         {
             Debug.Log("Tap_Enter");
 
+            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Attack].PlayFunctionalActOneShotWithDuration(2.8f);   //Animation Clip Length + 0.6f
             _nav.SetDestination(transform.position);
             _nav.isStopped = true;
             currentRushTime = RushTime;
