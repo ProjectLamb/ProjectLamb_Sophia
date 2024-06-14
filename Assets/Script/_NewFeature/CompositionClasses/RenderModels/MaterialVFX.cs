@@ -46,6 +46,7 @@ namespace Sophia.Composite.RenderModels
             }
         }
 
+        [ContextMenu("Init")]
         public void Init() {
             CommonFunctionalActMaterial = _commonEntityMaterialRefer.CopyFunctionalActMaterialInstant();
             CommonAffectMaterial        = _commonEntityMaterialRefer.CopyAffectMaterialInstant();
@@ -88,10 +89,12 @@ namespace Sophia.Composite.RenderModels
         public static readonly string SHADER_PREPOSITIONS = "_";
         public static readonly string BOOLEAN_PREPOSITIONS = "Is";
         public static readonly string AMOUNT_POSTPOSITIONS = "Amount";
+        public static readonly string MAXALPHA_POSTPOSITIONS = "MaxAlpha";
 
         public E_FUNCTIONAL_EXTRAS_TYPE functionalActType = E_FUNCTIONAL_EXTRAS_TYPE.None;
         public E_AFFECT_TYPE affectType = E_AFFECT_TYPE.None;
 
+        public float maxAlpha;
         public float speed;
         public AnimationCurve curve;
         public bool zeroStartPoint;
@@ -107,6 +110,8 @@ namespace Sophia.Composite.RenderModels
             curve = serialMaterialData._curve;
             zeroStartPoint = serialMaterialData._zeroStartPoint;
             materialRef = material;
+            maxAlpha = serialMaterialData._maxAlpha;
+            materialRef.SetFloat(SHADER_PREPOSITIONS + functionalActType.ToString() + MAXALPHA_POSTPOSITIONS, 1);
 
             StartPoint = zeroStartPoint ? 0 : 1;
             AccelerateSign = zeroStartPoint ? 1 : -1;
@@ -182,6 +187,8 @@ namespace Sophia.Composite.RenderModels
                 .OnComplete(RevertEntityFunctionalActMaterial);
             currentSequnce.Play();
         }
+        
+        // GetModelManger().GetMaterialVFX().FunctionalMaterialChanger[E.Attack].PlayFunctionalActOneShotWithDuration(몆초)
 
         public void PlayFunctionalActOneShotWithDuration(float durateTime) {
             if (currentSequnce != null && currentSequnce.IsPlaying())
@@ -230,6 +237,7 @@ namespace Sophia.DB{
 
     [System.Serializable]
     public struct SerialMaterialChange {
+        [Range(0,1)] [SerializeField] public float _maxAlpha;
         [SerializeField] public float _speed;
         [SerializeField] public AnimationCurve _curve;
         [SerializeField] public bool _zeroStartPoint;
