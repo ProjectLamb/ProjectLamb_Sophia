@@ -104,6 +104,7 @@ namespace Sophia.Entitys
             );
 
             _affectorManager.Init(_basePlayerData.Tenacity);
+            _playerIdleBehaivour.InitByData(this);
 
         }
 
@@ -195,7 +196,8 @@ namespace Sophia.Entitys
         #endregion
 
         #region Movement
-
+        [SerializeField] public PlayerIdleBehaivour _playerIdleBehaivour;
+        public FMODAudioSource IdleRestAudio;
         public MovementComposite GetMovementComposite() => this.Movement;
         public bool GetMoveState() => this.Movement.IsMovable;
 
