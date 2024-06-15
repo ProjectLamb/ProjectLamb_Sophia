@@ -24,6 +24,7 @@ namespace Sophia.Instantiates
         [SerializeField] public SerialOnConveyAffectExtrasModifierDatas _conveyAffectModifierData;
         [SerializeField] public SerialProjectileInstantiateData _projectileInstantiateData;
         [SerializeField] PurchaseComponent _purchaseComponent;
+        [SerializeField] public SerialAudioData _activatedAudioData;
 
         public Skill skill { get; private set; }
         public bool ISDEBUG = true;
@@ -48,7 +49,8 @@ namespace Sophia.Instantiates
                     in _affectorData,
                     in _damageModifierData,
                     in _conveyAffectModifierData,
-                    in _projectileInstantiateData
+                    in _projectileInstantiateData,
+                    in _activatedAudioData
                 );
 
                 CollectUserInterfaceAction(skill, (bool selected, KeyCode key) =>

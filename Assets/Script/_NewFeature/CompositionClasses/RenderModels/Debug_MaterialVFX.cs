@@ -58,6 +58,7 @@ namespace DEBUG
         }
         
         private void Update() {
+            
             if(Input.GetKeyDown(KeyCode.O)) {PlayOneShotMaterial();}
             switch(materialType) {
                 case E_MATERIAL_TYPE.FunctionalAct : {
