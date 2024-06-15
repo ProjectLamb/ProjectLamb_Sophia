@@ -17,6 +17,7 @@ namespace Sophia.Entitys
     using Sophia.DataSystem.Modifiers;
     using Sophia.UserInterface;
     using Sophia.Composite.RenderModels;
+    using Unity.Cinemachine;
 
     public class Player : Entity, IMovementAccessible, IAffectManagerAccessible, IInstantiatorAccessible
     {
@@ -239,6 +240,7 @@ namespace Sophia.Entitys
         public void DashEnd()
         {
             gameObject.layer = playerOriginLayer;
+            GameManager.Instance.CameraController.cineCamera[0].GetComponent<CinemachineFollow>().TrackerSettings.PositionDamping = GameManager.Instance.CameraController.OriginCameraDamping;
             this.GetModelManager().DisableTrail();
         }
 
