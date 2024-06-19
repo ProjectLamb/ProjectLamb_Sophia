@@ -73,12 +73,12 @@ namespace Sophia.Instantiates
                         res.Add(_bucket.InstantablePositioning(Instantiate(item)).Init());
                         break;
                     case SkillItemObject:
-                        item = ItemPool.Instance._skillItems[random.Next(0, ItemPool.Instance._skillItems.Count)];
+                        item = ItemPool.Instance.GetRandomSkill();
                         Debug.Log(item.name);
                         res.Add(_bucket.InstantablePositioning(Instantiate(item)).Init());
                         break;
                     case EquipmentItemObject:
-                        item = ItemPool.Instance._equipmentItems[random.Next(0, ItemPool.Instance._equipmentItems.Count)];
+                        item = ItemPool.Instance.GetRandomEquipment();
                         res.Add(_bucket.InstantablePositioning(Instantiate(item)).Init());
                         break;
                 }

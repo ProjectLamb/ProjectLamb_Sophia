@@ -18,7 +18,7 @@ namespace Sophia.Entitys
 {
     public enum E_ROBUWA_AUDIO_INDEX
     {
-        Kaooo, Attack, MoveattackMode
+        Kaooo, AttackOne, AttackBoth, Hit, MoveAttackMode, Death, Reset
     }
     public class Robuwa : Enemy, IMovable
     {
@@ -44,6 +44,7 @@ namespace Sophia.Entitys
         [SerializeField] private bool isMovable = true;
         [SerializeField] private int wanderingCoolTime = 3;
         [SerializeField] private EQS eqs;
+        [SerializeField] protected List<FMODAudioSource> _audioSources;
         #endregion
 
         public enum States
@@ -85,6 +86,7 @@ namespace Sophia.Entitys
         {
             base.Start();
 
+            Life.OnDamaged += OnEnemyHitHandler;
             Life.OnEnterDie += OnRobuwaEnterDie;
             Life.OnExitDie += OnRobuwaExitDie;
 
@@ -111,14 +113,24 @@ namespace Sophia.Entitys
             fsm.Driver.FixedUpdate.Invoke();
         }
 
+        
+        private void OnDisable()
+        {
+            Life.OnDamaged -= OnEnemyHitHandler;
+            Life.OnEnterDie -= OnRobuwaEnterDie;
+            Life.OnExitDie -= OnRobuwaExitDie;
+        }
+
         public void OnRobuwaEnterDie()
         {
             Sophia.Instantiates.VisualFXObject visualFX = VisualFXObjectPool.GetObject(_dieParticleRef).Init();
             GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
-            
-            for(int i = 0; i < 4; i++)
+            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Dead].PlayFunctionalActOneShotWithDuration(0.5f);
+            _audioSources[(int)E_ROBUWA_AUDIO_INDEX.Death].Play();
+
+            for (int i = 0; i < 4; i++)
             {
-                if(_projectileBucketManager.GetProjectileBucket(i) != null)
+                if (_projectileBucketManager.GetProjectileBucket(i) != null)
                     _projectileBucketManager.GetProjectileBucket(i).gameObject.SetActive(false);
             }
 
@@ -174,15 +186,18 @@ namespace Sophia.Entitys
             {
                 case 0:
                     this.GetModelManager().GetAnimator().SetTrigger("DoAttackLeft");
-                    _audioSources[(int)E_ROBUWA_AUDIO_INDEX.Attack].Play();
+                    _audioSources[(int)E_ROBUWA_AUDIO_INDEX.AttackOne].Play();
+                    GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Attack].PlayFunctionalActOneShotWithDuration(0.8f);
                     break;
                 case 1:
                     this.GetModelManager().GetAnimator().SetTrigger("DoAttackRight");
-                    _audioSources[(int)E_ROBUWA_AUDIO_INDEX.Attack].Play();
+                    _audioSources[(int)E_ROBUWA_AUDIO_INDEX.AttackOne].Play();
+                    GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Attack].PlayFunctionalActOneShotWithDuration(0.8f);
                     break;
                 case 2:
                     this.GetModelManager().GetAnimator().SetTrigger("DoAttackJump");
-                    _audioSources[(int)E_ROBUWA_AUDIO_INDEX.Attack].Play();
+                    _audioSources[(int)E_ROBUWA_AUDIO_INDEX.AttackBoth].Play();
+                    GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Attack].PlayFunctionalActOneShotWithDuration(1.4f);
                     break;
             }
         }
@@ -215,12 +230,29 @@ namespace Sophia.Entitys
         #region Attack
 
         private Stat power;
+        [SerializeField] protected Instantiates.ProjectileObject[]         _attckProjectileDirection;
 
         public void UseProjectile_NormalAttack()
         {
             Sophia.Instantiates.ProjectileObject useProjectile = ProjectilePool.GetObject(_attckProjectiles[(int)ANIME_STATE.ATTACK]).Init(this);
 
             _projectileBucketManager.InstantablePositioning((int)ANIME_STATE.ATTACK, useProjectile)
+                                    .SetProjectilePower(GetStat(E_NUMERIC_STAT_TYPE.Power))
+                                    .Activate();
+        }
+        public void UseProjectile_LeftAttack()
+        {
+            Sophia.Instantiates.ProjectileObject useProjectile = ProjectilePool.GetObject(_attckProjectileDirection[0]).Init(this);
+
+            _projectileBucketManager.InstantablePositioning(1, useProjectile)
+                                    .SetProjectilePower(GetStat(E_NUMERIC_STAT_TYPE.Power))
+                                    .Activate();
+        }
+        public void UseProjectile_RightAttack()
+        {
+            Sophia.Instantiates.ProjectileObject useProjectile = ProjectilePool.GetObject(_attckProjectileDirection[1]).Init(this);
+
+            _projectileBucketManager.InstantablePositioning(1, useProjectile)
                                     .SetProjectilePower(GetStat(E_NUMERIC_STAT_TYPE.Power))
                                     .Activate();
         }
@@ -327,7 +359,7 @@ namespace Sophia.Entitys
         {
             Debug.Log("Move_Enter");
             this.GetModelManager().GetAnimator().SetBool("IsWalk", true);
-            _audioSources[(int)E_ROBUWA_AUDIO_INDEX.MoveattackMode].Play();
+            _audioSources[(int)E_ROBUWA_AUDIO_INDEX.MoveAttackMode].Play();
             nav.enabled = true;
             nav.isStopped = false;
         }
@@ -359,7 +391,7 @@ namespace Sophia.Entitys
 
         void Move_Exit()
         {
-            _audioSources[(int)E_ROBUWA_AUDIO_INDEX.MoveattackMode].Stop();
+            _audioSources[(int)E_ROBUWA_AUDIO_INDEX.MoveAttackMode].Stop();
             this.GetModelManager().GetAnimator().SetBool("IsWalk", false);
         }
 
@@ -439,12 +471,36 @@ namespace Sophia.Entitys
 
             foreach (Sophia.Instantiates.ItemObject itemObject in itemObjects)
             {
-                itemObject.Activate();
+                if(itemObject == null) continue;
+                itemObject.SetTriggerTime(1f).SetTweenSequence(SetSequnce(itemObject)).Activate();
             }
             Die();
         }
 
         #endregion
+
+        public Sequence SetSequnce(Sophia.Instantiates.ItemObject itemObject)
+        {
+            Sequence mySequence = DOTween.Sequence();
+            System.Random random = new System.Random();
+            Vector3 EndPosForward = transform.right;
+            var randomAngle = random.Next(-180, 180);
+            Vector3[] rotateMatrix = new Vector3[] {
+                new Vector3(Mathf.Cos(randomAngle), 0 , Mathf.Sin(randomAngle)),
+                new Vector3(0, 1 , 0),
+                new Vector3(-Mathf.Sin(randomAngle), 0 , Mathf.Cos(randomAngle))
+            };
+            Vector3 retatedVec = Vector3.zero + Vector3.up;
+            retatedVec += EndPosForward.x * rotateMatrix[0];
+            retatedVec += EndPosForward.y * rotateMatrix[1];
+            retatedVec += EndPosForward.z * rotateMatrix[2];
+            var randomDist = (float)random.NextDouble() * 7;
+            var randomForce = (float)random.NextDouble();
+            var randomTime = (float)(random.NextDouble() * 2 + 0.5);
+            Debug.Log(retatedVec * randomDist);
+            Tween jumpTween = itemObject.transform.DOLocalJump((retatedVec * randomDist) + transform.position, randomForce * 25, 1, randomTime).SetEase(Ease.OutBounce);
+            return mySequence.Append(jumpTween);
+        }
 
         #region Inherited Functions From Enemy Class
         protected override void SetDataToReferer()
@@ -484,6 +540,12 @@ namespace Sophia.Entitys
             if (Life.IsDie) { fsm.ChangeState(States.Death); }
             return isDamaged;
         }
+
+        public void OnEnemyHitHandler(DamageInfo damageInfo) {
+            _audioSources[(int)E_ROBUWA_AUDIO_INDEX.Hit].Play();
+            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Damaged].PlayFunctionalActOneShotWithDuration(0.3f);
+            GameManager.Instance.NewFeatureGlobalEvent.EnemyHit.PerformStartFunctionals(ref GlobalHelper.NullRef);
+        } 
 
         public override Stat GetStat(E_NUMERIC_STAT_TYPE numericType) => StatReferer.GetStat(numericType);
 
@@ -529,13 +591,12 @@ namespace Sophia.Entitys
             throw new System.NotImplementedException();
         }
 
-        public UniTask Turning()
+        public UniTask Turning(Vector3 forwardingVector)
         {
             //Currently using DoTween.DoLookAt
             throw new System.NotImplementedException();
         }
 
         #endregion
-        [SerializeField] protected List<FMODAudioSource> _audioSources;
     }
 }

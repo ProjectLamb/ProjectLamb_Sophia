@@ -14,6 +14,8 @@ TagManager:
   - Equipment
   - DebugUI
   - BossProjectile
+  - FxTemporaire
+  - Obstacle
   layers:
   - Default
   - TransparentFX

@@ -5,6 +5,7 @@ public struct TalkData
 {
     public string name; // 대사 치는 캐릭터 이름
     public string[] contexts; // 대사 내용
+    public string emotionState; // 캐릭터 감정상태
 }
 
 [System.Serializable]
@@ -22,13 +23,11 @@ public class ShowTalkData
 
 public class Dialogue : MonoBehaviour
 {
-    // 대화 이벤트 이름
-    [SerializeField] string eventName;
     // 위에서 선언한 TalkData 배열 
     [SerializeField] TalkData[] talkDatas;
 
     public TalkData[] GetObjectDialogue()
     {
-        return DialogueParse.GetDialogue(eventName);
+        return DialogueParse.GetDialogue(TextManager.Instance.storyEventName);
     }
 }

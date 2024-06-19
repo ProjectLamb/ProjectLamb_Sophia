@@ -17,6 +17,7 @@ namespace Sophia.Entitys
     using Sophia.DataSystem.Modifiers;
     using Sophia.UserInterface;
     using Sophia.Composite.RenderModels;
+    using Unity.Cinemachine;
 
     public class Player : Entity, IMovementAccessible, IAffectManagerAccessible, IInstantiatorAccessible
     {
@@ -54,7 +55,8 @@ namespace Sophia.Entitys
             set
             {
                 mPlayerWealth = value;
-                OnWealthChangeEvent.Invoke(mPlayerWealth);
+                InGameScreenUI.Instance._playerWealthBarUI.CountingNumber = mPlayerWealth;
+                OnWealthChangeEvent.Invoke(value - mPlayerWealth);
             }
         }
 
@@ -90,7 +92,7 @@ namespace Sophia.Entitys
             ExtrasReferer = new PlayerExtrasReferer();
 
             Life = new LifeComposite(_basePlayerData.MaxHp, _basePlayerData.Defence);
-            Movement = new MovementComposite(entityRigidbody, _basePlayerData.MoveSpeed);
+            Movement = new MovementComposite(this.transform, this.entityRigidbody, _basePlayerData.MoveSpeed);
             DashSkillAbility = new DashSkill(this.entityRigidbody, Movement.GetMovemenCompositetData, _basePlayerData.DashForce);
             Power = new Stat(_basePlayerData.Power,
                 E_NUMERIC_STAT_TYPE.Power,
@@ -103,6 +105,7 @@ namespace Sophia.Entitys
             );
 
             _affectorManager.Init(_basePlayerData.Tenacity);
+            _playerIdleBehaivour.InitByData(this);
 
         }
 
@@ -111,6 +114,11 @@ namespace Sophia.Entitys
             base.Start();
             Life.SetDependUI(InGameScreenUI.Instance._playerHealthBarUI);
             Life.OnDamaged += InGameScreenUI.Instance._hitCanvasShadeScript.Invoke;
+            
+            // Hit Audio 
+            
+            Life.OnHit += HitSource.Play;
+            Life.OnEnterDie += DeathSource.Play;
 
             InGameScreenUI.Instance._playerWealthBarUI.SetPlayer(this);
 
@@ -123,11 +131,16 @@ namespace Sophia.Entitys
             DashSkillAbility.SetAudioSource(DashSource);
 
             OnWealthChangeEvent.Invoke(mPlayerWealth);
+
+            PlayerController.AllowInput(this.name);
         }
+
         #endregion
 
         #region Life Accessible
 
+        public FMODAudioSource HitSource;
+        public FMODAudioSource DeathSource;
         public override LifeComposite GetLifeComposite() => this.Life;
 
         public override bool GetDamaged(DamageInfo damage)
@@ -142,13 +155,16 @@ namespace Sophia.Entitys
 
         public override bool Die()
         {
-            PlayerController.IsAttackAllow = false;
-            PlayerController.IsMoveAllow = false;
-            GetMovementComposite().SetMovableState(false);
+            PlayerController.DisallowInput(this.name);
+
+            GetMovementComposite().SetMoveState(false);
             entityCollider.enabled = false;
             _modelManager.GetAnimator().SetTrigger("Die");
 
-            InGameScreenUI.Instance._fadeUI.AddBindingAction(() => { SceneManager.LoadScene(0); });
+            InGameScreenUI.Instance._fadeUI.AddBindingAction(() => { 
+                DontDestroyGameManager.Instance.AudioManager.audioStateSender._stopSender.SendCommand();
+                SceneManager.LoadScene(1);
+            });
             InGameScreenUI.Instance._fadeUI.FadeOut(0.02f, 1.0f);
             //OnDieEvent.Invoke();
 
@@ -181,11 +197,12 @@ namespace Sophia.Entitys
         #endregion
 
         #region Movement
-
+        [SerializeField] public PlayerIdleBehaivour _playerIdleBehaivour;
+        public FMODAudioSource IdleRestAudio;
         public MovementComposite GetMovementComposite() => this.Movement;
         public bool GetMoveState() => this.Movement.IsMovable;
 
-        public void SetMoveState(bool movableState) => this.Movement.SetMovableState(movableState);
+        public void SetMoveState(bool movableState) => this.Movement.SetMoveState(movableState);
 
         public Vector2 MoveInput;
         public void OnMove(InputValue _value)
@@ -197,15 +214,16 @@ namespace Sophia.Entitys
         public void MoveTick()
         {
             if (DashSkillAbility.GetIsDashState()) return;
+            if (!Sophia.PlayerAttackAnim.canExitAttack) return;
             // GetAnimator().SetFloat("Move", this.entityRigidbody.velocity.magnitude);
-            if (!Movement.IsBorder(this.transform) && Sophia.PlayerAttackAnim.canExitAttack)
+            if (!Movement.IsBorder(this.transform))
             {
-                Movement.MoveTick(this.transform);
+                Movement.MoveTick();
                 GetModelManager().GetAnimator().SetFloat("Move", entityRigidbody.velocity.magnitude);
             }
         }
 
-        public async UniTask Turning() { await Movement.Turning(transform, Input.mousePosition); }
+        public async UniTask Turning(Vector3 forwardingVector) { await Movement.Turning(Input.mousePosition); }
         //public void TurningWithCallback(UnityAction action) => Movement.TurningWithCallback(transform,Input.mousePosition,action).Forget();
 
         #endregion
@@ -222,6 +240,7 @@ namespace Sophia.Entitys
         public void DashEnd()
         {
             gameObject.layer = playerOriginLayer;
+            GameManager.Instance.CameraController.cineCamera[0].GetComponent<CinemachineFollow>().TrackerSettings.PositionDamping = GameManager.Instance.CameraController.OriginCameraDamping;
             this.GetModelManager().DisableTrail();
         }
 

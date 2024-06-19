@@ -106,9 +106,9 @@ namespace Sophia.Composite
             
             switch (key)
             {
-                case KeyCode.Q: { InGameScreenUI.Instance._playerSkillCoolUIs[0].SetSkill(collectedSkill[KeyCode.Q]); break; }
-                case KeyCode.E: { InGameScreenUI.Instance._playerSkillCoolUIs[1].SetSkill(collectedSkill[KeyCode.E]); break; }
-                case KeyCode.R: { InGameScreenUI.Instance._playerSkillCoolUIs[2].SetSkill(collectedSkill[KeyCode.R]); break; }
+                case KeyCode.Q: { InGameScreenUI.Instance._playerSkillCoolUIElement[0].SetSkill(collectedSkill[KeyCode.Q]); break; }
+                case KeyCode.E: { InGameScreenUI.Instance._playerSkillCoolUIElement[1].SetSkill(collectedSkill[KeyCode.E]); break; }
+                case KeyCode.R: { InGameScreenUI.Instance._playerSkillCoolUIElement[2].SetSkill(collectedSkill[KeyCode.R]); break; }
             }
 
             return true;
@@ -124,13 +124,25 @@ namespace Sophia.Composite
                 collectedSkillInfo[key] = EmptySkill.Instance;
                 switch (key)
                 {
-                    case KeyCode.Q: { InGameScreenUI.Instance._playerSkillCoolUIs[0].RemoveSkill(); break; }
-                    case KeyCode.E: { InGameScreenUI.Instance._playerSkillCoolUIs[1].RemoveSkill(); break; }
-                    case KeyCode.R: { InGameScreenUI.Instance._playerSkillCoolUIs[2].RemoveSkill(); break; }
+                    case KeyCode.Q: { InGameScreenUI.Instance._playerSkillCoolUIElement[0].RemoveSkill(); break; }
+                    case KeyCode.E: { InGameScreenUI.Instance._playerSkillCoolUIElement[1].RemoveSkill(); break; }
+                    case KeyCode.R: { InGameScreenUI.Instance._playerSkillCoolUIElement[2].RemoveSkill(); break; }
                 }
                 return true;
             }
             else { return false; }
+        }
+
+        private void OnDestroy() {
+            InGameScreenUI.Instance._playerSkillCoolUIElement[0].RemoveSkill();
+            InGameScreenUI.Instance._playerSkillCoolUIElement[1].RemoveSkill();
+            InGameScreenUI.Instance._playerSkillCoolUIElement[2].RemoveSkill();
+            collectedSkillInfo[KeyCode.Q] = EmptySkill.Instance;
+            collectedSkillInfo[KeyCode.E] = EmptySkill.Instance;
+            collectedSkillInfo[KeyCode.R] = EmptySkill.Instance;
+            collectedSkill[KeyCode.Q] = null;
+            collectedSkill[KeyCode.E] = null;
+            collectedSkill[KeyCode.R] = null;
         }
 
         public bool SwapSkill(KeyCode keyA, KeyCode keyB)
@@ -169,13 +181,13 @@ namespace Sophia.Composite
                 // collectedSkillInfo[keyA] = collectedSkill[keyA];
                 // collectedSkillInfo[keyB] = collectedSkill[keyB];
                 
-                // InGameScreenUI.Instance._playerSkillCoolUIs[KeyAUiIndex].RemoveSkill();
-                // InGameScreenUI.Instance._playerSkillCoolUIs[KeyAUiIndex].SetSkill(collectedSkill[keyA]);
-                InGameScreenUI.Instance._playerSkillCoolUIs[KeyAUiIndex].DrawForce();
+                // InGameScreenUI.Instance._playerSkillCoolUIElement[KeyAUiIndex].RemoveSkill();
+                // InGameScreenUI.Instance._playerSkillCoolUIElement[KeyAUiIndex].SetSkill(collectedSkill[keyA]);
+                InGameScreenUI.Instance._playerSkillCoolUIElement[KeyAUiIndex].DrawForce();
 
-                // InGameScreenUI.Instance._playerSkillCoolUIs[KeyBUiIndex].RemoveSkill();
-                // InGameScreenUI.Instance._playerSkillCoolUIs[KeyBUiIndex].SetSkill(collectedSkill[keyB]);
-                InGameScreenUI.Instance._playerSkillCoolUIs[KeyBUiIndex].DrawForce();
+                // InGameScreenUI.Instance._playerSkillCoolUIElement[KeyBUiIndex].RemoveSkill();
+                // InGameScreenUI.Instance._playerSkillCoolUIElement[KeyBUiIndex].SetSkill(collectedSkill[keyB]);
+                InGameScreenUI.Instance._playerSkillCoolUIElement[KeyBUiIndex].DrawForce();
                 return true;
             }
             throw new System.Exception("올바른 스킬 키보드 접근이 아님 QER 중 하나로..");

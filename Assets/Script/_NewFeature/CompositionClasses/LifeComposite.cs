@@ -125,6 +125,7 @@ namespace Sophia
                 OnHpUpdated ??= (float val) => { };
                 OnBarrierUpdated ??= (float val) => { };
                 OnDamaged ??= (DamageInfo val) => { };
+                OnHit ??= () => { };
                 OnHeal ??= (int val) => { };
                 OnBarrier ??= (float val) => { };
                 OnEnterDie ??= () => { };
@@ -158,13 +159,20 @@ namespace Sophia
             public event UnityAction<float> OnHpUpdated = null;
             public event UnityAction<float> OnBarrierUpdated = null;
             public event UnityAction<DamageInfo> OnDamaged = null;
+            public event UnityAction OnHit = null;
             public event UnityAction<int> OnHeal = null;
             public event UnityAction OnEnterDie = null;
             public event UnityAction OnExitDie = null;
             public event UnityAction<float> OnBarrier = null;
             public event UnityAction OnBreakBarrier = null;
 
-            protected void OnMaxHpUpdated()         => Debug.Log("최대체력 변경됨!");
+            protected void OnMaxHpUpdated(){
+                Debug.Log("최대체력 변경됨!");
+                if(CurrentHealth > MaxHp.GetValueByNature())
+                {
+                    CurrentHealth = MaxHp.GetValueByNature();
+                }
+            }
             protected void OnDefenceUpdated()       => Debug.Log("방어력 변경됨!");
             protected void OnBarrierRatioUpdated()  => Debug.Log("배리어 변경됨!");
             protected void OnHitExtrasUpdated()     => Debug.Log("닿음 추가 동작 변경됨!");
@@ -177,6 +185,7 @@ namespace Sophia
                 OnHpUpdated = null;
                 OnBarrierUpdated = null;
                 OnDamaged = null;
+                OnHit = null;
                 OnHeal = null;
                 OnEnterDie = null;
                 OnExitDie = null;
@@ -186,6 +195,7 @@ namespace Sophia
                 OnHpUpdated ??= (float val) => { };
                 OnBarrierUpdated ??= (float val) => { };
                 OnDamaged ??= (DamageInfo val) => { };
+                OnHit ??= () => { };
                 OnHeal ??= (int val) => { };
                 OnEnterDie ??= () => { };
                 OnExitDie ??= () => { };
@@ -267,6 +277,7 @@ namespace Sophia
                 }
 
                 OnDamaged?.Invoke(damageInfo);
+                OnHit?.Invoke();
 
                 DamagedExtras.PerformExitFunctionals(ref damageInfo);
                 if (CurrentHealth <= 0) { this.Died(); }
@@ -294,6 +305,7 @@ namespace Sophia
                 OnHpUpdated = null;
                 OnBarrierUpdated = null;
                 OnDamaged = null;
+                OnHit = null;
                 OnHeal = null;
                 OnEnterDie = null;
                 OnExitDie = null;

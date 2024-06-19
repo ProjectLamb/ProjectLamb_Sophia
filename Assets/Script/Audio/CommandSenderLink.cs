@@ -8,32 +8,48 @@ using AudioType = FMODPlus.AudioType;
 [DefaultExecutionOrder(-221)]
 public class CommandSenderLink : MonoBehaviour
 {
-    private CommandSender[] _senders;
+    [SerializeField] private CommandSender[] _senders;
 
     [Tooltip("Audio Manager에 있는 오디오 타입을 선택합니다.")]
     public AudioType AudioType = AudioType.BGM;
+    public bool Initialized = false; 
 
     private void Awake()
     {
-        _senders = GetComponentsInChildren<CommandSender>();
+        // Init()
+    }
 
-        foreach (CommandSender sender in _senders)
-        {
-            switch (AudioType)
+    public void Reset() => Initialized = false;
+    public void Init()
+    {
+        if(Initialized) return;
+            _senders = GetComponentsInChildren<CommandSender>();
+
+            foreach (CommandSender sender in _senders)
             {
-                case AudioType.AMB:
-                    sender.audioSource = GameManager.Instance.GlobalAudioManager.AMBAudioSource;
-                    break;
-                case AudioType.BGM:
-                    sender.audioSource = GameManager.Instance.GlobalAudioManager.BGMAudioSource;
-                    break;
-                case AudioType.SFX:
-                    sender.audioSource = GameManager.Instance.GlobalAudioManager.SFXAudioSource;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                switch (AudioType)
+                {
+                    case AudioType.AMB: {
+                        sender.audioSource = DontDestroyGameManager.Instance.AudioManager.AMBAudioSource;
+                        break;
+                    }
+                    case AudioType.BGM: {
+                        sender.audioSource = DontDestroyGameManager.Instance.AudioManager.BGMAudioSource;
+                        break;
+                    }
+                    case AudioType.SFX: {
+                        sender.audioSource = DontDestroyGameManager.Instance.AudioManager.SFXAudioSource;
+                        break;
+                    }
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+
+                if(sender.name == "Command Sender Starter") {
+                    sender.SendCommand();
+                }
             }
-        }
+        Initialized = true;
     }
 
     public void KeyOff()
@@ -43,18 +59,17 @@ public class CommandSenderLink : MonoBehaviour
             switch (AudioType)
             {
                 case AudioType.AMB:
-                    GameManager.Instance.GlobalAudioManager.AMBAudioSource.KeyOff();
+                    DontDestroyGameManager.Instance.AudioManager.AMBAudioSource.KeyOff();
                     break;
                 case AudioType.BGM:
-                    GameManager.Instance.GlobalAudioManager.BGMAudioSource.KeyOff();
+                    DontDestroyGameManager.Instance.AudioManager.BGMAudioSource.KeyOff();
                     break;
                 case AudioType.SFX:
-                    GameManager.Instance.GlobalAudioManager.SFXAudioSource.KeyOff();
+                    DontDestroyGameManager.Instance.AudioManager.SFXAudioSource.KeyOff();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
         }
-
     }
 }

@@ -8,10 +8,12 @@ using Sophia.Entitys;
 using Sophia.Instantiates;
 using Sophia;
 
+
 public class Stage : MonoBehaviour
 {
     #region Enum Members
 
+    public enum STAGE_TYPE { NORMAL, START, SHOP, HIDDEN, BOSS };
     public enum PORTAL_TYPE { NORMAL, BOSS, }
     public enum STAGE_CHILD { TILE, WALL, PORTAL, OBSTACLE, MOB, }
     public enum STAGE_SIZE { SMALL, MIDDLE, BIG };
@@ -43,8 +45,8 @@ public class Stage : MonoBehaviour
         }
     }
     [SerializeField]
-    private string mType;
-    public string Type
+    private STAGE_TYPE mType;
+    public STAGE_TYPE Type
     {
         get
         {
@@ -110,7 +112,12 @@ public class Stage : MonoBehaviour
         //     }
         // }
 
-        stageGenerator.InitStageGenerator(stageSizeRandom);
+        if(Type == STAGE_TYPE.BOSS)
+        {
+            stageGenerator.InitStageGenerator(2);
+        }
+        else
+            stageGenerator.InitStageGenerator(stageSizeRandom);
 
         // // 스테이지 타일 랜덤화
         // if (Type == "normal")
@@ -122,50 +129,52 @@ public class Stage : MonoBehaviour
         stageGenerator.InstantiateWall();
         stageGenerator.InstantiatePortal();
 
-        if (Type == "normal")
+        if (Type == STAGE_TYPE.NORMAL)
         {
             stageGenerator.InstantiateObstacle(stageGenerator.obstacleAmount);
             mobGenerator.InitMobGenerator();
             mobGenerator.InstantiateMob();
         }
-        else if (Type == "shop")
+        else if (Type == STAGE_TYPE.SHOP)
         {
             float x = 0;
             float y = 0;
             float z = 0;
             GameObject instance;
-            if (stageGenerator.PortalE)
-            {
-                y = 180f;
-            }
-            else if (stageGenerator.PortalW)
-            {
+            // if (stageGenerator.PortalE)
+            // {
+            //     y = 180f;
+            // }
+            // else if (stageGenerator.PortalW)
+            // {
 
-            }
-            else if (stageGenerator.PortalN)
-            {
-                y = 90f;
-            }
-            else if (stageGenerator.PortalS)
-            {
-                y = 270f;
-            }
-            instance = Instantiate(stageGenerator.shop, transform.position, Quaternion.Euler(x, y, z));
+            // }
+            // else if (stageGenerator.PortalN)
+            // {
+            //     y = 90f;
+            // }
+            // else if (stageGenerator.PortalS)
+            // {
+            //     y = 270f;
+            // }
+            Transform middleTile = stageGenerator.tileGameObjectArray[8, 8].transform;
+            Vector3 middlePoint = new Vector3(middleTile.position.x, transform.position.y, middleTile.position.z);
+            instance = Instantiate(stageGenerator.shop, middlePoint, Quaternion.Euler(x, 45, z));
             instance.transform.parent = transform;
             StageClear();
         }
-        else if (Type == "hidden")
+        else if (Type == STAGE_TYPE.HIDDEN)
         {
 
         }
-        else if (Type == "boss")
+        else if (Type == STAGE_TYPE.BOSS)
         {
             mobGenerator.InitMobGenerator();
             mobGenerator.InstantiateBoss();
         }
         stageGenerator.GenerateNevMesh();
 
-        if (mType == "start")
+        if (Type == STAGE_TYPE.START)
         {
             GameObject character = GameManager.Instance.PlayerGameObject;
             GameManager.Instance.CurrentStage = gameObject;
@@ -222,7 +231,7 @@ public class Stage : MonoBehaviour
                 continue;
             stageGenerator.portalArray[i].GetComponent<Portal>().animator.SetBool("IsOpen", true);
         }
-        if (Type == "normal")
+        if (Type == STAGE_TYPE.NORMAL)
         {
             // // gachaComponent.instantPivot.position = transform.position;
             // // gachaComponent.InstantiateReward(gachaComponent.instantPivot);
@@ -233,7 +242,7 @@ public class Stage : MonoBehaviour
             //     item.Activate();
             // }
         }
-        else if (Type == "boss")
+        else if (Type == STAGE_TYPE.BOSS)
         {
             ItemObject itemObject = null;
             itemObject = ItemPool.Instance.GetRandomEquipment(E_EQUIPMENT_TYPE.Boss);
@@ -241,7 +250,7 @@ public class Stage : MonoBehaviour
             itemObjectBucket.InstantablePositioning(itemObject = Instantiate(itemObject).Init()).Activate();
             itemObject.transform.parent = itemObjectBucket.transform;
         }
-        else if (Type == "hidden")
+        else if (Type == STAGE_TYPE.HIDDEN)
         {
             ItemObject itemObject = null;
             itemObject = ItemPool.Instance.GetRandomEquipment(E_EQUIPMENT_TYPE.Hidden);

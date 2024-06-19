@@ -10,10 +10,6 @@ public class FadeUI : MonoBehaviour
     private UnityAction onCompleteCallback;
 
     // Start is called before the first frame update
-    void Start()
-    {
-        fadePanel.gameObject.SetActive(false);
-    }
 
     public FadeUI AddBindingAction(UnityAction unityAction)
     {
@@ -32,6 +28,11 @@ public class FadeUI : MonoBehaviour
         StartCoroutine(CoFadeOut(fadeTime, fadeDuration));
     }
 
+    public void FadePanelOff()
+    {
+        fadePanel.gameObject.SetActive(false);
+    }
+
     IEnumerator CoFadeIn(float fadeTime, float fadeDuration)
     {
         fadePanel.gameObject.SetActive(true);
@@ -45,7 +46,8 @@ public class FadeUI : MonoBehaviour
             yield return new WaitForSecondsRealtime(fadeTime);
         }
         
-        onCompleteCallback.Invoke();
+        if(onCompleteCallback != null)
+            onCompleteCallback.Invoke();
         fadePanel.gameObject.SetActive(false);
     }
 
@@ -62,7 +64,13 @@ public class FadeUI : MonoBehaviour
             yield return new WaitForSecondsRealtime(fadeTime);
         }
 
-        onCompleteCallback.Invoke();
-        fadePanel.gameObject.SetActive(false);
+        if(onCompleteCallback != null)
+            onCompleteCallback.Invoke();
+
+        if(!StoryManager.Instance.IsTutorial){
+            fadePanel.gameObject.SetActive(false);
+            FadeIn(0.01f,3.0f);
+        }
     }
+
 }

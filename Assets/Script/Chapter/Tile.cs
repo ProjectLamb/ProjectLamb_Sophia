@@ -4,19 +4,23 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
+    public bool isNormal;
     GameObject[] tileArray;
     public int i;
     public int j;
 
     void Awake()
     {
-        tileArray = new GameObject[4];
-        for (int i = 0; i < 4; i++)
+        if (isNormal)
         {
-            tileArray[i] = transform.GetChild(i).gameObject;
+            tileArray = new GameObject[4];
+            for (int i = 0; i < 4; i++)
+            {
+                tileArray[i] = transform.GetChild(i).gameObject;
+            }
+            int randomValue = Random.Range(0, 4);
+            tileArray[randomValue].SetActive(true);
         }
-        int randomValue = Random.Range(0, 4);
-        tileArray[randomValue].SetActive(true);
     }
 
     void Start()

@@ -66,6 +66,14 @@ namespace Sophia
         Buff = 200,
         MoveSpeedUp, Accelerated, PowerUp, Barrier, Resist, Invisible, Invincible, Defence, ProjectileGenerate, Dodgeing, 
     }   
+    
+    /// <summary>
+    /// MaterialVFXManager.cs에서 동적배열 렌더러 리스트에 인덱스로 사용될 Enum
+    /// </summary>
+    public enum E_MATERIAL_TYPE {
+        Origin = 0, FunctionalAct = 1, Affect = 2
+    }
+
 
     public interface IStatAccessible {
         public Stat GetStat(E_NUMERIC_STAT_TYPE numericType);
@@ -86,4 +94,5 @@ namespace Sophia
         public void SetStatDataToReferer(EntityStatReferer statReferer);
         public void SetExtrasDataToReferer(EntityExtrasReferer extrasReferer);
     }
+
 }

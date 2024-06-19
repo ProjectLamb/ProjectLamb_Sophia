@@ -90,6 +90,9 @@ namespace Sophia
         void ResetMove()
         {
             animator.ResetTrigger("DoAttack");
+            //Changed 조작감
+            canExitAttack = true;
+            //
             canNextAttack = true;
             isAttack = false;
         }

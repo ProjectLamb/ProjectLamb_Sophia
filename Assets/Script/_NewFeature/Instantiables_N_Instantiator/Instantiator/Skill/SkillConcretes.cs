@@ -27,7 +27,7 @@ namespace Sophia.Instantiates.Skills
 
         public override void SetUltCoolTime()
         {
-            TimerComposite = new CoolTimeComposite(baseCoolTime * 2, baseStackAmount);
+            TimerComposite = new CoolTimeComposite(baseCoolTime, baseStackAmount);
         }
 
         #region User Interface
@@ -209,6 +209,7 @@ namespace Sophia.Instantiates.Skills
 
             private ExtrasModifier<DamageInfo> extrasModifier;
             private IFunctionalCommand<DamageInfo> damageInfoCommand;
+            private DataSystem.Atomics.AudioAtomics audio;
             private DataSystem.Extras<DamageInfo> extrasRef;
 
             #endregion
@@ -240,15 +241,22 @@ namespace Sophia.Instantiates.Skills
                 extrasRef = ownerEntity.GetExtras<DamageInfo>(E_FUNCTIONAL_EXTRAS_TYPE.WeaponUse);
                 return this;
             }
+            public WeaponAdditionalDamage SetAudioData(in SerialAudioData audioData)
+            {
+                audio = new DataSystem.Atomics.AudioAtomics(in audioData);
+                return this;
+            }
 
             #endregion
             public async void Activate()
             {
                 extrasRef.AddModifier(extrasModifier);
                 extrasRef.RecalculateExtras();
+                audio.Invoke(ownerEntity);
                 await UniTask.Delay(5 * 1000);
                 extrasRef.RemoveModifier(extrasModifier);
                 extrasRef.RecalculateExtras();
+                audio.Revert(ownerEntity);
             }
         }
 
@@ -433,7 +441,6 @@ namespace Sophia.Instantiates.Skills
                 return this;
             }
 
-
             #endregion
             public async void Activate()
             {
@@ -512,9 +519,9 @@ namespace Sophia.Instantiates.Skills
                 );
                 TimerComposite.AddOnUseEvent(async () =>
                 {
-                    player.GetMovementComposite().SetMovableState(false);
+                    player.GetMovementComposite().SetMoveState(false);
                     await UniTask.Delay(500);
-                    player.GetMovementComposite().SetMovableState(true);
+                    player.GetMovementComposite().SetMoveState(true);
                 });
                 return this;
             }
@@ -711,9 +718,9 @@ namespace Sophia.Instantiates.Skills
                 );
                 TimerComposite.AddOnUseEvent(async () =>
                 {
-                    player.GetMovementComposite().SetMovableState(false);
+                    player.GetMovementComposite().SetMoveState(false);
                     await UniTask.Delay(500);
-                    player.GetMovementComposite().SetMovableState(true);
+                    player.GetMovementComposite().SetMoveState(true);
                 });
                 return this;
             }

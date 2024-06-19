@@ -33,7 +33,7 @@ namespace Sophia.Entitys
 
                 if (stage.stageGenerator.tileArray[i, j] == 0 || stage.stageGenerator.tileArray[i, j] == 2)
                     continue;
-                if (stage.stageGenerator.tileGameObjectArray[i, j].tag == "Portal")
+                if (stage.stageGenerator.tileGameObjectArray[i, j].tag == "Portal" || stage.stageGenerator.tileGameObjectArray[i, j].tag == "Obstacle")
                     continue;
 
                 int randomValue = RandomMobPercent();
@@ -56,8 +56,10 @@ namespace Sophia.Entitys
             //Boss[]로 바꾸기
             instance = Instantiate(ElderOne, transform.position, Quaternion.identity);
             instance.transform.parent = transform.GetChild((int)Stage.STAGE_CHILD.MOB);
+
             instance.GetComponent<Boss>().CurrentInstantiatedStage = stage;
-            Debug.Log(instance.GetComponent<Boss>().CurrentInstantiatedStage);
+            GameManager.Instance.CameraController.targetGroup.AddMember(instance.transform, 0.5f, 1f);
+            //Debug.Log(instance.GetComponent<Boss>().CurrentInstantiatedStage);
             AddMob(instance);
         }
 

@@ -18,7 +18,8 @@ public class VideoController : MonoBehaviour
     [SerializeField] FMODAudioSource fMODAudioSource;
     [SerializeField] CommandSender commandStarter;
     [SerializeField] CommandSender commandEnder;
-
+    [SerializeField] CommandSender bossStateStarter;
+    [SerializeField] private bool isSkippable;
     public void StartVideo(E_VIDEO_NAME video)
     {
         image = videoList[(int)video].transform.GetChild(0).GetComponent<RawImage>();
@@ -26,21 +27,41 @@ public class VideoController : MonoBehaviour
         currentVideo = video;
         fMODAudioSource = videoList[(int)video].transform.GetChild(1).GetComponent<FMODAudioSource>();
         vid.loopPointReached += VideoEnd;
+        PauseMenu.OnOpenMenuStaticEvent.AddListener(PauseVideo);
+        PauseMenu.OnCloseMenuStaticEvent.AddListener(PlayVideo);
+        StartCoroutine(CoFadeIn(0.02f, 1f));
+    }
 
-        StartCoroutine(CoFadeIn(0.02f, 0.1f));
+    public void PauseVideo() {
+        vid.Pause();
+        fMODAudioSource.Pause();
+    }
+
+    public void PlayVideo() {
+        vid.Play();
+        fMODAudioSource.UnPause();
+    }
+
+    void Update()
+    {
+        if (isSkippable)
+        {
+            if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetMouseButtonDown(0))
+            {
+                VideoEnd(vid);
+            }
+        }
     }
 
     IEnumerator CoFadeIn(float fadeTime, float fadeDuration)
     {
-        GameManager.Instance.GlobalEvent.IsGamePaused = true;
+        GameManager.Instance.GlobalEvent.Pause(gameObject.name);
         yield return new WaitForEndOfFrame();
-
         image.color = Color.black;
         image.enabled = true;
         commandEnder.SendCommand();
         vid.Play();
         fMODAudioSource?.Play();
-
         float passedTime = 0;
         while (passedTime < fadeDuration)
         {
@@ -50,26 +71,34 @@ public class VideoController : MonoBehaviour
             passedTime += fadeTime;
             yield return new WaitForSecondsRealtime(fadeTime);
         }
+        InGameScreenUI.Instance._fadeUI.FadePanelOff();
     }
 
     void VideoEnd(UnityEngine.Video.VideoPlayer vp)
     {
         InGameScreenUI.Instance._fadeUI.AddBindingAction(() =>
         {
-            GameManager.Instance.GlobalEvent.IsGamePaused = false;
+            GameManager.Instance.GlobalEvent.Play(gameObject.name);;
 
             switch (currentVideo)
             {
                 case E_VIDEO_NAME.ElderOne:
                     InGameScreenUI.Instance._bossHealthBar.SetActive(true);
+                    commandStarter.SendCommand();
+                    bossStateStarter.SendCommand();
+                    break;
+                case E_VIDEO_NAME.Opening :
+                    StoryManager.Instance.IsTutorial = false;
+                    commandStarter.SendCommand();
+                    DontDestroyGameManager.Instance.SaveLoadManager.Data.IsTutorial = false;
                     break;
             }
 
-            commandStarter.SendCommand();
             image.enabled = false;
             vid.Stop();
+            PauseMenu.OnOpenMenuStaticEvent.RemoveListener(PauseVideo);
+            PauseMenu.OnCloseMenuStaticEvent.RemoveListener(PlayVideo);
         });
-
-        InGameScreenUI.Instance._fadeUI.FadeOut(0.02f, 0.5f);
+        InGameScreenUI.Instance._fadeUI.FadeOut(0.02f, 1.5f);
     }
 }

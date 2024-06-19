@@ -69,7 +69,7 @@ namespace Sophia.Entitys
             Tap,
             Rush,
         }
-        private object NullRef = null;
+
         protected StateMachine<States> fsm;
         protected override void Awake()
         {
@@ -128,6 +128,7 @@ namespace Sophia.Entitys
             Life.OnEnterDie -= OnRaptorEnterDie;
             Life.OnExitDie -= OnRaptorExitDie;
         }
+        
         protected void InitAnimParamList()
         {
             for (int i = 0; i < GetModelManager().GetAnimator().parameterCount; i++)
@@ -154,6 +155,7 @@ namespace Sophia.Entitys
             foreach (string t in animTriggerParamList)
                 this.GetModelManager().GetAnimator().ResetTrigger(t);
         }
+        
         #region Attack
         protected void DoAttack()
         {
@@ -198,9 +200,10 @@ namespace Sophia.Entitys
 
         public void OnRaptorHit(DamageInfo damageInfo)
         {
-            GetModelManager().GetAnimator().SetTrigger("DoHit");
             _audioSources[(int)E_RAPTOR_AUDIO_INDEX.Hit].Play();
-            GameManager.Instance.NewFeatureGlobalEvent.EnemyHit.PerformStartFunctionals(ref NullRef);
+            GetModelManager().GetAnimator().SetTrigger("DoHit");
+            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Damaged].PlayFunctionalActOneShotWithDuration(0.3f);
+            GameManager.Instance.NewFeatureGlobalEvent.EnemyHit.PerformStartFunctionals(ref GlobalHelper.NullRef);
         }
 
         public void OnRaptorEnterDie()
@@ -214,20 +217,26 @@ namespace Sophia.Entitys
             }
 
             _audioSources[(int)E_RAPTOR_AUDIO_INDEX.Death].Play();
+            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Dead].PlayFunctionalActOneShotWithDuration(0.5f);
 
             Sophia.Instantiates.VisualFXObject visualFX = VisualFXObjectPool.GetObject(_dieParticleRef).Init();
             GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
 
             CurrentInstantiatedStage.mobGenerator.RemoveMob(this.gameObject);
-            GameManager.Instance.NewFeatureGlobalEvent.EnemyDie.PerformStartFunctionals(ref NullRef);
+            GameManager.Instance.NewFeatureGlobalEvent.EnemyDie.PerformStartFunctionals(ref GlobalHelper.NullRef);
             SetMoveState(false);
             entityCollider.enabled = false;
         }
 
         public void OnRaptorExitDie()
         {
-            GameManager.Instance.NewFeatureGlobalEvent.EnemyDie.PerformExitFunctionals(ref NullRef);
+            GameManager.Instance.NewFeatureGlobalEvent.EnemyDie.PerformExitFunctionals(ref GlobalHelper.NullRef);
             Destroy(gameObject, 0.5f);
+        }
+
+        public void PlayRaptorFootStep()
+        {
+            _audioSources[(int)E_RAPTOR_AUDIO_INDEX.FootStep].Play();
         }
 
         #endregion
@@ -339,7 +348,7 @@ namespace Sophia.Entitys
             throw new System.NotImplementedException();
         }
 
-        public UniTask Turning()
+        public UniTask Turning(Vector3 forwardingVector)
         {
             throw new System.NotImplementedException();
         }

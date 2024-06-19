@@ -11,19 +11,42 @@ namespace Sophia.DataSystem.Atomics
 
     public class MaterialChangeAtomics {
         public CancellationTokenSource cancellationTokenSource;
-        public Material material;
+        [Obsolete] public Material material;
+        public E_MATERIAL_TYPE materialType;
+        public E_FUNCTIONAL_EXTRAS_TYPE entityFunctionalActType;
+        public E_AFFECT_TYPE affectType;
+
         public MaterialChangeAtomics(in SerialSkinData skinAffectData) {
-            material = skinAffectData._materialRef;
+            // material = skinAffectData._materialRef;
+            materialType = skinAffectData._materialType;
+            entityFunctionalActType = skinAffectData._entityFunctionActType;
+            affectType = skinAffectData._affectType;
             cancellationTokenSource = new CancellationTokenSource();
         }
 
         public async void Invoke(IVisualAccessible visualAccessible) {
-            await visualAccessible.GetModelManager().ChangeSkin(cancellationTokenSource.Token, material);
+            // await visualAccessible.GetModelManager().ChangeSkin(cancellationTokenSource.Token, material);
+            switch(materialType) {
+                case E_MATERIAL_TYPE.FunctionalAct : {
+                    await visualAccessible.GetModelManager().InvokeChangeMaterial(cancellationTokenSource.Token, entityFunctionalActType); break;
+                }
+                case E_MATERIAL_TYPE.Affect : {
+                    await visualAccessible.GetModelManager().InvokeChangeMaterial(cancellationTokenSource.Token, affectType); break;
+                }
+            }
         }
 
         public async void Revert(IVisualAccessible visualAccessible) {
             cancellationTokenSource.Cancel();
-            await visualAccessible.GetModelManager().RevertSkin();
+            // await visualAccessible.GetModelManager().RevertSkin();
+            switch(materialType) {
+                case E_MATERIAL_TYPE.FunctionalAct : {
+                    await visualAccessible.GetModelManager().RevertChangeMaterial(entityFunctionalActType); break;
+                }
+                case E_MATERIAL_TYPE.Affect : {
+                    await visualAccessible.GetModelManager().RevertChangeMaterial(affectType); break;
+                }
+            }
         }
     }
     public class ProjectileVisualChangeAtomics {
