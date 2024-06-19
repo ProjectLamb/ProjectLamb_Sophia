@@ -133,6 +133,18 @@ namespace Sophia.Composite
             else { return false; }
         }
 
+        private void OnDestroy() {
+            InGameScreenUI.Instance._playerSkillCoolUIElement[0].RemoveSkill();
+            InGameScreenUI.Instance._playerSkillCoolUIElement[1].RemoveSkill();
+            InGameScreenUI.Instance._playerSkillCoolUIElement[2].RemoveSkill();
+            collectedSkillInfo[KeyCode.Q] = EmptySkill.Instance;
+            collectedSkillInfo[KeyCode.E] = EmptySkill.Instance;
+            collectedSkillInfo[KeyCode.R] = EmptySkill.Instance;
+            collectedSkill[KeyCode.Q] = null;
+            collectedSkill[KeyCode.E] = null;
+            collectedSkill[KeyCode.R] = null;
+        }
+
         public bool SwapSkill(KeyCode keyA, KeyCode keyB)
         {
             int KeyAUiIndex = -1;

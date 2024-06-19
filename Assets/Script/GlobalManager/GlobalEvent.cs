@@ -58,7 +58,7 @@ public class GlobalEvent : MonoBehaviour
 
     [SerializedDictionary("PauseCauseKey", "Flags")]
     private SerializedDictionary<string, bool> _IsGamePaused;
-    
+    public const float PLAY_SCALE = 1f;
     public const float PAUSE_SCALE = 0;
 
     public bool IsGamePaused {
@@ -90,7 +90,7 @@ public class GlobalEvent : MonoBehaviour
         SetTimeStateByHandlersString(handler, false);
         if(PrevTimeState == true && IsGamePaused == false) {
             OnPlayEvent?.Invoke(gameObject.name);
-            GameTimeScale = mCurrentTimeScale; 
+            GameTimeScale = PLAY_SCALE; 
             Debug.Log("Time Changed");
         }
     }
@@ -100,9 +100,9 @@ public class GlobalEvent : MonoBehaviour
         {
             { gameObject.name, false }
         };
+        Time.timeScale = PLAY_SCALE;
+        GameTimeScale = PLAY_SCALE;
         OnPlayEvent?.Invoke(gameObject.name);
-        GameTimeScale = mCurrentTimeScale; 
-        Time.timeScale = GameTimeScale;
     }
 
     public float TimeHoldingDuration;

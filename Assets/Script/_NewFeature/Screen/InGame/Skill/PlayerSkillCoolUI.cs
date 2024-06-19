@@ -16,6 +16,14 @@ namespace Sophia.UserInterface
 
         private Sophia.Composite.CoolTimeComposite TimerRef;
 
+        private void OnDestroy() {
+            TimerRef.RemoveOnTickingEvent(UpdateFillAmount)
+                    .RemoveOnUseEvent(UseStack)
+                    .RemoveOnFinishedEvent(RecoverStack)
+                    .RemoveOnInitialized(ResetUI);
+            TimerRef = null;
+        }
+        
         public void SetSkill(Skill skill)
         {
             TimerRef = skill.GetCoolTimeComposite();
