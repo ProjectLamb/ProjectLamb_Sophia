@@ -49,7 +49,6 @@ public class NeutralSkill_005 : AbstractSkill {
         base.Init(_player);
         skillType = SKILL_TYPE.NEUTRAL;
     }
-
     protected override void UseQ(){
         powerUpState.Ratio = NumericQ[(int)skillRank];
         powerUpState.DurationTime = DurationQ;

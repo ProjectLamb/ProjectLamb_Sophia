@@ -36,7 +36,6 @@ public class NeutralSkill_003 : AbstractSkill {
         base.Init(_player); 
         skillType = SKILL_TYPE.NEUTRAL;
     }
-
     protected override void UseQ(){return;}
     protected override void UseE(){return;}
     protected override void UseR(){return;}

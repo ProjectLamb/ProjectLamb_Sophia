@@ -48,7 +48,6 @@ public class NeutralSkill_008 : AbstractSkill {
         base.Init(_player);
         skillType = SKILL_TYPE.NEUTRAL;
     }
-
     protected override void UseQ(){
         // float damage = PlayerDataManager.GetEntityData().Power * NumericQ[(int)skillRank] + 1;
         // ParticleProjectile useProjectile = ParticleProjectileQ.CloneParticleProjectile();

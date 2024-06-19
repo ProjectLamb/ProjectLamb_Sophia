@@ -28,6 +28,10 @@ public class FadeUI : MonoBehaviour
         StartCoroutine(CoFadeOut(fadeTime, fadeDuration));
     }
 
+    public void FadePanelOn()
+    {
+        fadePanel.gameObject.SetActive(true);
+    }
     public void FadePanelOff()
     {
         fadePanel.gameObject.SetActive(false);
@@ -72,5 +76,4 @@ public class FadeUI : MonoBehaviour
             FadeIn(0.01f,3.0f);
         }
     }
-
 }

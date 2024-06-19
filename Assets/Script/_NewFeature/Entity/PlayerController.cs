@@ -21,6 +21,7 @@ namespace Sophia.Entitys
         [SerializeField] Player playerRef;
         [SerializeField] ModelDebugger modelDebuggerRef;
         [SerializeField] PlayerInput playerInput;
+        [SerializeField] SkillIndicator skillIndicator;
 
         private static readonly Dictionary<string, bool> mIsMoveAllow = new Dictionary<string, bool>();
         private static readonly Dictionary<string, bool> mIsAttackAllow = new Dictionary<string, bool>();
@@ -81,9 +82,16 @@ namespace Sophia.Entitys
 
             if (IsAttackAllow)
             {
-                if (Input.GetKeyDown(KeyCode.Q)) { playerRef.Use(KeyCode.Q); }
-                if (Input.GetKeyDown(KeyCode.E)) { playerRef.Use(KeyCode.E); }
-                if (Input.GetKeyDown(KeyCode.R)) { playerRef.Use(KeyCode.R); }
+                // 키가 눌려있을때에는 Indicate 함수를 통해 사거리를 띄우고,
+                // 키가 떼어졌을때에는 기존의 Use 함수를 사용하여 스킬을 사용하도록 하자.
+                if (Input.GetKeyDown(KeyCode.Q)) {playerRef.Indicate(KeyCode.Q);}
+                if (Input.GetKeyDown(KeyCode.E)) {playerRef.Indicate(KeyCode.E);}
+                if (Input.GetKeyDown(KeyCode.R)) {playerRef.Indicate(KeyCode.R);}
+
+                if (Input.GetKeyUp(KeyCode.Q)) { playerRef.Use(KeyCode.Q); skillIndicator.currentSkillName = "";}
+                if (Input.GetKeyUp(KeyCode.E)) { playerRef.Use(KeyCode.E); skillIndicator.currentSkillName = "";}
+                if (Input.GetKeyUp(KeyCode.R)) { playerRef.Use(KeyCode.R); skillIndicator.currentSkillName = "";}
+                
                 if (Input.GetMouseButtonDown(0)) { playerRef.Attack(); }
             }
         }

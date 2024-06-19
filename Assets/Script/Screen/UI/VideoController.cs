@@ -51,6 +51,10 @@ public class VideoController : MonoBehaviour
                 VideoEnd(vid);
             }
         }
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            VideoEnd(vid);
+        }
     }
 
     IEnumerator CoFadeIn(float fadeTime, float fadeDuration)
@@ -84,16 +88,17 @@ public class VideoController : MonoBehaviour
             {
                 case E_VIDEO_NAME.ElderOne:
                     InGameScreenUI.Instance._bossHealthBar.SetActive(true);
+                    InGameScreenUI.Instance._fadeUI.FadePanelOff();
                     commandStarter.SendCommand();
                     bossStateStarter.SendCommand();
                     break;
                 case E_VIDEO_NAME.Opening :
                     StoryManager.Instance.IsTutorial = false;
+                    InGameScreenUI.Instance._fadeUI.FadePanelOff();
                     commandStarter.SendCommand();
-                    DontDestroyGameManager.Instance.SaveLoadManager.Data.IsTutorial = false;
+                    //DontDestroyGameManager.Instance.SaveLoadManager.Data.IsTutorial = false;
                     break;
             }
-
             image.enabled = false;
             vid.Stop();
             PauseMenu.OnOpenMenuStaticEvent.RemoveListener(PauseVideo);

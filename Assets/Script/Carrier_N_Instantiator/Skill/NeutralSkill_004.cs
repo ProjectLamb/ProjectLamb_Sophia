@@ -44,7 +44,6 @@ public class NeutralSkill_004 : AbstractSkill {
         skillType = SKILL_TYPE.NEUTRAL;
         skillManager = _player.skillManager;
     }
-
     protected override void UseQ(){
         SKILL_RANK targetSkillRank = this.skillManager.skills[(int)SKILL_KEY.E].skillRank;
         float coolDownAmount = this.skillManager.skills[(int)SKILL_KEY.E].coolTime[targetSkillRank];

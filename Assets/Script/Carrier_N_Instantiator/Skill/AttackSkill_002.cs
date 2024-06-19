@@ -38,7 +38,6 @@ public class AttackSkill_002 : AbstractSkill {
         skillType = SKILL_TYPE.ATTACK;
         weapon = _player.weaponManager.weapon;
     }
-
     protected override void UseQ() {
         duration = 2f;
         skillNumeric = NumericRatioQ[(int)skillRank];

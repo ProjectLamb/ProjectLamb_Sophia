@@ -37,7 +37,6 @@ public abstract class AbstractSkill : MonoBehaviour
                 break;
         }
     }
-    
     protected abstract void UseQ();
     protected abstract void UseE();
     protected abstract void UseR();

@@ -37,7 +37,6 @@ public class AttackSkill_003 : AbstractSkill {
         skillType = SKILL_TYPE.ATTACK;
         weapon = _player.weaponManager.weapon;
     }
-
     protected override void UseQ() {
         Projectile  useProjectile;
         float skillDamage = (float)(

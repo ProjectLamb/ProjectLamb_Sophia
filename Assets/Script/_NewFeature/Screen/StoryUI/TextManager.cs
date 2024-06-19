@@ -90,7 +90,7 @@ public class TextManager : MonoBehaviour
                     currentPage = talkDatas.Length;
                     if (!IsOnce)
                     {
-                        //TextBarOff();
+                        TextBarOff();
                         //1챕 튜토리얼 한정
                         InGameScreenUI.Instance._fadeUI.FadeOut(0.02f, 1.5f);
                         InGameScreenUI.Instance._fadeUI.AddBindingAction(() => { InGameScreenUI.Instance._videoController.StartVideo(VideoController.E_VIDEO_NAME.Opening); });
@@ -127,7 +127,6 @@ public class TextManager : MonoBehaviour
         else if (IsStory && !GameManager.Instance.GlobalEvent.IsGamePaused)
         {
             TextBarOn();
-            //_dissolvePanel.SetActive(false);
         }
     }
 
