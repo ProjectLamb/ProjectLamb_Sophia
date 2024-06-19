@@ -18,7 +18,8 @@ namespace Sophia.Instantiates.Skills {
             in SerialAffectorData affectorData, 
             in SerialOnDamageExtrasModifierDatas damageExtrasModifierData, 
             in SerialOnConveyAffectExtrasModifierDatas conveyAffectExtrasModifierData, 
-            in SerialProjectileInstantiateData projectileInstantiateData
+            in SerialProjectileInstantiateData projectileInstantiateData,
+            in SerialAudioData activatedAudioData
         )
         {
             switch (index) {
@@ -41,7 +42,8 @@ namespace Sophia.Instantiates.Skills {
                 case E_SKILL_INDEX.WeaponAdditionalDamage : {
                     return new Neutral.WeaponAdditionalDamage(in userInterfaceData)
                                 .SetDamageInfoData(in damageExtrasModifierData)
-                                .SetOwnerEntity(player);
+                                .SetOwnerEntity(player)
+                                .SetAudioData(in activatedAudioData);
                 }
                 case E_SKILL_INDEX.PowerUp : {
                     return new Neutral.PowerUp(in userInterfaceData)

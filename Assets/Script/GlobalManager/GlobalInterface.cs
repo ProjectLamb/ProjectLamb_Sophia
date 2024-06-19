@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 public delegate void UnityActionRef<T>(ref T input);
 
@@ -56,4 +57,8 @@ public interface IAffectable{
 
 public interface IPurchase {
     
+}
+
+public interface ISceneChangeHandler {
+    void OnSceneChange(Scene current, Scene next);
 }

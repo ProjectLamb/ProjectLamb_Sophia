@@ -372,6 +372,7 @@ namespace Sophia.Entitys
             Tween jumpTween = itemObject.transform.DOLocalJump((retatedVec * randomDist) + transform.position, randomForce * 25, 1, randomTime).SetEase(Ease.OutBounce);
             return mySequence.Append(jumpTween);
         }
+        
         private void OnDestroy()
         {
             howlingTimer.RemoveOnFinishedEvent(SetReadyHowling);

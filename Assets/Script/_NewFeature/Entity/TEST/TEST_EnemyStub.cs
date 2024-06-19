@@ -57,7 +57,7 @@ namespace Sophia.Entitys
             base.Start();
             Life.OnEnterDie += () => {
                 object NullRef = null;
-                GameManager.Instance.NewFeatureGlobalEvent.EnemyDie.PerformStartFunctionals(ref NullRef);
+                GameManager.Instance.NewFeatureGlobalEvent.EnemyDie.PerformStartFunctionals(ref GlobalHelper.NullRef);
             };
         }
 
@@ -124,7 +124,7 @@ namespace Sophia.Entitys
             entityRigidbody.velocity = ForwardingVector * MoveSpeed.GetValueForce() * Time.fixedDeltaTime;
         }
 
-        public UniTask Turning()
+        public UniTask Turning(Vector3 forwardingVector)
         {
             throw new System.NotImplementedException();
         }

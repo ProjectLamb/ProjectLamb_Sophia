@@ -86,6 +86,7 @@ namespace Sophia.Entitys
         {
             base.Start();
 
+            Life.OnDamaged += OnEnemyHitHandler;
             Life.OnEnterDie += OnRobuwaEnterDie;
             Life.OnExitDie += OnRobuwaExitDie;
 
@@ -112,11 +113,19 @@ namespace Sophia.Entitys
             fsm.Driver.FixedUpdate.Invoke();
         }
 
+        
+        private void OnDisable()
+        {
+            Life.OnDamaged -= OnEnemyHitHandler;
+            Life.OnEnterDie -= OnRobuwaEnterDie;
+            Life.OnExitDie -= OnRobuwaExitDie;
+        }
+
         public void OnRobuwaEnterDie()
         {
             Sophia.Instantiates.VisualFXObject visualFX = VisualFXObjectPool.GetObject(_dieParticleRef).Init();
             GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
-            // Dead 
+            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Dead].PlayFunctionalActOneShotWithDuration(0.5f);
             _audioSources[(int)E_ROBUWA_AUDIO_INDEX.Death].Play();
 
             for (int i = 0; i < 4; i++)
@@ -178,14 +187,17 @@ namespace Sophia.Entitys
                 case 0:
                     this.GetModelManager().GetAnimator().SetTrigger("DoAttackLeft");
                     _audioSources[(int)E_ROBUWA_AUDIO_INDEX.AttackOne].Play();
+                    GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Attack].PlayFunctionalActOneShotWithDuration(0.8f);
                     break;
                 case 1:
                     this.GetModelManager().GetAnimator().SetTrigger("DoAttackRight");
                     _audioSources[(int)E_ROBUWA_AUDIO_INDEX.AttackOne].Play();
+                    GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Attack].PlayFunctionalActOneShotWithDuration(0.8f);
                     break;
                 case 2:
                     this.GetModelManager().GetAnimator().SetTrigger("DoAttackJump");
                     _audioSources[(int)E_ROBUWA_AUDIO_INDEX.AttackBoth].Play();
+                    GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Attack].PlayFunctionalActOneShotWithDuration(1.4f);
                     break;
             }
         }
@@ -522,13 +534,18 @@ namespace Sophia.Entitys
             {
                 if (isDamaged = Life.Damaged(damage))
                 {
-                    _audioSources[(int)E_ROBUWA_AUDIO_INDEX.Hit].Play();
                     GameManager.Instance.NewFeatureGlobalEvent.OnEnemyHitEvent.Invoke();
                 }
             }
             if (Life.IsDie) { fsm.ChangeState(States.Death); }
             return isDamaged;
         }
+
+        public void OnEnemyHitHandler(DamageInfo damageInfo) {
+            _audioSources[(int)E_ROBUWA_AUDIO_INDEX.Hit].Play();
+            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Damaged].PlayFunctionalActOneShotWithDuration(0.3f);
+            GameManager.Instance.NewFeatureGlobalEvent.EnemyHit.PerformStartFunctionals(ref GlobalHelper.NullRef);
+        } 
 
         public override Stat GetStat(E_NUMERIC_STAT_TYPE numericType) => StatReferer.GetStat(numericType);
 
@@ -574,7 +591,7 @@ namespace Sophia.Entitys
             throw new System.NotImplementedException();
         }
 
-        public UniTask Turning()
+        public UniTask Turning(Vector3 forwardingVector)
         {
             //Currently using DoTween.DoLookAt
             throw new System.NotImplementedException();

@@ -157,7 +157,10 @@ namespace Sophia.Composite
             {
                 Timer.ActionStart();
                 if (rigidbodyRef.gameObject.layer == LayerMask.NameToLayer("PlayerEntity"))
+                {
                     rigidbodyRef.gameObject.layer = LayerMask.NameToLayer("Dash");
+                    GameManager.Instance.CameraController.StartDashDamping();
+                }
             }
         }
 

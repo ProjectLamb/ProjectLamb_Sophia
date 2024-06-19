@@ -629,7 +629,6 @@ namespace Sophia.Instantiates
                     OwnerRef.GetExtras<Entity>(E_FUNCTIONAL_EXTRAS_TYPE.ConveyAffect)?.PerformStartFunctionals(ref targetEntity);
                     GetExtrasWithProjectileInstantiatedType(ref targetEntity);
 
-                    //VisualFXObject visualFX = VisualFXObjectPool.GetObject(CurrnetProjectileVisualData.HitEffect).Init();
                     VisualFXObject visualFX = VisualFXObjectPool.GetObject(_hitEffect).Init();
                     targetEntity.GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
 

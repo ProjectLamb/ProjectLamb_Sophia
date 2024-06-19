@@ -165,7 +165,8 @@ namespace Sophia.Entitys
         public void OnMolluHit(DamageInfo damageInfo)
         {
             // GetModelManager().GetAnimator().SetTrigger("DoHit");
-            GameManager.Instance.NewFeatureGlobalEvent.EnemyHit.PerformStartFunctionals(ref NullRef);
+            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Damaged].PlayFunctionalActOneShotWithDuration(0.3f);
+            GameManager.Instance.NewFeatureGlobalEvent.EnemyHit.PerformStartFunctionals(ref GlobalHelper.NullRef);
         }
 
         public void OnMolluEnterDie()
@@ -174,11 +175,12 @@ namespace Sophia.Entitys
             // _audioSources[(int)E_MOLLU_AUDIO_INDEX.Death].Play();
 
             //VFX
+            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Dead].PlayFunctionalActOneShotWithDuration(0.5f);
             Sophia.Instantiates.VisualFXObject visualFX = VisualFXObjectPool.GetObject(_dieParticleRef).Init();
             GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
 
             CurrentInstantiatedStage.mobGenerator.RemoveMob(gameObject);
-            GameManager.Instance.NewFeatureGlobalEvent.EnemyDie.PerformStartFunctionals(ref NullRef);
+            GameManager.Instance.NewFeatureGlobalEvent.EnemyDie.PerformStartFunctionals(ref GlobalHelper.NullRef);
             SetMoveState(false);
             entityCollider.enabled = false;
 
@@ -186,7 +188,7 @@ namespace Sophia.Entitys
 
         public void OnMolluExitDie()
         {
-            GameManager.Instance.NewFeatureGlobalEvent.EnemyDie.PerformExitFunctionals(ref NullRef);
+            GameManager.Instance.NewFeatureGlobalEvent.EnemyDie.PerformExitFunctionals(ref GlobalHelper.NullRef);
             Destroy(gameObject, 0.5f);
         }
 
@@ -472,6 +474,7 @@ namespace Sophia.Entitys
             transform.DOKill();
 
             DoAttack();
+            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Attack].PlayFunctionalActOneShotWithDuration(1.5f);
         }
 
         void Attack_Update()
@@ -512,7 +515,7 @@ namespace Sophia.Entitys
 
             foreach (Sophia.Instantiates.ItemObject itemObject in itemObjects)
             {
-                if(itemObject == null) continue;
+                if (itemObject == null) continue;
                 itemObject.SetTriggerTime(1f).SetTweenSequence(SetSequnce(itemObject)).Activate();
             }
             Die();
@@ -616,7 +619,7 @@ namespace Sophia.Entitys
             throw new System.NotImplementedException();
         }
 
-        public UniTask Turning()
+        public UniTask Turning(Vector3 forwardingVector)
         {
             //Currently using DoTween.DoLookAt
             throw new System.NotImplementedException();

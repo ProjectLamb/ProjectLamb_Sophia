@@ -16,6 +16,14 @@ namespace Sophia.UserInterface
 
         private Sophia.Composite.CoolTimeComposite TimerRef;
 
+        private void OnDestroy() {
+            TimerRef.RemoveOnTickingEvent(UpdateFillAmount)
+                    .RemoveOnUseEvent(UseStack)
+                    .RemoveOnFinishedEvent(RecoverStack)
+                    .RemoveOnInitialized(ResetUI);
+            TimerRef = null;
+        }
+        
         public void SetSkill(Skill skill)
         {
             TimerRef = skill.GetCoolTimeComposite();
@@ -74,13 +82,6 @@ namespace Sophia.UserInterface
         private void RecoverStack()
         {
             StartCoroutine(GlobalAsync.PerformAndRenderUI(() => { textMeshPro.text = TimerRef.stackCounter.CurrentStacksCount.ToString(); }));
-        }
-
-        private void OnDestroy() {
-            TimerRef.RemoveOnTickingEvent(UpdateFillAmount)
-                    .RemoveOnUseEvent(UseStack)
-                    .RemoveOnFinishedEvent(RecoverStack)
-                    .RemoveOnInitialized(ResetUI);
         }
     }
 }

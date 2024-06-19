@@ -8,7 +8,7 @@ using DG.Tweening;
 
 namespace Sophia.Composite
 {
-    public class MovementComposite : IDataSettable
+    public class MovementComposite : IDataSettable, IMovable
     {
 
         #region Data
@@ -22,6 +22,7 @@ namespace Sophia.Composite
         #region Member
 
         public Rigidbody RbRef { get; protected set; }
+        public Transform TransformRef { get; protected set; }
         public bool IsMovable { get; protected set; }
 
         public Vector3 ForwardingVector;
@@ -34,10 +35,10 @@ namespace Sophia.Composite
         public LayerMask WallMask = LayerMask.GetMask("Wall");
         private FMODAudioSource MoveSource;
 
-        public MovementComposite(Rigidbody rigidbody, float baseMoveSpeed)
+        public MovementComposite(Transform t, Rigidbody rigidbody, float baseMoveSpeed)
         {
-
-            RbRef = rigidbody;
+            this.TransformRef = t;
+            this.RbRef = rigidbody;
 
             MoveSpeed = new Stat(baseMoveSpeed, E_NUMERIC_STAT_TYPE.MoveSpeed, E_STAT_USE_TYPE.Natural, OnMoveSpeedUpdated);
             MoveExtras = new Extras<Vector3>(E_FUNCTIONAL_EXTRAS_TYPE.Move, OnMoveExtrasUpdated);
@@ -61,6 +62,8 @@ namespace Sophia.Composite
 
         #region Getter
 
+        public bool GetMoveState() => IsMovable;
+
         public (Vector3, int) GetTouchedData()
         {
             if (Mathf.Abs(mInputVec.x) > 0.01 || Mathf.Abs(mInputVec.y) > 0.01)
@@ -80,7 +83,7 @@ namespace Sophia.Composite
 
         #region Setter 
 
-        public void SetMovableState(bool Input) => IsMovable = Input;
+        public void SetMoveState(bool Input) => IsMovable = Input;
         public void SetAudioSource(FMODAudioSource source) { MoveSource = source; }
 
         #endregion
@@ -99,7 +102,7 @@ namespace Sophia.Composite
 
         #endregion
 
-        public void MoveTick(Transform transform)
+        public void MoveTick()
         {
             if (!IsMovable) { return; }
 
@@ -109,31 +112,32 @@ namespace Sophia.Composite
             if (ForwardingVector != Vector3.zero)
             {
                 Rotate = Quaternion.LookRotation(ForwardingVector);
-                transform.rotation = Quaternion.Slerp(transform.rotation, Rotate, 0.6f);
+                TransformRef.rotation = Quaternion.Slerp(TransformRef.rotation, Rotate, 0.6f);
             }
             MoveExtras.PerformTickFunctionals(ref ForwardingVector);
             OnMoveForward?.Invoke(ForwardingVector);
         }
 
-        public async UniTask Turning(Transform transform, Vector3 mousePosition)
+        public async UniTask Turning(Vector3 forwardingVector)
         {
             if (!IsMovable) { return; }
 
-            Ray camRay = Camera.main.ScreenPointToRay(mousePosition);
+            Ray camRay = Camera.main.ScreenPointToRay(forwardingVector);
             if (Physics.Raycast(camRay, out RaycastHit groundHit, CamRayLength, GroundMask)) // 공격 도중에는 방향 전환 금지
             {
-                LastTouchedPointer = groundHit.point - transform.position;
+                LastTouchedPointer = groundHit.point - TransformRef.position;
                 LastTouchedPointer.y = 0f;
                 //this.RbRef.MoveRotation(Quaternion.LookRotation(LastTouchedPointer));
                 RbRef.DORotate(Quaternion.LookRotation(LastTouchedPointer).eulerAngles, 0.1f);
             }
             await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);
         }
-        public async UniTask TurningWithAction(Transform transform, Vector3 mousePosition, UnityAction action)
+
+        public async UniTask TurningWithAction(Transform transform, Vector3 forwardingVector, UnityAction action)
         {
             if (!IsMovable) { return; }
 
-            Ray camRay = Camera.main.ScreenPointToRay(mousePosition);
+            Ray camRay = Camera.main.ScreenPointToRay(forwardingVector);
             if (Physics.Raycast(camRay, out RaycastHit groundHit, CamRayLength, GroundMask)) // 공격 도중에는 방향 전환 금지
             {
                 LastTouchedPointer = groundHit.point - transform.position;
@@ -144,5 +148,6 @@ namespace Sophia.Composite
             await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);
             action.Invoke();
         }
+        
     }
 }

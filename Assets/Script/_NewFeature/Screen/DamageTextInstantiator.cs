@@ -22,6 +22,7 @@ namespace Sophia.UserInterface
 
     public class DamageTextInstantiator : MonoBehaviour
     {
+        public Sophia.Entitys.Entity ownerEntity;
         public LifeComposite LifeCompositeRef;
         [SerializeField]
         private DamageTextUI textUI;
@@ -30,7 +31,8 @@ namespace Sophia.UserInterface
 
         private void Start()
         {
-            LifeCompositeRef ??= GetComponentInParent<ILifeAccessible>().GetLifeComposite();
+            ownerEntity = GetComponentInParent<Sophia.Entitys.Entity>();
+            LifeCompositeRef ??= ownerEntity.GetLifeComposite();
             LifeCompositeRef.OnDamaged += Generate;
         }
 

@@ -70,7 +70,7 @@ namespace Sophia.Entitys
             ObjectiveTransform = _objectiveEntity.GetGameObject().transform;
             Life.OnEnterDie += () => {
                 object NullRef = null;
-                GameManager.Instance.NewFeatureGlobalEvent.EnemyDie.PerformStartFunctionals(ref NullRef);
+                GameManager.Instance.NewFeatureGlobalEvent.EnemyDie.PerformStartFunctionals(ref GlobalHelper.NullRef);
             };
         }
 
@@ -175,7 +175,7 @@ namespace Sophia.Entitys
         public void SetMoveState(bool movableState){return;}
         public void MoveTick() {return;}
 
-        public UniTask Turning()
+        public UniTask Turning(Vector3 forwardingVector)
         {
             throw new System.NotImplementedException();
         }
