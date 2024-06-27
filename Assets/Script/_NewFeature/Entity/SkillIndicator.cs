@@ -12,42 +12,44 @@ namespace Sophia.Entitys
     public class SkillIndicator : MonoBehaviour
     {
         public Player playerRef;
-        public Vector3 recentPointer;
-        public Rigidbody RbIndicator;
+        public Vector3 currentPosition;
+        //public Rigidbody RbIndicator;
         public const float CamRayLength = 500f;
         public int skillNumber = 0;
         public string currentSkillName = null;
         public LayerMask GroundMask;
-        public GameObject currentIndicator;
+        public Canvas currentIndicator;
+        private RaycastHit hit;
+        private Ray ray;
 
         [Header("Indicators")]
         
-        [SerializeField] public GameObject arrowIndicator;
-        [SerializeField] public GameObject cycleIndicator;
-        
+        [SerializeField] public Canvas arrowIndicator;
+
         // Start is called before the first frame update
         void Start()
         {
             currentIndicator = arrowIndicator;
-            RbIndicator = currentIndicator.GetComponent<Rigidbody>();
+            //RbIndicator = currentIndicator.GetComponent<Rigidbody>();
             GroundMask = LayerMask.GetMask("Wall", "Map");
-            currentIndicator.SetActive(false);
+            currentIndicator.enabled = true;     
         }
 
         // Update is called once per frame
         void Update()
         {
-            if(currentSkillName == ""){
-                currentIndicator.SetActive(false);
-                Debug.Log("업데이트 아리안ㄹ");
-                return;
-            }
-            else{
-                currentIndicator.SetActive(true);
-                Debug.Log("업데이트 아리안ㄹㄴㅇㄹㅇㄴㄴㄹㄴㄹ");
-                Debug.Log("current"+currentSkillName);
-                turning();
-            }
+            ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            turning();
+
+            // if(currentSkillName == ""){
+            //     currentIndicator.enabled = false;
+            //     return;
+            // }
+            // else{
+            //     currentIndicator.enabled = true;
+            //     Debug.Log("current"+currentSkillName);
+            //     turning();
+            // }
         }
 
         public void Indicate(string skillName)
@@ -117,7 +119,7 @@ namespace Sophia.Entitys
             }
             else if(skillName == "갈아버리기")
             {
-                currentIndicator = cycleIndicator;
+                currentIndicator = arrowIndicator;
             }
             else if(skillName == "바람의 상처")
             {
@@ -125,20 +127,22 @@ namespace Sophia.Entitys
             }
             else if(skillName == "바닥은 용암이야")
             {
-                currentIndicator = cycleIndicator;
+                currentIndicator = arrowIndicator;
             }
 
         }
         private void turning()
         {
-            currentIndicator.transform.position = playerRef.transform.position;
-            Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(camRay, out RaycastHit groundHit, CamRayLength, GroundMask)) // 공격 도중에는 방향 전환 금지
+            //currentIndicator.transform.position = this.transform.InverseTransformPoint(Camera.main.WorldToScreenPoint(playerRef.transform.position));
+            
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity)) // 공격 도중에는 방향 전환 금지
             {
-                recentPointer = groundHit.point - playerRef.transform.position;
-                recentPointer.y = 0f;
-                RbIndicator.DORotate(Quaternion.LookRotation(recentPointer).eulerAngles, 0.1f);
+                currentPosition = new Vector3(hit.point.x, hit.point.y, hit.point.z);
             }
+
+            Quaternion skillCanvas = Quaternion.LookRotation(currentPosition - transform.position);
+            skillCanvas.eulerAngles = new Vector3(0,skillCanvas.eulerAngles.y,skillCanvas.eulerAngles.z);
+            currentIndicator.transform.rotation = Quaternion.Lerp(skillCanvas, currentIndicator.transform.rotation,0);
         }
     }
 }
