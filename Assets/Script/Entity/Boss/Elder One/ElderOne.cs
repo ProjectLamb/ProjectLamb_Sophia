@@ -386,7 +386,7 @@ namespace Sophia.Entitys
         /** Init State */
         void Init_Enter()
         {
-            Debug.Log("Init_Enter");
+            //Debug.Log("Init_Enter");
             //Init Settings
             InitAnimParamList();
             SetNavMeshData();
@@ -398,7 +398,7 @@ namespace Sophia.Entitys
         /** Idle State */
         void Idle_Enter()
         {
-            Debug.Log("Idle_Enter");
+            //Debug.Log("Idle_Enter");
             ResetAnimParam();
             nav.SetDestination(transform.position);
             nav.isStopped = true;
@@ -426,7 +426,7 @@ namespace Sophia.Entitys
         /** Move State */
         void Move_Enter()
         {
-            Debug.Log("Move_Enter");
+            //Debug.Log("Move_Enter");
             this.GetModelManager().GetAnimator().SetBool("IsWalk", true);
             SetMoveState(true);
         }
@@ -478,7 +478,7 @@ namespace Sophia.Entitys
         /** Attack State */
         void Attack_Enter()
         {
-            Debug.Log("Attack_Enter");
+            //Debug.Log("Attack_Enter");
             dontTurn = false;
             //Skill
             if (this.GetModelManager().GetAnimator().GetInteger("attackCount") == attackCount)
@@ -517,7 +517,7 @@ namespace Sophia.Entitys
 
         void SkillWalk_Enter()
         {
-            Debug.Log("SkillWalk_Enter");
+            //Debug.Log("SkillWalk_Enter");
 
             this.SetMoveState(true);
             nav.stoppingDistance /= 2;
@@ -565,7 +565,7 @@ namespace Sophia.Entitys
 
         void SkillPhase_Enter()
         {
-            Debug.Log("SkillPhase_Enter");
+           // Debug.Log("SkillPhase_Enter");
 
             transform.DOKill();
             SetMoveState(true);
@@ -587,7 +587,7 @@ namespace Sophia.Entitys
 
             if (isWalkReturn)
             {
-                Debug.Log(transform.position);
+                //Debug.Log(transform.position);
                 if ((transform.position.x >= nav.destination.x - 1f && transform.position.x <= nav.destination.x + 1f) &&
                  (transform.position.z >= nav.destination.z - 1f && transform.position.z <= nav.destination.z + 1f))
                 {
@@ -631,7 +631,7 @@ namespace Sophia.Entitys
 
         void Rush_Enter()
         {
-            Debug.Log("Rush_Enter");
+            //Debug.Log("Rush_Enter");
             this.GetModelManager().GetAnimator().SetTrigger("DoRush");
             nav.SetDestination(transform.position);
             nav.isStopped = true;
@@ -654,7 +654,7 @@ namespace Sophia.Entitys
 
                 if (Physics.Raycast(transform.position, transform.forward, rushStopDistance, RushStopMask) || transform.position == rushDestination)
                 {
-                    Debug.Log("RushStop");
+                    //Debug.Log("RushStop");
                     _objectiveEntity.transform.GetComponent<Player>().SetMoveState(true);
                     _objectiveEntity.transform.parent = null;
                     transform.DOKill();
@@ -703,7 +703,7 @@ namespace Sophia.Entitys
         {
             Sophia.UserInterface.InGameScreenUI.Instance._storyFadePanel.SetTransparent();
             Sophia.UserInterface.InGameScreenUI.Instance._storyFadePanel.WaitAfterBoss();
-            Debug.Log("Death_Enter");
+            //Debug.Log("Death_Enter");
             Die();
         }
 

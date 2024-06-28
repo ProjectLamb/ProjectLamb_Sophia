@@ -13,11 +13,9 @@ namespace Sophia.Entitys
     {
         public Player playerRef;
         public Vector3 currentPosition;
-        //public Rigidbody RbIndicator;
-        public const float CamRayLength = 500f;
         public int skillNumber = 0;
         public string currentSkillName = null;
-        public LayerMask GroundMask;
+        public bool IsIndicate;
         public Canvas currentIndicator;
         private RaycastHit hit;
         private Ray ray;
@@ -25,83 +23,32 @@ namespace Sophia.Entitys
         [Header("Indicators")]
         
         [SerializeField] public Canvas arrowIndicator;
+        [SerializeField] public Canvas circleIndicator;
 
         // Start is called before the first frame update
         void Start()
         {
             currentIndicator = arrowIndicator;
-            //RbIndicator = currentIndicator.GetComponent<Rigidbody>();
-            GroundMask = LayerMask.GetMask("Wall", "Map");
-            currentIndicator.enabled = true;     
+            currentIndicator.enabled = false;     
         }
 
         // Update is called once per frame
         void Update()
         {
             ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            turning();
-
-            // if(currentSkillName == ""){
-            //     currentIndicator.enabled = false;
-            //     return;
-            // }
-            // else{
-            //     currentIndicator.enabled = true;
-            //     Debug.Log("current"+currentSkillName);
-            //     turning();
-            // }
-        }
-
-        public void Indicate(string skillName)
-        {
-            if(skillName == null)
-            {
-                currentSkillName = "";
-                Debug.Log("현재 스킬이 없습니다!");
-                return;
+            if(!IsIndicate){
+                currentIndicator.enabled = false;
             }
-            else if(skillName == "바람처럼 칼날")
-            {
-                currentSkillName = "바람처럼 칼날";
+            else if(IsIndicate){
+                currentIndicator.enabled = true;
+                turning();
             }
-            else if(skillName == "거침없는 질주")
-            {
-                currentSkillName = "거침없는 질주";
-            }
-            else if(skillName == "바람처럼 돌진")
-            {
-                currentSkillName = "바람처럼 돌진";
-            }
-            else if(skillName == "갈아버리기")
-            {
-                currentSkillName = "갈아버리기";
-            }
-            else if(skillName == "바람의 상처")
-            {
-                currentSkillName = "바람의 상처";
-            }
-            else if(skillName == "빠르게 탈출하기")
-            {
-                currentSkillName = "빠르게 탈출하기";
-            }
-            else if(skillName == "바닥은 용암이야")
-            {
-                currentSkillName = "바닥은 용암이야";
-            }
-            else if(skillName == "모두 발사!")
-            {
-                currentSkillName = "모두 발사!";
-            }
-            else
-                currentSkillName = "";
-
         }
 
         public void changeIndicate(string skillName)
         {
-            if(skillName == null)
+            if(skillName == "")
             {
-                currentSkillName = null;
                 Debug.Log("현재 스킬이 없습니다!");
                 return;
             }
@@ -119,7 +66,7 @@ namespace Sophia.Entitys
             }
             else if(skillName == "갈아버리기")
             {
-                currentIndicator = arrowIndicator;
+                currentIndicator = circleIndicator;
             }
             else if(skillName == "바람의 상처")
             {
@@ -127,14 +74,14 @@ namespace Sophia.Entitys
             }
             else if(skillName == "바닥은 용암이야")
             {
-                currentIndicator = arrowIndicator;
+                currentIndicator = circleIndicator;
             }
+            else
+                IsIndicate = false;
 
         }
         private void turning()
-        {
-            //currentIndicator.transform.position = this.transform.InverseTransformPoint(Camera.main.WorldToScreenPoint(playerRef.transform.position));
-            
+        {   
             if (Physics.Raycast(ray, out hit, Mathf.Infinity)) // 공격 도중에는 방향 전환 금지
             {
                 currentPosition = new Vector3(hit.point.x, hit.point.y, hit.point.z);

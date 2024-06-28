@@ -264,7 +264,7 @@ namespace Sophia.Entitys
         /** Init State */
         void Init_Enter()
         {
-            Debug.Log("Init_Enter");
+            //Debug.Log("Init_Enter");
 
             //Init Settings
             originViewRadius = recognize.CurrentViewRadius;
@@ -276,7 +276,7 @@ namespace Sophia.Entitys
         /** Idle State */
         void Idle_Enter()
         {
-            Debug.Log("Idle_Enter");
+            //Debug.Log("Idle_Enter");
             recognize.CurrentViewRadius = originViewRadius;
 
             if (!isMovable) return;
@@ -310,7 +310,7 @@ namespace Sophia.Entitys
         /**Threat State*/
         void Threat_Enter()
         {
-            Debug.Log("Threat Enter");
+            //Debug.Log("Threat Enter");
 
             if (!isMovable) return;
             transform.DOKill();
@@ -357,7 +357,7 @@ namespace Sophia.Entitys
         /**Move State*/
         void Move_Enter()
         {
-            Debug.Log("Move_Enter");
+            //Debug.Log("Move_Enter");
             this.GetModelManager().GetAnimator().SetBool("IsWalk", true);
             _audioSources[(int)E_ROBUWA_AUDIO_INDEX.MoveAttackMode].Play();
             nav.enabled = true;
@@ -399,7 +399,7 @@ namespace Sophia.Entitys
         void Wander_Enter()
         {
             System.Random random = new System.Random();
-            Debug.Log("Wander_Enter");
+            //Debug.Log("Wander_Enter");
 
             Invoke("DoWander", random.Next(0, wanderingCoolTime + 1));
             SetMoveState(true);
@@ -437,7 +437,7 @@ namespace Sophia.Entitys
         /**Attack State*/
         void Attack_Enter()
         {
-            Debug.Log("Attack_Enter");
+            //Debug.Log("Attack_Enter");
 
 
             if (!isMovable) return;
@@ -465,7 +465,7 @@ namespace Sophia.Entitys
         /**Death State*/
         void Death_Enter()
         {
-            Debug.Log("Death_Enter");
+            //Debug.Log("Death_Enter");
             List<Sophia.Instantiates.ItemObject> itemObjects;
             itemObjects = GetComponent<Sophia.Instantiates.GachaComponent>().InstantiateReward();
 

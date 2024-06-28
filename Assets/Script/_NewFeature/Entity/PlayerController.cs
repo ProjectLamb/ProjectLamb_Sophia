@@ -88,9 +88,9 @@ namespace Sophia.Entitys
                 if (Input.GetKeyDown(KeyCode.E)) {playerRef.Indicate(KeyCode.E);}
                 if (Input.GetKeyDown(KeyCode.R)) {playerRef.Indicate(KeyCode.R);}
 
-                if (Input.GetKeyUp(KeyCode.Q)) { playerRef.Use(KeyCode.Q); skillIndicator.currentSkillName = "";}
-                if (Input.GetKeyUp(KeyCode.E)) { playerRef.Use(KeyCode.E); skillIndicator.currentSkillName = "";}
-                if (Input.GetKeyUp(KeyCode.R)) { playerRef.Use(KeyCode.R); skillIndicator.currentSkillName = "";}
+                if (Input.GetKeyUp(KeyCode.Q)) { playerRef.Use(KeyCode.Q); skillIndicator.IsIndicate = false;}
+                if (Input.GetKeyUp(KeyCode.E)) { playerRef.Use(KeyCode.E); skillIndicator.IsIndicate = false;}
+                if (Input.GetKeyUp(KeyCode.R)) { playerRef.Use(KeyCode.R); skillIndicator.IsIndicate = false;}
                 
                 if (Input.GetMouseButtonDown(0)) { playerRef.Attack(); }
             }
