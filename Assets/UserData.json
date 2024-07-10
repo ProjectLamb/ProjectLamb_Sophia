@@ -2,6 +2,6 @@
   "IsOnceUsed": true,
   "IsTutorial": true,
   "CutSceneSaveData": {
-    "IsSkipStory": false
+    "IsSkipStory": true
   }
 }

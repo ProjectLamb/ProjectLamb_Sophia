@@ -241,8 +241,8 @@ namespace Sophia.Entitys
         public void DashEnd()
         {
             gameObject.layer = playerOriginLayer;
-            GameManager.Instance.CameraController.cineCamera[0].GetComponent<CinemachineFollow>().TrackerSettings.PositionDamping = GameManager.Instance.CameraController.OriginCameraDamping;
             this.GetModelManager().DisableTrail();
+            GameManager.Instance.CameraController.cineCamera[0].GetComponent<CinemachineFollow>().TrackerSettings.PositionDamping = GameManager.Instance.CameraController.OriginCameraDamping;
         }
 
         #endregion
@@ -305,10 +305,6 @@ namespace Sophia.Entitys
                 skillIndicator.IsIndicate = true;
                 skillIndicator.changeIndicate(this._skillManager.GetSkillByKey(key)?.GetName());
             }
-        {
-
-        }
-
         }
         #endregion
 

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 using DG.Tweening;
 using Sophia.Composite;
 using HUDIndicator;
@@ -12,6 +13,7 @@ namespace Sophia.Entitys
     {
         #region public
         public IndicatorOffScreen indicatorOffScreen;
+        public Image attackIndicatorImage;
 
         #endregion
 
@@ -255,7 +257,7 @@ namespace Sophia.Entitys
         void Tap_Enter()
         {
             Debug.Log("Tap_Enter");
-
+            StartCoroutine(FadeIn());
             GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Attack].PlayFunctionalActOneShotWithDuration(2.8f);   //Animation Clip Length + 0.6f
             _nav.SetDestination(transform.position);
             _nav.isStopped = true;
@@ -296,6 +298,7 @@ namespace Sophia.Entitys
         void Rush_Enter()
         {
             Debug.Log("Rush_Enter");
+            attackIndicatorImage.gameObject.SetActive(false);
             transform.DOMove(rushDestination, currentRushTime).SetEase(Ease.OutQuad);
             rushTimer.ActionStart();
             UseProjectile_DashAttack();
@@ -332,6 +335,24 @@ namespace Sophia.Entitys
         {
             Debug.Log("Death_Enter");
             Die();
+        }
+
+        #endregion
+
+        #region FadeEffect
+        IEnumerator FadeIn()
+        {
+            attackIndicatorImage.gameObject.SetActive(true);
+            Color fadeColor = attackIndicatorImage.color;
+            fadeColor.a = 0;
+
+            while (fadeColor.a < 1f)
+            {
+                fadeColor.a += 0.05f;
+                attackIndicatorImage.color = fadeColor;
+                yield return new WaitForSecondsRealtime(0.05f);
+            }
+
         }
 
         #endregion
