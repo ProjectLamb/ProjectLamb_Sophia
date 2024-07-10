@@ -28,6 +28,8 @@ public class HandleButtons : MonoBehaviour
         GameManager.Instance.GlobalEvent.ResetForce();
         yield return new WaitForSecondsRealtime(0.01f);
         SceneManager.LoadScene(0);
+        
+        DontDestroyGameManager.Instance.SaveLoadManager.SaveAsJson();   //메인 돌아갈 때 저장
     }
     public void HandleRestart(){
         StartCoroutine(CoRestart());
