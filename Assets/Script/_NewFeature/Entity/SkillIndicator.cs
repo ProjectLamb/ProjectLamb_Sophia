@@ -16,6 +16,7 @@ namespace Sophia.Entitys
         public int skillNumber = 0;
         public string currentSkillName = null;
         public bool IsIndicate;
+        public bool IsTurning;
         public Canvas currentIndicator;
         private RaycastHit hit;
         private Ray ray;
@@ -29,7 +30,8 @@ namespace Sophia.Entitys
         void Start()
         {
             currentIndicator = arrowIndicator;
-            currentIndicator.enabled = false;     
+            currentIndicator.enabled = false;
+            IsTurning = true;     
         }
 
         // Update is called once per frame
@@ -41,7 +43,8 @@ namespace Sophia.Entitys
             }
             else if(IsIndicate){
                 currentIndicator.enabled = true;
-                turning();
+                if(IsTurning)
+                    turning();
             }
         }
 
@@ -55,14 +58,17 @@ namespace Sophia.Entitys
             else if(skillName == "바람처럼 칼날")
             {
                 currentIndicator = arrowIndicator;
+                IsTurning = false;
             }
             else if(skillName == "거침없는 질주")
             {
                 currentIndicator = arrowIndicator;
+                IsTurning = false;
             }
             else if(skillName == "바람처럼 돌진")
             {
                 currentIndicator = arrowIndicator;
+                IsTurning = false;
             }
             else if(skillName == "갈아버리기")
             {
@@ -71,6 +77,7 @@ namespace Sophia.Entitys
             else if(skillName == "바람의 상처")
             {
                 currentIndicator = arrowIndicator;
+                IsTurning = false;
             }
             else if(skillName == "바닥은 용암이야")
             {
