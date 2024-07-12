@@ -241,8 +241,8 @@ namespace Sophia.Entitys
         public void DashEnd()
         {
             gameObject.layer = playerOriginLayer;
-            GameManager.Instance.CameraController.cineCamera[0].GetComponent<CinemachineFollow>().TrackerSettings.PositionDamping = GameManager.Instance.CameraController.OriginCameraDamping;
             this.GetModelManager().DisableTrail();
+            GameManager.Instance.CameraController.cineCamera[0].GetComponent<CinemachineFollow>().TrackerSettings.PositionDamping = GameManager.Instance.CameraController.OriginCameraDamping;
         }
 
         #endregion
@@ -300,11 +300,10 @@ namespace Sophia.Entitys
         }
         public void Indicate(KeyCode key)
         {
-            if(this._skillManager.GetSkillByKey(key)?.GetName() != null && _skillManager.GetSkillByKey(key).GetCoolTimeComposite().GetIsReadyToUse()){
+            if((this._skillManager.GetSkillByKey(key)?.GetName() != null) && (_skillManager.GetSkillByKey(key).GetCoolTimeComposite().GetIsReadyToUse())){
                 //쿨타임 아닐때
-                Debug.Log("스킬명 : "+this._skillManager.GetSkillByKey(key)?.GetName());
+                skillIndicator.IsIndicate = true;
                 skillIndicator.changeIndicate(this._skillManager.GetSkillByKey(key)?.GetName());
-                skillIndicator.Indicate(this._skillManager.GetSkillByKey(key)?.GetName());
             }
         }
         #endregion
