@@ -8,6 +8,7 @@ using Sophia.Composite;
 using Sophia.DataSystem.Referer;
 using Sophia.DataSystem;
 using Sophia.DataSystem.Modifiers;
+using HUDIndicator;
 using Cysharp.Threading.Tasks;
 using FMODPlus;
 
@@ -20,6 +21,7 @@ namespace Sophia.Entitys
     public class Mollu : Enemy, IMovable
     {
         #region Public
+        public IndicatorOffScreen indicatorOffScreen;
         public ParticleSystem LeftRocketParticle;
         public ParticleSystem RightRocketParticle;
         public int AttackRange;
@@ -369,8 +371,9 @@ namespace Sophia.Entitys
 
                 if (dist <= AttackRange)
                     fsm.ChangeState(States.Attack);
-                else
+                else{
                     fsm.ChangeState(States.Move);
+                }
             }
             // }
         }
@@ -400,7 +403,7 @@ namespace Sophia.Entitys
         void Move_Update()
         {
             float dist = Vector3.Distance(transform.position, _objectiveEntity.transform.position);
-
+            
             if (recognize.GetCurrentRecogState() == E_RECOG_TYPE.Lose)
                 fsm.ChangeState(States.Idle);
             else if (dist <= AttackRange)
@@ -458,7 +461,6 @@ namespace Sophia.Entitys
         void Wander_Exit()
         {
             Debug.Log("Mollu) Exit Wander");
-
             IsWandering = false;
         }
 
@@ -466,6 +468,8 @@ namespace Sophia.Entitys
         // 움직임은 멈추되, 시선은 따라가도록 처리
         void Attack_Enter()
         {
+            indicatorOffScreen.style.color = Color.red;
+            indicatorOffScreen.arrowStyle.color = Color.red;
             Debug.Log("Mollu) Attack_Enter");
 
             if (!IsMovable) return;
@@ -481,6 +485,8 @@ namespace Sophia.Entitys
         {
             if (GetModelManager().GetAnimator().GetBool("IsAttackEnd"))
             {
+                indicatorOffScreen.style.color = Color.yellow;
+                indicatorOffScreen.arrowStyle.color = Color.yellow;
                 fsm.ChangeState(States.Idle);
             }
         }

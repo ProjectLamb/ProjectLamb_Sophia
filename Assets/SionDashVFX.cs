@@ -15,7 +15,6 @@ public class SionDashVFX : MonoBehaviour {
         IsActiaved = true;
         gameObject.SetActive(IsActiaved);
         _animator.SetTrigger("Enter");
-
     }
 
     public void DashExit() {
