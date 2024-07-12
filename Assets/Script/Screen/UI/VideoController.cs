@@ -48,11 +48,14 @@ public class VideoController : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetMouseButtonDown(0))
             {
+                //스킵 하시겠습니까? UI 띄우기
                 VideoEnd(vid);
+                //bool값 설정해서 더 못 누르도록 제한
             }
         }
-        if (Input.GetKeyDown(KeyCode.P))
+        if (Input.GetKeyDown(KeyCode.P))    //디버그 용이면 나중에 지울 것
         {
+            //소리도 꺼야됨
             VideoEnd(vid);
         }
     }
@@ -96,7 +99,10 @@ public class VideoController : MonoBehaviour
                     StoryManager.Instance.IsTutorial = false;
                     InGameScreenUI.Instance._fadeUI.FadePanelOff();
                     commandStarter.SendCommand();
-                    //DontDestroyGameManager.Instance.SaveLoadManager.Data.IsTutorial = false;
+                    
+                    DontDestroyGameManager.Instance.SaveLoadManager.Data.IsTutorial = false;
+                    DontDestroyGameManager.Instance.SaveLoadManager.Data.CutSceneSaveData.IsSkipStory = true;
+                    DontDestroyGameManager.Instance.SaveLoadManager.SaveAsJson();
                     break;
             }
             image.enabled = false;

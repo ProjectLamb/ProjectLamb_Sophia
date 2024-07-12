@@ -99,5 +99,6 @@ Assets/UserData.json
 
 # End of https://www.toptal.com/developers/gitignore/api/unity
 
-# neoskyclad
+# Edit from neoskyclad
 .fmod_editor.log
+Assets/UserData.json

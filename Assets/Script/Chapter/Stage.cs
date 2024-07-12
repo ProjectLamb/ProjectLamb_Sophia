@@ -169,7 +169,7 @@ public class Stage : MonoBehaviour
         }
         else if (Type == STAGE_TYPE.BOSS)
         {
-            Sophia.UserInterface.InGameScreenUI.Instance._fadeUI.FadePanelOn();
+            //Sophia.UserInterface.InGameScreenUI.Instance._fadeUI.FadePanelOn();
             mobGenerator.InitMobGenerator();
             mobGenerator.InstantiateBoss();
         }
