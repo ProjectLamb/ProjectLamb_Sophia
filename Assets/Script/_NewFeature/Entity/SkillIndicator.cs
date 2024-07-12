@@ -63,7 +63,7 @@ namespace Sophia.Entitys
             else if(skillName == "거침없는 질주")
             {
                 currentIndicator = arrowIndicator;
-                IsTurning = false;
+                IsTurning = true;
             }
             else if(skillName == "바람처럼 돌진")
             {
