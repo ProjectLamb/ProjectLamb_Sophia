@@ -76,6 +76,8 @@ namespace Sophia.Entitys
             {
                 currentIndicator = circleIndicator;
             }
+            else
+                IsIndicate = false;
         }
         private void turning()
         {   
