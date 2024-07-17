@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using MonsterLove.StateMachine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 using DG.Tweening;
 using Sophia.Composite;
 using Sophia.DataSystem.Referer;
@@ -13,6 +14,8 @@ using Sophia_Carriers;
 using UnityEngine.Rendering;
 using FMODPlus;
 using Sophia.AI;
+using HUDIndicator;
+
 
 namespace Sophia.Entitys
 {
@@ -25,6 +28,7 @@ namespace Sophia.Entitys
         #region Public
         public int AttackRange;
         public int TurnSpeed;   //Stat으로 관리 가능성
+        public IndicatorOffScreen indicatorOffScreen;
         #endregion
 
         #region Private
@@ -311,7 +315,6 @@ namespace Sophia.Entitys
         void Threat_Enter()
         {
             //Debug.Log("Threat Enter");
-
             if (!isMovable) return;
             transform.DOKill();
             recognize.CurrentViewRadius *= 3;
@@ -438,7 +441,8 @@ namespace Sophia.Entitys
         void Attack_Enter()
         {
             //Debug.Log("Attack_Enter");
-
+            indicatorOffScreen.style.color = Color.red;
+            indicatorOffScreen.arrowStyle.color = Color.red;
 
             if (!isMovable) return;
             nav.SetDestination(transform.position);
@@ -453,12 +457,16 @@ namespace Sophia.Entitys
         {
             if (this.GetModelManager().GetAnimator().GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f)
             {
+                indicatorOffScreen.style.color = Color.yellow;
+                indicatorOffScreen.arrowStyle.color = Color.yellow;
                 fsm.ChangeState(States.Idle);
             }
         }
 
         void Attack_Exit()
         {
+            indicatorOffScreen.style.color = Color.yellow;
+            indicatorOffScreen.arrowStyle.color = Color.yellow;
             ResetAnimParam();
         }
 
