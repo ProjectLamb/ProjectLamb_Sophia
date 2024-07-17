@@ -5,8 +5,10 @@ using DG.Tweening;
 using Sophia.Composite;
 using NUnit.Framework;
 using UnityEngine.AI;
+using UnityEngine.UI;
 using System.Linq;
 using Sophia.Instantiates;
+using HUDIndicator;
 
 namespace Sophia.Entitys
 {
@@ -26,6 +28,7 @@ namespace Sophia.Entitys
         List<RaptorSmall> raptorSmallList;
         private float howlingCoolTime = 5f;
         Vector3 EscapePosition;
+        public IndicatorOffScreen indicatorOffScreen;
 
         #endregion
         protected override void Awake()
@@ -308,7 +311,8 @@ namespace Sophia.Entitys
         void Howl_Enter()
         {
             Debug.Log("Howl_Enter");
-
+            indicatorOffScreen.style.color = Color.red;
+            indicatorOffScreen.arrowStyle.color = Color.red;
             _nav.SetDestination(transform.position);
             _nav.isStopped = true;
             transform.DOLookAt(_objectiveEntity.transform.position, TurnSpeed);
@@ -326,6 +330,8 @@ namespace Sophia.Entitys
         void Howl_Exit()
         {
             GetModelManager().GetAnimator().SetBool("IsHowlEnd", false);
+            indicatorOffScreen.style.color = Color.yellow;
+            indicatorOffScreen.arrowStyle.color = Color.yellow;
 
             if (!howlingTimer.GetIsReadyToUse())
                 return;
