@@ -1,6 +1,11 @@
 [LOG] System::create                           : Header version = 2.02.20. Current version = 2.02.20.
 [LOG] Manager::init                            : maxchannels = 256 studioflags = 00000006 flags 00000000 extradriverdata 0000000000000000.
+[LOG] Manager::init                            : maxchannels = 256 studioflags = 00000006 flags 00000000 extradriverdata 0000000000000000.
 [LOG] SystemI::init                            : Initialize version=20220 (139317), maxchannels=256, flags=0x00020000
+[LOG] SystemI::setOutputInternal               : Setting output to 'FMOD WASAPI Output'
+[LOG] OutputWASAPI::init                       : Mix Format (WAVEFORMATEX): wFormatTag=0xFFFE, nChannels=2, nSamplesPerSec=48000, nAvgBytesPerSec=384000, nBlockAlign=8, wBitsPerSample=32, cbSize=22.
+[LOG] OutputWASAPI::init                       : Mix Format (WAVEFORMATEXTENSIBLE): wValidBitsPerSample=32, dwChannelMask=0x00000003, SubFormat=00000003-0000-0010-8000-00AA00389B71.
+[LOG] OutputWASAPI::init                       : Output buffer size: 4096 samples, latency: 0.00ms, period: 10.00ms, DSP buffer: 1024 * 4
 [LOG] SystemI::setOutputInternal               : Setting output to 'FMOD WASAPI Output'
 [LOG] OutputWASAPI::init                       : Mix Format (WAVEFORMATEX): wFormatTag=0xFFFE, nChannels=2, nSamplesPerSec=48000, nAvgBytesPerSec=384000, nBlockAlign=8, wBitsPerSample=32, cbSize=22.
 [LOG] OutputWASAPI::init                       : Mix Format (WAVEFORMATEXTENSIBLE): wValidBitsPerSample=32, dwChannelMask=0x00000003, SubFormat=00000003-0000-0010-8000-00AA00389B71.
@@ -8,6 +13,8 @@
 [LOG] Thread::initThread                       : Init FMOD stream thread. Affinity: 0x4000000000000003, Priority: 0xFFFF7FFB, Stack Size: 98304, Semaphore: No, Sleep Time: 10, Looping: Yes.
 [LOG] Thread::initThread                       : Init FMOD mixer thread. Affinity: 0x4000000000000001, Priority: 0xFFFF7FFA, Stack Size: 81920, Semaphore: No, Sleep Time: 0, Looping: Yes.
 [LOG] AsyncManager::init                       : manager 000001BA33B025F8 isAsync 0 updatePeriod 0.02
+[LOG] Thread::initThread                       : Init FMOD mixer thread. Affinity: 0x4000000000000001, Priority: 0xFFFF7FFA, Stack Size: 81920, Semaphore: No, Sleep Time: 0, Looping: Yes.
+[LOG] AsyncManager::init                       : manager 0000023CEC179BC8 isAsync 0 updatePeriod 0.02
 [LOG] AsyncManager::init                       : done
 [LOG] PlaybackSystem::init                     : 
 [LOG] Thread::initThread                       : Init FMOD Studio sample load thread. Affinity: 0x4000000000000003, Priority: 0xFFFF7FFD, Stack Size: 98304, Semaphore: No, Sleep Time: 1, Looping: No.
@@ -18,14 +25,290 @@
 [LOG] Manager::readBank                        : fileversion = 142, compatVersion = 140 (oldest = 44, newest = 142)
 [LOG] Manager::readBank                        : fileversion = 142, compatVersion = 140 (oldest = 44, newest = 142)
 [LOG] Manager::readBank                        : fileversion = 142, compatVersion = 140 (oldest = 44, newest = 142)
-[LOG] Manager::readBank                        : fileversion = 142, compatVersion = 140 (oldest = 44, newest = 142)
 [LOG] PlaybackSystem::acquireMasterBus         : Setting master channel group format to 3
 [LOG] Manager::readBank                        : fileversion = 142, compatVersion = 140 (oldest = 44, newest = 142)
 [LOG] Manager::readBank                        : fileversion = 142, compatVersion = 140 (oldest = 44, newest = 142)
+[LOG] SystemI::createSoundInternal             : Create name='', mode=0x02000202
+[LOG] SystemI::createSoundInternal             : exinfo->cbsize             = 224
+[LOG] SystemI::createSoundInternal             : exinfo->length             = 4021504
+[LOG] SystemI::createSoundInternal             : exinfo->fileoffset         = 212768
+[LOG] SystemI::createSoundInternal             : exinfo->numsubsounds       = 1
+[LOG] SystemI::createSoundInternal             : exinfo->inclusionlist      = 0000008DED42F4C8
+[LOG] SystemI::createSoundInternal             : exinfo->inclusionlistnum   = 1
+[LOG] SystemI::createSoundInternal             : exinfo->suggestedsoundtype = 5
+[LOG] SystemI::createSoundInternal             : exinfo->useropen           = 00007FF9394F3F70
+[LOG] SystemI::createSoundInternal             : exinfo->userclose          = 00007FF9394F3F30
+[LOG] SystemI::createSoundInternal             : exinfo->userread           = 00007FF9394F4050
+[LOG] SystemI::createSoundInternal             : exinfo->userseek           = 00007FF9394F4110
+[LOG] SystemI::createSoundInternal             : exinfo->fileuserdata       = 0000023CCB064AE8
+[LOG] SystemI::createSoundInternal             : exinfo->initialseekpostype = 1
+[LOG] SystemI::DSPCodecPoolRegister            : register codec pool for pool type 5
+[LOG] SystemI::createSoundInternal             : Sample 0/1: name='질주_T', format=5, channels=2, frequency=44100, lengthbytes=11808, lengthpcm=176400, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.488599.
+[WRN] FMOD_OS_Net_Listen                       : Cannot listen for connections, port 9264 is currently in use.
+[LOG] SoundI::release                          :  (0000023AD6EC0D58)
+[LOG] SoundI::release                          :     질주_T (0000023BE4EC3738)
+[LOG] AsyncThread::add                         : add sound to async queue : soundi = 0000023886668C68, queue head = 0000023CA8B78ED8, queue count = 0
+[LOG] AsyncThread::threadFunc                  : Starting Asynchronous operation on sound 0000023886668C68
+[LOG] AsyncThread::threadFunc                  : Finished Asynchronous operation on sound 0000023886668C68
+[LOG] SoundI::release                          :  (0000023C73EC09C8)
+[LOG] SoundI::release                          :     ElderOne_DustAfterAttackOnGround_TypeA (0000023CCAF2C998)
+[LOG] SoundI::release                          :  (0000023CEB6DD0E8)
+[LOG] SoundI::release                          :     ElderOne_DustAfterAttackOnGround_TypeB (0000023CCAF286F8)
+[LOG] SoundI::release                          :  (0000023B0A328588)
+[LOG] SoundI::release                          :     ElderOne_DoubleHandAttack_PunchA (0000023CCAF1C598)
+[LOG] SoundI::release                          :  (0000023B0A329278)
+[LOG] SoundI::release                          :     ElderOne_DoubleHandAttack_PunchB (0000023CCAF493D8)
+[LOG] SoundI::release                          :  (0000023CEB6DD818)
+[LOG] SoundI::release                          :     ElderOne_NormalAttack_PunchA (0000023CCAF2AF98)
+[LOG] SoundI::release                          :  (0000023CEB6DD988)
+[LOG] SoundI::release                          :     ElderOne_NormalAttack_PunchB (0000023CCAF22BF8)
+[LOG] SoundI::release                          :  (0000023AB333B5A8)
+[LOG] SoundI::release                          :     ElderOne_NormalAttack_WhooshA (0000023BE4EBDA98)
+[LOG] SoundI::release                          :  (0000023C74415CB8)
+[LOG] SoundI::release                          :     ElderOne_NormalAttack_WhooshB (0000023CCAF4E6B8)
+[LOG] SoundI::release                          :  (0000023B0A328F98)
+[LOG] SoundI::release                          :     ElderOne_Death_UI (0000023CCAF49BF8)
+[LOG] SoundI::release                          :  (00000238833856B8)
+[LOG] SoundI::release                          :     ElderOne_Death (0000023CCAF223D8)
+[LOG] SoundI::release                          :  (0000023AD6E000A8)
+[LOG] SoundI::release                          :     ElderOne_Moving_FootstepA (0000023BE4EBE2B8)
+[LOG] SoundI::release                          :  (0000023CA8868538)
+[LOG] SoundI::release                          :     ElderOne_Moving_FootstepA_2 (0000023CCAF2E1F8)
+[LOG] SoundI::release                          :  (0000023CA8869228)
+[LOG] SoundI::release                          :     ElderOne_Moving_FootstepB (0000023CCAF37F98)
+[LOG] SoundI::release                          :  (0000023CEB6DD3C8)
+[LOG] SoundI::release                          :     Elderone_Idle2_MotorSoundsLikeRoar (0000023CCAF29738)
+[LOG] SoundI::release                          :  (0000023CA8868DD8)
+[LOG] SoundI::release                          :     ElderOne_SteamB (0000023CCAF28BD8)
+[LOG] SoundI::release                          :  (0000023C740A1D68)
+[LOG] SoundI::release                          :     ElderOne_PhaseTransition_ReadyToPhase2 (0000023CCAF4E378)
+[LOG] SoundI::release                          :  (0000023CA8868F48)
+[LOG] SoundI::release                          :     Elderone_Idle1_Rusty2 (random) (0000023CCAF29598)
+[LOG] SoundI::release                          :  (0000023C73EC0858)
+[LOG] SoundI::release                          :     Elderone_Walking_motor (0000023CCAF2DEB8)
+[LOG] SoundI::release                          :  (0000023883384E18)
+[LOG] SoundI::release                          :     Elderone_Walking_mechanical (0000023CCAF27038)
+[LOG] SoundI::release                          :  (0000023AB333B438)
+[LOG] SoundI::release                          :     ElderOne_PhaseTransition_AnalyzeOverUI (0000023BE4EBCF38)
+[LOG] SoundI::release                          :  (0000023C73EC0128)
+[LOG] SoundI::release                          :     ElderOne_PhaseTransition_Fall (0000023CCAF2E6D8)
+[LOG] SoundI::release                          :  (0000023CD2E645D8)
+[LOG] SoundI::release                          :     ElderOne_PhaseTransition_LoadingBeep (Loop) (0000023BE4EBFB18)
+[LOG] SoundI::release                          :  (0000023CEB6DDDD8)
+[LOG] SoundI::release                          :     ElderOne_PhaseTransition_DataAnalyzing (Aync,Cut) (0000023CCAF23A98)
+[LOG] SoundI::release                          :  (0000023CA88686A8)
+[LOG] SoundI::release                          :     ElderOne_PhaseTransition_WarningUI (0000023CCAF298D8)
+[LOG] SoundI::release                          :  (0000023AB3603968)
+[LOG] SoundI::release                          :     AnalyzeOverFoley (0000023CCAF23278)
+[LOG] SoundI::release                          :  (0000023CD2E652C8)
+[LOG] SoundI::release                          :     ElderOne_Stomp_Dirt (0000023BE4EC1B98)
+[LOG] SoundI::release                          :  (0000023AD6E00AB8)
+[LOG] SoundI::release                          :     Raptor_Attack_Hit_A (0000023BE4EB9E78)
+[LOG] SoundI::release                          :  (0000023B0A328E28)
+[LOG] SoundI::release                          :     Raptor_Attack_Hit_B (0000023CCAF4A8F8)
+[LOG] SoundI::release                          :  (0000023CA8868AF8)
+[LOG] SoundI::release                          :     Raptor_Attack_Roar_A (0000023CCAF2B618)
+[LOG] SoundI::release                          :  (0000023B0A329108)
+[LOG] SoundI::release                          :     Raptor_Attack_Roar_B (0000023CCAF1D298)
+[LOG] SoundI::release                          :  (0000023AD6E00218)
+[LOG] SoundI::release                          :     Raptor_Attack_Roar_C (0000023BE4EBAEB8)
+[LOG] SoundI::release                          :  (0000023883385548)
+[LOG] SoundI::release                          :     Raptor_Attack_Roar_D (0000023CCAF235B8)
+[LOG] SoundI::release                          :  (0000023C73EC06E8)
+[LOG] SoundI::release                          :     Raptor_Death_Roar_A (0000023CCAF2C178)
+[LOG] SoundI::release                          :  (0000023AB333BB68)
+[LOG] SoundI::release                          :     Raptor_Death_Roar_B (0000023BE4EC1858)
+[LOG] SoundI::release                          :  (0000023CA8868C68)
+[LOG] SoundI::release                          :     Raptor_Death_Roar_C (0000023CCAF2DB78)
+[LOG] SoundI::release                          :  (0000023C73EC0408)
+[LOG] SoundI::release                          :     Raptor_Death_Layering_Sfx (0000023CCAF2C4B8)
+[LOG] SoundI::release                          :  (0000023883384B38)
+[LOG] SoundI::release                          :     Raptor_Footstep_A (0000023CCAF25B18)
+[LOG] SoundI::release                          :  (0000023CA8868988)
+[LOG] SoundI::release                          :     Raptor_Footstep_B (0000023CCAF2D838)
+[LOG] SoundI::release                          :  (0000023AB3603DB8)
+[LOG] SoundI::release                          :     Raptor_Footstep_C (0000023CCAF26E98)
+[LOG] SoundI::release                          :  (0000023B0A3289D8)
+[LOG] SoundI::release                          :     Raptor_Footstep_D (0000023CCAF4A418)
+[LOG] SoundI::release                          :  (0000023CD2E642F8)
+[LOG] SoundI::release                          :     Raptor_Small_A (0000023BE4EC2A38)
+[LOG] SoundI::release                          :  (0000023CD2E64748)
+[LOG] SoundI::release                          :     Raptor_Small_B (0000023BE4EBD278)
+[LOG] SoundI::release                          :  (0000023CD2E64468)
+[LOG] SoundI::release                          :     Raptor_Small_C (0000023BE4EBF498)
+[LOG] SoundI::release                          :  (0000023AB3603688)
+[LOG] SoundI::release                          :     Raptor_Howling_LayeringSynth (0000023CCAF25E58)
+[LOG] SoundI::release                          :  (0000023B0A328CB8)
+[LOG] SoundI::release                          :     Raptor_Howling_Roar_A (0000023CCAF4A5B8)
+[LOG] SoundI::release                          :  (0000023AB333C128)
+[LOG] SoundI::release                          :     Raptor_Howling_Roar_B (0000023BE4EBE798)
+[LOG] SoundI::release                          :  (0000023C74415B48)
+[LOG] SoundI::release                          :     Raptor_Howling_Roar_C (0000023CCAF4CCB8)
+[LOG] SoundI::release                          :  (0000023AB3603AD8)
+[LOG] SoundI::release                          :     Raptor_Standby_A (0000023CCAF228B8)
+[LOG] SoundI::release                          :  (0000023CEB6DDC68)
+[LOG] SoundI::release                          :     Raptor_Standby_B (0000023CCAF24118)
+[LOG] SoundI::release                          :  (0000023C744152A8)
+[LOG] SoundI::release                          :     Raptor_Standby_C (0000023CCAF4D818)
+[LOG] SoundI::release                          :  (0000023AD6E004F8)
+[LOG] SoundI::release                          :     moster_kaooo..2 (0000023BE4EBF158)
+[LOG] SoundI::release                          :  (0000023883384F88)
+[LOG] SoundI::release                          :     moster_kaooo..3 (0000023CCAF24938)
+[LOG] SoundI::release                          :  (0000023AB36030C8)
+[LOG] SoundI::release                          :     monster_attack(one)1 (0000023CCAF271D8)
+[LOG] SoundI::release                          :  (0000023AD6E00668)
+[LOG] SoundI::release                          :     monster_attack(one)2 (0000023BE4EBCA58)
+[LOG] SoundI::release                          :  (0000023CEB6DD538)
+[LOG] SoundI::release                          :     monster_attack(one)3 (0000023CCAF2E398)
+[LOG] SoundI::release                          :  (0000023CEB6DD258)
+[LOG] SoundI::release                          :     monster_attack(one)4 (0000023CCAF2D698)
+[LOG] SoundI::release                          :  (0000023B0A328868)
+[LOG] SoundI::release                          :     monster_attack(both)1 (0000023CCAF4D198)
+[LOG] SoundI::release                          :  (0000023AD6E00D98)
+[LOG] SoundI::release                          :     monster_attack(both)2 (0000023BE4EC2F18)
+[LOG] SoundI::release                          :  (0000023AB36033A8)
+[LOG] SoundI::release                          :     monster_attack(both)3 (0000023CCAF24798)
+[LOG] SoundI::release                          :  (0000023AB3603C48)
+[LOG] SoundI::release                          :     monster_attack(both)4 (0000023CCAF242B8)
+[LOG] SoundI::release                          :  (0000023C73EC0CA8)
+[LOG] SoundI::release                          :     monster_hit1 (0000023CCAF2B138)
+[LOG] SoundI::release                          :  (0000023AB333B888)
+[LOG] SoundI::release                          :     monster_hit2 (0000023BE4EBD0D8)
+[LOG] SoundI::release                          :  (00000238833850F8)
+[LOG] SoundI::release                          :     monster_hit3 (0000023CCAF264D8)
+[LOG] SoundI::release                          :  (0000023AB333BFB8)
+[LOG] SoundI::release                          :     moster_move(attack)3 (0000023BE4EBDDD8)
+[LOG] SoundI::release                          :  (0000023883385828)
+[LOG] SoundI::release                          :     moster_move(attack)2 (0000023CCAF24FB8)
+[LOG] SoundI::release                          :  (0000023CD2E65FB8)
+[LOG] SoundI::release                          :     moster_move(attack)1 (0000023BE4EC1038)
+[LOG] SoundI::release                          :  (0000023AB333B718)
+[LOG] SoundI::release                          :     close monster_dead (0000023BE4EBCBF8)
+[LOG] SoundI::release                          : Player_rest_3 (0000023AD830AC78)
+[LOG] SoundI::release                          :     Player_rest_3 (0000023BE4EC8398)
+[LOG] SoundI::release                          :     Player_rest_3 (0000023886668C68)
+[LOG] SoundI::release                          :  (00000238839F24B8)
+[LOG] SoundI::release                          :     Select Area 1_2 (0000023BE4EC0198)
+[LOG] SoundI::release                          :  (00000238839F42E8)
+[LOG] SoundI::release                          :     Mouse_Hovering2 (0000023BE4EC09B8)
+[LOG] SoundI::release                          :  (00000238837FFC08)
+[LOG] SoundI::release                          :     질주_T (0000023BE4EC30B8)
+[LOG] SoundI::release                          :  (0000023C73EC0298)
+[LOG] SoundI::release                          :     Player_Death_Type1_Main (0000023CCAF2BC98)
+[LOG] SoundI::release                          :  (0000023CA88690B8)
+[LOG] SoundI::release                          :     Player_Death_Type1_ForUI (0000023CCAF2C318)
+[LOG] SoundI::release                          :  (0000023C740A1BF8)
+[LOG] SoundI::release                          :     A-1 (0000023CCAF4E858)
+[LOG] SoundI::release                          :  (0000023AD6E00C28)
+[LOG] SoundI::release                          :     A-2 (0000023BE4EC23B8)
+[LOG] SoundI::release                          :  (00000238833853D8)
+[LOG] SoundI::release                          :     A-3 (0000023CCAF26B58)
+[LOG] SoundI::release                          :  (0000023C73EBFFB8)
+[LOG] SoundI::release                          :     A-4 (0000023CCAF2AC58)
+[LOG] SoundI::release                          :  (0000023AB3603238)
+[LOG] SoundI::release                          :     A-5 (0000023CCAF25638)
+[LOG] SoundI::release                          :  (0000023AB333BCD8)
+[LOG] SoundI::release                          :     A-6 (0000023BE4EC0338)
+[LOG] SoundI::release                          :  (0000023B0A328B48)
+[LOG] SoundI::release                          :     A-7 (0000023CCAF49718)
+[LOG] SoundI::release                          :  (0000023CD2E65888)
+[LOG] SoundI::release                          :     sogsN_Part_1 (0000023BE4EC16B8)
+[LOG] SoundI::release                          :  (0000023CA8868818)
+[LOG] SoundI::release                          :     sogsN_Part_2 (0000023CCAF28558)
+[LOG] SoundI::release                          :  (0000023C73EC0B38)
+[LOG] SoundI::release                          :     sogsN_Part_3 (0000023CCAF28078)
+[LOG] SoundI::release                          :  (0000023CEB6DDAF8)
+[LOG] SoundI::release                          :     sogsN_Part_4 (0000023CCAF22238)
+[LOG] SoundI::release                          :  (0000023AD6E00388)
+[LOG] SoundI::release                          :     sogsN_Part_5 (0000023BE4EC0CF8)
+[LOG] SoundI::release                          :  (0000023CEB6DD6A8)
+[LOG] SoundI::release                          :     footsteps_player_grass_01 (0000023CCAF28F18)
+[LOG] SoundI::release                          :  (0000023AD6E007D8)
+[LOG] SoundI::release                          :     footsteps_player_grass_02 (0000023BE4EBEC78)
+[LOG] SoundI::release                          :  (0000023CD2E64D08)
+[LOG] SoundI::release                          :     footsteps_player_grass_03 (0000023BE4EC0E98)
+[LOG] SoundI::release                          :  (0000023AD6E00948)
+[LOG] SoundI::release                          :     Player_Hit_Refine1 (0000023CCAF39318)
+[LOG] SoundI::release                          :  (0000023883385268)
+[LOG] SoundI::release                          :     laser 1 (0000023CCAF27B98)
+[LOG] SoundI::release                          :  (0000023AB3603518)
+[LOG] SoundI::release                          :     laser 3 (0000023CCAF25978)
+[LOG] SoundI::release                          :  (0000023CD2E65B68)
+[LOG] SoundI::release                          :     laser 4 (0000023BE4EBEFB8)
+[LOG] SoundI::release                          :  (0000023AB36037F8)
+[LOG] SoundI::release                          :     SwingAir (0000023CCAF26678)
+[LOG] SoundI::release                          :  (0000023B0A3286F8)
+[LOG] SoundI::release                          :     SFX_Swing (0000023CCAF4B458)
+[LOG] SoundI::release                          :  (0000023C73EC0578)
+[LOG] SoundI::release                          :     B-1 (0000023CCAF2D018)
+[LOG] SoundI::release                          :  (0000023AB333BE48)
+[LOG] SoundI::release                          :     B-2 (0000023BE4EC1378)
+[LOG] SoundI::release                          :  (0000023CD2E64188)
+[LOG] SoundI::release                          :     B-3 (0000023BE4EBF638)
+[LOG] SoundI::release                          :  (0000023883384CA8)
+[LOG] SoundI::release                          :     A-1 (0000023CCAF23418)
+[LOG] SoundI::release                          :  (0000023AB333B9F8)
+[LOG] SoundI::release                          :     Dashsample (0000023BE4EC2898)
+[LOG] Thread::callback                         : FMOD Studio update thread finished.
 [LOG] Thread::callback                         : FMOD Studio bank load thread finished.
+[LOG] Profile::disconnectAll                   : Profiler disconnecting all clients
 [LOG] Thread::callback                         : FMOD Studio sample load thread finished.
 [LOG] LiveUpdate::release                      : 
 [LOG] LiveUpdate::reset                        : Reset connection (reason Disconnected)
 [LOG] Thread::callback                         : FMOD stream thread finished.
 [LOG] Thread::callback                         : FMOD mixer thread finished.
+[LOG] Profile::disconnectAll                   : Profiler disconnecting all clients
 [LOG] SystemI::close                           : Closed.
+[ERR] OutputWASAPI::mixerThread                : GetCurrentPadding returned 0x88890004.  Device was unplugged!
+[ERR] OutputWASAPI::mixerThread                : GetCurrentPadding returned 0x88890004.  Device was unplugged!
+[LOG] Thread::callback                         : FMOD mixer thread finished.
+[LOG] OutputWASAPI::init                       : Mix Format (WAVEFORMATEX): wFormatTag=0xFFFE, nChannels=2, nSamplesPerSec=48000, nAvgBytesPerSec=384000, nBlockAlign=8, wBitsPerSample=32, cbSize=22.
+[LOG] OutputWASAPI::init                       : Mix Format (WAVEFORMATEXTENSIBLE): wValidBitsPerSample=32, dwChannelMask=0x00000003, SubFormat=00000003-0000-0010-8000-00AA00389B71.
+[LOG] OutputWASAPI::init                       : Output buffer size: 4096 samples, latency: 0.00ms, period: 10.00ms, DSP buffer: 1024 * 4
+[LOG] Thread::initThread                       : Init FMOD mixer thread. Affinity: 0x4000000000000001, Priority: 0xFFFF7FFA, Stack Size: 81920, Semaphore: No, Sleep Time: 0, Looping: Yes.
+[LOG] Thread::callback                         : FMOD mixer thread finished.
+[LOG] OutputWASAPI::init                       : Mix Format (WAVEFORMATEX): wFormatTag=0xFFFE, nChannels=2, nSamplesPerSec=48000, nAvgBytesPerSec=384000, nBlockAlign=8, wBitsPerSample=32, cbSize=22.
+[LOG] OutputWASAPI::init                       : Mix Format (WAVEFORMATEXTENSIBLE): wValidBitsPerSample=32, dwChannelMask=0x00000003, SubFormat=00000003-0000-0010-8000-00AA00389B71.
+[LOG] OutputWASAPI::init                       : Output buffer size: 4096 samples, latency: 0.00ms, period: 10.00ms, DSP buffer: 1024 * 4
+[LOG] Thread::initThread                       : Init FMOD mixer thread. Affinity: 0x4000000000000001, Priority: 0xFFFF7FFA, Stack Size: 81920, Semaphore: No, Sleep Time: 0, Looping: Yes.
+[ERR] OutputWASAPI::mixerThread                : GetCurrentPadding returned 0x88890004.  Device was unplugged!
+[ERR] OutputWASAPI::mixerThread                : GetCurrentPadding returned 0x88890004.  Device was unplugged!
+[LOG] Thread::callback                         : FMOD mixer thread finished.
+[LOG] OutputWASAPI::init                       : Mix Format (WAVEFORMATEX): wFormatTag=0xFFFE, nChannels=2, nSamplesPerSec=48000, nAvgBytesPerSec=384000, nBlockAlign=8, wBitsPerSample=32, cbSize=22.
+[LOG] OutputWASAPI::init                       : Mix Format (WAVEFORMATEXTENSIBLE): wValidBitsPerSample=32, dwChannelMask=0x00000003, SubFormat=00000003-0000-0010-8000-00AA00389B71.
+[LOG] OutputWASAPI::init                       : Output buffer size: 4096 samples, latency: 0.00ms, period: 10.00ms, DSP buffer: 1024 * 4
+[LOG] Thread::initThread                       : Init FMOD mixer thread. Affinity: 0x4000000000000001, Priority: 0xFFFF7FFA, Stack Size: 81920, Semaphore: No, Sleep Time: 0, Looping: Yes.
+[LOG] Thread::callback                         : FMOD mixer thread finished.
+[LOG] OutputWASAPI::init                       : Mix Format (WAVEFORMATEX): wFormatTag=0xFFFE, nChannels=2, nSamplesPerSec=48000, nAvgBytesPerSec=384000, nBlockAlign=8, wBitsPerSample=32, cbSize=22.
+[LOG] OutputWASAPI::init                       : Mix Format (WAVEFORMATEXTENSIBLE): wValidBitsPerSample=32, dwChannelMask=0x00000003, SubFormat=00000003-0000-0010-8000-00AA00389B71.
+[LOG] OutputWASAPI::init                       : Output buffer size: 4096 samples, latency: 0.00ms, period: 10.00ms, DSP buffer: 1024 * 4
+[LOG] Thread::initThread                       : Init FMOD mixer thread. Affinity: 0x4000000000000001, Priority: 0xFFFF7FFA, Stack Size: 81920, Semaphore: No, Sleep Time: 0, Looping: Yes.
+[ERR] OutputWASAPI::mixerThread                : GetCurrentPadding returned 0x88890004.  Device was unplugged!
+[ERR] OutputWASAPI::mixerThread                : GetCurrentPadding returned 0x88890004.  Device was unplugged!
+[LOG] Thread::callback                         : FMOD mixer thread finished.
+[LOG] OutputWASAPI::init                       : Mix Format (WAVEFORMATEX): wFormatTag=0xFFFE, nChannels=2, nSamplesPerSec=48000, nAvgBytesPerSec=384000, nBlockAlign=8, wBitsPerSample=32, cbSize=22.
+[LOG] OutputWASAPI::init                       : Mix Format (WAVEFORMATEXTENSIBLE): wValidBitsPerSample=32, dwChannelMask=0x00000003, SubFormat=00000003-0000-0010-8000-00AA00389B71.
+[LOG] OutputWASAPI::init                       : Output buffer size: 4096 samples, latency: 0.00ms, period: 10.00ms, DSP buffer: 1024 * 4
+[LOG] Thread::initThread                       : Init FMOD mixer thread. Affinity: 0x4000000000000001, Priority: 0xFFFF7FFA, Stack Size: 81920, Semaphore: No, Sleep Time: 0, Looping: Yes.
+[LOG] Thread::callback                         : FMOD mixer thread finished.
+[LOG] OutputWASAPI::init                       : Mix Format (WAVEFORMATEX): wFormatTag=0xFFFE, nChannels=2, nSamplesPerSec=48000, nAvgBytesPerSec=384000, nBlockAlign=8, wBitsPerSample=32, cbSize=22.
+[LOG] OutputWASAPI::init                       : Mix Format (WAVEFORMATEXTENSIBLE): wValidBitsPerSample=32, dwChannelMask=0x00000003, SubFormat=00000003-0000-0010-8000-00AA00389B71.
+[LOG] OutputWASAPI::init                       : Output buffer size: 4096 samples, latency: 0.00ms, period: 10.00ms, DSP buffer: 1024 * 4
+[LOG] Thread::initThread                       : Init FMOD mixer thread. Affinity: 0x4000000000000001, Priority: 0xFFFF7FFA, Stack Size: 81920, Semaphore: No, Sleep Time: 0, Looping: Yes.
+[ERR] OutputWASAPI::mixerThread                : GetCurrentPadding returned 0x88890004.  Device was unplugged!
+[ERR] OutputWASAPI::mixerThread                : GetCurrentPadding returned 0x88890004.  Device was unplugged!
+[LOG] Thread::callback                         : FMOD mixer thread finished.
+[LOG] OutputWASAPI::init                       : Mix Format (WAVEFORMATEX): wFormatTag=0xFFFE, nChannels=2, nSamplesPerSec=48000, nAvgBytesPerSec=384000, nBlockAlign=8, wBitsPerSample=32, cbSize=22.
+[LOG] OutputWASAPI::init                       : Mix Format (WAVEFORMATEXTENSIBLE): wValidBitsPerSample=32, dwChannelMask=0x00000003, SubFormat=00000003-0000-0010-8000-00AA00389B71.
+[LOG] OutputWASAPI::init                       : Output buffer size: 4096 samples, latency: 0.00ms, period: 10.00ms, DSP buffer: 1024 * 4
+[LOG] Thread::initThread                       : Init FMOD mixer thread. Affinity: 0x4000000000000001, Priority: 0xFFFF7FFA, Stack Size: 81920, Semaphore: No, Sleep Time: 0, Looping: Yes.
+[LOG] Thread::callback                         : FMOD mixer thread finished.
+[LOG] OutputWASAPI::init                       : Mix Format (WAVEFORMATEX): wFormatTag=0xFFFE, nChannels=2, nSamplesPerSec=48000, nAvgBytesPerSec=384000, nBlockAlign=8, wBitsPerSample=32, cbSize=22.
+[LOG] OutputWASAPI::init                       : Mix Format (WAVEFORMATEXTENSIBLE): wValidBitsPerSample=32, dwChannelMask=0x00000003, SubFormat=00000003-0000-0010-8000-00AA00389B71.
+[LOG] OutputWASAPI::init                       : Output buffer size: 4096 samples, latency: 0.00ms, period: 10.00ms, DSP buffer: 1024 * 4
+[LOG] Thread::initThread                       : Init FMOD mixer thread. Affinity: 0x4000000000000001, Priority: 0xFFFF7FFA, Stack Size: 81920, Semaphore: No, Sleep Time: 0, Looping: Yes.
+[LOG] Thread::callback                         : FMOD mixer thread finished.
+[LOG] OutputWASAPI::init                       : Mix Format (WAVEFORMATEX): wFormatTag=0xFFFE, nChannels=2, nSamplesPerSec=48000, nAvgBytesPerSec=384000, nBlockAlign=8, wBitsPerSample=32, cbSize=22.
+[LOG] OutputWASAPI::init                       : Mix Format (WAVEFORMATEXTENSIBLE): wValidBitsPerSample=32, dwChannelMask=0x00000003, SubFormat=00000003-0000-0010-8000-00AA00389B71.
+[LOG] OutputWASAPI::init                       : Output buffer size: 4096 samples, latency: 0.00ms, period: 10.00ms, DSP buffer: 1024 * 4
+[LOG] Thread::initThread                       : Init FMOD mixer thread. Affinity: 0x4000000000000001, Priority: 0xFFFF7FFA, Stack Size: 81920, Semaphore: No, Sleep Time: 0, Looping: Yes.

@@ -162,8 +162,6 @@ namespace Sophia.Entitys
             }
         }
 
-
-
         void ResetAnimParam()
         {
             foreach (string b in animBoolParamList)
@@ -349,6 +347,15 @@ namespace Sophia.Entitys
         public void UseProjectile_RightAttack()
         {
             Sophia.Instantiates.ProjectileObject useProjectile = ProjectilePool.GetObject(_attckProjectileDirection[1]).Init(this);
+
+            _projectileBucketManager.InstantablePositioning(4, useProjectile)
+                                    .SetProjectilePower(GetStat(E_NUMERIC_STAT_TYPE.Power))
+                                    .Activate();
+        }
+
+        public void UseProjectile_UpperCut()
+        {
+            Sophia.Instantiates.ProjectileObject useProjectile = ProjectilePool.GetObject(_attckProjectileDirection[2]).Init(this);
 
             _projectileBucketManager.InstantablePositioning(4, useProjectile)
                                     .SetProjectilePower(GetStat(E_NUMERIC_STAT_TYPE.Power))

@@ -492,7 +492,8 @@ namespace Sophia.Entitys
             Sequence mySequence = DOTween.Sequence();
             System.Random random = new System.Random();
             Vector3 EndPosForward = transform.right;
-            var randomAngle = random.Next(-180, 180);
+            //var randomAngle = random.Next(-180, 180);
+            var randomAngle = 0;
             Vector3[] rotateMatrix = new Vector3[] {
                 new Vector3(Mathf.Cos(randomAngle), 0 , Mathf.Sin(randomAngle)),
                 new Vector3(0, 1 , 0),
@@ -502,11 +503,12 @@ namespace Sophia.Entitys
             retatedVec += EndPosForward.x * rotateMatrix[0];
             retatedVec += EndPosForward.y * rotateMatrix[1];
             retatedVec += EndPosForward.z * rotateMatrix[2];
-            var randomDist = (float)random.NextDouble() * 7;
-            var randomForce = (float)random.NextDouble();
-            var randomTime = (float)(random.NextDouble() * 2 + 0.5);
-            Debug.Log(retatedVec * randomDist);
-            Tween jumpTween = itemObject.transform.DOLocalJump((retatedVec * randomDist) + transform.position, randomForce * 25, 1, randomTime).SetEase(Ease.OutBounce);
+            // var randomDist = (float)random.NextDouble() * 7;
+            // var randomForce = (float)random.NextDouble();
+            // var randomTime = (float)(random.NextDouble() * 2 + 0.5);
+            //Debug.Log(retatedVec * randomDist);
+            //Tween jumpTween = itemObject.transform.DOLocalJump((retatedVec * randomDist) + transform.position, randomForce * 25, 1, randomTime).SetEase(Ease.OutBounce);
+            Tween jumpTween = itemObject.transform.DOLocalJump(retatedVec + transform.position, 10, 1, 1).SetEase(Ease.OutBounce);
             return mySequence.Append(jumpTween);
         }
 

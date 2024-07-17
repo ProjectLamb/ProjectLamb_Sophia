@@ -5,6 +5,7 @@ using Sophia.DataSystem;
 using Sophia.DataSystem.Referer;
 using FMODPlus;
 using DG.Tweening;
+using System;
 
 namespace Sophia.Composite
 {
@@ -29,6 +30,7 @@ namespace Sophia.Composite
         public Vector3 LastTouchedPointer;
         public Quaternion Rotate;
         private Vector2 mInputVec;
+        public float BaseRotateSpeed = 0.25f;
 
         public const float CamRayLength = 500f;
         public LayerMask GroundMask = LayerMask.GetMask("Wall", "Map");
@@ -128,26 +130,31 @@ namespace Sophia.Composite
                 LastTouchedPointer = groundHit.point - TransformRef.position;
                 LastTouchedPointer.y = 0f;
                 //this.RbRef.MoveRotation(Quaternion.LookRotation(LastTouchedPointer));
-                RbRef.DORotate(Quaternion.LookRotation(LastTouchedPointer).eulerAngles, 0.1f);
+                RbRef.DORotate(Quaternion.LookRotation(LastTouchedPointer).eulerAngles, BaseRotateSpeed);
             }
             await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);
         }
 
-        public async UniTask TurningWithAction(Transform transform, Vector3 forwardingVector, UnityAction action)
+        public async UniTask TurningWithAction(Transform transform, Vector3 forwardingVector, UnityAction action, bool latency)
         {
             if (!IsMovable) { return; }
+
+            float rotateSpeed = BaseRotateSpeed;
 
             Ray camRay = Camera.main.ScreenPointToRay(forwardingVector);
             if (Physics.Raycast(camRay, out RaycastHit groundHit, CamRayLength, GroundMask)) // 공격 도중에는 방향 전환 금지
             {
                 LastTouchedPointer = groundHit.point - transform.position;
                 LastTouchedPointer.y = 0f;
-                //this.RbRef.MoveRotation(Quaternion.LookRotation(LastTouchedPointer));
-                RbRef.DORotate(Quaternion.LookRotation(LastTouchedPointer).eulerAngles, 0.1f);
+
+                if (latency)
+                    RbRef.DORotate(Quaternion.LookRotation(LastTouchedPointer).eulerAngles, rotateSpeed);
+                else
+                    RbRef.DORotate(Quaternion.LookRotation(LastTouchedPointer).eulerAngles, 0.05f);
             }
             await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);
             action.Invoke();
         }
-        
+
     }
 }

@@ -101,7 +101,12 @@ namespace Sophia.Composite
             if (collectedSkillInfo[key] != EmptySkill.Instance) { Drop(key); }
             collectedSkill[key] = skill;
             collectedSkill[key].GetCoolTimeComposite().AddOnUseEvent(() =>
-                _ownerPlayer.GetModelManager().GetAnimator().Play("PlaySkillAction"));
+            {
+                if (skill.GetIsSkillIndicate())
+                    _ownerPlayer.GetModelManager().GetAnimator().Play("SkillAttack");
+                else
+                    _ownerPlayer.GetModelManager().GetAnimator().Play("SkillNormal");
+            });
             collectedSkillInfo[key] = skill;
             
             switch (key)

@@ -115,9 +115,9 @@ namespace Sophia.Entitys
             base.Start();
             Life.SetDependUI(InGameScreenUI.Instance._playerHealthBarUI);
             Life.OnDamaged += InGameScreenUI.Instance._hitCanvasShadeScript.Invoke;
-            
+
             // Hit Audio 
-            
+
             Life.OnHit += HitSource.Play;
             Life.OnEnterDie += DeathSource.Play;
 
@@ -162,7 +162,8 @@ namespace Sophia.Entitys
             entityCollider.enabled = false;
             _modelManager.GetAnimator().SetTrigger("Die");
 
-            InGameScreenUI.Instance._fadeUI.AddBindingAction(() => { 
+            InGameScreenUI.Instance._fadeUI.AddBindingAction(() =>
+            {
                 DontDestroyGameManager.Instance.AudioManager.audioStateSender._stopSender.SendCommand();
                 SceneManager.LoadScene(1);
             });
@@ -265,7 +266,7 @@ namespace Sophia.Entitys
                 if (!GetModelManager().GetAnimator().GetBool("canNextAttack"))
                     return;
                 // if(Sophia.PlayerAttackAnim.canExitAttack || Sophia.PlayerAttackAnim.resetAtkTrigger) return;
-                await Movement.TurningWithAction(transform, Input.mousePosition, () => GetModelManager().GetAnimator().SetTrigger("DoAttack"));
+                await Movement.TurningWithAction(transform, Input.mousePosition, () => GetModelManager().GetAnimator().SetTrigger("DoAttack"), true);
 
             }
             catch (OperationCanceledException)
@@ -289,21 +290,33 @@ namespace Sophia.Entitys
         public void DropSkill(KeyCode key) => this._skillManager.Drop(key);
         public async void Use(KeyCode key)  // Using Skill
         {
-            // 만약 스킬 쿨이 돌지 않았을 때
+            // 만약 스킬 쿨이 돌았다면
             if (_skillManager.GetSkillByKey(key).GetCoolTimeComposite().GetIsReadyToUse())
             {
-                await Movement.TurningWithAction(transform, Input.mousePosition, () =>
-            {
-                this._skillManager.GetSkillByKey(key)?.Use();
-            });
+                // 만약 스킬 인디케이터를 표시해야 하면
+                if (this._skillManager.GetSkillByKey(key).GetIsSkillIndicate())
+                {
+                    await Movement.TurningWithAction(transform, Input.mousePosition, () =>
+                    {
+                        this._skillManager.GetSkillByKey(key)?.Use();
+                    }, false);
+                }
+                else
+                {
+                    this._skillManager.GetSkillByKey(key)?.Use();
+                }
             }
         }
         public void Indicate(KeyCode key)
         {
-            if((this._skillManager.GetSkillByKey(key)?.GetName() != null) && (_skillManager.GetSkillByKey(key).GetCoolTimeComposite().GetIsReadyToUse())){
+            if ((this._skillManager.GetSkillByKey(key)?.GetName() != null) && (_skillManager.GetSkillByKey(key).GetCoolTimeComposite().GetIsReadyToUse()))
+            {
                 //쿨타임 아닐때
-                skillIndicator.IsIndicate = true;
-                skillIndicator.changeIndicate(this._skillManager.GetSkillByKey(key)?.GetName());
+                if (this._skillManager.GetSkillByKey(key).GetIsSkillIndicate())
+                {
+                    skillIndicator.IsIndicate = true;
+                    skillIndicator.changeIndicate(this._skillManager.GetSkillByKey(key)?.GetName());
+                }
             }
         }
         #endregion

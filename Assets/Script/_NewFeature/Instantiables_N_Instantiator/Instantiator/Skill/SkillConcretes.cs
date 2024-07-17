@@ -14,6 +14,7 @@ namespace Sophia.Instantiates.Skills
         protected Sprite icon;
         protected float baseCoolTime = 15f;
         protected int baseStackAmount = 1;
+        protected bool IsSkillIndicate = false;
         public CoolTimeComposite TimerComposite { get; protected set; }
         public override CoolTimeComposite GetCoolTimeComposite() => this.TimerComposite;
         public Entitys.Player ownerEntity { get; protected set; }
@@ -65,6 +66,11 @@ namespace Sophia.Instantiates.Skills
             if (!TimerComposite.GetIsReadyToUse()) return;
             TimerComposite.ActionStart();
         }
+
+        #region Skill Indicator
+        public override bool GetIsSkillIndicate() { return IsSkillIndicate; }
+
+        #endregion
     }
 
     namespace Neutral
@@ -418,6 +424,7 @@ namespace Sophia.Instantiates.Skills
 
             public DoubleShot(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
             {
+                IsSkillIndicate = true;
                 TimerComposite = new CoolTimeComposite(baseCoolTime, baseStackAmount);
                 TimerComposite.AddBindingAction(Activate);
             }
@@ -444,6 +451,7 @@ namespace Sophia.Instantiates.Skills
             #endregion
             public async void Activate()
             {
+                await UniTask.Delay(TimeSpan.FromSeconds(0.15f));
                 ProjectileObject useProjectile1 = ProjectilePool.GetObject(projectileInstantiateData._projectileObjectRefer).Init(ownerEntity);
                 instantiatorRef = ownerEntity.GetProjectileBucketManager().GetProjectileBucket(projectileInstantiateData._bucketIndex);
                 instantiatorRef.InstantablePositioning(useProjectile1, Vector3.zero, Vector3.forward * 30)
@@ -486,6 +494,7 @@ namespace Sophia.Instantiates.Skills
 
             public Piercing(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
             {
+                IsSkillIndicate = true;
                 TimerComposite = new CoolTimeComposite(baseCoolTime, baseStackAmount);
                 TimerComposite.AddBindingAction(Activate);
             }
@@ -527,8 +536,9 @@ namespace Sophia.Instantiates.Skills
             }
 
             #endregion
-            public void Activate()
+            public async void Activate()
             {
+                await UniTask.Delay(TimeSpan.FromSeconds(0.1f));
                 ProjectileObject useProjectile1 = ProjectilePool.GetObject(projectileInstantiateData._projectileObjectRefer).Init(ownerEntity);
                 instantiatorRef = ownerEntity.GetProjectileBucketManager().GetProjectileBucket(projectileInstantiateData._bucketIndex);
                 instantiatorRef.InstantablePositioning(useProjectile1, Vector3.zero, Vector3.forward * 15)
@@ -557,6 +567,7 @@ namespace Sophia.Instantiates.Skills
 
             public RotateSlash(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
             {
+                IsSkillIndicate = true;
                 TimerComposite = new CoolTimeComposite(baseCoolTime, baseStackAmount);
                 TimerComposite.AddBindingAction(Activate);
             }
@@ -581,8 +592,9 @@ namespace Sophia.Instantiates.Skills
             }
 
             #endregion
-            public void Activate()
+            public async void Activate()
             {
+                await UniTask.Delay(TimeSpan.FromSeconds(0.1f));
                 ProjectileObject useProjectile1 = ProjectilePool.GetObject(projectileInstantiateData._projectileObjectRefer).Init(ownerEntity);
                 instantiatorRef = ownerEntity.GetProjectileBucketManager().GetProjectileBucket(projectileInstantiateData._bucketIndex);
                 instantiatorRef.InstantablePositioning(useProjectile1)
@@ -609,6 +621,7 @@ namespace Sophia.Instantiates.Skills
 
             public ThrowSlash(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
             {
+                IsSkillIndicate = true;
                 TimerComposite = new CoolTimeComposite(baseCoolTime, baseStackAmount);
                 TimerComposite.AddBindingAction(Activate);
             }
@@ -633,8 +646,9 @@ namespace Sophia.Instantiates.Skills
             }
 
             #endregion
-            public void Activate()
+            public async void Activate()
             {
+                await UniTask.Delay(TimeSpan.FromSeconds(0.1f));
                 ProjectileObject useProjectile1 = ProjectilePool.GetObject(projectileInstantiateData._projectileObjectRefer).Init(ownerEntity);
                 instantiatorRef = ownerEntity.GetProjectileBucketManager().GetProjectileBucket(projectileInstantiateData._bucketIndex);
                 instantiatorRef.InstantablePositioning(useProjectile1, Vector3.zero, Vector3.right * -30)
@@ -685,6 +699,7 @@ namespace Sophia.Instantiates.Skills
 
             public DashSlash(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
             {
+                IsSkillIndicate = true;
                 baseStackAmount = 3;
                 TimerComposite = new CoolTimeComposite(baseCoolTime, baseStackAmount)
                                         .AddBindingAction(Activate);
@@ -726,8 +741,9 @@ namespace Sophia.Instantiates.Skills
             }
 
             #endregion
-            public void Activate()
+            public async void Activate()
             {
+                await UniTask.Delay(TimeSpan.FromSeconds(0.1f));
                 ProjectileObject useProjectile1 = ProjectilePool.GetObject(projectileInstantiateData._projectileObjectRefer).Init(ownerEntity);
                 instantiatorRef = ownerEntity.GetProjectileBucketManager().GetProjectileBucket(projectileInstantiateData._bucketIndex);
                 instantiatorRef.InstantablePositioning(useProjectile1, Vector3.zero, Vector3.forward * 15)
