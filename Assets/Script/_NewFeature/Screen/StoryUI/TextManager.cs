@@ -24,6 +24,7 @@ public class TextManager : MonoBehaviour
     public bool IsStory = true;
     public bool IsSkipStory;
     public bool IsGameStart;
+    public bool IsBlockTextUpdate;
     bool IsOnce = false;
 
     [Header("PlayerUI")]
@@ -53,8 +54,10 @@ public class TextManager : MonoBehaviour
 
     private void Start()
     {
-        IsSkipStory = DontDestroyGameManager.Instance.SaveLoadManager.Data.CutSceneSaveData.IsSkipStory; // IsTutorial
-        if (!(IsSkipStory && !StoryManager.Instance.IsTutorial))
+        if (DontDestroyGameManager.Instance != null)
+            IsSkipStory = DontDestroyGameManager.Instance.SaveLoadManager.Data.CutSceneSaveData.IsSkipStory; // IsTutorial
+
+        if (!IsSkipStory || StoryManager.Instance.IsTutorial)
         {
             InGameScreenUI.Instance._fadeUI.FadeIn(0.02f, 2f);
             InGameScreenUI.Instance._storyFadePanel.fadeStoryBarOn();
@@ -79,55 +82,118 @@ public class TextManager : MonoBehaviour
 
     private void Update()
     {
-        if(IsSkipStory && !StoryManager.Instance.IsTutorial) {return;}
-        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0) ) && IsStory)
-        {
-            TypingManager._instance.GetInputDown();
-            if (TypingManager._instance.isTypingEnd)
-            {
-                if (currentPage == talkDatas.Length && TypingManager._instance.isDialogEnd)
-                {
-                    currentPage = talkDatas.Length;
-                    if (!IsOnce)
-                    {
-                        TextBarOff();
-                        //1챕 튜토리얼 한정
-                        InGameScreenUI.Instance._fadeUI.FadeOut(0.02f, 1.5f);
-                        InGameScreenUI.Instance._fadeUI.AddBindingAction(() => { InGameScreenUI.Instance._videoController.StartVideo(VideoController.E_VIDEO_NAME.Opening); });
-                        IsStory = false;
-                        IsOnce = true;
-                        DontDestroyGameManager.Instance.SaveLoadManager.Data.CutSceneSaveData.IsSkipStory = true;
-                    }
-                    IsStory = false;
-                }
+        if (IsBlockTextUpdate) { return; }
 
-                if (nameText.text != talkDatas[currentPage].name) // 스토리 진행 중 화자 변경 시 이미지 변경
-                {
-                    storyImageAnimator.SetTrigger("DoChange");
-                }
-                speakerImage.ChangeSprite(talkDatas[currentPage].name, talkDatas[currentPage].emotionState);
-                nameText.text = talkDatas[currentPage].name;
-                TypingManager._instance.Typing(talkDatas[currentPage].contexts, talkText);
-                currentPage++;
-            }
-        }
-
-        // 
         if (GameManager.Instance.GlobalEvent.IsGamePaused)
         {
             talkPanel.SetActive(false);
         }
 
+        if (IsStory)
+        {
+            if (!GameManager.Instance.GlobalEvent.IsGamePaused)
+            {
+                talkPanel.SetActive(true);
+            }
+
+            if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
+            {
+                TypingManager._instance.GetInputDown();
+                if (TypingManager._instance.isTypingEnd)
+                {
+                    if (currentPage == talkDatas.Length && TypingManager._instance.isDialogEnd)
+                    {
+                        currentPage = talkDatas.Length;
+                        switch (storyEventName)
+                        {
+                            case "Prologue":
+                                InGameScreenUI.Instance._fadeUI.FadeOut(0.02f, 1.5f);
+                                InGameScreenUI.Instance._fadeUI.AddBindingAction(() => { InGameScreenUI.Instance._videoController.StartVideo(VideoController.E_VIDEO_NAME.Opening); });
+                                break;
+                            case "AfterBoss":
+                                DontDestroyGameManager.Instance.SaveLoadManager.Data.ChapterClearSaveData.IsChapter1Clear = true;
+                                InGameScreenUI.Instance._fadeUI.FadeOut(0.02f, 2f);
+                                InGameScreenUI.Instance._fadeUI.AddBindingAction(() => UnityEngine.SceneManagement.SceneManager.LoadScene("05_Demo_Clear"));
+                                break;
+                        }
+                        IsStory = false;
+                        TextBarOff();
+                        nameText.text = "";
+                        currentPage = 0;
+                        IsBlockTextUpdate = true;
+                        // if (!IsOnce)
+                        // {
+                        //     TextBarOff();
+                        //     switch (storyEventName)
+                        //     {
+                        //         case "Prologue":
+                        //             InGameScreenUI.Instance._fadeUI.FadeOut(0.02f, 1.5f);
+                        //             InGameScreenUI.Instance._fadeUI.AddBindingAction(() => { InGameScreenUI.Instance._videoController.StartVideo(VideoController.E_VIDEO_NAME.Opening); });
+                        //             break;
+                        //         case "AfterBoss":
+                        //             InGameScreenUI.Instance._fadeUI.FadeOut(0.02f, 2f);
+                        //             InGameScreenUI.Instance._fadeUI.AddBindingAction(() => UnityEngine.SceneManagement.SceneManager.LoadScene("05_Demo_Clear"));
+                        //             break;
+                        //     }
+                        //     IsStory = false;
+                        //     IsBlockTextUpdate = true;
+                        //     IsOnce = true;
+                        // }
+                    }
+
+                    if (nameText.text != talkDatas[currentPage].name) // 스토리 진행 중 화자 변경 시 이미지 변경
+                    {
+                        storyImageAnimator.SetTrigger("DoChange");
+                    }
+                    speakerImage.ChangeSprite(talkDatas[currentPage].name, talkDatas[currentPage].emotionState);
+                    nameText.text = talkDatas[currentPage].name;
+                    TypingManager._instance.Typing(talkDatas[currentPage].contexts, talkText);
+                    currentPage++;
+                }
+            }
+        }
         else if (!IsStory) // 튜토리얼이 끝났다면
         {
             TextBarOff();
             nameText.text = "";
             currentPage = 0;
         }
-        else if (IsStory && !GameManager.Instance.GlobalEvent.IsGamePaused)
-        {
-            TextBarOn();
-        }
+
+        // if ((Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0)) && IsStory)
+        // {
+        //     TypingManager._instance.GetInputDown();
+        //     if (TypingManager._instance.isTypingEnd)
+        //     {
+        //         if (currentPage == talkDatas.Length && TypingManager._instance.isDialogEnd)
+        //         {
+        //             currentPage = talkDatas.Length;
+        //             if (!IsOnce)
+        //             {
+        //                 TextBarOff();
+        //                 //1챕 튜토리얼 한정
+        //                 InGameScreenUI.Instance._fadeUI.FadeOut(0.02f, 1.5f);
+        //                 InGameScreenUI.Instance._fadeUI.AddBindingAction(() => { InGameScreenUI.Instance._videoController.StartVideo(VideoController.E_VIDEO_NAME.Opening); });
+        //                 IsStory = false;
+        //                 IsOnce = true;
+        //                 DontDestroyGameManager.Instance.SaveLoadManager.Data.CutSceneSaveData.IsSkipStory = true;   //현재 의미 X
+        //             }
+        //             IsStory = false;
+        //         }
+
+        //         if (nameText.text != talkDatas[currentPage].name) // 스토리 진행 중 화자 변경 시 이미지 변경
+        //         {
+        //             storyImageAnimator.SetTrigger("DoChange");
+        //         }
+        //         speakerImage.ChangeSprite(talkDatas[currentPage].name, talkDatas[currentPage].emotionState);
+        //         nameText.text = talkDatas[currentPage].name;
+        //         TypingManager._instance.Typing(talkDatas[currentPage].contexts, talkText);
+        //         currentPage++;
+        //     }
+        // }
+        // else if (IsStory && !GameManager.Instance.GlobalEvent.IsGamePaused)
+        // {
+        //     TextBarOn();
+        // }
     }
 
     private void TextBarOff()

@@ -278,6 +278,8 @@ namespace Sophia.Entitys
 
         void OnElderOneEnterDie()
         {
+            Sophia.UserInterface.InGameScreenUI.Instance._storyFadePanel.SetTransparent();
+            Sophia.UserInterface.InGameScreenUI.Instance._storyFadePanel.WaitAfterBoss();
             Sophia.Instantiates.VisualFXObject visualFX = VisualFXObjectPool.GetObject(_dieParticleRef).Init();
             GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
             GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Dead].PlayAffectOneShot(); // 새로 추가 된것!
@@ -285,7 +287,7 @@ namespace Sophia.Entitys
             GameManager.Instance.DonDestroyObjectReferer.DontDestroyGameManager.AudioManager.audioStateSender._bossPhaseSender[2].SendCommand();
             CurrentInstantiatedStage.mobGenerator.RemoveMob(this.gameObject);
         }
-        
+
         public override bool Die()
         {
             Life.Died();
@@ -701,20 +703,12 @@ namespace Sophia.Entitys
         /** Death State */
         void Death_Enter()
         {
-            Sophia.UserInterface.InGameScreenUI.Instance._storyFadePanel.SetTransparent();
-            Sophia.UserInterface.InGameScreenUI.Instance._storyFadePanel.WaitAfterBoss();
-            //Debug.Log("Death_Enter");
+            Debug.Log("Death_Enter");
             Die();
         }
 
         void Death_Update()
         {
-            if (!TextManager.Instance.IsStory && !StoryManager.Instance.IsBossClear && Sophia.UserInterface.InGameScreenUI.Instance._storyFadePanel.IsWaitOver)
-            {
-                Sophia.UserInterface.InGameScreenUI.Instance._fadeUI.FadeOut(0.05f, 2f);
-                Sophia.UserInterface.InGameScreenUI.Instance._fadeUI.AddBindingAction(() => UnityEngine.SceneManagement.SceneManager.LoadScene("05_Demo_Clear"));
-                StoryManager.Instance.IsBossClear = true;
-            }
             //check animation end
         }
 
