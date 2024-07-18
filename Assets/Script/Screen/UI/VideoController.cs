@@ -22,6 +22,7 @@ public class VideoController : MonoBehaviour
     [SerializeField] private bool isSkippable;
     public void StartVideo(E_VIDEO_NAME video)
     {
+        isSkippable = true; //스킵 가능 여부
         image = videoList[(int)video].transform.GetChild(0).GetComponent<RawImage>();
         vid = videoList[(int)video].transform.GetChild(1).GetComponent<VideoPlayer>();
         currentVideo = video;
@@ -50,13 +51,8 @@ public class VideoController : MonoBehaviour
             {
                 //스킵 하시겠습니까? UI 띄우기
                 VideoEnd(vid);
-                //bool값 설정해서 더 못 누르도록 제한
+                isSkippable = false;
             }
-        }
-        if (Input.GetKeyDown(KeyCode.P))    //디버그 용이면 나중에 지울 것
-        {
-            //소리도 꺼야됨
-            VideoEnd(vid);
         }
     }
 
@@ -107,6 +103,7 @@ public class VideoController : MonoBehaviour
             }
             image.enabled = false;
             vid.Stop();
+            fMODAudioSource.Stop();
             PauseMenu.OnOpenMenuStaticEvent.RemoveListener(PauseVideo);
             PauseMenu.OnCloseMenuStaticEvent.RemoveListener(PlayVideo);
         });

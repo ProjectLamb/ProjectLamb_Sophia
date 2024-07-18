@@ -18,7 +18,7 @@ namespace Sophia.Instantiates
         PurchaseComponent pc;
         GachaComponent gc;
         bool IsReady = true;
-        Sequence LunchSequnce;
+        Sequence LaunchSequnce;
         System.Random random;
 
         private void Awake()
@@ -73,9 +73,8 @@ namespace Sophia.Instantiates
             retatedVec += EndPosForward.z * rotateMatrix[2];
             var randomDist = (float)random.NextDouble() * 7;
             var randomForce = (float)random.NextDouble();
-            var randomTime = (float)(random.NextDouble() * 2 + 0.5);
             Debug.Log(retatedVec * randomDist);
-            Tween jumpTween = itemObject.transform.DOLocalJump((retatedVec * randomDist) + endPos.transform.position, randomForce * 25, 1, randomTime).SetEase(Ease.OutBounce);
+            Tween jumpTween = itemObject.transform.DOLocalJump((retatedVec * randomDist) + endPos.transform.position, randomForce * 10, 1, 1).SetEase(Ease.OutBounce);
             return mySequence.Append(jumpTween);
         }
 
