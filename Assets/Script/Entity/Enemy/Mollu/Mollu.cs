@@ -185,7 +185,6 @@ namespace Sophia.Entitys
             GameManager.Instance.NewFeatureGlobalEvent.EnemyDie.PerformStartFunctionals(ref GlobalHelper.NullRef);
             SetMoveState(false);
             entityCollider.enabled = false;
-
         }
 
         public void OnMolluExitDie()
