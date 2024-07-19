@@ -50,13 +50,14 @@ public class GlobalSaveLoadManager : MonoBehaviour
         else
         {
             Data = new UserData();
-            SaveAsJson();
+            Data.IsOnceUsed = true;
+            //SaveAsJson();
         }
     }
 
     private void OnApplicationQuit()
     {
-        SaveAsJson();   //중복 가능성?
+        //SaveAsJson();   //Json 초기화되는 버그 때문에 주석처리
     }
 
     public void ResetData()
