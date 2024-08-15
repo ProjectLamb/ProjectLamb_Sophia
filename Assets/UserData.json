@@ -1,6 +1,7 @@
 {
-  "IsOnceUsed": false,
+  "IsOnceUsed": true,
   "IsTutorial": false,
+  "CurrentChapterNum": 2,
   "CutSceneSaveData": {
     "IsSkipStory": true
   },

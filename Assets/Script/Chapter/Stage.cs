@@ -14,7 +14,7 @@ public class Stage : MonoBehaviour
     #region Enum Members
 
     public enum STAGE_TYPE { NORMAL, START, SHOP, HIDDEN, BOSS };
-    public enum PORTAL_TYPE { NORMAL, BOSS, }
+    public enum PORTAL_TYPE { NORMAL, BOSS, CHAPTER }
     public enum STAGE_CHILD { TILE, WALL, PORTAL, OBSTACLE, MOB, }
     public enum STAGE_SIZE { SMALL, MIDDLE, BIG };
 
@@ -248,6 +248,9 @@ public class Stage : MonoBehaviour
             ItemObject itemObject = null;
             itemObject = ItemPool.Instance.GetRandomEquipment(E_EQUIPMENT_TYPE.Boss);
 
+            stageGenerator.InstantiateNextChapterPortal();
+
+            itemObjectBucket.transform.position += new Vector3(0, 0, 5);
             itemObjectBucket.InstantablePositioning(itemObject = Instantiate(itemObject).Init()).Activate();
             itemObject.transform.parent = itemObjectBucket.transform;
         }

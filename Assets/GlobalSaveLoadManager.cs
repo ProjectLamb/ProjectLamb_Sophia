@@ -105,6 +105,7 @@ namespace Sophia.DB
     {
         public bool IsOnceUsed; //파일이 존재하지 않을 때, 데이터는 존재한다고 명시할 flag
         public bool IsTutorial;
+        public int CurrentChapterNum;
         public CutSceneSaveData CutSceneSaveData;
         public ChapterClearSaveData ChapterClearSaveData;
 
@@ -116,6 +117,7 @@ namespace Sophia.DB
 
             IsOnceUsed = false;
             IsTutorial = true;
+            CurrentChapterNum = 1;
 
             CutSceneSaveData.IsSkipStory = false;
 

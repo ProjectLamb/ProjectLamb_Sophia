@@ -475,7 +475,7 @@ public class StageGenerator : MonoBehaviour
         {
             instance = Instantiate(portalModel, tileGameObjectArray[1, (1 + height) / 2].transform.position, Quaternion.Euler(0, 90, 0));
             tileGameObjectArray[1, (1 + height) / 2].gameObject.tag = "Portal";
-            instance.GetComponent<Portal>().PortalType = "east";
+            instance.GetComponent<Portal>().PortalDirection = "east";
             instance.transform.parent = transform.GetChild((int)Stage.STAGE_CHILD.PORTAL);
             portalArray[0] = instance;
         }
@@ -483,7 +483,7 @@ public class StageGenerator : MonoBehaviour
         {
             instance = Instantiate(portalModel, tileGameObjectArray[width, (1 + height) / 2].transform.position, Quaternion.Euler(0, -90, 0));
             tileGameObjectArray[width, (1 + height) / 2].gameObject.tag = "Portal";
-            instance.GetComponent<Portal>().PortalType = "west";
+            instance.GetComponent<Portal>().PortalDirection = "west";
             instance.transform.parent = transform.GetChild((int)Stage.STAGE_CHILD.PORTAL);
             portalArray[1] = instance;
             transform.GetChild((int)Stage.STAGE_CHILD.WALL).GetChild(0).GetComponent<WallSet>().SetWestPortal();
@@ -492,7 +492,7 @@ public class StageGenerator : MonoBehaviour
         {
             instance = Instantiate(portalModel, tileGameObjectArray[(1 + width) / 2, 1].transform.position, Quaternion.identity);
             tileGameObjectArray[(1 + width) / 2, 1].gameObject.tag = "Portal";
-            instance.GetComponent<Portal>().PortalType = "north";
+            instance.GetComponent<Portal>().PortalDirection = "north";
             instance.transform.parent = transform.GetChild((int)Stage.STAGE_CHILD.PORTAL);
             portalArray[2] = instance;
             transform.GetChild((int)Stage.STAGE_CHILD.WALL).GetChild(0).GetComponent<WallSet>().SetNorthPortal();
@@ -501,12 +501,19 @@ public class StageGenerator : MonoBehaviour
         {
             instance = Instantiate(portalModel, tileGameObjectArray[(1 + width) / 2, height].transform.position, Quaternion.Euler(0, 180, 0));
             tileGameObjectArray[(1 + width) / 2, height].gameObject.tag = "Portal";
-            instance.GetComponent<Portal>().PortalType = "south";
+            instance.GetComponent<Portal>().PortalDirection = "south";
             instance.transform.parent = transform.GetChild((int)Stage.STAGE_CHILD.PORTAL);
             portalArray[3] = instance;
         }
     }
 
+    public void InstantiateNextChapterPortal()
+    {
+        if(portal[(int)Stage.PORTAL_TYPE.CHAPTER] != null)
+        {
+            Instantiate(portal[(int)Stage.PORTAL_TYPE.CHAPTER], transform.position, Quaternion.identity);
+        }
+    }
     public void InstantiateObstacle(int amount)
     {
         int temp = amount;

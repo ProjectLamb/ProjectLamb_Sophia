@@ -276,8 +276,9 @@ namespace Sophia.Entitys
 
         void OnElderOneEnterDie()
         {
-            Sophia.UserInterface.InGameScreenUI.Instance._storyFadePanel.SetTransparent();
-            Sophia.UserInterface.InGameScreenUI.Instance._storyFadePanel.WaitAfterBoss();
+            //Demo Clear
+            // Sophia.UserInterface.InGameScreenUI.Instance._storyFadePanel.SetTransparent();
+            // Sophia.UserInterface.InGameScreenUI.Instance._storyFadePanel.WaitAfterBoss();
             Sophia.Instantiates.VisualFXObject visualFX = VisualFXObjectPool.GetObject(_dieParticleRef).Init();
             GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
             GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Dead].PlayAffectOneShot(); // 새로 추가 된것!

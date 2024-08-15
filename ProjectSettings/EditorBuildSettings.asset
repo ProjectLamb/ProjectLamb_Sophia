@@ -12,14 +12,11 @@ EditorBuildSettings:
     path: Assets/Resources/Scenes/01_Loading.unity
     guid: d38e2e7dc32f15c43810c31fd62f2c65
   - enabled: 1
-    path: Assets/Resources/Scenes/01-1_DEBUG_Loading.unity
-    guid: 1661c09eef14c0346bf72ccd56ff9b43
-  - enabled: 1
     path: Assets/Resources/Scenes/03_Chapter_1.unity
     guid: d7a656c07aab5904c996563248c154a2
   - enabled: 1
-    path: Assets/Resources/Scenes/02-1_DEBUG_Chapter_1.unity
-    guid: 41ef7e4bb45dc434b9b4242b7189f828
+    path: Assets/Resources/Scenes/04_Chapter_2.unity
+    guid: dacf2c06bdfbc034cad133871d0e5570
   - enabled: 1
     path: Assets/Resources/Scenes/05_Demo_Clear.unity
     guid: cae0ec7ebda3a2947a763a7d2b891712
