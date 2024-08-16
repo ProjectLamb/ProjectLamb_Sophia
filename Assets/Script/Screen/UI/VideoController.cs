@@ -20,9 +20,11 @@ public class VideoController : MonoBehaviour
     [SerializeField] CommandSender commandEnder;
     [SerializeField] CommandSender bossStateStarter;
     [SerializeField] private bool isSkippable;
+    [SerializeField] public Canvas skipCanvas;
+    [SerializeField] public Image skipBar;
     public void StartVideo(E_VIDEO_NAME video)
     {
-        isSkippable = true; //스킵 가능 여부
+        isSkippable = false; //스킵 가능 여부
         image = videoList[(int)video].transform.GetChild(0).GetComponent<RawImage>();
         vid = videoList[(int)video].transform.GetChild(1).GetComponent<VideoPlayer>();
         currentVideo = video;
@@ -31,6 +33,7 @@ public class VideoController : MonoBehaviour
         PauseMenu.OnOpenMenuStaticEvent.AddListener(PauseVideo);
         PauseMenu.OnCloseMenuStaticEvent.AddListener(PlayVideo);
         StartCoroutine(CoFadeIn(0.02f, 1f));
+        skipCanvas.enabled = true;
     }
 
     public void PauseVideo() {
@@ -45,13 +48,24 @@ public class VideoController : MonoBehaviour
 
     void Update()
     {
-        if (isSkippable)
+        if (!isSkippable)
         {
-            if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetMouseButtonDown(0))
+            if (Input.GetKey(KeyCode.Space))
             {
+                skipBar.fillAmount += 0.03f;
                 //스킵 하시겠습니까? UI 띄우기
+                //VideoEnd(vid);
+                //isSkippable = false;
+            }
+            else if(Input.GetKeyUp(KeyCode.Space))
+            {
+                skipBar.fillAmount = 0;
+            }
+            if(skipBar.fillAmount >= 1)
+            {
                 VideoEnd(vid);
                 isSkippable = false;
+                skipCanvas.enabled = false;
             }
         }
     }
