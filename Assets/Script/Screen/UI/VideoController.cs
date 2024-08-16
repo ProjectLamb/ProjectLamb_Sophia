@@ -66,20 +66,22 @@ public class VideoController : MonoBehaviour
                 //VideoEnd(vid);
                 //isSkippable = false;
             }
-            else if (Input.GetKeyUp(KeyCode.Space))
+            else if (Input.GetKeyUp(KeyCode.Space)) // 스페이스바를 뗐을때
             {
                 skipBar.fillAmount = 0;
             }
-            if (skipBar.fillAmount >= 1)
+            if (skipBar.fillAmount >= 1) // 스킵버튼이 꾹 눌러지면
             {
                 VideoEnd(vid);
+                isVideoStart = false;
                 isSkippable = false;
-                skipCanvas.enabled = false;
+                skipCanvas.enabled = false;   
             }
-            if (isManualOn && !isManualOff && Input.GetKey(KeyCode.Space))
+            if (isManualOn && !isManualOff && Input.GetKey(KeyCode.Space)) // 조작법 UI가 다 뜬 이후에 스페이스가 입력되었을 시
             {
                 StartCoroutine(imgFadeOut(manualImage));
             }
+            else if(!isVideoStart) skipCanvas.enabled = false;
         }
     }
 
@@ -139,6 +141,7 @@ public class VideoController : MonoBehaviour
 
     IEnumerator imgFadeIn(Image image)
     {
+        isManualOff = false;
         if (!isManualOn)
         {
             image.gameObject.SetActive(true);
@@ -152,11 +155,11 @@ public class VideoController : MonoBehaviour
                 yield return new WaitForSecondsRealtime(0.05f);
             }
             isManualOn = true;
-            isManualOff = false;
         }
     }
     IEnumerator imgFadeOut(Image image)
     {
+        isManualOff = true;
         Color fadeColor = image.color;
         fadeColor.a = 1;
 
@@ -166,7 +169,6 @@ public class VideoController : MonoBehaviour
             image.color = fadeColor;
             yield return new WaitForSecondsRealtime(0.05f);
         }
-        isManualOff = true;
         image.gameObject.SetActive(false);
         StoryManager.Instance.IsTutorial = false; // 튜토리얼 종료 판정
     }
