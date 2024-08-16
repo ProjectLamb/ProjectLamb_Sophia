@@ -67,7 +67,6 @@ namespace Sophia.Entitys
             }
             else if(skillName == "바닥은 용암이야")
             {
-                Debug.Log("용암보이!");
                 currentIndicator = circleIndicator;
             }
             else if(skillName == "바람처럼 칼날")
