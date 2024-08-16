@@ -20,6 +20,7 @@ public class VideoController : MonoBehaviour
     [SerializeField] CommandSender commandEnder;
     [SerializeField] CommandSender bossStateStarter;
     [SerializeField] private bool isSkippable;
+    [SerializeField] private bool isVideoStart;
     [SerializeField] private bool isManualOn;
     [SerializeField] private bool isManualOff;
     [SerializeField] public Canvas skipCanvas;
@@ -27,6 +28,7 @@ public class VideoController : MonoBehaviour
     [SerializeField] public Image manualImage;
     public void StartVideo(E_VIDEO_NAME video)
     {
+        isVideoStart = true;
         isSkippable = false; //스킵 가능 여부
         isManualOn = false;
         isManualOff = true;
@@ -38,7 +40,6 @@ public class VideoController : MonoBehaviour
         PauseMenu.OnOpenMenuStaticEvent.AddListener(PauseVideo);
         PauseMenu.OnCloseMenuStaticEvent.AddListener(PlayVideo);
         StartCoroutine(CoFadeIn(0.02f, 1f));
-        skipCanvas.enabled = true;
     }
 
     public void PauseVideo()
@@ -57,8 +58,9 @@ public class VideoController : MonoBehaviour
     {
         if (!isSkippable)
         {
-            if (Input.GetKey(KeyCode.Space))
+            if (Input.GetKey(KeyCode.Space) && isVideoStart)
             {
+                skipCanvas.enabled = true;
                 skipBar.fillAmount += 0.03f;
                 //스킵 하시겠습니까? UI 띄우기
                 //VideoEnd(vid);
@@ -76,7 +78,6 @@ public class VideoController : MonoBehaviour
             }
             if (isManualOn && !isManualOff && Input.GetKey(KeyCode.Space))
             {
-                Debug.Log("아이고난!");
                 StartCoroutine(imgFadeOut(manualImage));
             }
         }
