@@ -12,7 +12,7 @@ EditorBuildSettings:
     path: Assets/Resources/Scenes/01_Loading.unity
     guid: d38e2e7dc32f15c43810c31fd62f2c65
   - enabled: 1
-    path: Assets/Resources/Scenes/03_Chapter_1.unity
+    path: Assets/Resources/Scenes/backup/03_Chapter_1.unity
     guid: d7a656c07aab5904c996563248c154a2
   - enabled: 1
     path: Assets/Resources/Scenes/04_Chapter_2.unity

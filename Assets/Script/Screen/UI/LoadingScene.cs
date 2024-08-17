@@ -12,14 +12,22 @@ public class LoadingScene : MonoBehaviour
     [SerializeField] private SerializedDictionary<int, string> ChapterSceneDic;
     GlobalSaveLoadManager globalSaveLoadManager;
 
-    private async void Start()
+    private async void Awake()
     {
         globalSaveLoadManager = DontDestroyGameManager.Instance.SaveLoadManager;
 
         int chapterNum = globalSaveLoadManager.Data.CurrentChapterNum;
 
         if (chapterNum > 0 && ChapterSceneDic[chapterNum] != null)
-            await GlobalSceneLoader.AsyncLoadScene(ChapterSceneDic[chapterNum], slider);
+        {
+            if(globalSaveLoadManager.Data.IsNewFile)
+            {
+                Debug.Log("Reset");
+                await GlobalSceneLoader.AsyncLoadScene(ChapterSceneDic[1], slider);
+            }
+            else
+                await GlobalSceneLoader.AsyncLoadScene(ChapterSceneDic[chapterNum], slider);
+        }
         else
         {
             //Chapter Number Exception

@@ -1,7 +1,7 @@
 {
-  "IsOnceUsed": true,
+  "IsNewFile": true,
   "IsTutorial": false,
-  "CurrentChapterNum": 2,
+  "CurrentChapterNum": 1,
   "CutSceneSaveData": {
     "IsSkipStory": true
   },
@@ -11,10 +11,10 @@
   "PlayerData": {
     "Gear": 30,
     "EquipmentNumList": [
-      1012
+      1013
     ],
     "EquipmentNameList": [
-      "두터운 가죽 재킷"
+      "노동자의 망치"
     ]
   }
 }

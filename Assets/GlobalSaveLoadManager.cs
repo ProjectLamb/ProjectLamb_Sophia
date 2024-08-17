@@ -22,7 +22,7 @@ public class GlobalSaveLoadManager : MonoBehaviour
         }
         else
         {
-            if (Data.IsOnceUsed == true) { return true; }
+            if (Data.IsNewFile == true) { return true; }
             else { return false; }
         }
     }
@@ -51,7 +51,7 @@ public class GlobalSaveLoadManager : MonoBehaviour
         else
         {
             Data = new UserData();
-            Data.IsOnceUsed = true;
+            Data.IsNewFile = true;
             //SaveAsJson();
         }
     }
@@ -63,6 +63,9 @@ public class GlobalSaveLoadManager : MonoBehaviour
 
     public void ResetData()
     {
+        Data = new UserData();
+        Data.IsNewFile = true;
+
         StartCoroutine(AsyncResetFile());
     }
 
@@ -72,8 +75,6 @@ public class GlobalSaveLoadManager : MonoBehaviour
         yield return new WaitForEndOfFrame();
         yield return new WaitWhile(() => { return File.Exists(PATH); });
 
-        Data = new UserData();
-        Data.IsOnceUsed = true;
         SaveAsJson();
     }
 
@@ -104,7 +105,7 @@ namespace Sophia.DB
     [Serializable]
     public class UserData
     {
-        public bool IsOnceUsed; //파일이 존재하지 않을 때, 데이터는 존재한다고 명시할 flag
+        public bool IsNewFile; //새로 파일이 생성됐음을 알리는 Flag
         public bool IsTutorial;
         public int CurrentChapterNum;
         public CutSceneSaveData CutSceneSaveData;
@@ -118,7 +119,7 @@ namespace Sophia.DB
             CutSceneSaveData = new CutSceneSaveData();
             ChapterClearSaveData = new ChapterClearSaveData();
 
-            IsOnceUsed = false;
+            IsNewFile = false;
             IsTutorial = true;
             CurrentChapterNum = 1;
 
