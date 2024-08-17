@@ -309,13 +309,15 @@ namespace Sophia.Entitys
         }
         public void Indicate(KeyCode key)
         {
+            string indicateSkillName = this._skillManager.GetSkillByKey(key)?.GetName().Trim(); // 스킬 이름
             if ((this._skillManager.GetSkillByKey(key)?.GetName() != null) && (_skillManager.GetSkillByKey(key).GetCoolTimeComposite().GetIsReadyToUse()))
             {
                 //쿨타임 아닐때
-                if (this._skillManager.GetSkillByKey(key).GetIsSkillIndicate())
+                // if (this._skillManager.GetSkillByKey(key).GetIsSkillIndicate()) // 이전 if문 작동안해서 주석처리
+                if(!skillIndicator.IsIndicate)
                 {
                     skillIndicator.IsIndicate = true;
-                    skillIndicator.changeIndicate(this._skillManager.GetSkillByKey(key)?.GetName());
+                    skillIndicator.changeIndicate(indicateSkillName);
                 }
             }
         }
