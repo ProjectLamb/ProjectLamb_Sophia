@@ -7,6 +7,7 @@ using Sophia.DB;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 using UnityEngine.Events;
+using Sophia.DataSystem.Modifiers;
 
 
 public class GlobalSaveLoadManager : MonoBehaviour
@@ -108,10 +109,12 @@ namespace Sophia.DB
         public int CurrentChapterNum;
         public CutSceneSaveData CutSceneSaveData;
         public ChapterClearSaveData ChapterClearSaveData;
+        public PlayerData PlayerData;
 
         public UserData()
         {
             //New Game Setting
+            PlayerData = new PlayerData();
             CutSceneSaveData = new CutSceneSaveData();
             ChapterClearSaveData = new ChapterClearSaveData();
 
@@ -135,6 +138,15 @@ namespace Sophia.DB
     public class ChapterClearSaveData
     {
         public bool IsChapter1Clear;
+    }
+
+    [Serializable]
+    public class PlayerData
+    {
+        //스텟, 기어, 부품, 스킬 정보
+        public int Gear = 30;
+        public List<int> EquipmentNumList = new List<int>();
+        public List<string> EquipmentNameList = new List<string>();
     }
 
 }

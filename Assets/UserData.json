@@ -7,5 +7,14 @@
   },
   "ChapterClearSaveData": {
     "IsChapter1Clear": false
+  },
+  "PlayerData": {
+    "Gear": 30,
+    "EquipmentNumList": [
+      1012
+    ],
+    "EquipmentNameList": [
+      "두터운 가죽 재킷"
+    ]
   }
 }

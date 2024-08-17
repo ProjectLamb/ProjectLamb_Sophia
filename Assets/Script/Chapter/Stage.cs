@@ -250,7 +250,7 @@ public class Stage : MonoBehaviour
 
             stageGenerator.InstantiateNextChapterPortal();
 
-            itemObjectBucket.transform.position += new Vector3(0, 0, 5);
+            itemObjectBucket.transform.position += new Vector3(0, 0, -30);
             itemObjectBucket.InstantablePositioning(itemObject = Instantiate(itemObject).Init()).Activate();
             itemObject.transform.parent = itemObjectBucket.transform;
         }

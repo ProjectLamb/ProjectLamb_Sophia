@@ -15,6 +15,7 @@ namespace Sophia.Entitys
     using Sophia.Instantiates;
     using Sophia.DataSystem.Referer;
     using Sophia.DataSystem.Modifiers;
+    using Sophia.DataSystem.Modifiers.ConcreteEquipment;
     using Sophia.UserInterface;
     using Sophia.Composite.RenderModels;
     using Unity.Cinemachine;
@@ -56,6 +57,10 @@ namespace Sophia.Entitys
             set
             {
                 mPlayerWealth = value;
+                if (DontDestroyGameManager.Instance != null)
+                {
+                    DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.Gear = value;
+                }
                 InGameScreenUI.Instance._playerWealthBarUI.CountingNumber = mPlayerWealth;
                 OnWealthChangeEvent.Invoke(value - mPlayerWealth);
             }
@@ -108,16 +113,17 @@ namespace Sophia.Entitys
             _affectorManager.Init(_basePlayerData.Tenacity);
             _playerIdleBehaivour.InitByData(this);
 
+            //DontDestroyOnLoad(gameObject);
         }
 
         protected override void Start()
         {
             base.Start();
+
             Life.SetDependUI(InGameScreenUI.Instance._playerHealthBarUI);
             Life.OnDamaged += InGameScreenUI.Instance._hitCanvasShadeScript.Invoke;
 
             // Hit Audio 
-
             Life.OnHit += HitSource.Play;
             Life.OnEnterDie += DeathSource.Play;
 
@@ -134,6 +140,8 @@ namespace Sophia.Entitys
             OnWealthChangeEvent.Invoke(mPlayerWealth);
 
             PlayerController.AllowInput(this.name);
+
+            //LoadPlayerData();
         }
 
         #endregion
@@ -325,7 +333,11 @@ namespace Sophia.Entitys
 
         public EquipmentManager GetEquipmentManager() => this._equipmentManager;
         public void EquipEquipment(Equipment equipment) => this._equipmentManager.Equip(equipment);
-        public void DropEquipment(Equipment equipment) => this._equipmentManager.Drop(equipment);
+        public void DropEquipment(Equipment equipment)
+        {
+            DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.EquipmentNumList.Remove(equipment.ID);
+            this._equipmentManager.Drop(equipment);
+        }
 
         #endregion
 
@@ -334,6 +346,37 @@ namespace Sophia.Entitys
         public override AffectorManager GetAffectorManager() => this._affectorManager ??= GetComponentInChildren<AffectorManager>();
         public override void Affect(Affector affector) => this._affectorManager.Affect(affector);
         public override void Recover(Affector affector) => this._affectorManager.Recover(affector);
+
+        #endregion
+
+        #region Load Data Handler
+
+        public void LoadPlayerData()
+        {
+            GlobalSaveLoadManager saveLoadManager = DontDestroyGameManager.Instance.SaveLoadManager;
+            if (saveLoadManager != null)
+            {
+                //부품
+                //int 번호를 토대로 장착
+                if (saveLoadManager.Data.PlayerData.EquipmentNumList.Count > 0)
+                {
+                    for (int i = 0; i < saveLoadManager.Data.PlayerData.EquipmentNumList.Count; i++)
+                    {
+                        SerialEquipmentData serialEquipmentData = new SerialEquipmentData();
+                        serialEquipmentData._equipmentID = saveLoadManager.Data.PlayerData.EquipmentNumList[i];
+                        serialEquipmentData._equipmentName = saveLoadManager.Data.PlayerData.EquipmentNameList[i];
+
+                        Debug.Log(FactoryConcreteEquipment.GetEquipmentByID(serialEquipmentData, GetComponent<Player>()).Name);
+                        EquipEquipment(FactoryConcreteEquipment.GetEquipmentByID(serialEquipmentData, GetComponent<Player>()));
+                    }
+                }
+                //기어
+                PlayerWealth = saveLoadManager.Data.PlayerData.Gear;
+
+                //스킬
+
+            }
+        }
 
         #endregion
 
