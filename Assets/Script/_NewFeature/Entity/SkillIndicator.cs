@@ -11,14 +11,22 @@ namespace Sophia.Entitys
     using Sophia.UserInterface;
     public class SkillIndicator : MonoBehaviour
     {
+        #region public
         public Player playerRef;
         public Vector3 currentPosition;
+        public Vector3 linePosition = new Vector3(0, 0, 0);
         public int skillNumber = 0;
         public string currentSkillName = null;
         public bool IsIndicate;
         public Canvas currentIndicator;
+        public LayerMask indicatorMask = LayerMask.GetMask("Wall","Map","Entity");
+        public const float CamRayLength = 500f;
+        #endregion
+        
+        #region private
         private RaycastHit hit;
         private Ray ray;
+        #endregion
 
         [Header("Indicators")]
         
@@ -41,6 +49,7 @@ namespace Sophia.Entitys
             }
             else if(IsIndicate){
                 currentIndicator.enabled = true;
+                if(currentIndicator == arrowIndicator)
                 turning();
             }
         }
@@ -51,6 +60,14 @@ namespace Sophia.Entitys
             {
                 Debug.Log("현재 스킬이 없습니다!");
                 return;
+            }
+            else if(skillName == "갈아버리기")
+            {
+                currentIndicator = circleIndicator;
+            }
+            else if(skillName == "바닥은 용암이야")
+            {
+                currentIndicator = circleIndicator;
             }
             else if(skillName == "바람처럼 칼날")
             {
@@ -64,31 +81,26 @@ namespace Sophia.Entitys
             {
                 currentIndicator = arrowIndicator;
             }
-            else if(skillName == "갈아버리기")
-            {
-                currentIndicator = circleIndicator;
-            }
             else if(skillName == "바람의 상처")
             {
                 currentIndicator = arrowIndicator;
-            }
-            else if(skillName == "바닥은 용암이야")
-            {
-                currentIndicator = circleIndicator;
             }
             else
                 IsIndicate = false;
         }
         private void turning()
-        {   
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity)) // 공격 도중에는 방향 전환 금지
+        {
+            if (Physics.Raycast(ray, out hit, CamRayLength,indicatorMask)) // 공격 도중에는 방향 전환 금지
             {
                 currentPosition = new Vector3(hit.point.x, hit.point.y, hit.point.z);
-            }
 
-            Quaternion skillCanvas = Quaternion.LookRotation(currentPosition - transform.position);
-            skillCanvas.eulerAngles = new Vector3(0,skillCanvas.eulerAngles.y,skillCanvas.eulerAngles.z);
-            currentIndicator.transform.rotation = Quaternion.Lerp(skillCanvas, currentIndicator.transform.rotation,0);
+                if(currentIndicator == arrowIndicator)
+                {
+                    Quaternion skillCanvas = Quaternion.LookRotation(currentPosition - transform.position);
+                    skillCanvas.eulerAngles = new Vector3(0,skillCanvas.eulerAngles.y,skillCanvas.eulerAngles.z);
+                    currentIndicator.transform.rotation = Quaternion.Lerp(skillCanvas, currentIndicator.transform.rotation,0);
+                }
+            }
         }
     }
 }
