@@ -57,10 +57,7 @@ public class VideoController : MonoBehaviour
     }
 
     void Update()
-    {
-        Debug.Log("ㅇㅇㅇㅇ"+manualList.Length);
-        Debug.Log("ㅋㅋㅋㅋ"+manualIndex);
-        
+    {   
         if (!isSkippable)
         {
             if (Input.GetKey(KeyCode.Space) && isVideoStart)
@@ -79,16 +76,17 @@ public class VideoController : MonoBehaviour
                 isSkippable = false;
                 skipCanvas.enabled = false;
             }
-            if (isManualFadeOn && !isManualFadeOff && Input.GetKey(KeyCode.Space)) // 조작법 UI가 다 뜬 이후에 스페이스가 입력되었을 시
+            if (Input.GetKey(KeyCode.Space) && isManualFadeOn && !isManualFadeOff) // 조작법 UI가 다 뜬 이후에 스페이스가 입력되었을 시
             {
-                if (manualIndex != manualList.Length)
-                {
-                    StartCoroutine(imgFadeOut(manualList[manualIndex]));
-                }
+                if(manualIndex == 0) StartCoroutine(imgFadeOut(manualList[0]));
+                else if(manualIndex == 1 || manualIndex == 2) StartCoroutine(imgFadeOut(manualList[1]));  
             }
             else if (!isVideoStart) skipCanvas.enabled = false;
 
-            if (manualIndex == manualList.Length) StoryManager.Instance.IsTutorial = false; // 튜토리얼 종료 판정
+            if (manualIndex >= manualList.Length) 
+            {
+                StoryManager.Instance.IsTutorial = false; // 튜토리얼 종료 판정
+            }
         }
     }
 
@@ -129,7 +127,7 @@ public class VideoController : MonoBehaviour
                     break;
                 case E_VIDEO_NAME.Opening:
                     InGameScreenUI.Instance._fadeUI.FadePanelOff();
-                    if (!isManualFadeOn && isManualFadeOff) StartCoroutine(imgFadeIn(manualList[manualIndex]));
+                    if (!isManualFadeOn && isManualFadeOff) StartCoroutine(imgFadeIn(manualList[0]));
                     commandStarter.SendCommand();
                     DontDestroyGameManager.Instance.SaveLoadManager.Data.IsTutorial = false;
                     DontDestroyGameManager.Instance.SaveLoadManager.Data.CutSceneSaveData.IsSkipStory = true;
@@ -152,13 +150,13 @@ public class VideoController : MonoBehaviour
 
         while (fadeColor.a < 1f)
         {
-            fadeColor.a += 0.05f;
+            fadeColor.a += 0.03f;
             image.color = fadeColor;
             yield return new WaitForSecondsRealtime(0.01f);
         }
-        StopCoroutine(imgFadeIn(image));
         isManualFadeOn = true;
         isManualFadeOff = false;
+        StopCoroutine(imgFadeIn(image));
     }
     IEnumerator imgFadeOut(Image image)
     {
@@ -169,12 +167,20 @@ public class VideoController : MonoBehaviour
 
         while (fadeColor.a > 0f)
         {
-            fadeColor.a -= 0.05f;
+            fadeColor.a -= 0.03f;
             image.color = fadeColor;
             yield return new WaitForSecondsRealtime(0.01f);
         }
         image.gameObject.SetActive(false);
-        if (!isManualFadeOn && isManualFadeOff) StartCoroutine(imgFadeIn(manualList[++manualIndex]));
-        StopCoroutine(imgFadeOut(image));
+        if (!isManualFadeOn && isManualFadeOff) 
+        {
+            if(manualIndex == 0)
+            {
+                manualIndex = 1;
+                StartCoroutine(imgFadeIn(manualList[manualIndex]));
+            }
+            else if(manualIndex == 1) manualIndex = 2;
+            StopCoroutine(imgFadeOut(image));
+        }
     }
 }
