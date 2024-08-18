@@ -38,8 +38,7 @@ namespace Sophia.Instantiates
                     player.EquipEquipment(equipment);
 
                     //File
-                    DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.EquipmentNumList.Add(equipment.ID);
-                    DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.EquipmentNameList.Add(equipment.Name);
+                    DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.EquipmentDataList.Add(GetSerialEquipmentData());
 
                     //_lootVFX.Stop();
                     _lootObject.SetActive(false);

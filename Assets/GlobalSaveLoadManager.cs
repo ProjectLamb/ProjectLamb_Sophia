@@ -8,6 +8,9 @@ using UnityEngine;
 using Cysharp.Threading.Tasks;
 using UnityEngine.Events;
 using Sophia.DataSystem.Modifiers;
+using Sophia.Instantiates;
+using UnityEngine.InputSystem;
+using AYellowpaper.SerializedCollections;
 
 
 public class GlobalSaveLoadManager : MonoBehaviour
@@ -116,6 +119,10 @@ namespace Sophia.DB
         {
             //New Game Setting
             PlayerData = new PlayerData();
+            PlayerData.SkillDataDic.Add(KeyCode.Q, null);
+            PlayerData.SkillDataDic.Add(KeyCode.E, null);
+            PlayerData.SkillDataDic.Add(KeyCode.R, null);
+
             CutSceneSaveData = new CutSceneSaveData();
             ChapterClearSaveData = new ChapterClearSaveData();
 
@@ -145,9 +152,10 @@ namespace Sophia.DB
     public class PlayerData
     {
         //스텟, 기어, 부품, 스킬 정보
+        public float Health = 100;
         public int Gear = 30;
-        public List<int> EquipmentNumList = new List<int>();
-        public List<string> EquipmentNameList = new List<string>();
+        public List<SerialEquipmentData> EquipmentDataList = new List<SerialEquipmentData>();
+        public Dictionary<KeyCode, Skill> SkillDataDic = new Dictionary<KeyCode, Skill>();
     }
 
 }

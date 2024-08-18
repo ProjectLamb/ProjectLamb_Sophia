@@ -97,7 +97,17 @@ namespace Sophia.Entitys
             StatReferer = new PlayerStatReferer();
             ExtrasReferer = new PlayerExtrasReferer();
 
-            Life = new LifeComposite(_basePlayerData.MaxHp, _basePlayerData.Defence);
+            // Load Health
+            // 데이터 로딩 타이밍에 의한 문제가 있을 경우 Start로 옮기기
+            if (DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.Health != _basePlayerData.MaxHp)
+            {
+                Life = new LifeComposite(_basePlayerData.MaxHp, DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.Health, _basePlayerData.Defence);
+            }
+            else
+            {
+                Life = new LifeComposite(_basePlayerData.MaxHp, _basePlayerData.Defence);
+            }
+
             Movement = new MovementComposite(this.transform, this.entityRigidbody, _basePlayerData.MoveSpeed);
             DashSkillAbility = new DashSkill(this.entityRigidbody, Movement.GetMovemenCompositetData, _basePlayerData.DashForce);
             Power = new Stat(_basePlayerData.Power,
@@ -112,8 +122,6 @@ namespace Sophia.Entitys
 
             _affectorManager.Init(_basePlayerData.Tenacity);
             _playerIdleBehaivour.InitByData(this);
-
-            //DontDestroyOnLoad(gameObject);
         }
 
         protected override void Start()
@@ -122,6 +130,7 @@ namespace Sophia.Entitys
 
             Life.SetDependUI(InGameScreenUI.Instance._playerHealthBarUI);
             Life.OnDamaged += InGameScreenUI.Instance._hitCanvasShadeScript.Invoke;
+            Life.OnHpUpdated += SaveCurrentHealth;
 
             // Hit Audio 
             Life.OnHit += HitSource.Play;
@@ -141,7 +150,7 @@ namespace Sophia.Entitys
 
             PlayerController.AllowInput(this.name);
 
-            //LoadPlayerData();
+            LoadPlayerData();
         }
 
         #endregion
@@ -179,6 +188,11 @@ namespace Sophia.Entitys
             //OnDieEvent.Invoke();
 
             return true;
+        }
+
+        private void SaveCurrentHealth(float input)
+        {
+            DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.Health = Life.CurrentHealth;
         }
 
         #endregion
@@ -322,7 +336,7 @@ namespace Sophia.Entitys
             {
                 //쿨타임 아닐때
                 // if (this._skillManager.GetSkillByKey(key).GetIsSkillIndicate()) // 이전 if문 작동안해서 주석처리
-                if(!skillIndicator.IsIndicate)
+                if (!skillIndicator.IsIndicate)
                 {
                     skillIndicator.IsIndicate = true;
                     skillIndicator.changeIndicate(indicateSkillName);
@@ -337,7 +351,15 @@ namespace Sophia.Entitys
         public void EquipEquipment(Equipment equipment) => this._equipmentManager.Equip(equipment);
         public void DropEquipment(Equipment equipment)
         {
-            DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.EquipmentNumList.Remove(equipment.ID);
+            // File
+            foreach (var item in DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.EquipmentDataList)
+            {
+                if (equipment.ID == item._equipmentID)
+                {
+                    DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.EquipmentDataList.Remove(item);
+                }
+            }
+
             this._equipmentManager.Drop(equipment);
         }
 
@@ -358,25 +380,28 @@ namespace Sophia.Entitys
             GlobalSaveLoadManager saveLoadManager = DontDestroyGameManager.Instance.SaveLoadManager;
             if (saveLoadManager != null)
             {
+                //기어
+                PlayerWealth = saveLoadManager.Data.PlayerData.Gear;
+
                 //부품
-                //int 번호를 토대로 장착
-                if (saveLoadManager.Data.PlayerData.EquipmentNumList.Count > 0)
+                //번호를 토대로 장착
+                if (saveLoadManager.Data.PlayerData.EquipmentDataList.Count > 0)
                 {
-                    for (int i = 0; i < saveLoadManager.Data.PlayerData.EquipmentNumList.Count; i++)
+                    foreach (var item in saveLoadManager.Data.PlayerData.EquipmentDataList)
                     {
-                        SerialEquipmentData serialEquipmentData = new SerialEquipmentData();
-                        serialEquipmentData._equipmentID = saveLoadManager.Data.PlayerData.EquipmentNumList[i];
-                        serialEquipmentData._equipmentName = saveLoadManager.Data.PlayerData.EquipmentNameList[i];
+                        SerialEquipmentData serialEquipmentData = item;
 
                         Debug.Log(FactoryConcreteEquipment.GetEquipmentByID(serialEquipmentData, GetComponent<Player>()).Name);
                         EquipEquipment(FactoryConcreteEquipment.GetEquipmentByID(serialEquipmentData, GetComponent<Player>()));
                     }
                 }
-                //기어
-                PlayerWealth = saveLoadManager.Data.PlayerData.Gear;
 
-                //스킬
-
+                // //스킬
+                // foreach (var item in saveLoadManager.Data.PlayerData.SkillDataDic)
+                // {
+                //     if (item.Value != null)
+                //         CollectSkill(item.Value, item.Key);
+                // }
             }
         }
 

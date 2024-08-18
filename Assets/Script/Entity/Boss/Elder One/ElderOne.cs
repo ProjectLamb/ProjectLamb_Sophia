@@ -42,6 +42,7 @@ namespace Sophia.Entitys
 
         #region Rush
         private bool isRushOnce = false;
+        private bool IsPlayerCatch = false;
         private int rushRange = 75;
         private int rushDistance = 200;
         private int rushStopDistance = 15;
@@ -279,6 +280,14 @@ namespace Sophia.Entitys
             //Demo Clear
             // Sophia.UserInterface.InGameScreenUI.Instance._storyFadePanel.SetTransparent();
             // Sophia.UserInterface.InGameScreenUI.Instance._storyFadePanel.WaitAfterBoss();
+
+            if (IsPlayerCatch)  //만약 캐릭터가 붙잡혀 있었다면
+            {
+                _objectiveEntity.transform.GetComponent<Player>().SetMoveState(true);
+                _objectiveEntity.transform.parent = null;
+                IsPlayerCatch = false;
+            }
+
             Sophia.Instantiates.VisualFXObject visualFX = VisualFXObjectPool.GetObject(_dieParticleRef).Init();
             GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
             GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Dead].PlayAffectOneShot(); // 새로 추가 된것!
@@ -296,13 +305,14 @@ namespace Sophia.Entitys
         public void DisableModel()
         {
             _modelManager.gameObject.SetActive(false);
+            _visualFXBucket.gameObject.SetActive(false);
             entityCollider.enabled = false;
         }
 
         void OnElderOneExitDie()
         {
-            //Invoke("DisableModel", 0.5f);
-            Destroy(gameObject, 0.5f);
+            Invoke("DisableModel", 0.5f);
+            //Destroy(gameObject, 0.5f);
         }
 
         public void PlayFootStepSound()
@@ -576,7 +586,7 @@ namespace Sophia.Entitys
 
         void SkillPhase_Enter()
         {
-           // Debug.Log("SkillPhase_Enter");
+            // Debug.Log("SkillPhase_Enter");
 
             transform.DOKill();
             SetMoveState(true);
@@ -666,6 +676,7 @@ namespace Sophia.Entitys
                 if (Physics.Raycast(transform.position, transform.forward, rushStopDistance, RushStopMask) || transform.position == rushDestination)
                 {
                     //Debug.Log("RushStop");
+                    IsPlayerCatch = false;
                     _objectiveEntity.transform.GetComponent<Player>().SetMoveState(true);
                     _objectiveEntity.transform.parent = null;
                     transform.DOKill();
@@ -786,6 +797,7 @@ namespace Sophia.Entitys
 
             if (other.transform.tag == "Player")
             {
+                IsPlayerCatch = true;
                 other.transform.GetComponent<Player>().SetMoveState(false);
                 other.transform.parent = this.transform;
             }

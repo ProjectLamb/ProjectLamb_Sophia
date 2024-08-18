@@ -125,6 +125,7 @@ public class VideoController : MonoBehaviour
                     StartCoroutine(imgFadeIn(manualImage));
                     commandStarter.SendCommand();
 
+                    DontDestroyGameManager.Instance.SaveLoadManager.Data.IsNewFile = false;
                     DontDestroyGameManager.Instance.SaveLoadManager.Data.IsTutorial = false;
                     DontDestroyGameManager.Instance.SaveLoadManager.Data.CutSceneSaveData.IsSkipStory = true;
                     DontDestroyGameManager.Instance.SaveLoadManager.SaveAsJson();

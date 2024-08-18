@@ -1,5 +1,5 @@
 {
-  "IsNewFile": true,
+  "IsNewFile": false,
   "IsTutorial": false,
   "CurrentChapterNum": 1,
   "CutSceneSaveData": {
@@ -9,12 +9,13 @@
     "IsChapter1Clear": false
   },
   "PlayerData": {
+    "Health": 100.0,
     "Gear": 30,
-    "EquipmentNumList": [
-      1013
-    ],
-    "EquipmentNameList": [
-      "노동자의 망치"
-    ]
+    "EquipmentDataList": [],
+    "SkillDataDic": {
+      "Q": null,
+      "E": null,
+      "R": null
+    }
   }
 }

@@ -20,13 +20,7 @@ public class LoadingScene : MonoBehaviour
 
         if (chapterNum > 0 && ChapterSceneDic[chapterNum] != null)
         {
-            if(globalSaveLoadManager.Data.IsNewFile)
-            {
-                Debug.Log("Reset");
-                await GlobalSceneLoader.AsyncLoadScene(ChapterSceneDic[1], slider);
-            }
-            else
-                await GlobalSceneLoader.AsyncLoadScene(ChapterSceneDic[chapterNum], slider);
+            await GlobalSceneLoader.AsyncLoadScene(ChapterSceneDic[chapterNum], slider);
         }
         else
         {
