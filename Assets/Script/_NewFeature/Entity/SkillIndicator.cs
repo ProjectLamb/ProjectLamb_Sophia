@@ -1,9 +1,11 @@
 using UnityEngine;
 using UnityEngine.Events;
+using System.Collections;
 using DG.Tweening;
 using Sophia.Entitys;
 using Sophia.Instantiates;
 using Sophia.UserInterface;
+
 
 namespace Sophia.Entitys
 {
@@ -55,8 +57,7 @@ namespace Sophia.Entitys
             else if (IsIndicate)
             {
                 currentIndicator.enabled = true;
-                if (currentIndicator == arrowIndicator)
-                    turning();
+                if (currentIndicator == arrowIndicator) turning();
             }
         }
 
@@ -96,17 +97,18 @@ namespace Sophia.Entitys
         }
         private void turning()
         {
-            if (Physics.Raycast(ray, out hit, CamRayLength, indicatorMask)) // 공격 도중에는 방향 전환 금지
+            if (Physics.Raycast(ray, out hit, CamRayLength)) // 공격 도중에는 방향 전환 금지
             {
                 currentPosition = new Vector3(hit.point.x, hit.point.y, hit.point.z);
 
                 if (currentIndicator == arrowIndicator)
                 {
                     Quaternion skillCanvas = Quaternion.LookRotation(currentPosition - transform.position);
-                    skillCanvas.eulerAngles = new Vector3(0, skillCanvas.eulerAngles.y, skillCanvas.eulerAngles.z);
+                    skillCanvas.eulerAngles = new Vector3(0, skillCanvas.eulerAngles.y, 0);
                     currentIndicator.transform.rotation = Quaternion.Lerp(skillCanvas, currentIndicator.transform.rotation, 0);
                 }
             }
         }
     }
+
 }

@@ -127,7 +127,7 @@ public class VideoController : MonoBehaviour
                     break;
                 case E_VIDEO_NAME.Opening:
                     isVideoStart = false;
-                    skipCanvas.enabled = true;
+                    skipCanvas.enabled = false;
                     InGameScreenUI.Instance._fadeUI.FadePanelOff();
                     if (!isManualFadeOn && isManualFadeOff) StartCoroutine(imgFadeIn(manualList[0]));
                     commandStarter.SendCommand();
