@@ -1,9 +1,11 @@
 using UnityEngine;
 using UnityEngine.Events;
+using System.Collections;
 using DG.Tweening;
 using Sophia.Entitys;
 using Sophia.Instantiates;
 using Sophia.UserInterface;
+
 
 namespace Sophia.Entitys
 {
@@ -19,17 +21,17 @@ namespace Sophia.Entitys
         public string currentSkillName = null;
         public bool IsIndicate;
         public Canvas currentIndicator;
-        public LayerMask indicatorMask = LayerMask.GetMask("Wall","Map","Entity");
+        public LayerMask indicatorMask = LayerMask.GetMask("Wall", "Map", "Entity");
         public const float CamRayLength = 500f;
         #endregion
-        
+
         #region private
         private RaycastHit hit;
         private Ray ray;
         #endregion
 
         [Header("Indicators")]
-        
+
         [SerializeField] public Canvas arrowIndicator;
         [SerializeField] public Canvas circleIndicator;
 
@@ -37,51 +39,56 @@ namespace Sophia.Entitys
         void Start()
         {
             currentIndicator = arrowIndicator;
-            currentIndicator.enabled = false; 
+            currentIndicator.enabled = false;
         }
 
         // Update is called once per frame
         void Update()
         {
+        }
+
+        void FixedUpdate()
+        {
             ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if(!IsIndicate){
+            if (!IsIndicate)
+            {
                 currentIndicator.enabled = false;
             }
-            else if(IsIndicate){
+            else if (IsIndicate)
+            {
                 currentIndicator.enabled = true;
-                if(currentIndicator == arrowIndicator)
-                turning();
+                if (currentIndicator == arrowIndicator) turning();
             }
         }
 
         public void changeIndicate(string skillName)
         {
-            if(skillName == "")
+            if (skillName == "")
             {
                 Debug.Log("현재 스킬이 없습니다!");
                 return;
             }
-            else if(skillName == "갈아버리기")
+            else if (skillName == "갈아버리기")
             {
                 currentIndicator = circleIndicator;
             }
-            else if(skillName == "바닥은 용암이야")
+            else if (skillName == "바닥은 용암이야")
             {
                 currentIndicator = circleIndicator;
             }
-            else if(skillName == "바람처럼 칼날")
+            else if (skillName == "바람처럼 칼날")
             {
                 currentIndicator = arrowIndicator;
             }
-            else if(skillName == "거침없는 질주")
+            else if (skillName == "거침없는 질주")
             {
                 currentIndicator = arrowIndicator;
             }
-            else if(skillName == "바람처럼 돌진")
+            else if (skillName == "바람처럼 돌진")
             {
                 currentIndicator = arrowIndicator;
             }
-            else if(skillName == "바람의 상처")
+            else if (skillName == "바람의 상처")
             {
                 currentIndicator = arrowIndicator;
             }
@@ -90,17 +97,18 @@ namespace Sophia.Entitys
         }
         private void turning()
         {
-            if (Physics.Raycast(ray, out hit, CamRayLength,indicatorMask)) // 공격 도중에는 방향 전환 금지
+            if (Physics.Raycast(ray, out hit, CamRayLength)) // 공격 도중에는 방향 전환 금지
             {
                 currentPosition = new Vector3(hit.point.x, hit.point.y, hit.point.z);
 
-                if(currentIndicator == arrowIndicator)
+                if (currentIndicator == arrowIndicator)
                 {
                     Quaternion skillCanvas = Quaternion.LookRotation(currentPosition - transform.position);
-                    skillCanvas.eulerAngles = new Vector3(0,skillCanvas.eulerAngles.y,skillCanvas.eulerAngles.z);
-                    currentIndicator.transform.rotation = Quaternion.Lerp(skillCanvas, currentIndicator.transform.rotation,0);
+                    skillCanvas.eulerAngles = new Vector3(0, skillCanvas.eulerAngles.y, 0);
+                    currentIndicator.transform.rotation = Quaternion.Lerp(skillCanvas, currentIndicator.transform.rotation, 0);
                 }
             }
         }
     }
+
 }

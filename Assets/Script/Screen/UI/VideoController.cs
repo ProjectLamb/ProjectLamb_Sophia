@@ -13,6 +13,7 @@ public class VideoController : MonoBehaviour
     public enum E_VIDEO_NAME { None, Opening, ElderOne, }
     E_VIDEO_NAME currentVideo = E_VIDEO_NAME.None;
     [SerializeField] GameObject[] videoList;
+    [SerializeField] Image[] manualList;
     VideoPlayer vid;
     RawImage image;
     [SerializeField] FMODAudioSource fMODAudioSource;
@@ -21,17 +22,18 @@ public class VideoController : MonoBehaviour
     [SerializeField] CommandSender bossStateStarter;
     [SerializeField] private bool isSkippable;
     [SerializeField] private bool isVideoStart;
-    [SerializeField] private bool isManualOn;
-    [SerializeField] private bool isManualOff;
+    [SerializeField] private bool isManualFadeOn;
+    [SerializeField] private bool isManualFadeOff;
+    [SerializeField] private int manualIndex;
     [SerializeField] public Canvas skipCanvas;
     [SerializeField] public Image skipBar;
-    [SerializeField] public Image manualImage;
     public void StartVideo(E_VIDEO_NAME video)
     {
         isVideoStart = true;
         isSkippable = false; //스킵 가능 여부
-        isManualOn = false;
-        isManualOff = true;
+        isManualFadeOn = false;
+        isManualFadeOff = true;
+        manualIndex = 0;
         image = videoList[(int)video].transform.GetChild(0).GetComponent<RawImage>();
         vid = videoList[(int)video].transform.GetChild(1).GetComponent<VideoPlayer>();
         currentVideo = video;
@@ -55,16 +57,13 @@ public class VideoController : MonoBehaviour
     }
 
     void Update()
-    {
+    {   
         if (!isSkippable)
         {
             if (Input.GetKey(KeyCode.Space) && isVideoStart)
             {
                 skipCanvas.enabled = true;
                 skipBar.fillAmount += 0.03f;
-                //스킵 하시겠습니까? UI 띄우기
-                //VideoEnd(vid);
-                //isSkippable = false;
             }
             else if (Input.GetKeyUp(KeyCode.Space)) // 스페이스바를 뗐을때
             {
@@ -75,13 +74,19 @@ public class VideoController : MonoBehaviour
                 VideoEnd(vid);
                 isVideoStart = false;
                 isSkippable = false;
-                skipCanvas.enabled = false;   
+                skipCanvas.enabled = false;
             }
-            if (isManualOn && !isManualOff && Input.GetKey(KeyCode.Space)) // 조작법 UI가 다 뜬 이후에 스페이스가 입력되었을 시
+            if (Input.GetKey(KeyCode.Space) && isManualFadeOn && !isManualFadeOff) // 조작법 UI가 다 뜬 이후에 스페이스가 입력되었을 시
             {
-                StartCoroutine(imgFadeOut(manualImage));
+                if(manualIndex == 0) StartCoroutine(imgFadeOut(manualList[0]));
+                else if(manualIndex == 1 || manualIndex == 2) StartCoroutine(imgFadeOut(manualList[1]));  
             }
-            else if(!isVideoStart) skipCanvas.enabled = false;
+            else if (!isVideoStart) skipCanvas.enabled = false;
+
+            if (manualIndex >= manualList.Length) 
+            {
+                StoryManager.Instance.IsTutorial = false; // 튜토리얼 종료 판정
+            }
         }
     }
 
@@ -121,10 +126,11 @@ public class VideoController : MonoBehaviour
                     bossStateStarter.SendCommand();
                     break;
                 case E_VIDEO_NAME.Opening:
+                    isVideoStart = false;
+                    skipCanvas.enabled = false;
                     InGameScreenUI.Instance._fadeUI.FadePanelOff();
-                    StartCoroutine(imgFadeIn(manualImage));
+                    if (!isManualFadeOn && isManualFadeOff) StartCoroutine(imgFadeIn(manualList[0]));
                     commandStarter.SendCommand();
-
                     DontDestroyGameManager.Instance.SaveLoadManager.Data.IsTutorial = false;
                     DontDestroyGameManager.Instance.SaveLoadManager.Data.CutSceneSaveData.IsSkipStory = true;
                     DontDestroyGameManager.Instance.SaveLoadManager.SaveAsJson();
@@ -138,38 +144,45 @@ public class VideoController : MonoBehaviour
         });
         InGameScreenUI.Instance._fadeUI.FadeOut(0.02f, 1.5f);
     }
-
     IEnumerator imgFadeIn(Image image)
     {
-        isManualOff = false;
-        if (!isManualOn)
-        {
-            image.gameObject.SetActive(true);
-            Color fadeColor = image.color;
-            fadeColor.a = 0;
+        image.gameObject.SetActive(true);
+        Color fadeColor = image.color;
+        fadeColor.a = 0;
 
-            while (fadeColor.a < 1f)
-            {
-                fadeColor.a += 0.05f;
-                image.color = fadeColor;
-                yield return new WaitForSecondsRealtime(0.05f);
-            }
-            isManualOn = true;
+        while (fadeColor.a < 1f)
+        {
+            fadeColor.a += 0.03f;
+            image.color = fadeColor;
+            yield return new WaitForSecondsRealtime(0.01f);
         }
+        isManualFadeOn = true;
+        isManualFadeOff = false;
+        StopCoroutine(imgFadeIn(image));
     }
     IEnumerator imgFadeOut(Image image)
     {
-        isManualOff = true;
+        isManualFadeOn = false;
+        isManualFadeOff = true;
         Color fadeColor = image.color;
         fadeColor.a = 1;
 
         while (fadeColor.a > 0f)
         {
-            fadeColor.a -= 0.05f;
+            fadeColor.a -= 0.03f;
             image.color = fadeColor;
-            yield return new WaitForSecondsRealtime(0.05f);
+            yield return new WaitForSecondsRealtime(0.01f);
         }
         image.gameObject.SetActive(false);
-        StoryManager.Instance.IsTutorial = false; // 튜토리얼 종료 판정
+        if (!isManualFadeOn && isManualFadeOff) 
+        {
+            if(manualIndex == 0)
+            {
+                manualIndex = 1;
+                StartCoroutine(imgFadeIn(manualList[manualIndex]));
+            }
+            else if(manualIndex == 1) manualIndex = 2;
+            StopCoroutine(imgFadeOut(image));
+        }
     }
 }
