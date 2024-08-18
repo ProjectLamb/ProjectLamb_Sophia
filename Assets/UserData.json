@@ -1,10 +1,21 @@
 {
-  "IsOnceUsed": true,
-  "IsTutorial": true,
+  "IsNewFile": false,
+  "IsTutorial": false,
+  "CurrentChapterNum": 1,
   "CutSceneSaveData": {
     "IsSkipStory": false
   },
   "ChapterClearSaveData": {
     "IsChapter1Clear": false
+  },
+  "PlayerData": {
+    "Health": 100.0,
+    "Gear": 30,
+    "EquipmentDataList": [],
+    "SkillDataDic": {
+      "Q": null,
+      "E": null,
+      "R": null
+    }
   }
 }

@@ -131,6 +131,8 @@ public class VideoController : MonoBehaviour
                     InGameScreenUI.Instance._fadeUI.FadePanelOff();
                     if (!isManualFadeOn && isManualFadeOff) StartCoroutine(imgFadeIn(manualList[0]));
                     commandStarter.SendCommand();
+
+                    DontDestroyGameManager.Instance.SaveLoadManager.Data.IsNewFile = false;
                     DontDestroyGameManager.Instance.SaveLoadManager.Data.IsTutorial = false;
                     DontDestroyGameManager.Instance.SaveLoadManager.Data.CutSceneSaveData.IsSkipStory = true;
                     DontDestroyGameManager.Instance.SaveLoadManager.SaveAsJson();

@@ -61,13 +61,13 @@ namespace Sophia
         public class LifeComposite : IDataSettable, IDisposable
         {
 
-#region Members 
+            #region Members 
 
-            public Stat                 MaxHp           { get; protected set; }
-            public Stat                 Defence         { get; protected set; }
-            public Extras<DamageInfo>   DamagedExtras   { get; protected set; }
-            public Extras<object>       DeadExtras      { get; protected set; }
-            public Extras<int>          HealExtras      { get; protected set; }
+            public Stat MaxHp { get; protected set; }
+            public Stat Defence { get; protected set; }
+            public Extras<DamageInfo> DamagedExtras { get; protected set; }
+            public Extras<object> DeadExtras { get; protected set; }
+            public Extras<int> HealExtras { get; protected set; }
 
             private float mCurrentHealth;
             public float CurrentHealth
@@ -78,7 +78,7 @@ namespace Sophia
                     int floatToIntHp = MaxHp;
                     if (value > (float)floatToIntHp)
                     {
-                        mCurrentHealth = (float)floatToIntHp; 
+                        mCurrentHealth = (float)floatToIntHp;
                         OnHpUpdated?.Invoke(mCurrentHealth);
                         return;
                     }
@@ -111,11 +111,11 @@ namespace Sophia
 
             public LifeComposite(float maxHp, float defence)
             {
-                MaxHp           = new Stat(maxHp, E_NUMERIC_STAT_TYPE.MaxHp, E_STAT_USE_TYPE.Natural, OnMaxHpUpdated);
-                Defence         = new Stat(defence, E_NUMERIC_STAT_TYPE.Defence, E_STAT_USE_TYPE.Natural, OnDefenceUpdated);
-                DamagedExtras   = new Extras<DamageInfo>(E_FUNCTIONAL_EXTRAS_TYPE.Damaged, OnDamageExtrasUpdated);
-                DeadExtras      = new Extras<object>(E_FUNCTIONAL_EXTRAS_TYPE.Dead, OnDeadExtrasUpdated);
-                HealExtras      = new Extras<int>(E_FUNCTIONAL_EXTRAS_TYPE.HealthTriggered, OnHealTriggeredExtrasUpdated);
+                MaxHp = new Stat(maxHp, E_NUMERIC_STAT_TYPE.MaxHp, E_STAT_USE_TYPE.Natural, OnMaxHpUpdated);
+                Defence = new Stat(defence, E_NUMERIC_STAT_TYPE.Defence, E_STAT_USE_TYPE.Natural, OnDefenceUpdated);
+                DamagedExtras = new Extras<DamageInfo>(E_FUNCTIONAL_EXTRAS_TYPE.Damaged, OnDamageExtrasUpdated);
+                DeadExtras = new Extras<object>(E_FUNCTIONAL_EXTRAS_TYPE.Dead, OnDeadExtrasUpdated);
+                HealExtras = new Extras<int>(E_FUNCTIONAL_EXTRAS_TYPE.HealthTriggered, OnHealTriggeredExtrasUpdated);
 
                 CurrentHealth = maxHp;
                 IsDie = false;
@@ -135,9 +135,33 @@ namespace Sophia
 
             public LifeComposite(float maxHp) : this(maxHp, 0) { }
 
-#endregion
+            public LifeComposite(float maxHp, float currHp, float defence)
+            {
+                MaxHp = new Stat(maxHp, E_NUMERIC_STAT_TYPE.MaxHp, E_STAT_USE_TYPE.Natural, OnMaxHpUpdated);
+                Defence = new Stat(defence, E_NUMERIC_STAT_TYPE.Defence, E_STAT_USE_TYPE.Natural, OnDefenceUpdated);
+                DamagedExtras = new Extras<DamageInfo>(E_FUNCTIONAL_EXTRAS_TYPE.Damaged, OnDamageExtrasUpdated);
+                DeadExtras = new Extras<object>(E_FUNCTIONAL_EXTRAS_TYPE.Dead, OnDeadExtrasUpdated);
+                HealExtras = new Extras<int>(E_FUNCTIONAL_EXTRAS_TYPE.HealthTriggered, OnHealTriggeredExtrasUpdated);
 
-#region Getter
+                CurrentHealth = currHp;
+                IsDie = false;
+                CurrentBarrier = 0;
+
+                //DashSkill을 참고해서 어떻게 의존성을 맺었는지 확인
+                OnHpUpdated ??= (float val) => { };
+                OnBarrierUpdated ??= (float val) => { };
+                OnDamaged ??= (DamageInfo val) => { };
+                OnHit ??= () => { };
+                OnHeal ??= (int val) => { };
+                OnBarrier ??= (float val) => { };
+                OnEnterDie ??= () => { };
+                OnExitDie ??= () => { };
+                OnBreakBarrier ??= () => { };
+            }
+
+            #endregion
+
+            #region Getter
 
             public bool IsDie { get; protected set; }
 
@@ -147,15 +171,15 @@ namespace Sophia
 
             public float GetHpRatio() { return CurrentHealth / MaxHp; }
 
-#endregion
+            #endregion
 
-#region Setter 
+            #region Setter 
 
             public void SetDependUI(IHealthBarUI<LifeComposite> healthBar) => healthBar.SetReferenceComposite(this);
 
-#endregion
+            #endregion
 
-#region Event
+            #region Event
             public event UnityAction<float> OnHpUpdated = null;
             public event UnityAction<float> OnBarrierUpdated = null;
             public event UnityAction<DamageInfo> OnDamaged = null;
@@ -166,20 +190,21 @@ namespace Sophia
             public event UnityAction<float> OnBarrier = null;
             public event UnityAction OnBreakBarrier = null;
 
-            protected void OnMaxHpUpdated(){
+            protected void OnMaxHpUpdated()
+            {
                 Debug.Log("최대체력 변경됨!");
-                if(CurrentHealth > MaxHp.GetValueByNature())
+                if (CurrentHealth > MaxHp.GetValueByNature())
                 {
                     CurrentHealth = MaxHp.GetValueByNature();
                 }
             }
-            protected void OnDefenceUpdated()       => Debug.Log("방어력 변경됨!");
-            protected void OnBarrierRatioUpdated()  => Debug.Log("배리어 변경됨!");
-            protected void OnHitExtrasUpdated()     => Debug.Log("닿음 추가 동작 변경됨!");
-            protected void OnDamageExtrasUpdated()  => Debug.Log("피격 추가 동작 변경됨!");
-            protected void OnDeadExtrasUpdated()    => Debug.Log("죽음 추가 동작 변경됨!");
-            protected void OnHealTriggeredExtrasUpdated()    => Debug.Log("회복 추가 동작 변경됨!");
-            
+            protected void OnDefenceUpdated() => Debug.Log("방어력 변경됨!");
+            protected void OnBarrierRatioUpdated() => Debug.Log("배리어 변경됨!");
+            protected void OnHitExtrasUpdated() => Debug.Log("닿음 추가 동작 변경됨!");
+            protected void OnDamageExtrasUpdated() => Debug.Log("피격 추가 동작 변경됨!");
+            protected void OnDeadExtrasUpdated() => Debug.Log("죽음 추가 동작 변경됨!");
+            protected void OnHealTriggeredExtrasUpdated() => Debug.Log("회복 추가 동작 변경됨!");
+
             public void ClearEvents()
             {
                 OnHpUpdated = null;
@@ -203,9 +228,9 @@ namespace Sophia
                 OnBreakBarrier ??= () => { };
             }
 
-#endregion
+            #endregion
 
-#region Data Referer 
+            #region Data Referer 
 
             public void SetStatDataToReferer(EntityStatReferer statReferer)
             {
@@ -219,7 +244,7 @@ namespace Sophia
                 extrasReferer.SetRefExtras<object>(DeadExtras);
                 extrasReferer.SetRefExtras<int>(HealExtras);
             }
-#endregion
+            #endregion
             public void Healed(int amount)
             {
                 OnHeal?.Invoke(amount);
@@ -256,7 +281,8 @@ namespace Sophia
                     default:
                         {
                             int InputDamage = damageInfo.GetAmount();
-                            if(CurrentBarrier > 0) {
+                            if (CurrentBarrier > 0)
+                            {
                                 if (CurrentBarrier - InputDamage >= 0)
                                 {
                                     CurrentBarrier -= InputDamage;
@@ -270,7 +296,7 @@ namespace Sophia
                                     BreakBarrier();
                                     damageInfo.damageHandleType = DamageHandleType.None;
                                 }
-                            } 
+                            }
                             CurrentHealth -= InputDamage;
                             break;
                         }

@@ -7,6 +7,10 @@ using Sophia.DB;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 using UnityEngine.Events;
+using Sophia.DataSystem.Modifiers;
+using Sophia.Instantiates;
+using UnityEngine.InputSystem;
+using AYellowpaper.SerializedCollections;
 
 
 public class GlobalSaveLoadManager : MonoBehaviour
@@ -21,7 +25,7 @@ public class GlobalSaveLoadManager : MonoBehaviour
         }
         else
         {
-            if (Data.IsOnceUsed == true) { return true; }
+            if (Data.IsNewFile == true) { return true; }
             else { return false; }
         }
     }
@@ -50,7 +54,7 @@ public class GlobalSaveLoadManager : MonoBehaviour
         else
         {
             Data = new UserData();
-            Data.IsOnceUsed = true;
+            Data.IsNewFile = true;
             //SaveAsJson();
         }
     }
@@ -62,6 +66,9 @@ public class GlobalSaveLoadManager : MonoBehaviour
 
     public void ResetData()
     {
+        Data = new UserData();
+        Data.IsNewFile = true;
+
         StartCoroutine(AsyncResetFile());
     }
 
@@ -71,8 +78,6 @@ public class GlobalSaveLoadManager : MonoBehaviour
         yield return new WaitForEndOfFrame();
         yield return new WaitWhile(() => { return File.Exists(PATH); });
 
-        Data = new UserData();
-        Data.IsOnceUsed = true;
         SaveAsJson();
     }
 
@@ -103,19 +108,27 @@ namespace Sophia.DB
     [Serializable]
     public class UserData
     {
-        public bool IsOnceUsed; //파일이 존재하지 않을 때, 데이터는 존재한다고 명시할 flag
+        public bool IsNewFile; //새로 파일이 생성됐음을 알리는 Flag
         public bool IsTutorial;
+        public int CurrentChapterNum;
         public CutSceneSaveData CutSceneSaveData;
         public ChapterClearSaveData ChapterClearSaveData;
+        public PlayerData PlayerData;
 
         public UserData()
         {
             //New Game Setting
+            PlayerData = new PlayerData();
+            PlayerData.SkillDataDic.Add(KeyCode.Q, null);
+            PlayerData.SkillDataDic.Add(KeyCode.E, null);
+            PlayerData.SkillDataDic.Add(KeyCode.R, null);
+
             CutSceneSaveData = new CutSceneSaveData();
             ChapterClearSaveData = new ChapterClearSaveData();
 
-            IsOnceUsed = false;
+            IsNewFile = false;
             IsTutorial = true;
+            CurrentChapterNum = 1;
 
             CutSceneSaveData.IsSkipStory = false;
 
@@ -133,6 +146,16 @@ namespace Sophia.DB
     public class ChapterClearSaveData
     {
         public bool IsChapter1Clear;
+    }
+
+    [Serializable]
+    public class PlayerData
+    {
+        //스텟, 기어, 부품, 스킬 정보
+        public float Health = 100;
+        public int Gear = 30;
+        public List<SerialEquipmentData> EquipmentDataList = new List<SerialEquipmentData>();
+        public Dictionary<KeyCode, Skill> SkillDataDic = new Dictionary<KeyCode, Skill>();
     }
 
 }

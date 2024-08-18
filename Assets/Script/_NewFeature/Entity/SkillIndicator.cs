@@ -21,7 +21,7 @@ namespace Sophia.Entitys
         public string currentSkillName = null;
         public bool IsIndicate;
         public Canvas currentIndicator;
-        public LayerMask indicatorMask = LayerMask.GetMask("Wall", "Map", "Entity");
+        public LayerMask indicatorMask;
         public const float CamRayLength = 500f;
         #endregion
 
@@ -34,6 +34,11 @@ namespace Sophia.Entitys
 
         [SerializeField] public Canvas arrowIndicator;
         [SerializeField] public Canvas circleIndicator;
+
+        void Awake()
+        {
+            indicatorMask = LayerMask.GetMask("Wall","Map","Entity");
+        }
 
         // Start is called before the first frame update
         void Start()

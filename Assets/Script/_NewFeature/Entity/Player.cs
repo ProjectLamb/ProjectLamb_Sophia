@@ -15,6 +15,7 @@ namespace Sophia.Entitys
     using Sophia.Instantiates;
     using Sophia.DataSystem.Referer;
     using Sophia.DataSystem.Modifiers;
+    using Sophia.DataSystem.Modifiers.ConcreteEquipment;
     using Sophia.UserInterface;
     using Sophia.Composite.RenderModels;
     using Unity.Cinemachine;
@@ -56,6 +57,10 @@ namespace Sophia.Entitys
             set
             {
                 mPlayerWealth = value;
+                if (DontDestroyGameManager.Instance != null)
+                {
+                    DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.Gear = value;
+                }
                 InGameScreenUI.Instance._playerWealthBarUI.CountingNumber = mPlayerWealth;
                 OnWealthChangeEvent.Invoke(value - mPlayerWealth);
             }
@@ -92,7 +97,17 @@ namespace Sophia.Entitys
             StatReferer = new PlayerStatReferer();
             ExtrasReferer = new PlayerExtrasReferer();
 
-            Life = new LifeComposite(_basePlayerData.MaxHp, _basePlayerData.Defence);
+            // Load Health
+            // 데이터 로딩 타이밍에 의한 문제가 있을 경우 Start로 옮기기
+            if (DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.Health != _basePlayerData.MaxHp)
+            {
+                Life = new LifeComposite(_basePlayerData.MaxHp, DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.Health, _basePlayerData.Defence);
+            }
+            else
+            {
+                Life = new LifeComposite(_basePlayerData.MaxHp, _basePlayerData.Defence);
+            }
+
             Movement = new MovementComposite(this.transform, this.entityRigidbody, _basePlayerData.MoveSpeed);
             DashSkillAbility = new DashSkill(this.entityRigidbody, Movement.GetMovemenCompositetData, _basePlayerData.DashForce);
             Power = new Stat(_basePlayerData.Power,
@@ -107,17 +122,17 @@ namespace Sophia.Entitys
 
             _affectorManager.Init(_basePlayerData.Tenacity);
             _playerIdleBehaivour.InitByData(this);
-
         }
 
         protected override void Start()
         {
             base.Start();
+
             Life.SetDependUI(InGameScreenUI.Instance._playerHealthBarUI);
             Life.OnDamaged += InGameScreenUI.Instance._hitCanvasShadeScript.Invoke;
+            Life.OnHpUpdated += SaveCurrentHealth;
 
             // Hit Audio 
-
             Life.OnHit += HitSource.Play;
             Life.OnEnterDie += DeathSource.Play;
 
@@ -134,6 +149,8 @@ namespace Sophia.Entitys
             OnWealthChangeEvent.Invoke(mPlayerWealth);
 
             PlayerController.AllowInput(this.name);
+
+            LoadPlayerData();
         }
 
         #endregion
@@ -171,6 +188,11 @@ namespace Sophia.Entitys
             //OnDieEvent.Invoke();
 
             return true;
+        }
+
+        private void SaveCurrentHealth(float input)
+        {
+            DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.Health = Life.CurrentHealth;
         }
 
         #endregion
@@ -314,7 +336,7 @@ namespace Sophia.Entitys
             {
                 //쿨타임 아닐때
                 // if (this._skillManager.GetSkillByKey(key).GetIsSkillIndicate()) // 이전 if문 작동안해서 주석처리
-                if(!skillIndicator.IsIndicate)
+                if (!skillIndicator.IsIndicate)
                 {
                     skillIndicator.IsIndicate = true;
                     skillIndicator.changeIndicate(indicateSkillName);
@@ -327,7 +349,19 @@ namespace Sophia.Entitys
 
         public EquipmentManager GetEquipmentManager() => this._equipmentManager;
         public void EquipEquipment(Equipment equipment) => this._equipmentManager.Equip(equipment);
-        public void DropEquipment(Equipment equipment) => this._equipmentManager.Drop(equipment);
+        public void DropEquipment(Equipment equipment)
+        {
+            // File
+            foreach (var item in DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.EquipmentDataList)
+            {
+                if (equipment.ID == item._equipmentID)
+                {
+                    DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.EquipmentDataList.Remove(item);
+                }
+            }
+
+            this._equipmentManager.Drop(equipment);
+        }
 
         #endregion
 
@@ -336,6 +370,40 @@ namespace Sophia.Entitys
         public override AffectorManager GetAffectorManager() => this._affectorManager ??= GetComponentInChildren<AffectorManager>();
         public override void Affect(Affector affector) => this._affectorManager.Affect(affector);
         public override void Recover(Affector affector) => this._affectorManager.Recover(affector);
+
+        #endregion
+
+        #region Load Data Handler
+
+        public void LoadPlayerData()
+        {
+            GlobalSaveLoadManager saveLoadManager = DontDestroyGameManager.Instance.SaveLoadManager;
+            if (saveLoadManager != null)
+            {
+                //기어
+                PlayerWealth = saveLoadManager.Data.PlayerData.Gear;
+
+                //부품
+                //번호를 토대로 장착
+                if (saveLoadManager.Data.PlayerData.EquipmentDataList.Count > 0)
+                {
+                    foreach (var item in saveLoadManager.Data.PlayerData.EquipmentDataList)
+                    {
+                        SerialEquipmentData serialEquipmentData = item;
+
+                        Debug.Log(FactoryConcreteEquipment.GetEquipmentByID(serialEquipmentData, GetComponent<Player>()).Name);
+                        EquipEquipment(FactoryConcreteEquipment.GetEquipmentByID(serialEquipmentData, GetComponent<Player>()));
+                    }
+                }
+
+                // //스킬
+                // foreach (var item in saveLoadManager.Data.PlayerData.SkillDataDic)
+                // {
+                //     if (item.Value != null)
+                //         CollectSkill(item.Value, item.Key);
+                // }
+            }
+        }
 
         #endregion
 
