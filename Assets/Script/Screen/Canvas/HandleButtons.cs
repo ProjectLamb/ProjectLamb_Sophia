@@ -18,6 +18,11 @@ public class HandleButtons : MonoBehaviour
     }
     IEnumerator CoRestart()
     {
+        DontDestroyGameManager.Instance.SaveLoadManager.ResetData();    //디버그 할 때 주석 처리할 것
+        DontDestroyGameManager.Instance.SaveLoadManager.Data.IsNewFile = false;
+        DontDestroyGameManager.Instance.SaveLoadManager.Data.IsTutorial = false;
+        DontDestroyGameManager.Instance.SaveLoadManager.Data.CutSceneSaveData.IsSkipStory = true;
+
         GameManager.Instance.GlobalEvent.ResetForce();
         yield return new WaitForSecondsRealtime(0.01f);
         if (LoadSceneString == "")

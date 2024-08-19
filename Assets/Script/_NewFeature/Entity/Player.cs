@@ -99,9 +99,16 @@ namespace Sophia.Entitys
 
             // Load Health
             // 데이터 로딩 타이밍에 의한 문제가 있을 경우 Start로 옮기기
-            if (DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.Health != _basePlayerData.MaxHp)
+            if (DontDestroyGameManager.Instance != null)
             {
-                Life = new LifeComposite(_basePlayerData.MaxHp, DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.Health, _basePlayerData.Defence);
+                if (DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.Health != _basePlayerData.MaxHp)
+                {
+                    Life = new LifeComposite(_basePlayerData.MaxHp, DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.Health, _basePlayerData.Defence);
+                }
+                else
+                {
+                    Life = new LifeComposite(_basePlayerData.MaxHp, _basePlayerData.Defence);
+                }
             }
             else
             {
@@ -150,7 +157,8 @@ namespace Sophia.Entitys
 
             PlayerController.AllowInput(this.name);
 
-            LoadPlayerData();
+            if (DontDestroyGameManager.Instance != null)
+                LoadPlayerData();
         }
 
         #endregion

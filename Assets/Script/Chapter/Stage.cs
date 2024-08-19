@@ -263,6 +263,7 @@ public class Stage : MonoBehaviour
             itemObject.transform.parent = itemObjectBucket.transform;
         }
 
-        DontDestroyGameManager.Instance.SaveLoadManager.SaveAsJson();
+        if(DontDestroyGameManager.Instance != null)
+            DontDestroyGameManager.Instance.SaveLoadManager.SaveAsJson();
     }
 }
