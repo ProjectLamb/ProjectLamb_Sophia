@@ -3,7 +3,7 @@
   "IsTutorial": true,
   "CurrentChapterNum": 1,
   "CutSceneSaveData": {
-    "IsSkipStory": false
+    "IsSkipStory": true
   },
   "ChapterClearSaveData": {
     "IsChapter1Clear": false
