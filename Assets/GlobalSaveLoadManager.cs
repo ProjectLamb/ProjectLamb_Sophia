@@ -154,6 +154,7 @@ namespace Sophia.DB
         //스텟, 기어, 부품, 스킬 정보
         public float Health = 100;
         public int Gear = 30;
+        public bool IsDied = false;
         public List<SerialEquipmentData> EquipmentDataList = new List<SerialEquipmentData>();
         public Dictionary<KeyCode, Skill> SkillDataDic = new Dictionary<KeyCode, Skill>();
     }

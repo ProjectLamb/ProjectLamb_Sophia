@@ -109,6 +109,7 @@ namespace Sophia.Entitys
                 {
                     Life = new LifeComposite(_basePlayerData.MaxHp, _basePlayerData.Defence);
                 }
+                DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.IsDied = false;
             }
             else
             {
@@ -183,6 +184,15 @@ namespace Sophia.Entitys
         {
             PlayerController.DisallowInput(this.name);
 
+            if (DontDestroyGameManager.Instance != null)
+            {
+                //Restart Logic
+                DontDestroyGameManager.Instance.SaveLoadManager.ResetData();
+                DontDestroyGameManager.Instance.SaveLoadManager.Data.IsTutorial = false;
+                DontDestroyGameManager.Instance.SaveLoadManager.Data.CutSceneSaveData.IsSkipStory = true;
+                DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.IsDied = true;
+            }
+
             GetMovementComposite().SetMoveState(false);
             entityCollider.enabled = false;
             _modelManager.GetAnimator().SetTrigger("Die");
@@ -190,7 +200,7 @@ namespace Sophia.Entitys
             InGameScreenUI.Instance._fadeUI.AddBindingAction(() =>
             {
                 DontDestroyGameManager.Instance.AudioManager.audioStateSender._stopSender.SendCommand();
-                SceneManager.LoadScene(1);
+                SceneManager.LoadScene("01_Loading");
             });
             InGameScreenUI.Instance._fadeUI.FadeOut(0.02f, 1.0f);
             //OnDieEvent.Invoke();
