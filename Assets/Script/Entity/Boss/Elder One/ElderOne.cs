@@ -280,6 +280,8 @@ namespace Sophia.Entitys
             //Demo Clear
             // Sophia.UserInterface.InGameScreenUI.Instance._storyFadePanel.SetTransparent();
             // Sophia.UserInterface.InGameScreenUI.Instance._storyFadePanel.WaitAfterBoss();
+            transform.DOKill();
+            SetMoveState(false);
 
             if (IsPlayerCatch)  //만약 캐릭터가 붙잡혀 있었다면
             {
@@ -730,6 +732,12 @@ namespace Sophia.Entitys
         void Death_Update()
         {
             //check animation end
+            if (IsPlayerCatch)  //만약 캐릭터가 붙잡혀 있었다면
+            {
+                _objectiveEntity.transform.GetComponent<Player>().SetMoveState(true);
+                _objectiveEntity.transform.parent = null;
+                IsPlayerCatch = false;
+            }
         }
 
         public override bool GetDamaged(DamageInfo damage)

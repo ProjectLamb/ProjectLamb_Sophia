@@ -99,9 +99,17 @@ namespace Sophia.Entitys
 
             // Load Health
             // 데이터 로딩 타이밍에 의한 문제가 있을 경우 Start로 옮기기
-            if (DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.Health != _basePlayerData.MaxHp)
+            if (DontDestroyGameManager.Instance != null)
             {
-                Life = new LifeComposite(_basePlayerData.MaxHp, DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.Health, _basePlayerData.Defence);
+                if (DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.Health != _basePlayerData.MaxHp)
+                {
+                    Life = new LifeComposite(_basePlayerData.MaxHp, DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.Health, _basePlayerData.Defence);
+                }
+                else
+                {
+                    Life = new LifeComposite(_basePlayerData.MaxHp, _basePlayerData.Defence);
+                }
+                DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.IsDied = false;
             }
             else
             {
@@ -150,7 +158,8 @@ namespace Sophia.Entitys
 
             PlayerController.AllowInput(this.name);
 
-            LoadPlayerData();
+            if (DontDestroyGameManager.Instance != null)
+                LoadPlayerData();
         }
 
         #endregion
@@ -175,6 +184,15 @@ namespace Sophia.Entitys
         {
             PlayerController.DisallowInput(this.name);
 
+            if (DontDestroyGameManager.Instance != null)
+            {
+                //Restart Logic
+                DontDestroyGameManager.Instance.SaveLoadManager.ResetData();
+                DontDestroyGameManager.Instance.SaveLoadManager.Data.IsTutorial = false;
+                DontDestroyGameManager.Instance.SaveLoadManager.Data.CutSceneSaveData.IsSkipStory = true;
+                DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.IsDied = true;
+            }
+
             GetMovementComposite().SetMoveState(false);
             entityCollider.enabled = false;
             _modelManager.GetAnimator().SetTrigger("Die");
@@ -182,7 +200,7 @@ namespace Sophia.Entitys
             InGameScreenUI.Instance._fadeUI.AddBindingAction(() =>
             {
                 DontDestroyGameManager.Instance.AudioManager.audioStateSender._stopSender.SendCommand();
-                SceneManager.LoadScene(1);
+                SceneManager.LoadScene("01_Loading");
             });
             InGameScreenUI.Instance._fadeUI.FadeOut(0.02f, 1.0f);
             //OnDieEvent.Invoke();

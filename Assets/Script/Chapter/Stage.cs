@@ -262,7 +262,5 @@ public class Stage : MonoBehaviour
             itemObjectBucket.InstantablePositioning(itemObject = Instantiate(itemObject).Init()).Activate();
             itemObject.transform.parent = itemObjectBucket.transform;
         }
-
-        DontDestroyGameManager.Instance.SaveLoadManager.SaveAsJson();
     }
 }

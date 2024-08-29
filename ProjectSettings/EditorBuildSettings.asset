@@ -11,21 +11,15 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Resources/Scenes/01_Loading.unity
     guid: d38e2e7dc32f15c43810c31fd62f2c65
-  - enabled: 0
-    path: Assets/Resources/Scenes/backup/03_Chapter_1.unity
-    guid: af6587aa63ed4ab4a84b12621079928f
-  - enabled: 0
-    path: Assets/Resources/Scenes/backup/04_Chapter_2.unity
-    guid: dacf2c06bdfbc034cad133871d0e5570
-  - enabled: 1
-    path: Assets/Resources/Scenes/05_Demo_Clear.unity
-    guid: cae0ec7ebda3a2947a763a7d2b891712
   - enabled: 1
     path: Assets/Resources/Scenes/03_Chapter_1.unity
     guid: 98d84fd8a3300ec4b947e3f0c2f9cd41
   - enabled: 1
     path: Assets/Resources/Scenes/04_Chapter_2.unity
     guid: bfb1a168014322c408f9b91eabfce2b3
+  - enabled: 1
+    path: Assets/Resources/Scenes/05_Demo_Clear.unity
+    guid: cae0ec7ebda3a2947a763a7d2b891712
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 1500e65aa38604acfa62802a54d459c5,
       type: 2}
