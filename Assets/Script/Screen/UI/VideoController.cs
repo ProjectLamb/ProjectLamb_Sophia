@@ -119,6 +119,8 @@ public class VideoController : MonoBehaviour
                 case E_VIDEO_NAME.ElderOne:
                     InGameScreenUI.Instance._bossHealthBar.SetActive(true);
                     InGameScreenUI.Instance._fadeUI.FadePanelOff();
+                    isVideoStart = false;
+                    skipCanvas.enabled = false;
                     commandStarter.SendCommand();
                     bossStateStarter.SendCommand();
                     break; 
