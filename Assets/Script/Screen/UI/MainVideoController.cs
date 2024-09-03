@@ -54,7 +54,7 @@ public class MainVideoController : MonoBehaviour
         if (!IsVideoRun)
         {
             movieTime += Time.deltaTime;
-            if ((int)movieTime >= 5)
+            if ((int)movieTime >= 10)
             {
                 StartVideo(E_VIDEO_NAME.Main);
             }
@@ -71,11 +71,26 @@ public class MainVideoController : MonoBehaviour
         {
             fadeColor.a += 0.05f;
             panel.color = fadeColor;
-            yield return new WaitForSecondsRealtime(0.07f);
+            yield return new WaitForSecondsRealtime(0.04f);
         }
         commandEnder.SendCommand();
         PlayVideo();
-        yield return new WaitForSecondsRealtime(0.1f);
+        yield return new WaitForSecondsRealtime(0.5f);
+        panel.enabled = false;
+    }
+
+    IEnumerator PanelFadeOut(RawImage panel)
+    {
+        panel.enabled = true;
+        Color fadeColor = panel.color;
+        fadeColor.a = 1;
+
+        while (fadeColor.a > 0f)
+        {
+            fadeColor.a -= 0.03f;
+            panel.color = fadeColor;
+            yield return new WaitForSecondsRealtime(0.01f);
+        }
         panel.enabled = false;
     }
 
@@ -93,6 +108,7 @@ public class MainVideoController : MonoBehaviour
         vid.Stop();
         fMODAudioSource.Stop();
         IsVideoRun = false;
+        StartCoroutine(PanelFadeOut(moviePanel));
     }
 
 }
