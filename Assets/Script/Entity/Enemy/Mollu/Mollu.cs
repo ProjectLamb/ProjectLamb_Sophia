@@ -102,6 +102,7 @@ namespace Sophia.Entitys
             _lastPos = transform.position;
 
             TryGetComponent<NavMeshAgent>(out nav);
+            TryGetComponent<Outline>(out outline);
 
             fsm = new StateMachine<States>(this);
             fsm.ChangeState(States.Init);
@@ -129,6 +130,15 @@ namespace Sophia.Entitys
             {
                 nav.enabled = false;
                 transform.DOKill();
+            }
+
+            if(IsOutline)
+            {
+                outline.enabled = true;
+            }
+            else
+            {
+                outline.enabled = false;
             }
         }
 

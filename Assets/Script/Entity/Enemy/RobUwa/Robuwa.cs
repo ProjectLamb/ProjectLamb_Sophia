@@ -81,6 +81,7 @@ namespace Sophia.Entitys
 
             TryGetComponent<NavMeshAgent>(out nav);
             TryGetComponent<EQS>(out eqs);
+            TryGetComponent<Outline>(out outline);
 
             fsm = new StateMachine<States>(this);
             fsm.ChangeState(States.Init);
@@ -110,6 +111,15 @@ namespace Sophia.Entitys
                 nav.enabled = false;
                 transform.DOKill();
             }
+
+            if (IsOutline)
+            {
+                outline.enabled = true;
+            }
+            else
+            {
+                outline.enabled = false;
+            }
         }
 
         void FixedUpdate()
@@ -117,7 +127,7 @@ namespace Sophia.Entitys
             fsm.Driver.FixedUpdate.Invoke();
         }
 
-        
+
         private void OnDisable()
         {
             Life.OnDamaged -= OnEnemyHitHandler;
@@ -234,7 +244,7 @@ namespace Sophia.Entitys
         #region Attack
 
         private Stat power;
-        [SerializeField] protected Instantiates.ProjectileObject[]         _attckProjectileDirection;
+        [SerializeField] protected Instantiates.ProjectileObject[] _attckProjectileDirection;
 
         public void UseProjectile_NormalAttack()
         {
@@ -479,7 +489,7 @@ namespace Sophia.Entitys
 
             foreach (Sophia.Instantiates.ItemObject itemObject in itemObjects)
             {
-                if(itemObject == null) continue;
+                if (itemObject == null) continue;
                 itemObject.SetTriggerTime(1f).SetTweenSequence(SetSequnce(itemObject)).Activate();
             }
             Die();
@@ -551,11 +561,12 @@ namespace Sophia.Entitys
             return isDamaged;
         }
 
-        public void OnEnemyHitHandler(DamageInfo damageInfo) {
+        public void OnEnemyHitHandler(DamageInfo damageInfo)
+        {
             _audioSources[(int)E_ROBUWA_AUDIO_INDEX.Hit].Play();
             GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Damaged].PlayFunctionalActOneShotWithDuration(0.3f);
             GameManager.Instance.NewFeatureGlobalEvent.EnemyHit.PerformStartFunctionals(ref GlobalHelper.NullRef);
-        } 
+        }
 
         public override Stat GetStat(E_NUMERIC_STAT_TYPE numericType) => StatReferer.GetStat(numericType);
 
