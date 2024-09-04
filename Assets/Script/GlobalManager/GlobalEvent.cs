@@ -6,6 +6,7 @@ using AYellowpaper.SerializedCollections;
 using Sophia.UserInterface;
 using UnityEngine;
 using UnityEngine.Events;
+using DG.Tweening;
 
 /// <summary>
 /// Ref, Out에 대한 이해가 필요하다
@@ -30,15 +31,16 @@ public class GlobalEvent : MonoBehaviour
         OnStageClear = new List<UnityAction<Stage>>();
         OnStageEnter = new List<UnityAction<Stage, Stage>>();
 
-        OnPlayEvent     ??= new UnityEvent<string>();
-        OnPausedEvent   ??= new UnityEvent<string>();
-        _IsGamePaused   ??= new SerializedDictionary<string, bool>
+        OnPlayEvent ??= new UnityEvent<string>();
+        OnPausedEvent ??= new UnityEvent<string>();
+        _IsGamePaused ??= new SerializedDictionary<string, bool>
         {
             { gameObject.name, false }
         };
     }
 
-    private void OnEnable() {
+    private void OnEnable()
+    {
 
     }
 
@@ -61,41 +63,50 @@ public class GlobalEvent : MonoBehaviour
     public const float PLAY_SCALE = 1f;
     public const float PAUSE_SCALE = 0;
 
-    public bool IsGamePaused {
-        get {
-            return !_IsGamePaused.All(x => x.Value == false); 
+    public bool IsGamePaused
+    {
+        get
+        {
+            return !_IsGamePaused.All(x => x.Value == false);
         }
     }
 
-    public void SetTimeStateByHandlersString(string handler, bool timeState) {
-        if(!_IsGamePaused.ContainsKey(handler)) {
+    public void SetTimeStateByHandlersString(string handler, bool timeState)
+    {
+        if (!_IsGamePaused.ContainsKey(handler))
+        {
             _IsGamePaused.TryAdd(handler, timeState); return;
         }
         _IsGamePaused[handler] = timeState;
     }
 
-    public void Pause(string handler) {
+    public void Pause(string handler)
+    {
         bool PrevTimeState = IsGamePaused;
         Debug.Log("TryPause");
         SetTimeStateByHandlersString(handler, true);
-        if(PrevTimeState == false && IsGamePaused == true) {
+        if (PrevTimeState == false && IsGamePaused == true)
+        {
             OnPausedEvent?.Invoke(gameObject.name);
             GameTimeScale = PAUSE_SCALE;
             Debug.Log("Time Changed");
         }
     }
-    public void Play(string handler) {
+    public void Play(string handler)
+    {
         bool PrevTimeState = IsGamePaused;
         Debug.Log("TryPlay");
         SetTimeStateByHandlersString(handler, false);
-        if(PrevTimeState == true && IsGamePaused == false) {
+        if (PrevTimeState == true && IsGamePaused == false)
+        {
             OnPlayEvent?.Invoke(gameObject.name);
-            GameTimeScale = PLAY_SCALE; 
+            GameTimeScale = PLAY_SCALE;
             Debug.Log("Time Changed");
         }
     }
 
-    public void ResetForce() {
+    public void ResetForce()
+    {
         _IsGamePaused = new SerializedDictionary<string, bool>
         {
             { gameObject.name, false }
@@ -110,15 +121,18 @@ public class GlobalEvent : MonoBehaviour
 
     bool mIsSlowed = false;
 
-    // public void HandleTimeSlow()
-    // {
-    //     if (mIsSlowed) return;
-    //     Debug.Log("StartSlowed");
+    public void HandleTimeSlow(float basetime, float duratetime)
+    {
+        if (mIsSlowed) return;
+        Debug.Log("StartSlowed");
 
-    //     StartCoroutine(SlowTimeCoroutine());
-    // }
+        GameTimeScale = basetime;
+        DOTween.To(() => GameTimeScale, x => GameTimeScale = x, 1, duratetime).SetEase(Ease.InQuad);
 
-    // //DotTween 사용해서 증가 커브 설정하기
+        //StartCoroutine(SlowTimeCoroutine());
+    }
+
+    //DotTween 사용해서 증가 커브 설정하기
     // IEnumerator SlowTimeCoroutine()
     // {
     //     mIsSlowed = true;

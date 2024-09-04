@@ -54,7 +54,7 @@ namespace Sophia.Entitys
 
         void FixedUpdate()
         {
-            ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            ray = GameManager.Instance.PlayerGameObject.GetComponent<PlayerController>().ray;
             if (!IsIndicate)
             {
                 currentIndicator.enabled = false;

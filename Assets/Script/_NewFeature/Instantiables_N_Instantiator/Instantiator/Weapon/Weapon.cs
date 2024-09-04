@@ -2,13 +2,15 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
-namespace Sophia.Instantiates {
+namespace Sophia.Instantiates
+{
     using Sophia.Entitys;
     using Sophia.State;
     using Sophia.Composite.RenderModels;
     using FMODPlus;
 
-    public enum E_WEAPONE_USE_STATE {
+    public enum E_WEAPONE_USE_STATE
+    {
         None, Normal, OnHit, Charge
     }
 
@@ -23,7 +25,7 @@ namespace Sophia.Instantiates {
 
         public void Execute(Weapon weapon)
         {
-            
+
         }
 
         public void Exit(Weapon weapon)
@@ -37,7 +39,7 @@ namespace Sophia.Instantiates {
         private static WeaponUseOnHit _instnace = new WeaponUseOnHit();
         public static WeaponUseOnHit Instance => _instnace;
 
-        public Queue<ProjectileObject>  OnHitProjectiles = new Queue<ProjectileObject>();
+        public Queue<ProjectileObject> OnHitProjectiles = new Queue<ProjectileObject>();
 
         public void Enter(Weapon weapon)
         {
@@ -58,99 +60,112 @@ namespace Sophia.Instantiates {
     public class Weapon : MonoBehaviour
     {
 
-#region SerializeMember Member
+        #region SerializeMember Member
 
-        [SerializeField] protected ModelManager  _modelManger;
-        [SerializeField] protected List<VisualFXBucket>  _weaponVisualFXBucket;
+        [SerializeField] protected ModelManager _modelManger;
+        [SerializeField] protected List<VisualFXBucket> _weaponVisualFXBucket;
         [SerializeField] private List<ProjectileObject> _weaponProjectiles;
         [SerializeField] private List<Animation> _performAnimation;
-        [SerializeField] private int    _basePoolSize = 3;
-        [SerializeField] private float  _baseRatioAttackSpeed = 1f;
-        [SerializeField] private float  _baseRatioDamage = 1f;
+        [SerializeField] private int _basePoolSize = 3;
+        [SerializeField] private float _baseRatioAttackSpeed = 1f;
+        [SerializeField] private float _baseRatioDamage = 1f;
         [SerializeField] private Vector3 _instantiateOffsetPosition;
         [SerializeField] private FMODAudioSource _swingAudio;
 
-#endregion
+        #endregion
 
-#region Member
+        #region Member
 
-        private ProjectileBucket        mInstantiatorRef;
+        private ProjectileBucket mInstantiatorRef;
         private Queue<ProjectileObject> NormalQueue = new Queue<ProjectileObject>();
         private Queue<ProjectileObject> OnHitQueue = new Queue<ProjectileObject>();
-        public DataSystem.Atomics.DashAtomics AttackDashAtomics {get; private set;}
+        public DataSystem.Atomics.DashAtomics AttackDashAtomics { get; private set; }
         private int mCurrentPoolSize;
-        public int CurrentPoolSize {
-            get {return mCurrentPoolSize;}
-            private set {
-                if(value <= 0) {
+        public int CurrentPoolSize
+        {
+            get { return mCurrentPoolSize; }
+            private set
+            {
+                if (value <= 0)
+                {
                     mCurrentPoolSize = 0;
                 }
                 mCurrentPoolSize = value;
             }
         }
         private float mCurrentRatioAttackSpeed;
-        public float CurrentRatioAttackSpeed {
-            get {return mCurrentRatioAttackSpeed;}
-            private set {
-                if(value <= 0.01f) {
+        public float CurrentRatioAttackSpeed
+        {
+            get { return mCurrentRatioAttackSpeed; }
+            private set
+            {
+                if (value <= 0.01f)
+                {
                     mCurrentRatioAttackSpeed = 0;
                 }
                 mCurrentRatioAttackSpeed = value;
             }
         }
         private float mCurrentRatioDamage;
-        public float CurrentRatioDamage {
-            get {return mCurrentRatioDamage;}
-            private set {
-                if(value < 1) {
+        public float CurrentRatioDamage
+        {
+            get { return mCurrentRatioDamage; }
+            private set
+            {
+                if (value < 1)
+                {
                     mCurrentRatioDamage = 1;
                 }
                 mCurrentRatioDamage = value;
             }
         }
-        
-#endregion
 
-#region State
-        
+        #endregion
+
+        #region State
+
         internal E_WEAPONE_USE_STATE StateType = E_WEAPONE_USE_STATE.None;
         public WeaponUseNormal NormalState = WeaponUseNormal.Instance;
-        public WeaponUseOnHit  OnHitState = WeaponUseOnHit.Instance;
+        public WeaponUseOnHit OnHitState = WeaponUseOnHit.Instance;
 
-        public WeaponUseOnHit ChangeStateToOnHit() {
+        public WeaponUseOnHit ChangeStateToOnHit()
+        {
             StateType = E_WEAPONE_USE_STATE.OnHit;
             return this.OnHitState;
         }
-        public WeaponUseNormal ChangeStateToNormal() {
+        public WeaponUseNormal ChangeStateToNormal()
+        {
             StateType = E_WEAPONE_USE_STATE.Normal;
             return this.NormalState;
         }
 
-#endregion
+        #endregion
 
-#region Getter
+        #region Getter
 
-#endregion
+        #endregion
 
-#region Setter
+        #region Setter
 
         public bool IsInitialized = false;
-        public void WeaponConstructor(ProjectileBucket bucket, int poolSize, float ratioAttackSpeed, float ratioDamage, Player player) {
-            if(IsInitialized) throw new System.Exception("이미 생성자로 초기화 됨");
+        public void WeaponConstructor(ProjectileBucket bucket, int poolSize, float ratioAttackSpeed, float ratioDamage, Player player)
+        {
+            if (IsInitialized) throw new System.Exception("이미 생성자로 초기화 됨");
             mInstantiatorRef = bucket;
             StateType = E_WEAPONE_USE_STATE.Normal;
             _weaponProjectiles.ForEach(E => NormalQueue.Enqueue(E));
 
-            CurrentPoolSize         = _basePoolSize;
+            CurrentPoolSize = _basePoolSize;
             CurrentRatioAttackSpeed = ratioAttackSpeed * _baseRatioAttackSpeed;
-            CurrentRatioDamage      = ratioDamage * _baseRatioDamage;
+            CurrentRatioDamage = ratioDamage * _baseRatioDamage;
 
-            AttackDashAtomics = new DataSystem.Atomics.DashAtomics(player.entityRigidbody, player.GetMovementComposite().GetTouchedData, () => {return 80;});
+            AttackDashAtomics = new DataSystem.Atomics.DashAtomics(player.entityRigidbody, player.GetMovementComposite().GetTouchedData, () => { return 100; });
 
             IsInitialized = true;
         }
 
-        public void ResetSettings() {
+        public void ResetSettings()
+        {
             CurrentPoolSize = _basePoolSize;
             CurrentRatioAttackSpeed = _baseRatioAttackSpeed;
             CurrentRatioDamage = _baseRatioDamage;
@@ -158,7 +173,8 @@ namespace Sophia.Instantiates {
             _weaponProjectiles.ForEach(E => NormalQueue.Enqueue(E));
         }
 
-        public void WeaponDistructor() {
+        public void WeaponDistructor()
+        {
             mInstantiatorRef = null;
             StateType = E_WEAPONE_USE_STATE.None;
             CurrentPoolSize = _basePoolSize;
@@ -167,31 +183,56 @@ namespace Sophia.Instantiates {
             NormalQueue.Clear();
             IsInitialized = false;
         }
-    
-#endregion
 
-        public void Use(Player player) {
+        #endregion
+
+        public void Use(Player player)
+        {
             Debug.Log("WeaponUsed");
-            if(NormalQueue.Count == 0) { _weaponProjectiles.ForEach(E => NormalQueue.Enqueue(E)); }
+            if (NormalQueue.Count == 0) { _weaponProjectiles.ForEach(E => NormalQueue.Enqueue(E)); }
             ProjectileObject useProjectile = ProjectilePool.GetObject(NormalQueue.Dequeue()).Init(player);
             mInstantiatorRef.InstantablePositioning(useProjectile)
                             .SetInstantiateType(E_INSTANTIATE_TYPE.Weapon)
                             .SetProjectilePower(player.GetStat(E_NUMERIC_STAT_TYPE.Power))
                             .SetProjectileDamageInfoByWaepon(player.GetExtras<DamageInfo>(E_FUNCTIONAL_EXTRAS_TYPE.WeaponUse))
+                            .SetOnProjectileTriggerdEvent(() =>
+                            {
+                                GameManager.Instance.GlobalEvent.HandleTimeSlow(1.1f, 0.25f);
+                                GameManager.Instance.CameraController.FastZoomIn(1, 0.15f);
+                            })
                             .Activate();
-            AttackDashAtomics.Invoke();
+            AttackDashAtomics.InvokeMousePoint();
         }
 
         public int CurrentProjectileIndex = 0;
-        public void UseByIndex(Player player) {
-            
+        public void UseByIndex(Player player)
+        {
+
             ProjectileObject useProjectile = ProjectilePool.GetObject(_weaponProjectiles[CurrentProjectileIndex]).Init(player);
             mInstantiatorRef.InstantablePositioning(useProjectile)
                             .SetInstantiateType(E_INSTANTIATE_TYPE.Weapon)
                             .SetProjectilePower(player.GetStat(E_NUMERIC_STAT_TYPE.Power))
-                            .SetProjectileDamageInfoByWaepon(player.GetExtras<DamageInfo>(E_FUNCTIONAL_EXTRAS_TYPE.WeaponUse))
-                            .Activate();
-            AttackDashAtomics.Invoke();
+                            .SetProjectileDamageInfoByWaepon(player.GetExtras<DamageInfo>(E_FUNCTIONAL_EXTRAS_TYPE.WeaponUse));
+            switch (CurrentProjectileIndex)
+            {
+                case 0:
+                case 1:
+                    useProjectile.SetOnProjectileTriggerdEvent(() =>
+                    {
+                        GameManager.Instance.GlobalEvent.HandleTimeSlow(0.9f, 0.25f);
+                        GameManager.Instance.CameraController.FastZoomIn(1, 0.15f);
+                    });
+                    break;
+                case 2:
+                    useProjectile.SetOnProjectileTriggerdEvent(() =>
+                    {
+                        GameManager.Instance.GlobalEvent.HandleTimeSlow(0.5f, 0.3f);
+                        GameManager.Instance.CameraController.FastZoomIn(2, 0.3f);
+                    });
+                    break;
+            }
+            useProjectile.Activate();
+            AttackDashAtomics.InvokeMousePoint();
         }
     }
 

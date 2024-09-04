@@ -11,6 +11,7 @@ public class Test_CameraController : MonoBehaviour
     public GameObject[] cineCamera; 
     public CinemachineTargetGroup targetGroup;
     public Vector3 OriginCameraDamping;
+    private float baseFOV;
 
     Stage stage;
 
@@ -25,6 +26,8 @@ public class Test_CameraController : MonoBehaviour
         //�������� ����� �� �߻��ϴ� �̺�Ʈ�� �Լ��߰�       
         GameManager.Instance.GlobalEvent.OnStageEnter.Add(new UnityAction<Stage, Stage>(StartDampingCoroutine));
         //GameManager.Instance.GlobalEvent.OnStageEnter.Add(new UnityAction<Stage, Stage>(CheckStage));
+
+        baseFOV = cineCamera[0].GetComponent<CinemachineCamera>().Lens.FieldOfView;
     }
 
     public void CheckStage(Stage departStage, Stage arriveStage)
@@ -51,6 +54,12 @@ public class Test_CameraController : MonoBehaviour
     public void StartDampingCoroutine(Stage departStage, Stage arriveStage)
     {
         StartCoroutine(SetDamping(departStage, arriveStage));
+    }
+
+    public void FastZoomIn(int basezoom, float duratetime)
+    {
+        cineCamera[0].GetComponent<CinemachineCamera>().Lens.FieldOfView = baseFOV - basezoom;
+        DOTween.To(() => cineCamera[0].GetComponent<CinemachineCamera>().Lens.FieldOfView, x => cineCamera[0].GetComponent<CinemachineCamera>().Lens.FieldOfView = x, baseFOV, duratetime).SetEase(Ease.InQuad);
     }
 
     public IEnumerator SetDamping(Stage departStage, Stage arriveStage, float time = 0)
