@@ -77,7 +77,7 @@ public class VideoController : MonoBehaviour
                 isSkippable = false;
                 skipCanvas.enabled = false;
             }
-            if (Input.GetKey(KeyCode.Space) && isManualFadeOn && !isManualFadeOff) // 조작법 UI가 다 뜬 이후에 스페이스가 입력되었을 시
+            if ( (Input.GetKey(KeyCode.Space) || Input.GetMouseButton(0)) && isManualFadeOn && !isManualFadeOff) // 조작법 UI가 다 뜬 이후에 스페이스가 입력되었을 시
             {
                 isManualFadeOn = false;
                 isManualFadeOff = true;
