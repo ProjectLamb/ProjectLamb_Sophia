@@ -112,7 +112,7 @@ public class Stage : MonoBehaviour
         //     }
         // }
 
-        if(Type == STAGE_TYPE.BOSS)
+        if (Type == STAGE_TYPE.BOSS)
         {
             stageGenerator.InitStageGenerator(2);
         }
@@ -234,6 +234,8 @@ public class Stage : MonoBehaviour
         }
         if (Type == STAGE_TYPE.NORMAL)
         {
+            GameManager.Instance.GlobalEvent.HandleTimeSlow(0.5f, 1);
+            GameManager.Instance.CameraController.FastZoomIn(5, 1);
             // // gachaComponent.instantPivot.position = transform.position;
             // // gachaComponent.InstantiateReward(gachaComponent.instantPivot);
             // List<Sophia.Instantiates.ItemObject> positionedItem = gachaComponent.InstantiateReward();
@@ -253,6 +255,8 @@ public class Stage : MonoBehaviour
             itemObjectBucket.transform.position += new Vector3(0, 0, -30);
             itemObjectBucket.InstantablePositioning(itemObject = Instantiate(itemObject).Init()).Activate();
             itemObject.transform.parent = itemObjectBucket.transform;
+            GameManager.Instance.GlobalEvent.HandleTimeSlow(0.25f, 1);
+            GameManager.Instance.CameraController.FastZoomIn(5, 1);
         }
         else if (Type == STAGE_TYPE.HIDDEN)
         {

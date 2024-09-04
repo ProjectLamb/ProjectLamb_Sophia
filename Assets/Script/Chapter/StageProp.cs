@@ -27,8 +27,11 @@ namespace Sophia.Entitys
 
         #endregion
 
+        public bool IsOutline;
+
         #region Private
         private LifeComposite Life { get; set; }
+        private Outline outline;
 
         #endregion
 
@@ -38,6 +41,8 @@ namespace Sophia.Entitys
 
             Life = new LifeComposite(_baseEntityData.MaxHp, _baseEntityData.Defence);
             _affectorManager.Init(_baseEntityData.Tenacity);
+
+            TryGetComponent<Outline>(out outline);
         }
         // Start is called before the first frame update
         protected override void Start()
@@ -47,6 +52,18 @@ namespace Sophia.Entitys
             Life.OnDamaged += OnPropHit;
             Life.OnEnterDie += OnPropEnterDie;
             Life.OnExitDie += OnPropExitDie;
+        }
+
+        void Update()
+        {
+            if (IsOutline)
+            {
+                outline.enabled = true;
+            }
+            else
+            {
+                outline.enabled = false;
+            }
         }
 
         public void OnPropHit(DamageInfo damageInfo)
