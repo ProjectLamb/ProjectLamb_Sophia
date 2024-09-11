@@ -16,7 +16,6 @@ namespace Sophia.Entitys
         #region public
         public Player playerRef;
         public Vector3 currentPosition;
-        public Vector3 linePosition;
         public Vector3 arrowPosition;
 
         public int skillNumber = 0;
@@ -24,7 +23,6 @@ namespace Sophia.Entitys
         public bool IsIndicate;
         public Canvas currentIndicator;
         public Canvas playerArrow;
-        public LineRenderer lineIndicator;
         public LayerMask indicatorMask;
         public const float CamRayLength = 300f;
         #endregion
@@ -64,7 +62,6 @@ namespace Sophia.Entitys
             if (!IsIndicate)
             {
                 playerArrow.enabled = true;
-                lineIndicator.SetPosition(1, new Vector3(0, 0, 0));
                 currentIndicator.enabled = false;
             }
             else if (IsIndicate)
@@ -121,11 +118,9 @@ namespace Sophia.Entitys
             {
                 currentPosition = new Vector3(hit.point.x, hit.point.y, hit.point.z);
                 if (-5 < (currentPosition.x - playerRef.transform.position.x) && (currentPosition.x - playerRef.transform.position.x) < 5) return;
-                linePosition = new Vector3(currentPosition.x - playerRef.transform.position.x, 0, 0);
                 if (currentIndicator == arrowIndicator)
                 {
                     Quaternion skillCanvas = Quaternion.LookRotation(currentPosition - transform.position);
-                    lineIndicator.SetPosition(1, linePosition);
                     skillCanvas.eulerAngles = new Vector3(0, skillCanvas.eulerAngles.y, 0);
                     currentIndicator.transform.rotation = Quaternion.Lerp(skillCanvas, currentIndicator.transform.rotation, 0);
                 }
