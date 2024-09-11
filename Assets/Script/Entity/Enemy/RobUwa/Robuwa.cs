@@ -40,6 +40,7 @@ namespace Sophia.Entitys
 
         private float originViewRadius;
         private NavMeshAgent nav;
+        private float HitHandlerTime = 0.3f;
 
         #endregion
 
@@ -91,6 +92,8 @@ namespace Sophia.Entitys
         {
             base.Start();
 
+            StartCoroutine(CheckOutline());
+
             Life.OnDamaged += OnEnemyHitHandler;
             Life.OnEnterDie += OnRobuwaEnterDie;
             Life.OnExitDie += OnRobuwaExitDie;
@@ -111,15 +114,6 @@ namespace Sophia.Entitys
                 nav.enabled = false;
                 transform.DOKill();
             }
-
-            if (IsOutline)
-            {
-                outline.enabled = true;
-            }
-            else
-            {
-                outline.enabled = false;
-            }
         }
 
         void FixedUpdate()
@@ -127,7 +121,29 @@ namespace Sophia.Entitys
             fsm.Driver.FixedUpdate.Invoke();
         }
 
+        #region UI
 
+        //Outline
+        private IEnumerator CheckOutline()
+        {
+            while (true)
+            {
+                if (IsOutline)
+                {
+                    outline.enabled = true;
+                }
+                else
+                {
+                    outline.enabled = false;
+                }
+                IsOutline = false;
+                yield return new WaitForSeconds(0.1f);
+            }
+        }
+
+        #endregion
+
+        #region Life
         private void OnDisable()
         {
             Life.OnDamaged -= OnEnemyHitHandler;
@@ -137,16 +153,17 @@ namespace Sophia.Entitys
 
         public void OnRobuwaEnterDie()
         {
-            Sophia.Instantiates.VisualFXObject visualFX = VisualFXObjectPool.GetObject(_dieParticleRef).Init();
-            GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
-            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Dead].PlayFunctionalActOneShotWithDuration(0.5f);
-            _audioSources[(int)E_ROBUWA_AUDIO_INDEX.Death].Play();
-
+            GetModelManager().GetAnimator().enabled = false;
             for (int i = 0; i < 4; i++)
             {
                 if (_projectileBucketManager.GetProjectileBucket(i) != null)
                     _projectileBucketManager.GetProjectileBucket(i).gameObject.SetActive(false);
             }
+
+            Sophia.Instantiates.VisualFXObject visualFX = VisualFXObjectPool.GetObject(_dieParticleRef).Init();
+            GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
+            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Dead].PlayFunctionalActOneShotWithDuration(0.5f);
+            _audioSources[(int)E_ROBUWA_AUDIO_INDEX.Death].Play();
 
             CurrentInstantiatedStage.mobGenerator.RemoveMob(this.gameObject);
         }
@@ -154,6 +171,22 @@ namespace Sophia.Entitys
         public void OnRobuwaExitDie()
         {
             Destroy(gameObject, 0.5f);
+        }
+
+        void HitStun()
+        {
+            StartCoroutine(DoHitStun());
+        }
+
+        private IEnumerator DoHitStun()
+        {
+            GetModelManager().GetAnimator().speed = 0;
+            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Damaged].PauseCurrentAffect();
+
+            yield return new WaitForSeconds(HitHandlerTime / 2);
+
+            GetModelManager().GetAnimator().speed = 1;
+            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Damaged].ResumeCurrentAffect();
         }
 
         void SetNavMeshData()
@@ -193,6 +226,8 @@ namespace Sophia.Entitys
             foreach (string t in animTriggerParamList)
                 this.GetModelManager().GetAnimator().ResetTrigger(t);
         }
+
+        #endregion
 
         void DoAttack()
         {
@@ -484,6 +519,8 @@ namespace Sophia.Entitys
         void Death_Enter()
         {
             //Debug.Log("Death_Enter");
+            Die();
+
             List<Sophia.Instantiates.ItemObject> itemObjects;
             itemObjects = GetComponent<Sophia.Instantiates.GachaComponent>().InstantiateReward();
 
@@ -492,7 +529,6 @@ namespace Sophia.Entitys
                 if (itemObject == null) continue;
                 itemObject.SetTriggerTime(1f).SetTweenSequence(SetSequnce(itemObject)).Activate();
             }
-            Die();
         }
 
         #endregion
@@ -564,7 +600,8 @@ namespace Sophia.Entitys
         public void OnEnemyHitHandler(DamageInfo damageInfo)
         {
             _audioSources[(int)E_ROBUWA_AUDIO_INDEX.Hit].Play();
-            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Damaged].PlayFunctionalActOneShotWithDuration(0.3f);
+            HitStun();
+            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Damaged].PlayFunctionalActOneShotWithDuration(HitHandlerTime);
             GameManager.Instance.NewFeatureGlobalEvent.EnemyHit.PerformStartFunctionals(ref GlobalHelper.NullRef);
         }
 

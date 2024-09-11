@@ -8,6 +8,7 @@ using UnityEngine.AI;
 
 namespace Sophia.Entitys
 {
+    using System.Collections;
     using Sophia.Composite;
     using Sophia.Composite.RenderModels;
     using Sophia.DataSystem;
@@ -53,6 +54,7 @@ namespace Sophia.Entitys
         protected Vector3 wanderPosition;
         protected bool IsWandering = false;
         protected float originViewRadius;
+        protected float HitHandlerTime;
         #endregion
         protected enum States
         {
@@ -98,6 +100,8 @@ namespace Sophia.Entitys
         {
             base.Start();
 
+            StartCoroutine(CheckOutline());
+
             Life.OnDamaged += OnRaptorHit;
             Life.OnEnterDie += OnRaptorEnterDie;
             Life.OnExitDie += OnRaptorExitDie;
@@ -116,15 +120,6 @@ namespace Sophia.Entitys
                 _nav.enabled = false;
                 transform.DOKill();
             }
-
-            if (IsOutline)
-            {
-                outline.enabled = true;
-            }
-            else
-            {
-                outline.enabled = false;
-            }
         }
 
         protected virtual void FixedUpdate()
@@ -132,11 +127,51 @@ namespace Sophia.Entitys
             fsm.Driver.FixedUpdate.Invoke();
         }
 
+        #region UI
+
+        //Outline
+        private IEnumerator CheckOutline()
+        {
+            while (true)
+            {
+                if (IsOutline)
+                {
+                    outline.enabled = true;
+                }
+                else
+                {
+                    outline.enabled = false;
+                }
+                IsOutline = false;
+                yield return new WaitForSeconds(0.1f);
+            }
+        }
+
+        #endregion
+
+        #region Life
+
         private void OnDisable()
         {
             Life.OnDamaged -= OnRaptorHit;
             Life.OnEnterDie -= OnRaptorEnterDie;
             Life.OnExitDie -= OnRaptorExitDie;
+        }
+
+        void HitStun()
+        {
+            StartCoroutine(DoHitStun());
+        }
+
+        private IEnumerator DoHitStun()
+        {
+            GetModelManager().GetAnimator().speed = 0;
+            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Damaged].PauseCurrentAffect();
+
+            yield return new WaitForSeconds(HitHandlerTime / 2);
+
+            GetModelManager().GetAnimator().speed = 1;
+            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Damaged].ResumeCurrentAffect();
         }
 
         protected void InitAnimParamList()
@@ -165,6 +200,8 @@ namespace Sophia.Entitys
             foreach (string t in animTriggerParamList)
                 this.GetModelManager().GetAnimator().ResetTrigger(t);
         }
+
+        #endregion
 
         #region Attack
         protected void DoAttack()
@@ -211,8 +248,9 @@ namespace Sophia.Entitys
         public void OnRaptorHit(DamageInfo damageInfo)
         {
             _audioSources[(int)E_RAPTOR_AUDIO_INDEX.Hit].Play();
+            HitStun();
             GetModelManager().GetAnimator().SetTrigger("DoHit");
-            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Damaged].PlayFunctionalActOneShotWithDuration(0.3f);
+            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Damaged].PlayFunctionalActOneShotWithDuration(HitHandlerTime);
             GameManager.Instance.NewFeatureGlobalEvent.EnemyHit.PerformStartFunctionals(ref GlobalHelper.NullRef);
         }
 

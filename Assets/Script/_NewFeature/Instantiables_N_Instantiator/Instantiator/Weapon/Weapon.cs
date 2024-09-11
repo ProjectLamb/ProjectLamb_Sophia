@@ -197,7 +197,7 @@ namespace Sophia.Instantiates
                             .SetProjectileDamageInfoByWaepon(player.GetExtras<DamageInfo>(E_FUNCTIONAL_EXTRAS_TYPE.WeaponUse))
                             .SetOnProjectileTriggerdEvent(() =>
                             {
-                                GameManager.Instance.GlobalEvent.HandleTimeSlow(1.1f, 0.25f);
+                                //GameManager.Instance.GlobalEvent.HandleTimeSlow(1.1f, 0.25f);
                                 GameManager.Instance.CameraController.FastZoomIn(1, 0.15f);
                             })
                             .Activate();
@@ -219,14 +219,14 @@ namespace Sophia.Instantiates
                 case 1:
                     useProjectile.SetOnProjectileTriggerdEvent(() =>
                     {
-                        GameManager.Instance.GlobalEvent.HandleTimeSlow(0.9f, 0.25f);
+                        //GameManager.Instance.GlobalEvent.HandleTimeSlow(0.9f, 0.25f);
                         GameManager.Instance.CameraController.FastZoomIn(1, 0.15f);
                     });
                     break;
                 case 2:
                     useProjectile.SetOnProjectileTriggerdEvent(() =>
                     {
-                        GameManager.Instance.GlobalEvent.HandleTimeSlow(0.5f, 0.3f);
+                        GameManager.Instance.GlobalEvent.HandleTimeSlow(0.5f, 0.3f, 2);
                         GameManager.Instance.CameraController.FastZoomIn(2, 0.3f);
                     });
                     break;

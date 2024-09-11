@@ -551,7 +551,7 @@ namespace Sophia.Instantiates.Skills
                                 .SetAffectType(projectileInstantiateData._AffectType)
                                 .SetIntervalData(in projectileInstantiateData._intervalData)
                                 .Activate();
-                DashAtomics.Invoke();
+                DashAtomics.InvokeMousePoint();
             }
 
         }
@@ -756,7 +756,7 @@ namespace Sophia.Instantiates.Skills
                                 .SetAffectType(projectileInstantiateData._AffectType)
                                 .SetIntervalData(in projectileInstantiateData._intervalData)
                                 .Activate();
-                DashAtomics.Invoke();
+                DashAtomics.InvokeMousePoint();
             }
 
         }
