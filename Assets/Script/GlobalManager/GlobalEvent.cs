@@ -23,6 +23,7 @@ public class GlobalEvent : MonoBehaviour
     public List<UnityAction> OnEnemyHitEvent;
     public List<UnityAction<Stage>> OnStageClear;
     public List<UnityAction<Stage, Stage>> OnStageEnter;
+    public TimeScaleEventHandler currentTimeScaleEventHandler;
 
     private void Awake()
     {
@@ -37,6 +38,8 @@ public class GlobalEvent : MonoBehaviour
         {
             { gameObject.name, false }
         };
+
+        currentTimeScaleEventHandler = null;
     }
 
     private void OnEnable()
@@ -63,6 +66,21 @@ public class GlobalEvent : MonoBehaviour
     public const float PLAY_SCALE = 1f;
     public const float PAUSE_SCALE = 0;
 
+    public class TimeScaleEventHandler
+    {
+        public Tween currentTween;
+        private float basetime;
+        public float BaseTime { get; set; }
+        private int priority;
+        public int Priority { get; set; }
+        public TimeScaleEventHandler(Tween tween, float baseTime, int priority)
+        {
+            currentTween = tween;
+            this.basetime = baseTime;
+            this.priority = priority;
+        }
+    }
+
     public bool IsGamePaused
     {
         get
@@ -82,6 +100,9 @@ public class GlobalEvent : MonoBehaviour
 
     public void Pause(string handler)
     {
+        if (currentTimeScaleEventHandler != null)
+            DOTween.Kill(currentTimeScaleEventHandler.currentTween);
+
         bool PrevTimeState = IsGamePaused;
         Debug.Log("TryPause");
         SetTimeStateByHandlersString(handler, true);
@@ -121,15 +142,32 @@ public class GlobalEvent : MonoBehaviour
 
     bool mIsSlowed = false;
 
-    public void HandleTimeSlow(float basetime, float duratetime)
+    public void HandleTimeSlow(float basetime, float duratetime, int priority)
     {
-        if (mIsSlowed) return;
+        if (mIsSlowed)
+        {
+            if (currentTimeScaleEventHandler != null && currentTimeScaleEventHandler.Priority > 1)
+            {
+                currentTimeScaleEventHandler.currentTween.Kill();
+            }
+            else
+                return;
+        }
         Debug.Log("StartSlowed");
 
         GameTimeScale = basetime;
-        DOTween.To(() => GameTimeScale, x => GameTimeScale = x, 1, duratetime).SetEase(Ease.InQuad);
+        Tween tween = DOTween.To(() => GameTimeScale, x => GameTimeScale = x, 1, duratetime).SetEase(Ease.InQuad);
+        tween.onComplete += OnCompleteHandleTimeSlow;
+
+        currentTimeScaleEventHandler = new TimeScaleEventHandler(tween, basetime, priority);
+        mIsSlowed = true;
 
         //StartCoroutine(SlowTimeCoroutine());
+    }
+
+    private void OnCompleteHandleTimeSlow()
+    {
+        mIsSlowed = false;
     }
 
     //DotTween 사용해서 증가 커브 설정하기

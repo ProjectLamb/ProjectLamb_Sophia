@@ -45,7 +45,7 @@ namespace Sophia.Entitys
         private bool IsPlayerCatch = false;
         private int rushRange = 75;
         private int rushDistance = 200;
-        private int rushStopDistance = 15;
+        private int rushStopDistance = 30;
         private float rushTime = 2.5f;
         private float currentRushTime;
         Vector3 rushDestination;

@@ -38,6 +38,7 @@ namespace Sophia.Entitys
 
         private float originViewRadius;
         private NavMeshAgent nav;
+        private float HitHandlerTime = 0.3f;
 
         ParticleSystem.MainModule _leftRocketParticleMain;
         ParticleSystem.MainModule _rightRocketParticleMain;
@@ -112,6 +113,8 @@ namespace Sophia.Entitys
         {
             base.Start();
 
+            StartCoroutine(CheckOutline());
+
             Life.OnDamaged += OnMolluHit;
             Life.OnEnterDie += OnMolluEnterDie;
             Life.OnExitDie += OnMolluExitDie;
@@ -130,15 +133,6 @@ namespace Sophia.Entitys
             {
                 nav.enabled = false;
                 transform.DOKill();
-            }
-
-            if(IsOutline)
-            {
-                outline.enabled = true;
-            }
-            else
-            {
-                outline.enabled = false;
             }
         }
 
@@ -174,10 +168,35 @@ namespace Sophia.Entitys
             fsm.Driver.FixedUpdate.Invoke();
         }
 
+        #region UI
+
+        //Outline
+        private IEnumerator CheckOutline()
+        {
+            while (true)
+            {
+                if (IsOutline)
+                {
+                    outline.enabled = true;
+                }
+                else
+                {
+                    outline.enabled = false;
+                }
+                IsOutline = false;
+                yield return new WaitForSeconds(0.1f);
+            }
+        }
+
+        #endregion
+
+        #region Life
+
         public void OnMolluHit(DamageInfo damageInfo)
         {
             // GetModelManager().GetAnimator().SetTrigger("DoHit");
-            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Damaged].PlayFunctionalActOneShotWithDuration(0.3f);
+            HitStun();
+            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Damaged].PlayFunctionalActOneShotWithDuration(HitHandlerTime);
             GameManager.Instance.NewFeatureGlobalEvent.EnemyHit.PerformStartFunctionals(ref GlobalHelper.NullRef);
         }
 
@@ -201,6 +220,22 @@ namespace Sophia.Entitys
         {
             GameManager.Instance.NewFeatureGlobalEvent.EnemyDie.PerformExitFunctionals(ref GlobalHelper.NullRef);
             Destroy(gameObject, 0.5f);
+        }
+
+        void HitStun()
+        {
+            StartCoroutine(DoHitStun());
+        }
+
+        private IEnumerator DoHitStun()
+        {
+            GetModelManager().GetAnimator().speed = 0;
+            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Damaged].PauseCurrentAffect();
+
+            yield return new WaitForSeconds(HitHandlerTime / 2);
+
+            GetModelManager().GetAnimator().speed = 1;
+            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Damaged].ResumeCurrentAffect();
         }
 
         void SetNavMeshData()
@@ -244,6 +279,8 @@ namespace Sophia.Entitys
             foreach (string t in animTriggerParamList)
                 GetModelManager().GetAnimator().ResetTrigger(t);
         }
+
+        #endregion
 
         void DoAttack()
         {
@@ -380,7 +417,8 @@ namespace Sophia.Entitys
 
                 if (dist <= AttackRange)
                     fsm.ChangeState(States.Attack);
-                else{
+                else
+                {
                     fsm.ChangeState(States.Move);
                 }
             }
@@ -412,7 +450,7 @@ namespace Sophia.Entitys
         void Move_Update()
         {
             float dist = Vector3.Distance(transform.position, _objectiveEntity.transform.position);
-            
+
             if (recognize.GetCurrentRecogState() == E_RECOG_TYPE.Lose)
                 fsm.ChangeState(States.Idle);
             else if (dist <= AttackRange)

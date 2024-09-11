@@ -49,22 +49,34 @@ namespace Sophia.Entitys
         {
             base.Start();
 
+            StartCoroutine(CheckOutline());
+
             Life.OnDamaged += OnPropHit;
             Life.OnEnterDie += OnPropEnterDie;
             Life.OnExitDie += OnPropExitDie;
         }
 
-        void Update()
+        #region UI
+
+        //Outline
+        private IEnumerator CheckOutline()
         {
-            if (IsOutline)
+            while (true)
             {
-                outline.enabled = true;
-            }
-            else
-            {
-                outline.enabled = false;
+                if (IsOutline)
+                {
+                    outline.enabled = true;
+                }
+                else
+                {
+                    outline.enabled = false;
+                }
+                IsOutline = false;
+                yield return new WaitForSeconds(0.1f);
             }
         }
+
+        #endregion
 
         public void OnPropHit(DamageInfo damageInfo)
         {
