@@ -86,8 +86,6 @@ namespace Sophia.Entitys
         private void Update()
         {
             // if (GameManager.Instance.GlobalEvent.IsGamePaused) return;
-            //playerRef.AimAssist();
-            //playerRef.CheckAttack();
 
             if (Input.GetKeyDown(KeyCode.Tab)) modelDebuggerRef.ToggleMenu();
 
@@ -104,13 +102,13 @@ namespace Sophia.Entitys
                 }
                 // 키가 눌려있을때에는 Indicate 함수를 통해 사거리를 띄우고,
                 // 키가 떼어졌을때에는 기존의 Use 함수를 사용하여 스킬을 사용하도록 하자.
-                if (Input.GetKeyDown(KeyCode.Q)) { playerRef.Indicate(KeyCode.Q); }
-                if (Input.GetKeyDown(KeyCode.E)) { playerRef.Indicate(KeyCode.E); }
-                if (Input.GetKeyDown(KeyCode.R)) { playerRef.Indicate(KeyCode.R); }
+                if (Input.GetKeyDown(KeyCode.Q)) { playerRef.Indicate(KeyCode.Q);}
+                if (Input.GetKeyDown(KeyCode.E)) { playerRef.Indicate(KeyCode.E);}
+                if (Input.GetKeyDown(KeyCode.R)) { playerRef.Indicate(KeyCode.R);}
 
-                if (Input.GetKeyUp(KeyCode.Q)) { playerRef.Use(KeyCode.Q); skillIndicator.IsIndicate = false; }
-                if (Input.GetKeyUp(KeyCode.E)) { playerRef.Use(KeyCode.E); skillIndicator.IsIndicate = false; }
-                if (Input.GetKeyUp(KeyCode.R)) { playerRef.Use(KeyCode.R); skillIndicator.IsIndicate = false; }
+                if (Input.GetKeyUp(KeyCode.Q)) { playerRef.Use(KeyCode.Q); skillIndicator.IsIndicate = false;}
+                if (Input.GetKeyUp(KeyCode.E)) { playerRef.Use(KeyCode.E); skillIndicator.IsIndicate = false;}
+                if (Input.GetKeyUp(KeyCode.R)) { playerRef.Use(KeyCode.R); skillIndicator.IsIndicate = false;}
             }
         }
         public static void DisallowInput(string handler)

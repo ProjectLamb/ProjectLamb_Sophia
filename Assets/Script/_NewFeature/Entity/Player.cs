@@ -305,7 +305,6 @@ namespace Sophia.Entitys
             {
                 if (!GetModelManager().GetAnimator().GetBool("canNextAttack"))
                     return;
-                // if(Sophia.PlayerAttackAnim.canExitAttack || Sophia.PlayerAttackAnim.resetAtkTrigger) return;
                 await Movement.TurningWithAction(transform, Input.mousePosition, () => GetModelManager().GetAnimator().SetTrigger("DoAttack"), true);
 
             }
@@ -352,8 +351,8 @@ namespace Sophia.Entitys
             string indicateSkillName = this._skillManager.GetSkillByKey(key)?.GetName().Trim(); // 스킬 이름
             if ((this._skillManager.GetSkillByKey(key)?.GetName() != null) && (_skillManager.GetSkillByKey(key).GetCoolTimeComposite().GetIsReadyToUse()))
             {
+                // if (this._skillManager.GetSkillByKey(key).GetIsSkillIndicate()) // 이전 if문 작동안해서 주석처리 
                 //쿨타임 아닐때
-                // if (this._skillManager.GetSkillByKey(key).GetIsSkillIndicate()) // 이전 if문 작동안해서 주석처리
                 if (!skillIndicator.IsIndicate)
                 {
                     skillIndicator.IsIndicate = true;
