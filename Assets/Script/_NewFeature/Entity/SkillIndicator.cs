@@ -16,11 +16,13 @@ namespace Sophia.Entitys
         #region public
         public Player playerRef;
         public Vector3 currentPosition;
-        public Vector3 linePosition = new Vector3(0, 0, 0);
+        public Vector3 arrowPosition;
+
         public int skillNumber = 0;
         public string currentSkillName = null;
         public bool IsIndicate;
         public Canvas currentIndicator;
+        public Canvas playerArrow;
         public LayerMask indicatorMask;
         public const float CamRayLength = 500f;
         #endregion
@@ -57,6 +59,7 @@ namespace Sophia.Entitys
             ray = GameManager.Instance.PlayerGameObject.GetComponent<PlayerController>().ray;
             if (!IsIndicate)
             {
+                playerArrow.enabled = true;
                 currentIndicator.enabled = false;
             }
             else if (IsIndicate)
@@ -105,7 +108,7 @@ namespace Sophia.Entitys
             if (Physics.Raycast(ray, out hit, CamRayLength)) // 공격 도중에는 방향 전환 금지
             {
                 currentPosition = new Vector3(hit.point.x, hit.point.y, hit.point.z);
-
+                if (-5 < (currentPosition.x - playerRef.transform.position.x) && (currentPosition.x - playerRef.transform.position.x) < 5) return;
                 if (currentIndicator == arrowIndicator)
                 {
                     Quaternion skillCanvas = Quaternion.LookRotation(currentPosition - transform.position);
