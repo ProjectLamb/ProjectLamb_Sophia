@@ -232,6 +232,16 @@ namespace Sophia.Composite.RenderModels
                 .OnComplete(RevertAffectMaterial);
             currentSequnce.Play();
         }
+
+        public void PauseCurrentAffect()
+        {
+            DOTween.Pause(currentSequnce);
+        }
+
+        public void ResumeCurrentAffect()
+        {
+            DOTween.PlayForward(currentSequnce);
+        }
     }
 }
 

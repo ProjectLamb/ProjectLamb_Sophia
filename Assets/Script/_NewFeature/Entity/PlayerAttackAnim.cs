@@ -31,19 +31,16 @@ namespace Sophia
         }
         void AttackProjectile1()
         {
-            GameManager.Instance.GlobalEvent.HandleTimeSlow(0.9f, 0.25f);
             weapon.CurrentProjectileIndex = 0;
             weapon.UseByIndex(player);
         }
         void AttackProjectile2()
         {
-            GameManager.Instance.GlobalEvent.HandleTimeSlow(0.9f, 0.25f);
             weapon.CurrentProjectileIndex = 1;
             weapon.UseByIndex(player);
         }
         void AttackProjectile3()
         {
-            GameManager.Instance.GlobalEvent.HandleTimeSlow(0.5f, 0.3f);
             weapon.CurrentProjectileIndex = 2;
             weapon.UseByIndex(player);
         }

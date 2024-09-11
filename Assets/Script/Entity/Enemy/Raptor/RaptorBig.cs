@@ -19,7 +19,7 @@ namespace Sophia.Entitys
 
         [Header("Raptor Settings")]
         [SerializeField] private float EscapeRange;
-        [SerializeField] private int spawnRaptorAmount = 3;
+        [SerializeField] private int spawnRaptorAmount = 2;
         [SerializeField] private SerialAffectorData serialAffectorData;
         #endregion
 
@@ -35,7 +35,7 @@ namespace Sophia.Entitys
         {
             base.Awake();
             raptorSmallList = new List<RaptorSmall>();
-            EscapeRange = _fOVData.viewRadius / 2;
+            EscapeRange = _fOVData.viewRadius / 2.5f;
         }
         private bool isReadyHowling = true;
         public void SetReadyHowling() => isReadyHowling = true;
@@ -80,7 +80,10 @@ namespace Sophia.Entitys
             }
 
             if (currentRaptorCount == 0)
-                InstantiateRaptorSmall(random.Next(spawnRaptorAmount - 1, spawnRaptorAmount + 2));
+            {
+                InstantiateRaptorSmall(spawnRaptorAmount);
+                //InstantiateRaptorSmall(random.Next(spawnRaptorAmount - 1, spawnRaptorAmount + 1));
+            }
             else
             {
                 DoBuff();
@@ -211,6 +214,7 @@ namespace Sophia.Entitys
             Debug.Log("Escape_Enter");
 
             this.GetModelManager().GetAnimator().SetBool("IsEscape", true);
+            _nav.speed = MoveSpeed.GetValueForce() / 1.5f;
             SetMoveState(true);
         }
         void Escape_Update()

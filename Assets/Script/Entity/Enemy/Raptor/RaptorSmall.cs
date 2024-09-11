@@ -65,7 +65,7 @@ namespace Sophia.Entitys
         public void SetReadyRush()
         {
             IsRush = true;
-            gameObject.layer = LayerMask.NameToLayer("Dash");
+            gameObject.layer = LayerMask.NameToLayer("DashEnemy");
         }
         public void SetUnReadyRush()
         {
