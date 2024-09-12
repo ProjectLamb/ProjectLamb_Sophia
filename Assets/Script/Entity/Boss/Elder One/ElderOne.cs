@@ -314,7 +314,7 @@ namespace Sophia.Entitys
         void OnElderOneExitDie()
         {
             Invoke("DisableModel", 0.5f);
-            //Destroy(gameObject, 0.5f);
+            Destroy(gameObject, 0.75f);
         }
 
         public void PlayFootStepSound()

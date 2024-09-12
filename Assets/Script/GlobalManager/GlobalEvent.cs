@@ -100,9 +100,7 @@ public class GlobalEvent : MonoBehaviour
 
     public void Pause(string handler)
     {
-        if (currentTimeScaleEventHandler != null)
-            DOTween.Kill(currentTimeScaleEventHandler.currentTween);
-
+        DOTween.PauseAll();
         bool PrevTimeState = IsGamePaused;
         Debug.Log("TryPause");
         SetTimeStateByHandlersString(handler, true);
@@ -124,6 +122,7 @@ public class GlobalEvent : MonoBehaviour
             GameTimeScale = PLAY_SCALE;
             Debug.Log("Time Changed");
         }
+        DOTween.PlayAll();
     }
 
     public void ResetForce()
@@ -139,7 +138,6 @@ public class GlobalEvent : MonoBehaviour
 
     public float TimeHoldingDuration;
     float mCurrentTimeScale = 1f;
-
     bool mIsSlowed = false;
 
     public void HandleTimeSlow(float basetime, float duratetime, int priority)
@@ -148,7 +146,7 @@ public class GlobalEvent : MonoBehaviour
         {
             if (currentTimeScaleEventHandler != null && currentTimeScaleEventHandler.Priority > 1)
             {
-                currentTimeScaleEventHandler.currentTween.Kill();
+                DOTween.Kill(currentTimeScaleEventHandler.currentTween);
             }
             else
                 return;
@@ -156,8 +154,7 @@ public class GlobalEvent : MonoBehaviour
         Debug.Log("StartSlowed");
 
         GameTimeScale = basetime;
-        Tween tween = DOTween.To(() => GameTimeScale, x => GameTimeScale = x, 1, duratetime).SetEase(Ease.InQuad);
-        tween.onComplete += OnCompleteHandleTimeSlow;
+        Tween tween = DOTween.To(() => GameTimeScale, x => GameTimeScale = x, 1, duratetime).OnComplete(() => mIsSlowed = false).SetEase(Ease.InQuad);
 
         currentTimeScaleEventHandler = new TimeScaleEventHandler(tween, basetime, priority);
         mIsSlowed = true;

@@ -138,7 +138,7 @@ namespace Sophia.Entitys
 
             Life.SetDependUI(InGameScreenUI.Instance._playerHealthBarUI);
             Life.OnDamaged += InGameScreenUI.Instance._hitCanvasShadeScript.Invoke;
-            Life.OnHpUpdated += SaveCurrentHealth;
+            Life.OnHpUpdated += OnHealthUpdated;
 
             // Hit Audio 
             Life.OnHit += HitSource.Play;
@@ -208,9 +208,20 @@ namespace Sophia.Entitys
             return true;
         }
 
-        private void SaveCurrentHealth(float input)
+        private void OnHealthUpdated(float input)
         {
             DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.Health = Life.CurrentHealth;
+            if (Life.CurrentHealth <= Life.MaxHp / 100 * 20)
+            {
+                if (InGameScreenUI.Instance._lowHPCanvasShadeScript.IsRepeating)
+                    return;
+                    
+                InGameScreenUI.Instance._lowHPCanvasShadeScript.Repeat();
+            }
+            else
+            {
+                InGameScreenUI.Instance._lowHPCanvasShadeScript.UnRepeat();
+            }
         }
 
         #endregion
@@ -305,6 +316,7 @@ namespace Sophia.Entitys
             {
                 if (!GetModelManager().GetAnimator().GetBool("canNextAttack"))
                     return;
+                // if(Sophia.PlayerAttackAnim.canExitAttack || Sophia.PlayerAttackAnim.resetAtkTrigger) return;
                 await Movement.TurningWithAction(transform, Input.mousePosition, () => GetModelManager().GetAnimator().SetTrigger("DoAttack"), true);
 
             }
@@ -351,8 +363,8 @@ namespace Sophia.Entitys
             string indicateSkillName = this._skillManager.GetSkillByKey(key)?.GetName().Trim(); // 스킬 이름
             if ((this._skillManager.GetSkillByKey(key)?.GetName() != null) && (_skillManager.GetSkillByKey(key).GetCoolTimeComposite().GetIsReadyToUse()))
             {
-                // if (this._skillManager.GetSkillByKey(key).GetIsSkillIndicate()) // 이전 if문 작동안해서 주석처리 
                 //쿨타임 아닐때
+                // if (this._skillManager.GetSkillByKey(key).GetIsSkillIndicate()) // 이전 if문 작동안해서 주석처리
                 if (!skillIndicator.IsIndicate)
                 {
                     skillIndicator.IsIndicate = true;
