@@ -24,7 +24,7 @@ namespace Sophia.Entitys
         public Canvas currentIndicator;
         public Canvas playerArrow;
         public LayerMask indicatorMask;
-        public const float CamRayLength = 500f;
+        public const float CamRayLength = 300f;
         #endregion
 
         #region private
@@ -39,7 +39,7 @@ namespace Sophia.Entitys
 
         void Awake()
         {
-            indicatorMask = LayerMask.GetMask("Wall","Map","Entity");
+            indicatorMask = LayerMask.GetMask("Wall", "Map");
         }
 
         // Start is called before the first frame update
@@ -52,10 +52,12 @@ namespace Sophia.Entitys
         // Update is called once per frame
         void Update()
         {
+
         }
 
         void FixedUpdate()
         {
+            MouseArrow();
             ray = GameManager.Instance.PlayerGameObject.GetComponent<PlayerController>().ray;
             if (!IsIndicate)
             {
@@ -64,8 +66,12 @@ namespace Sophia.Entitys
             }
             else if (IsIndicate)
             {
+                playerArrow.enabled = false;
                 currentIndicator.enabled = true;
-                if (currentIndicator == arrowIndicator) turning();
+                if (currentIndicator == arrowIndicator) 
+                {
+                    Turning();
+                }
             }
         }
 
@@ -101,11 +107,14 @@ namespace Sophia.Entitys
                 currentIndicator = arrowIndicator;
             }
             else
+            {
                 IsIndicate = false;
+                return;
+            }
         }
-        private void turning()
+        private void Turning()
         {
-            if (Physics.Raycast(ray, out hit, CamRayLength)) // 공격 도중에는 방향 전환 금지
+            if (Physics.Raycast(ray, out hit, CamRayLength, indicatorMask)) // 공격 도중에는 방향 전환 금지
             {
                 currentPosition = new Vector3(hit.point.x, hit.point.y, hit.point.z);
                 if (-5 < (currentPosition.x - playerRef.transform.position.x) && (currentPosition.x - playerRef.transform.position.x) < 5) return;
@@ -115,6 +124,18 @@ namespace Sophia.Entitys
                     skillCanvas.eulerAngles = new Vector3(0, skillCanvas.eulerAngles.y, 0);
                     currentIndicator.transform.rotation = Quaternion.Lerp(skillCanvas, currentIndicator.transform.rotation, 0);
                 }
+            }
+        }
+
+        private void MouseArrow()
+        {
+            if (Physics.Raycast(ray, out hit, CamRayLength)) // 공격 도중에는 방향 전환 금지
+            {
+                arrowPosition = new Vector3(hit.point.x, hit.point.y, hit.point.z);
+                if (-5 < (arrowPosition.x - playerRef.transform.position.x) && (arrowPosition.x - playerRef.transform.position.x) < 5) return;
+                Quaternion arrowCanvas = Quaternion.LookRotation(arrowPosition - transform.position);
+                arrowCanvas.eulerAngles = new Vector3(0, arrowCanvas.eulerAngles.y, 0);
+                playerArrow.transform.rotation = Quaternion.Lerp(arrowCanvas, playerArrow.transform.rotation, 0);
             }
         }
     }

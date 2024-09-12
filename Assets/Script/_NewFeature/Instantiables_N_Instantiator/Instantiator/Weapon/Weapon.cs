@@ -226,7 +226,7 @@ namespace Sophia.Instantiates
                 case 2:
                     useProjectile.SetOnProjectileTriggerdEvent(() =>
                     {
-                        GameManager.Instance.GlobalEvent.HandleTimeSlow(0.5f, 0.3f, 2);
+                        GameManager.Instance.GlobalEvent.HandleTimeSlow(0.75f, 0.3f, 2);
                         GameManager.Instance.CameraController.FastZoomIn(2, 0.3f);
                     });
                     break;

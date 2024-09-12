@@ -138,7 +138,7 @@ namespace Sophia.Entitys
 
             Life.SetDependUI(InGameScreenUI.Instance._playerHealthBarUI);
             Life.OnDamaged += InGameScreenUI.Instance._hitCanvasShadeScript.Invoke;
-            Life.OnHpUpdated += SaveCurrentHealth;
+            Life.OnHpUpdated += OnHealthUpdated;
 
             // Hit Audio 
             Life.OnHit += HitSource.Play;
@@ -208,9 +208,20 @@ namespace Sophia.Entitys
             return true;
         }
 
-        private void SaveCurrentHealth(float input)
+        private void OnHealthUpdated(float input)
         {
             DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.Health = Life.CurrentHealth;
+            if (Life.CurrentHealth <= Life.MaxHp / 100 * 20)
+            {
+                if (InGameScreenUI.Instance._lowHPCanvasShadeScript.IsRepeating)
+                    return;
+                    
+                InGameScreenUI.Instance._lowHPCanvasShadeScript.Repeat();
+            }
+            else
+            {
+                InGameScreenUI.Instance._lowHPCanvasShadeScript.UnRepeat();
+            }
         }
 
         #endregion
