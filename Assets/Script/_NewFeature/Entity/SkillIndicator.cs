@@ -118,6 +118,7 @@ namespace Sophia.Entitys
             {
                 currentPosition = new Vector3(hit.point.x, hit.point.y, hit.point.z);
                 if (-5 < (currentPosition.x - playerRef.transform.position.x) && (currentPosition.x - playerRef.transform.position.x) < 5) return;
+
                 if (currentIndicator == arrowIndicator)
                 {
                     Quaternion skillCanvas = Quaternion.LookRotation(currentPosition - transform.position);
