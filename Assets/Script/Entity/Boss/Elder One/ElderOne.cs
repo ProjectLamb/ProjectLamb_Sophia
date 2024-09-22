@@ -97,6 +97,7 @@ namespace Sophia.Entitys
             _objectiveEntity = GameManager.Instance.PlayerGameObject.GetComponent<Entitys.Entity>();
 
             RushStopMask = LayerMask.GetMask("Wall");
+            TryGetComponent<Outline>(out outline);
 
             fsm = new StateMachine<States>(this);
             fsm.ChangeState(States.Init);
@@ -105,6 +106,8 @@ namespace Sophia.Entitys
         protected override void Start()
         {
             base.Start();
+
+            StartCoroutine(CheckOutline());
 
             Life.OnDamaged += OnEnemyHitHandler;
             Life.OnEnterDie += OnElderOneEnterDie;
@@ -274,6 +277,28 @@ namespace Sophia.Entitys
                 }
             }
         }
+
+        #region UI
+
+        //Outline
+        private IEnumerator CheckOutline()
+        {
+            while (true)
+            {
+                if (IsOutline)
+                {
+                    outline.enabled = true;
+                }
+                else
+                {
+                    outline.enabled = false;
+                }
+                IsOutline = false;
+                yield return new WaitForSeconds(0.1f);
+            }
+        }
+
+        #endregion
 
         void OnElderOneEnterDie()
         {

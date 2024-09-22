@@ -12,7 +12,7 @@ namespace Sophia.Entitys
         public GameObject[] Boss;
         public GameObject ElderOne;
         public List<GameObject> CurrentMobList;
-        public int InitMobAmount = 3;
+        public int InitMobAmount = 5;
 
         [SerializeField]
         private List<float> spawnRateList;
