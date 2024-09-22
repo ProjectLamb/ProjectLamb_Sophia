@@ -212,7 +212,7 @@ public class VideoController : MonoBehaviour
         Color fadeColor = image.color;
         fadeColor.a = 0;
 
-        while (fadeColor.a < 1f)
+        while (fadeColor.a < 0.7f)
         {
             fadeColor.a += 0.03f;
             image.color = fadeColor;
@@ -225,7 +225,7 @@ public class VideoController : MonoBehaviour
     IEnumerator panelFadeOut(Image image)
     {
         Color fadeColor = image.color;
-        fadeColor.a = 1;
+        fadeColor.a = 0.7f;
 
         while (fadeColor.a > 0f)
         {

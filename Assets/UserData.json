@@ -1,9 +1,9 @@
 {
-  "IsNewFile": true,
-  "IsTutorial": true,
+  "IsNewFile": false,
+  "IsTutorial": false,
   "CurrentChapterNum": 1,
   "CutSceneSaveData": {
-    "IsSkipStory": false
+    "IsSkipStory": true
   },
   "ChapterClearSaveData": {
     "IsChapter1Clear": false
