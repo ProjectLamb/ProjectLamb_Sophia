@@ -1,9 +1,9 @@
 {
   "IsNewFile": true,
-  "IsTutorial": false,
+  "IsTutorial": true,
   "CurrentChapterNum": 1,
   "CutSceneSaveData": {
-    "IsSkipStory": true
+    "IsSkipStory": false
   },
   "ChapterClearSaveData": {
     "IsChapter1Clear": false
@@ -11,7 +11,7 @@
   "PlayerData": {
     "Health": 100.0,
     "Gear": 30,
-    "IsDied": true,
+    "IsDied": false,
     "EquipmentDataList": [],
     "SkillDataDic": {
       "Q": null,
