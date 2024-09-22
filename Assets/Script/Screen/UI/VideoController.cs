@@ -26,7 +26,9 @@ public class VideoController : MonoBehaviour
     [SerializeField] private bool isManualFadeOff;
     [SerializeField] private int manualIndex;
     [SerializeField] public Canvas skipCanvas;
+    [SerializeField] public Canvas pressToSkip;
     [SerializeField] public Image skipBar;
+    [SerializeField] public Image manualPanel;
     public void StartVideo(E_VIDEO_NAME video)
     {
         isVideoStart = true;
@@ -34,8 +36,11 @@ public class VideoController : MonoBehaviour
         isManualFadeOn = false;
         isManualFadeOff = true;
         manualIndex = -1;
+        pressToSkip.enabled = true;
+
         image = videoList[(int)video].transform.GetChild(0).GetComponent<RawImage>();
         vid = videoList[(int)video].transform.GetChild(1).GetComponent<VideoPlayer>();
+
         currentVideo = video;
         fMODAudioSource = videoList[(int)video].transform.GetChild(1).GetComponent<FMODAudioSource>();
         vid.loopPointReached += VideoEnd;
@@ -63,12 +68,17 @@ public class VideoController : MonoBehaviour
             if (Input.GetKey(KeyCode.Space) && isVideoStart)
             {
                 skipCanvas.enabled = true;
+                pressToSkip.enabled = false;
                 skipBar.fillAmount += 0.03f;
             }
             else if (Input.GetKeyUp(KeyCode.Space)) // 스페이스바를 뗐을때
             {
                 skipBar.fillAmount = 0;
-                if (skipBar.fillAmount == 0) skipCanvas.enabled = false;
+                if (skipBar.fillAmount == 0) 
+                {
+                    skipCanvas.enabled = false;
+                    pressToSkip.enabled = true;
+                }
             }
             if (skipBar.fillAmount >= 1) // 스킵버튼이 꾹 눌러지면
             {
@@ -76,6 +86,7 @@ public class VideoController : MonoBehaviour
                 isVideoStart = false;
                 isSkippable = false;
                 skipCanvas.enabled = false;
+                pressToSkip.enabled = false;
             }
             if ( (Input.GetKey(KeyCode.Space) || Input.GetMouseButton(0)) && isManualFadeOn && !isManualFadeOff) // 조작법 UI가 다 뜬 이후에 스페이스가 입력되었을 시
             {
@@ -83,7 +94,11 @@ public class VideoController : MonoBehaviour
                 isManualFadeOff = true;
                 StartCoroutine(imgFadeOut(manualList[manualIndex - 1]));
             }
-            else if (!isVideoStart) skipCanvas.enabled = false;
+            else if (!isVideoStart) 
+            {
+                skipCanvas.enabled = false;
+                pressToSkip.enabled = false;
+            }
         }
     }
 
@@ -129,6 +144,7 @@ public class VideoController : MonoBehaviour
                     {
                         StartCoroutine(imgFadeIn(manualList[0]));
                         manualIndex = 0;
+                        StartCoroutine(panelFadeIn(manualPanel));
                     }
                     isVideoStart = false;
                     skipCanvas.enabled = false;
@@ -184,9 +200,42 @@ public class VideoController : MonoBehaviour
         }
         if (manualIndex >= manualList.Length)
         {
+            StartCoroutine(panelFadeOut(manualPanel));
             StoryManager.Instance.IsTutorial = false; // 튜토리얼 종료 판정
         }
         StopCoroutine(imgFadeOut(image));
     }
+
+    IEnumerator panelFadeIn(Image image)
+    {
+        image.gameObject.SetActive(true);
+        Color fadeColor = image.color;
+        fadeColor.a = 0;
+
+        while (fadeColor.a < 0.7f)
+        {
+            fadeColor.a += 0.03f;
+            image.color = fadeColor;
+            yield return new WaitForSecondsRealtime(0.01f);
+        }
+        yield return new WaitForSecondsRealtime(1.0f);
+        StopCoroutine(panelFadeIn(image));
+    }
+
+    IEnumerator panelFadeOut(Image image)
+    {
+        Color fadeColor = image.color;
+        fadeColor.a = 0.7f;
+
+        while (fadeColor.a > 0f)
+        {
+            fadeColor.a -= 0.03f;
+            image.color = fadeColor;
+            yield return new WaitForSecondsRealtime(0.01f);
+        }
+        image.gameObject.SetActive(false);
+        StopCoroutine(panelFadeOut(image));
+    }
+
 
 }
