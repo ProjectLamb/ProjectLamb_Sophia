@@ -28,6 +28,7 @@ public class VideoController : MonoBehaviour
     [SerializeField] public Canvas skipCanvas;
     [SerializeField] public Canvas pressToSkip;
     [SerializeField] public Image skipBar;
+    [SerializeField] public Image manualPanel;
     public void StartVideo(E_VIDEO_NAME video)
     {
         isVideoStart = true;
@@ -143,6 +144,7 @@ public class VideoController : MonoBehaviour
                     {
                         StartCoroutine(imgFadeIn(manualList[0]));
                         manualIndex = 0;
+                        StartCoroutine(panelFadeIn(manualPanel));
                     }
                     isVideoStart = false;
                     skipCanvas.enabled = false;
@@ -198,9 +200,42 @@ public class VideoController : MonoBehaviour
         }
         if (manualIndex >= manualList.Length)
         {
+            StartCoroutine(panelFadeOut(manualPanel));
             StoryManager.Instance.IsTutorial = false; // 튜토리얼 종료 판정
         }
         StopCoroutine(imgFadeOut(image));
     }
+
+    IEnumerator panelFadeIn(Image image)
+    {
+        image.gameObject.SetActive(true);
+        Color fadeColor = image.color;
+        fadeColor.a = 0;
+
+        while (fadeColor.a < 1f)
+        {
+            fadeColor.a += 0.03f;
+            image.color = fadeColor;
+            yield return new WaitForSecondsRealtime(0.01f);
+        }
+        yield return new WaitForSecondsRealtime(1.0f);
+        StopCoroutine(panelFadeIn(image));
+    }
+
+    IEnumerator panelFadeOut(Image image)
+    {
+        Color fadeColor = image.color;
+        fadeColor.a = 1;
+
+        while (fadeColor.a > 0f)
+        {
+            fadeColor.a -= 0.03f;
+            image.color = fadeColor;
+            yield return new WaitForSecondsRealtime(0.01f);
+        }
+        image.gameObject.SetActive(false);
+        StopCoroutine(panelFadeOut(image));
+    }
+
 
 }
