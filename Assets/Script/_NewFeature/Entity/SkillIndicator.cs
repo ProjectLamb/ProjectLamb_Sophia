@@ -19,6 +19,7 @@ namespace Sophia.Entitys
         public Vector3 arrowPosition;
 
         public int skillNumber = 0;
+        public float rotationSpeed = 5f;
         public string currentSkillName = null;
         public bool IsIndicate;
         public Canvas currentIndicator;
@@ -68,7 +69,7 @@ namespace Sophia.Entitys
             {
                 playerArrow.enabled = false;
                 currentIndicator.enabled = true;
-                if (currentIndicator == arrowIndicator) 
+                if (currentIndicator == arrowIndicator)
                 {
                     Turning();
                 }
@@ -117,13 +118,12 @@ namespace Sophia.Entitys
             if (Physics.Raycast(ray, out hit, CamRayLength, indicatorMask)) // 공격 도중에는 방향 전환 금지
             {
                 currentPosition = new Vector3(hit.point.x, hit.point.y, hit.point.z);
-                if (-5 < (currentPosition.x - playerRef.transform.position.x) && (currentPosition.x - playerRef.transform.position.x) < 5) return;
 
                 if (currentIndicator == arrowIndicator)
                 {
                     Quaternion skillCanvas = Quaternion.LookRotation(currentPosition - transform.position);
                     skillCanvas.eulerAngles = new Vector3(0, skillCanvas.eulerAngles.y, 0);
-                    currentIndicator.transform.rotation = Quaternion.Lerp(skillCanvas, currentIndicator.transform.rotation, 0);
+                    currentIndicator.transform.rotation = Quaternion.Lerp(currentIndicator.transform.rotation, skillCanvas, Time.deltaTime * rotationSpeed);
                 }
             }
         }
@@ -133,10 +133,9 @@ namespace Sophia.Entitys
             if (Physics.Raycast(ray, out hit, CamRayLength)) // 공격 도중에는 방향 전환 금지
             {
                 arrowPosition = new Vector3(hit.point.x, hit.point.y, hit.point.z);
-                if (-5 < (arrowPosition.x - playerRef.transform.position.x) && (arrowPosition.x - playerRef.transform.position.x) < 5) return;
                 Quaternion arrowCanvas = Quaternion.LookRotation(arrowPosition - transform.position);
                 arrowCanvas.eulerAngles = new Vector3(0, arrowCanvas.eulerAngles.y, 0);
-                playerArrow.transform.rotation = Quaternion.Lerp(arrowCanvas, playerArrow.transform.rotation, 0);
+                playerArrow.transform.rotation = Quaternion.Lerp(playerArrow.transform.rotation, arrowCanvas, Time.deltaTime * rotationSpeed);
             }
         }
     }
