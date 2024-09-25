@@ -16,6 +16,7 @@ public class TextManager : MonoBehaviour
     public SpeakerImage speakerImage;
     public TextMeshProUGUI talkText;
     public TextMeshProUGUI nameText;
+    public GameObject textCursor;
     public Animator storyImageAnimator;
     string[] dialogStrings;
     TalkData[] talkDatas;
@@ -108,12 +109,16 @@ public class TextManager : MonoBehaviour
             {
                 talkPanel.SetActive(true);
             }
-
+            if (TypingManager._instance.isTypingEnd)
+            {
+                SetTextCursor();
+            }
             if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
             {
                 TypingManager._instance.GetInputDown();
                 if (TypingManager._instance.isTypingEnd)
                 {
+                    textCursor.SetActive(false);
                     if (currentPage == talkDatas.Length && TypingManager._instance.isDialogEnd)
                     {
                         currentPage = talkDatas.Length;
@@ -177,4 +182,12 @@ public class TextManager : MonoBehaviour
         _playerSkillCool.SetActive(false);
         _minimap.SetActive(false);
     }
+
+    private void SetTextCursor()
+    {
+         textCursor.SetActive(true);
+         RectTransform cursorTransform = textCursor.GetComponent<RectTransform>();
+         cursorTransform.anchoredPosition = new Vector2((talkText.rectTransform.anchoredPosition.x / 100) - 30 + talkText.preferredWidth, talkText.rectTransform.anchoredPosition.y);
+    }
+
 }
