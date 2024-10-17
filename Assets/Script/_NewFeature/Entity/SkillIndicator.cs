@@ -37,6 +37,7 @@ namespace Sophia.Entitys
 
         [SerializeField] public Canvas arrowIndicator;
         [SerializeField] public Canvas circleIndicator;
+        [SerializeField] public Canvas radialIndicator;
 
         void Awake()
         {
@@ -69,7 +70,7 @@ namespace Sophia.Entitys
             {
                 playerArrow.enabled = false;
                 currentIndicator.enabled = true;
-                if (currentIndicator == arrowIndicator)
+                if (currentIndicator == arrowIndicator || currentIndicator == radialIndicator)
                 {
                     Turning();
                 }
@@ -93,15 +94,15 @@ namespace Sophia.Entitys
             }
             else if (skillName == "바람처럼 칼날")
             {
-                currentIndicator = arrowIndicator;
+                currentIndicator = radialIndicator;
             }
             else if (skillName == "거침없는 질주")
             {
-                currentIndicator = arrowIndicator;
+                currentIndicator = radialIndicator;
             }
             else if (skillName == "바람처럼 돌진")
             {
-                currentIndicator = arrowIndicator;
+                currentIndicator = radialIndicator;
             }
             else if (skillName == "바람의 상처")
             {
@@ -119,12 +120,9 @@ namespace Sophia.Entitys
             {
                 currentPosition = new Vector3(hit.point.x, hit.point.y, hit.point.z);
 
-                if (currentIndicator == arrowIndicator)
-                {
-                    Quaternion skillCanvas = Quaternion.LookRotation(currentPosition - transform.position);
-                    skillCanvas.eulerAngles = new Vector3(0, skillCanvas.eulerAngles.y, 0);
-                    currentIndicator.transform.rotation = Quaternion.Lerp(currentIndicator.transform.rotation, skillCanvas, Time.deltaTime * rotationSpeed);
-                }
+                Quaternion skillCanvas = Quaternion.LookRotation(currentPosition - transform.position);
+                skillCanvas.eulerAngles = new Vector3(0, skillCanvas.eulerAngles.y, 0);
+                currentIndicator.transform.rotation = Quaternion.Lerp(currentIndicator.transform.rotation, skillCanvas, Time.deltaTime * rotationSpeed);
             }
         }
 
