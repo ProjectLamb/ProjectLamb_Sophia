@@ -14,8 +14,9 @@ public class TextManager : MonoBehaviour
     [Header("StoryUI")]
     public GameObject talkPanel;
     public SpeakerImage speakerImage;
-    public TextMeshProUGUI talkText;
+    public TextMeshProUGUI storyText;
     public TextMeshProUGUI nameText;
+    public GameObject textCursor;
     public Animator storyImageAnimator;
     string[] dialogStrings;
     TalkData[] talkDatas;
@@ -60,7 +61,7 @@ public class TextManager : MonoBehaviour
         if (!IsSkipStory || StoryManager.Instance.IsTutorial)
         {
             InGameScreenUI.Instance._fadeUI.FadeIn(0.02f, 2f);
-            InGameScreenUI.Instance._storyFadePanel.fadeStoryBarOn();
+            InGameScreenUI.Instance._storyFadePanel.FadeStoryBarIn();
             IsStory = true;
             TextBarOn();
             storyEventName = "Prologue";
@@ -70,7 +71,7 @@ public class TextManager : MonoBehaviour
     public void SetDialogue()
     {
         talkDatas = this.GetComponent<Dialogue>().GetObjectDialogue();
-        TypingManager._instance.Typing(talkDatas[0].contexts, talkText);
+        TypingManager._instance.Typing(talkDatas[0].contexts, storyText);
         nameText.text = talkDatas[0].name;
         SetNameColor(nameText.text);
         speakerImage.ChangeSprite(talkDatas[0].name, talkDatas[0].emotionState);
@@ -108,12 +109,16 @@ public class TextManager : MonoBehaviour
             {
                 talkPanel.SetActive(true);
             }
-
+            if (TypingManager._instance.isTypingEnd)
+            {
+                SetTextCursor();
+            }
             if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
             {
                 TypingManager._instance.GetInputDown();
                 if (TypingManager._instance.isTypingEnd)
                 {
+                    textCursor.SetActive(false);
                     if (currentPage == talkDatas.Length && TypingManager._instance.isDialogEnd)
                     {
                         currentPage = talkDatas.Length;
@@ -143,7 +148,7 @@ public class TextManager : MonoBehaviour
                     speakerImage.ChangeSprite(talkDatas[currentPage].name, talkDatas[currentPage].emotionState);
                     nameText.text = talkDatas[currentPage].name;
                     SetNameColor(nameText.text);
-                    TypingManager._instance.Typing(talkDatas[currentPage].contexts, talkText);
+                    TypingManager._instance.Typing(talkDatas[currentPage].contexts, storyText);
                     currentPage++;
                 }
             }
@@ -177,4 +182,12 @@ public class TextManager : MonoBehaviour
         _playerSkillCool.SetActive(false);
         _minimap.SetActive(false);
     }
+
+    private void SetTextCursor()
+    {
+         textCursor.SetActive(true);
+         RectTransform cursorTransform = textCursor.GetComponent<RectTransform>();
+         cursorTransform.anchoredPosition = new Vector2((storyText.rectTransform.anchoredPosition.x / 100) - 30 + storyText.preferredWidth, storyText.rectTransform.anchoredPosition.y);
+    }
+
 }

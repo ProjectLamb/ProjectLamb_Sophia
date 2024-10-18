@@ -34,6 +34,8 @@ namespace Sophia.Entitys
         [SerializeField] private AffectorManager _affectorManager;
         [SerializeField] private SkillManager _skillManager;
         [SerializeField] private SkillIndicator skillIndicator;
+        [SerializeField] private ParticleSystem clickEffect;
+        [SerializeField] private LayerMask clickLayer;
 
         #endregion
 
@@ -369,6 +371,18 @@ namespace Sophia.Entitys
                 {
                     skillIndicator.IsIndicate = true;
                     skillIndicator.changeIndicate(indicateSkillName);
+                }
+            }
+        }
+
+        public void ClickEffect()
+        {
+            RaycastHit hit;
+            if(Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 500f, clickLayer))
+            {
+                if(clickEffect != null)
+                {
+                    Instantiate(clickEffect, hit.point += new Vector3(0,0.1f, 0), clickEffect.transform.rotation);
                 }
             }
         }

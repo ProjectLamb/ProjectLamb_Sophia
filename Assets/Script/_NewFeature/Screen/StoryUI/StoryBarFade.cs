@@ -4,68 +4,33 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-public class StoryBar : MonoBehaviour
+public class StoryBarFade : MonoBehaviour
 {
-    [SerializeField] public Image bigDarkBar;
-    [SerializeField] public Image smallDarkBar;
-    [SerializeField] public Image speaker;
-    [SerializeField] public Image textBar;
-    [SerializeField] public Image textCursor;
+    [SerializeField] public CanvasGroup storyBar;
     [SerializeField] public RawImage storyFadePanel;
 
     public bool IsWaitOver = false;
-    public void FadeIn(Image image)
+
+    // 검은색 패널 fadeout
+    public void PanelFadeOut(float fadeTime, float fadeDuration)
     {
-        StartCoroutine(CoFadeIn(image));
+        StartCoroutine(FadeOut(fadeTime, fadeDuration));
+    }
+    //스토리바 페이드인
+    public void FadeStoryBarIn()
+    {
+        StartCoroutine(StoryFadeIn(storyBar));
     }
 
-    public void FadeOut(float fadeTime, float fadeDuration)
+    IEnumerator StoryFadeIn(CanvasGroup cg)
     {
-        StartCoroutine(CoFadeOut(fadeTime, fadeDuration));
-    }
-    public void WaitAfterBoss()
-    {
-        StartCoroutine(CoWaitAfterBoss());
-    }
-
-    public void SetTransparent()
-    {
-        MakeTransparent(bigDarkBar);
-        MakeTransparent(smallDarkBar);
-        MakeTransparent(speaker);
-        MakeTransparent(textBar);
-        MakeTransparent(textCursor);
-    }
-    public void MakeTransparent(Image image)
-    {
-        Color transparent = image.color;
-        transparent.a = 0;
-        image.color = transparent;
-    }
-    public void fadeStoryBarOn()
-    {
-        FadeIn(bigDarkBar);
-        FadeIn(smallDarkBar);
-        FadeIn(speaker);
-        FadeIn(textBar);
-        FadeIn(textCursor);
-    }
-
-    IEnumerator CoFadeIn(Image image)
-    {
-        image.gameObject.SetActive(true);
-        Color fadeColor = image.color;
-        fadeColor.a = 0;
-
-        while(fadeColor.a < 1f) {
-            fadeColor.a += 0.05f;
-            image.color = fadeColor;
+        cg.alpha = 0;
+        while(cg.alpha < 1f) {
+            cg.alpha += 0.05f;
             yield return new WaitForSecondsRealtime(0.05f);
         }
-        
-        //image.gameObject.SetActive(false);
     }
-    IEnumerator CoFadeOut(float fadeTime, float fadeDuration)
+    IEnumerator FadeOut(float fadeTime, float fadeDuration)
     {
         storyFadePanel.gameObject.SetActive(true);
         float passedTime = 0;
@@ -83,17 +48,19 @@ public class StoryBar : MonoBehaviour
         TextManager.Instance.IsBlockTextUpdate = false;
         TextManager.Instance.SetDialogue();
         TextManager.Instance.talkPanel.SetActive(true);
-        fadeStoryBarOn();
+        FadeStoryBarIn();
         IsWaitOver = true;
     }
-    IEnumerator CoWaitAfterBoss()
-    {
-        int second = 0;
-        while(second <= 2)
-        {
-            second++;
-            yield return new WaitForSecondsRealtime(1.0f);
-        }
-        FadeOut(0.05f,2f);
-    }
+
+    // 보스 처치 이후
+    // IEnumerator WaitAfterBoss()
+    // {
+    //     int second = 0;
+    //     while(second <= 2)
+    //     {
+    //         second++;
+    //         yield return new WaitForSecondsRealtime(1.0f);
+    //     }
+    //     FadeOut(0.05f,2f);
+    // }
 }
