@@ -35,6 +35,7 @@ public class StageGenerator : MonoBehaviour
     public int[,] tileArray;    //0: empty, 1: tile, 2: wall
     public GameObject[,] tileGameObjectArray;
     public GameObject[] portalArray;
+    public GameObject[] FloorSet;
 
     [SerializeField]
     private bool mPortalE = false;
@@ -507,9 +508,26 @@ public class StageGenerator : MonoBehaviour
         }
     }
 
+    public void InstantiateFloor()
+    {
+        foreach(var floorObject in FloorSet)
+        {
+            floorObject.SetActive(false);
+        }
+        
+        switch (stageSizeRandom)
+        {
+            case 1:
+            FloorSet[(int)STAGE_SIZE.SMALL - 1].SetActive(true);
+                break;
+            case 2:
+            FloorSet[(int)STAGE_SIZE.MIDDLE - 1].SetActive(true);
+                break;
+        }
+    }
     public void InstantiateNextChapterPortal()
     {
-        if(portal[(int)Stage.PORTAL_TYPE.CHAPTER] != null)
+        if (portal[(int)Stage.PORTAL_TYPE.CHAPTER] != null)
         {
             Instantiate(portal[(int)Stage.PORTAL_TYPE.CHAPTER], transform.position, Quaternion.identity);
         }

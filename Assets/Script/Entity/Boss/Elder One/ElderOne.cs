@@ -33,6 +33,7 @@ namespace Sophia.Entitys
         private float currentAttackTimer;
 
         [SerializeField] private bool IsInvincible;
+        [SerializeField] private bool IsUnAffectable;
         [SerializeField] FMODAudioSource[] _audioSource;
         [SerializeField] private Material emissionMaterial;
         private NavMeshAgent nav;
@@ -42,12 +43,14 @@ namespace Sophia.Entitys
 
         #region Rush
         private bool isRushOnce = false;
+        private bool isRushDone = false;
         private bool IsPlayerCatch = false;
-        private int rushRange = 75;
+        private int rushRange = 60;
         private int rushDistance = 200;
         private int rushStopDistance = 30;
         private float rushTime = 2.5f;
         private float currentRushTime;
+        private float currentRushTimer = 0f;
         Vector3 rushDestination;
         Ray rushRay;
         NavMeshHit navHit;
@@ -58,10 +61,13 @@ namespace Sophia.Entitys
         private bool isWalkReady = false;
         private bool isWalkReturn = false;
         private bool isSkillOnce = false;
+        private float currentSkillTimer = 0f;
+        private float SkillWalkEndTime = 1.5f;
         #endregion
 
         #region VFX
         [SerializeField] GameObject barrierVFX;
+        private bool isVFXOnce = false;
         #endregion
 
         // Start is called before the first frame update
@@ -190,6 +196,7 @@ namespace Sophia.Entitys
                 //GameManager.Instance.DonDestroyObjectReferer.DontDestroyGameManager.AudioManager.audioStateSender._bossPhaseSender[1].SendCommand();
                 nav.speed = _baseEntityData.MoveSpeed * 1.5f;
                 this.GetModelManager().GetAnimator().SetFloat("MoveSpeed", 1.5f);
+                this.GetModelManager().GetAnimator().SetFloat("attackSpeed", 1.25f);
                 attackInterval /= 2;
                 rushTime /= 2;
                 emissionMaterial.SetColor("_EmissionColor", Color.red * 12f);
@@ -227,7 +234,7 @@ namespace Sophia.Entitys
 
             if (phase == 1)
             {
-                int random = Random.Range(0, 3);
+                int random = Random.Range(0, 2);
                 switch (random)
                 {
                     case 0:
@@ -237,15 +244,18 @@ namespace Sophia.Entitys
                         this.GetModelManager().GetAnimator().SetTrigger(animTriggerParamList[3]);
                         break;
                     case 2:
-                        this.GetModelManager().GetAnimator().SetTrigger(animTriggerParamList[4]);
+                        this.GetModelManager().GetAnimator().SetTrigger(animTriggerParamList[4]);   //Continual
+                        break;
+                    case 3:
+                        this.GetModelManager().GetAnimator().SetTrigger(animTriggerParamList[5]);   //Continual2
                         break;
                 }
                 GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Attack].PlayFunctionalActOneShotWithDuration(0.78f);  //애니메이션 프레임 + 0.6
             }
             else if (phase == 2)
             {
-                this.GetModelManager().GetAnimator().SetTrigger(animTriggerParamList[5]);
-                GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Attack].PlayFunctionalActOneShotWithDuration(0.5f);
+                this.GetModelManager().GetAnimator().SetTrigger(animTriggerParamList[4]);
+                GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Attack].PlayFunctionalActOneShotWithDuration(0.78f / 4 * 3);
             }
             else
             {
@@ -597,15 +607,24 @@ namespace Sophia.Entitys
         {
             if (isWalkReady)
             {
+                currentSkillTimer += Time.deltaTime;
                 this.SetMoveState(true);
                 transform.DOLookAt(_objectiveEntity.transform.position, turnSpeed);
                 nav.SetDestination(_objectiveEntity.transform.position);
+
+                if (currentSkillTimer >= SkillWalkEndTime && !isVFXOnce)
+                {
+                    GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Attack].PlayFunctionalActOneShotWithDuration(0.75f);
+                    isVFXOnce = true;
+                }
             }
         }
 
         void SkillWalk_Exit()
         {
             nav.stoppingDistance = attackRange;
+            currentSkillTimer = 0;
+            isVFXOnce = false;
             this.GetModelManager().GetAnimator().SetBool("IsAttackEnd", false);
             this.GetModelManager().GetAnimator().SetBool("IsSkillWalkEnd", false);
             this.GetModelManager().GetAnimator().SetBool("IsSkillEnd", false);
@@ -679,45 +698,57 @@ namespace Sophia.Entitys
 
         void Rush_Enter()
         {
-            //Debug.Log("Rush_Enter");
+            Debug.Log("Rush_Enter");
             this.GetModelManager().GetAnimator().SetTrigger("DoRush");
             nav.SetDestination(transform.position);
             nav.isStopped = true;
-
-            // if (GameManager.Instance.CameraController != null)
-            // {
-            //     GameManager.Instance.CameraController.SwitchCamera(1);
-            // }
         }
 
         void Rush_Update()
         {
+            currentRushTimer += Time.deltaTime;
+
             if (this.GetModelManager().GetAnimator().GetBool("IsRush"))
             {
                 if (!isRushOnce)
                 {
-                    transform.DOMove(rushDestination, rushTime).SetEase(Ease.InQuad);
+                    transform.DOMove(rushDestination, currentRushTime).SetEase(Ease.InQuad);
                     isRushOnce = true;
                 }
 
                 if (Physics.Raycast(transform.position, transform.forward, rushStopDistance, RushStopMask) || transform.position == rushDestination)
                 {
-                    //Debug.Log("RushStop");
+                    Debug.Log("RushStop");
                     IsPlayerCatch = false;
                     _objectiveEntity.transform.GetComponent<Player>().SetMoveState(true);
                     _objectiveEntity.transform.parent = null;
                     transform.DOKill();
+                    isRushDone = true;
                     this.GetModelManager().GetAnimator().SetBool("IsRush", false);
                 }
             }
             else
             {
-                rushRay = new Ray(transform.position, transform.forward);
+                if (!isRushDone)
+                {
+                    rushRay = new Ray(transform.position, transform.forward);
+                }
             }
 
             if (this.GetModelManager().GetAnimator().GetBool("IsRushEnd"))
             {
                 fsm.ChangeState(States.Idle);
+            }
+
+            if (currentRushTimer >= 10f)
+            {
+                Debug.Log("Force RushStop");
+                IsPlayerCatch = false;
+                _objectiveEntity.transform.GetComponent<Player>().SetMoveState(true);
+                _objectiveEntity.transform.parent = null;
+                transform.DOKill();
+                isRushDone = true;
+                this.GetModelManager().GetAnimator().SetBool("IsRush", false);
             }
         }
 
@@ -731,7 +762,6 @@ namespace Sophia.Entitys
                 {
                     rushDestination = navHit.position;
                     currentRushTime = rushTime * (Vector3.Distance(rushDestination, transform.position) / rushDistance);
-                    //GameObject.Find("Cube").transform.position = rushDestination;
                 }
             }
         }
@@ -740,11 +770,8 @@ namespace Sophia.Entitys
         {
             this.GetModelManager().GetAnimator().SetBool("IsRushEnd", false);
             isRushOnce = false;
-
-            // if (GameManager.Instance.CameraController != null)
-            // {
-            //     GameManager.Instance.CameraController.SwitchCamera(0);
-            // }
+            isRushDone = false;
+            currentRushTimer = 0;
         }
 
         /** Death State */
@@ -798,6 +825,9 @@ namespace Sophia.Entitys
 
         public void SetMoveState(bool movableState)
         {
+            if (IsUnAffectable)
+                return;
+
             nav.enabled = true;
 
             isMovable = movableState;

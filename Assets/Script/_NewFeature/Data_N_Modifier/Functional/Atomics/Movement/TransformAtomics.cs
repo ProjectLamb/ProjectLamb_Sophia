@@ -1,79 +1,110 @@
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.AI;
+using System.Collections;
 
 namespace Sophia.DataSystem.Atomics
 {
-    public class RigidGradualAtomics {
-        public readonly Transform    OwnerTransformRef;
-        public readonly Vector3    targetVector;
+    public class RigidGradualAtomics
+    {
+        public readonly Transform OwnerTransformRef;
+        public readonly Vector3 targetVector;
         public readonly float intervalTimeAmount;
         public readonly float forceAmount;
 
-        public RigidGradualAtomics(Transform transform, float force, float intervalTime) {
+        public RigidGradualAtomics(Transform transform, float force, float intervalTime)
+        {
             OwnerTransformRef = transform;
             forceAmount = force;
             intervalTimeAmount = intervalTime;
 
         }
 
-        public RigidGradualAtomics(Vector3 vector, float force, float intervalTime) {
+        public RigidGradualAtomics(Vector3 vector, float force, float intervalTime)
+        {
             targetVector = vector;
             forceAmount = force;
             intervalTimeAmount = intervalTime;
         }
 
-        public void Invoke(Entitys.Entity entityRef) {
+        public void Invoke(Entitys.Entity entityRef)
+        {
             entityRef.entityRigidbody.velocity = Vector3.zero;
         }
-        public void Run(Entitys.Entity entityRef) {
-            if(OwnerTransformRef != null) {
+        public void Run(Entitys.Entity entityRef)
+        {
+            if (OwnerTransformRef != null)
+            {
                 entityRef.entityRigidbody.AddForce(
-                    Vector3.Normalize(targetVector) * forceAmount * intervalTimeAmount, 
+                    Vector3.Normalize(targetVector) * forceAmount * intervalTimeAmount,
                     ForceMode.VelocityChange
                 );
             }
-            else {
+            else
+            {
                 entityRef.entityRigidbody.AddForce(
-                    Vector3.Normalize(OwnerTransformRef.position) * forceAmount * intervalTimeAmount, 
+                    Vector3.Normalize(OwnerTransformRef.position) * forceAmount * intervalTimeAmount,
                     ForceMode.VelocityChange
                 );
             }
         }
-        public void Revert(Entitys.Entity entityRef) {
+        public void Revert(Entitys.Entity entityRef)
+        {
             entityRef.entityRigidbody.velocity = Vector3.zero;
         }
     }
 
-    public class RigidImpulseAtomics {
-        public readonly Transform   OwnerTransformRef;
-        public readonly Vector3     targetVector;
+    public class RigidImpulseAtomics
+    {
+        public readonly Transform OwnerTransformRef;
+        public readonly Vector3 targetVector;
         public readonly float forceAmount;
 
 
-        public RigidImpulseAtomics(Transform transform, float force) {
+        public RigidImpulseAtomics(Transform transform, float force)
+        {
             OwnerTransformRef = transform;
             forceAmount = force;
         }
 
-        public RigidImpulseAtomics(Vector3 vector, float force) {
+        public RigidImpulseAtomics(Vector3 vector, float force)
+        {
             targetVector = vector;
             forceAmount = force;
         }
 
-        public void Invoke(Entitys.Entity entityRef) {
-            if(OwnerTransformRef != null) {
+        public void Invoke(Entitys.Entity entityRef)
+        {
+            entityRef.entityRigidbody.velocity = Vector3.zero;
+            entityRef.entityRigidbody.constraints = RigidbodyConstraints.None;
+            entityRef.entityRigidbody.constraints = RigidbodyConstraints.FreezeRotation;
+            entityRef.entityRigidbody.constraints = RigidbodyConstraints.FreezePositionY;
+            entityRef.entityRigidbody.drag = 2;
+
+            if (OwnerTransformRef != null)
+            {
                 Vector3 vector3 = Vector3.Normalize(entityRef.GetGameObject().transform.position - OwnerTransformRef.position);
                 entityRef.entityRigidbody.AddForce(
-                    vector3 * forceAmount,
+                    vector3 * forceAmount / 5,
                     ForceMode.Impulse
                 );
             }
-            else {
+            else
+            {
                 entityRef.entityRigidbody.AddForce(
-                    Vector3.Normalize(targetVector) * forceAmount,
+                    Vector3.Normalize(targetVector) * forceAmount / 5,
                     ForceMode.Impulse
                 );
             }
+
+            CoSetConstraints(entityRef, 0.1f);
+        }
+
+        private IEnumerator CoSetConstraints(Entitys.Entity entityRef, float time)
+        {
+            yield return new WaitForSeconds(time);
+            entityRef.entityRigidbody.velocity = Vector3.zero;
+            entityRef.entityRigidbody.constraints = RigidbodyConstraints.FreezeAll;
         }
     }
 }

@@ -76,7 +76,7 @@ namespace Sophia.Entitys
         public override void SetNavMeshData()
         {
             base.SetNavMeshData();
-            _nav.stoppingDistance = RushRange;
+            nav.stoppingDistance = RushRange;
         }
 
         public void UseProjectile_DashAttack()
@@ -168,7 +168,7 @@ namespace Sophia.Entitys
                 CancelInvoke();
                 fsm.ChangeState(States.Idle);
             }
-            else if (IsWandering && _nav.remainingDistance <= _nav.stoppingDistance)
+            else if (IsWandering && nav.remainingDistance <= nav.stoppingDistance)
             {
                 fsm.ChangeState(States.Idle);
             }
@@ -180,7 +180,7 @@ namespace Sophia.Entitys
             {
                 this.GetModelManager().GetAnimator().SetBool("IsWalk", true);
                 transform.DOLookAt(wanderPosition, TurnSpeed);
-                _nav.SetDestination(wanderPosition);
+                nav.SetDestination(wanderPosition);
             }
         }
 
@@ -218,7 +218,7 @@ namespace Sophia.Entitys
             if (isMovable)
             {
                 transform.DOLookAt(_objectiveEntity.transform.position, TurnSpeed);
-                _nav.SetDestination(_objectiveEntity.transform.position);
+                nav.SetDestination(_objectiveEntity.transform.position);
             }
         }
 
@@ -232,8 +232,8 @@ namespace Sophia.Entitys
         {
             Debug.Log("Attack_Enter");
 
-            _nav.SetDestination(transform.position);
-            _nav.isStopped = true;
+            nav.SetDestination(transform.position);
+            nav.isStopped = true;
 
             transform.DOLookAt(_objectiveEntity.transform.position, TurnSpeed / 2);
             DoAttack();
@@ -259,8 +259,8 @@ namespace Sophia.Entitys
             Debug.Log("Tap_Enter");
             StartCoroutine(FadeIn());
             GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Attack].PlayFunctionalActOneShotWithDuration(2.8f);   //Animation Clip Length + 0.6f
-            _nav.SetDestination(transform.position);
-            _nav.isStopped = true;
+            nav.SetDestination(transform.position);
+            nav.isStopped = true;
             currentRushTime = RushTime;
 
             DoRush();
@@ -322,11 +322,10 @@ namespace Sophia.Entitys
         void Rush_Exit()
         {
             GetModelManager().GetAnimator().SetBool("IsRushEnd", false);
-            _nav.SetDestination(transform.position);
-            _nav.isStopped = true;
+            nav.SetDestination(transform.position);
+            nav.isStopped = true;
             entityRigidbody.drag = originDrag;
             entityRigidbody.velocity = Vector3.zero;
-            entityRigidbody.constraints = RigidbodyConstraints.FreezeAll;
             ResetAnimParam();
         }
 

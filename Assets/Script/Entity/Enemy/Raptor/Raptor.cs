@@ -9,6 +9,7 @@ using UnityEngine.AI;
 namespace Sophia.Entitys
 {
     using System.Collections;
+    using System.Data;
     using Sophia.Composite;
     using Sophia.Composite.RenderModels;
     using Sophia.DataSystem;
@@ -34,7 +35,7 @@ namespace Sophia.Entitys
         // [SerializeField] protected VisualFXObject             _dieParticleRef;
         // [SerializeField] public    Entity                     _objectiveEntity;
         // [SerializeField] protected E_MOB_AI_DIFFICULTY        _mobDifficulty;
-        [SerializeField] protected UnityEngine.AI.NavMeshAgent _nav;
+        [SerializeField] protected UnityEngine.AI.NavMeshAgent nav;
         [Header("Raptor Settings")]
         [SerializeField] protected float TurnSpeed = 1;
         [SerializeField] protected int wanderingCoolTime = 3;
@@ -89,7 +90,7 @@ namespace Sophia.Entitys
             _affectorManager.Init(_baseEntityData.Tenacity);
             _objectiveEntity = GameManager.Instance.PlayerGameObject.GetComponent<Entitys.Entity>();
 
-            TryGetComponent<NavMeshAgent>(out _nav);
+            TryGetComponent<NavMeshAgent>(out nav);
             TryGetComponent<Outline>(out outline);
 
             fsm = new StateMachine<States>(this);
@@ -110,16 +111,6 @@ namespace Sophia.Entitys
         protected virtual void Update()
         {
             fsm.Driver.Update.Invoke();
-
-            if (isMovable)
-            {
-                _nav.enabled = true;
-            }
-            else
-            {
-                _nav.enabled = false;
-                transform.DOKill();
-            }
         }
 
         protected virtual void FixedUpdate()
@@ -380,14 +371,17 @@ namespace Sophia.Entitys
 
         public void SetMoveState(bool movableState)
         {
-            _nav.enabled = true;
-
             isMovable = movableState;
-            _nav.isStopped = !movableState;
-            if (!movableState)
+            if (isMovable)
             {
-                _nav.enabled = false;
-                transform.DOKill();
+                nav.enabled = true;
+                nav.isStopped = false;
+            }
+            else
+            {
+                nav.isStopped = true;
+                nav.enabled = false;
+                transform.DOKill(); //애매
             }
         }
 
@@ -403,9 +397,9 @@ namespace Sophia.Entitys
 
         public virtual void SetNavMeshData()
         {
-            _nav.speed = MoveSpeed.GetValueForce();
-            _nav.acceleration = _nav.speed * 1.5f;
-            _nav.updateRotation = false;
+            nav.speed = MoveSpeed.GetValueForce();
+            nav.acceleration = nav.speed * 1.5f;
+            nav.updateRotation = false;
             // _nav.stoppingDistance = rushRange;
             //_nav.autoBraking = false;
         }

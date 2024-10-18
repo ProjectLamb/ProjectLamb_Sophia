@@ -210,12 +210,14 @@ namespace Sophia.Entitys
 
         private void OnHealthUpdated(float input)
         {
-            DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.Health = Life.CurrentHealth;
+            if (DontDestroyGameManager.Instance.SaveLoadManager != null)
+                DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.Health = Life.CurrentHealth;
+
             if (Life.CurrentHealth <= Life.MaxHp / 100 * 20)
             {
                 if (InGameScreenUI.Instance._lowHPCanvasShadeScript.IsRepeating)
                     return;
-                    
+
                 InGameScreenUI.Instance._lowHPCanvasShadeScript.Repeat();
             }
             else

@@ -12,7 +12,7 @@ namespace Sophia.Entitys
         public GameObject[] Boss;
         public GameObject ElderOne;
         public List<GameObject> CurrentMobList;
-        public int InitMobAmount = 5;
+        public int InitMobAmount = 8;
 
         [SerializeField]
         private List<float> spawnRateList;
@@ -79,7 +79,7 @@ namespace Sophia.Entitys
             stage = GetComponent<Stage>();
 
             InitMobAmount *= stage.stageSizeRandom;
-            spawnAmount = rand.Next(InitMobAmount, InitMobAmount + 3);
+            spawnAmount = rand.Next(InitMobAmount, InitMobAmount + 6);
         }
 
         public int RandomMobPercent()

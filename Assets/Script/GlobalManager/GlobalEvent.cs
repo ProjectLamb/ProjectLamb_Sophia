@@ -122,8 +122,7 @@ public class GlobalEvent : MonoBehaviour
             GameTimeScale = PLAY_SCALE;
             Debug.Log("Time Changed");
         }
-        if (currentTimeScaleEventHandler != null)
-            DOTween.Play(currentTimeScaleEventHandler.currentTween);  //언젠가 슬로모션만 타겟하도록 바꿀 것
+        DOTween.PlayAll();
     }
 
     public void ResetForce()

@@ -455,12 +455,12 @@ namespace Sophia.DataSystem
             public override void Enter(Entity entity)
             {
                 RigidImpulseAffector.Invoke(entity);
-                HoldAffector.Invoke(entity as IMovable);
+                HoldAffector.Invoke(entity as IMovable);    //엘더원 돌진 때문에 주석 처리
             }
 
             public override void Exit(Entity entity)
             {
-                HoldAffector.Revert(entity as IMovable);
+                HoldAffector.Revert(entity as IMovable);    //언제 Revert되는지?
                 base.Exit(entity);
             }
 
@@ -475,7 +475,7 @@ namespace Sophia.DataSystem
                 Name = affectData._uiData._name;
                 HoldAffector = new Atomics.HoldAtomics();
 
-                Timer = new TimerComposite(0.5f);
+                Timer = new TimerComposite(0.25f);
                 CurrentState = AffectorReadyState.Instance;
                 Description = affectData._uiData._description;
                 Icon = affectData._uiData._icon;
