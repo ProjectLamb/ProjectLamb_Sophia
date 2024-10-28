@@ -312,9 +312,6 @@ namespace Sophia.Entitys
 
         void OnElderOneEnterDie()
         {
-            //Demo Clear
-            // Sophia.UserInterface.InGameScreenUI.Instance._storyFadePanel.SetTransparent();
-            // Sophia.UserInterface.InGameScreenUI.Instance._storyFadePanel.WaitAfterBoss();
             transform.DOKill();
             SetMoveState(false);
 

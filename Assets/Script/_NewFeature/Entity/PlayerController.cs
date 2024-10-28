@@ -101,6 +101,7 @@ namespace Sophia.Entitys
                 if (Input.GetMouseButtonDown(0))
                 {
                     playerRef.Attack();
+                    playerRef.ClickEffect();
                 }
                 // 키가 눌려있을때에는 Indicate 함수를 통해 사거리를 띄우고,
                 // 키가 떼어졌을때에는 기존의 Use 함수를 사용하여 스킬을 사용하도록 하자.
