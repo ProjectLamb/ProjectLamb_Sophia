@@ -1,5 +1,5 @@
 {
-  "IsNewFile": true,
+  "IsNewFile": false,
   "IsTutorial": false,
   "CurrentChapterNum": 1,
   "CutSceneSaveData": {
@@ -11,7 +11,7 @@
   "PlayerData": {
     "Health": 100.0,
     "Gear": 30,
-    "IsDied": true,
+    "IsDied": false,
     "EquipmentDataList": [],
     "SkillDataDic": {
       "Q": null,

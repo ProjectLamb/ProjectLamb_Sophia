@@ -697,6 +697,7 @@ namespace Sophia.Entitys
         {
             Debug.Log("Rush_Enter");
             this.GetModelManager().GetAnimator().SetTrigger("DoRush");
+            IsUnAffectable = true;
             nav.SetDestination(transform.position);
             nav.isStopped = true;
         }
@@ -768,6 +769,7 @@ namespace Sophia.Entitys
             this.GetModelManager().GetAnimator().SetBool("IsRushEnd", false);
             isRushOnce = false;
             isRushDone = false;
+            IsUnAffectable = false;
             currentRushTimer = 0;
         }
 
