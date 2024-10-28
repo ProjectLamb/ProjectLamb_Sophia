@@ -163,16 +163,4 @@ public class Enemy : Entity
         /*if (isRecog) { nav.enabled = true; }
         else { nav.enabled = false; }*/
     }
-
-    /*private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject == GameManager.Instance.PlayerGameObject)
-            entityRigidbody.constraints = RigidbodyConstraints.FreezePosition;
-    }
-
-    private void OnCollisionExit(Collision collision)
-    {
-        if (collision.gameObject == GameManager.Instance.PlayerGameObject)
-            entityRigidbody.constraints = RigidbodyConstraints.None;
-    }*/
 }

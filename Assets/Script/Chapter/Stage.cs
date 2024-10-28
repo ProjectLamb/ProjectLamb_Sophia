@@ -128,6 +128,7 @@ public class Stage : MonoBehaviour
         stageGenerator.InstantiateTile();
         stageGenerator.InstantiateWall();
         stageGenerator.InstantiatePortal();
+        stageGenerator.InstantiateFloor();
 
         if (Type == STAGE_TYPE.NORMAL)
         {
@@ -179,8 +180,8 @@ public class Stage : MonoBehaviour
         {
             GameObject character = GameManager.Instance.PlayerGameObject;
             GameManager.Instance.CurrentStage = gameObject;
+            character.transform.position = new Vector3(stageGenerator.tileGameObjectArray[8, 8].transform.position.x, character.transform.position.y, stageGenerator.tileGameObjectArray[8, 8].transform.position.z);
             StageClear();
-            character.transform.position = new Vector3(transform.position.x, character.transform.position.y, transform.position.z);
         }
         else
         {

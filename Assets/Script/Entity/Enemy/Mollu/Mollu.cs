@@ -124,16 +124,6 @@ namespace Sophia.Entitys
         void Update()
         {
             fsm.Driver.Update.Invoke();
-
-            if (IsMovable)
-            {
-                nav.enabled = true;
-            }
-            else
-            {
-                nav.enabled = false;
-                transform.DOKill();
-            }
         }
 
         void FixedUpdate()
@@ -657,9 +647,6 @@ namespace Sophia.Entitys
             }
             else
             {
-                if (!IsMovable)
-                    return;
-
                 nav.isStopped = true;
                 nav.enabled = false;
                 transform.DOKill();

@@ -102,7 +102,7 @@ namespace Sophia.Entitys
             }
             else if (skillName == "바람처럼 돌진")
             {
-                currentIndicator = radialIndicator;
+                currentIndicator = arrowIndicator;
             }
             else if (skillName == "바람의 상처")
             {

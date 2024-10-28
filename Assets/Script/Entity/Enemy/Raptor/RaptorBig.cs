@@ -61,7 +61,7 @@ namespace Sophia.Entitys
         public override void SetNavMeshData()
         {
             base.SetNavMeshData();
-            _nav.stoppingDistance = AttackRange;
+            nav.stoppingDistance = AttackRange;
         }
 
         void DoHowl()
@@ -162,8 +162,8 @@ namespace Sophia.Entitys
             Debug.Log("Idle_Enter");
             Recognize.CurrentViewRadius = originViewRadius;
             _audioSources[(int)E_RAPTOR_AUDIO_INDEX.Idle].Play();
-            _nav.SetDestination(transform.position);
-            _nav.isStopped = true;
+            nav.SetDestination(transform.position);
+            nav.isStopped = true;
         }
 
         void Idle_Update()
@@ -214,7 +214,7 @@ namespace Sophia.Entitys
             Debug.Log("Escape_Enter");
 
             this.GetModelManager().GetAnimator().SetBool("IsEscape", true);
-            _nav.speed = MoveSpeed.GetValueForce() / 1.5f;
+            nav.speed = MoveSpeed.GetValueForce() / 1.5f;
             SetMoveState(true);
         }
         void Escape_Update()
@@ -236,14 +236,14 @@ namespace Sophia.Entitys
         {
             if (isMovable)
             {
-                _nav.SetDestination(EscapePosition);
+                nav.SetDestination(EscapePosition);
                 transform.DOLookAt(_objectiveEntity.transform.position, TurnSpeed);
             }
         }
 
         void Escape_Exit()
         {
-            _nav.speed = MoveSpeed.GetValueForce();
+            nav.speed = MoveSpeed.GetValueForce();
             this.GetModelManager().GetAnimator().SetBool("IsEscape", false);
         }
 
@@ -264,7 +264,7 @@ namespace Sophia.Entitys
                 CancelInvoke();
                 fsm.ChangeState(States.Idle);
             }
-            else if (IsWandering && _nav.remainingDistance <= _nav.stoppingDistance)
+            else if (IsWandering && nav.remainingDistance <= nav.stoppingDistance)
             {
                 fsm.ChangeState(States.Idle);
             }
@@ -276,7 +276,7 @@ namespace Sophia.Entitys
             {
                 this.GetModelManager().GetAnimator().SetBool("IsWalk", true);
                 transform.DOLookAt(wanderPosition, TurnSpeed);
-                _nav.SetDestination(wanderPosition);
+                nav.SetDestination(wanderPosition);
             }
         }
 
@@ -291,8 +291,8 @@ namespace Sophia.Entitys
         {
             Debug.Log("Attack_Enter");
 
-            _nav.SetDestination(transform.position);
-            _nav.isStopped = true;
+            nav.SetDestination(transform.position);
+            nav.isStopped = true;
             transform.DOLookAt(_objectiveEntity.transform.position, TurnSpeed / 2);
             DoAttack();
         }
@@ -317,8 +317,8 @@ namespace Sophia.Entitys
             Debug.Log("Howl_Enter");
             indicatorOffScreen.style.color = Color.red;
             indicatorOffScreen.arrowStyle.color = Color.red;
-            _nav.SetDestination(transform.position);
-            _nav.isStopped = true;
+            nav.SetDestination(transform.position);
+            nav.isStopped = true;
             transform.DOLookAt(_objectiveEntity.transform.position, TurnSpeed);
             DoHowl();
         }
