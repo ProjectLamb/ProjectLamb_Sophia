@@ -16,7 +16,8 @@ public class MainPannel : MonoBehaviour
     IEnumerator StartAtNextFrame() {
         yield return new WaitForEndOfFrame();
         
-        if(!DontDestroyGameManager.Instance.SaveLoadManager.GetIsDataExist()) {
+        // Continue 버튼 활성화 조건
+        if(!DontDestroyGameManager.Instance.SaveLoadManager.GetIsDataExist() || DontDestroyGameManager.Instance.SaveLoadManager.Data.IsTutorial) {
             ContinueGameElement.SetActive(false);
         }
         else {

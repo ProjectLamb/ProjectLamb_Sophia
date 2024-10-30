@@ -33,6 +33,7 @@ namespace Sophia.Entitys
         private float currentAttackTimer;
 
         [SerializeField] private bool IsInvincible;
+        [SerializeField] private bool IsUnAffectable;
         [SerializeField] FMODAudioSource[] _audioSource;
         [SerializeField] private Material emissionMaterial;
         private NavMeshAgent nav;
@@ -42,11 +43,14 @@ namespace Sophia.Entitys
 
         #region Rush
         private bool isRushOnce = false;
-        private int rushRange = 75;
+        private bool isRushDone = false;
+        private bool IsPlayerCatch = false;
+        private int rushRange = 60;
         private int rushDistance = 200;
-        private int rushStopDistance = 15;
+        private int rushStopDistance = 30;
         private float rushTime = 2.5f;
         private float currentRushTime;
+        private float currentRushTimer = 0f;
         Vector3 rushDestination;
         Ray rushRay;
         NavMeshHit navHit;
@@ -57,10 +61,13 @@ namespace Sophia.Entitys
         private bool isWalkReady = false;
         private bool isWalkReturn = false;
         private bool isSkillOnce = false;
+        private float currentSkillTimer = 0f;
+        private float SkillWalkEndTime = 1.5f;
         #endregion
 
         #region VFX
         [SerializeField] GameObject barrierVFX;
+        private bool isVFXOnce = false;
         #endregion
 
         // Start is called before the first frame update
@@ -96,6 +103,7 @@ namespace Sophia.Entitys
             _objectiveEntity = GameManager.Instance.PlayerGameObject.GetComponent<Entitys.Entity>();
 
             RushStopMask = LayerMask.GetMask("Wall");
+            TryGetComponent<Outline>(out outline);
 
             fsm = new StateMachine<States>(this);
             fsm.ChangeState(States.Init);
@@ -104,6 +112,8 @@ namespace Sophia.Entitys
         protected override void Start()
         {
             base.Start();
+
+            StartCoroutine(CheckOutline());
 
             Life.OnDamaged += OnEnemyHitHandler;
             Life.OnEnterDie += OnElderOneEnterDie;
@@ -162,8 +172,6 @@ namespace Sophia.Entitys
             }
         }
 
-
-
         void ResetAnimParam()
         {
             foreach (string b in animBoolParamList)
@@ -188,6 +196,7 @@ namespace Sophia.Entitys
                 //GameManager.Instance.DonDestroyObjectReferer.DontDestroyGameManager.AudioManager.audioStateSender._bossPhaseSender[1].SendCommand();
                 nav.speed = _baseEntityData.MoveSpeed * 1.5f;
                 this.GetModelManager().GetAnimator().SetFloat("MoveSpeed", 1.5f);
+                this.GetModelManager().GetAnimator().SetFloat("attackSpeed", 1.25f);
                 attackInterval /= 2;
                 rushTime /= 2;
                 emissionMaterial.SetColor("_EmissionColor", Color.red * 12f);
@@ -225,7 +234,7 @@ namespace Sophia.Entitys
 
             if (phase == 1)
             {
-                int random = Random.Range(0, 3);
+                int random = Random.Range(0, 2);
                 switch (random)
                 {
                     case 0:
@@ -235,15 +244,18 @@ namespace Sophia.Entitys
                         this.GetModelManager().GetAnimator().SetTrigger(animTriggerParamList[3]);
                         break;
                     case 2:
-                        this.GetModelManager().GetAnimator().SetTrigger(animTriggerParamList[4]);
+                        this.GetModelManager().GetAnimator().SetTrigger(animTriggerParamList[4]);   //Continual
+                        break;
+                    case 3:
+                        this.GetModelManager().GetAnimator().SetTrigger(animTriggerParamList[5]);   //Continual2
                         break;
                 }
                 GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Attack].PlayFunctionalActOneShotWithDuration(0.78f);  //애니메이션 프레임 + 0.6
             }
             else if (phase == 2)
             {
-                this.GetModelManager().GetAnimator().SetTrigger(animTriggerParamList[5]);
-                GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Attack].PlayFunctionalActOneShotWithDuration(0.5f);
+                this.GetModelManager().GetAnimator().SetTrigger(animTriggerParamList[4]);
+                GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Attack].PlayFunctionalActOneShotWithDuration(0.78f / 4 * 3);
             }
             else
             {
@@ -276,8 +288,40 @@ namespace Sophia.Entitys
             }
         }
 
+        #region UI
+
+        //Outline
+        private IEnumerator CheckOutline()
+        {
+            while (true)
+            {
+                if (IsOutline)
+                {
+                    outline.enabled = true;
+                }
+                else
+                {
+                    outline.enabled = false;
+                }
+                IsOutline = false;
+                yield return new WaitForSeconds(0.1f);
+            }
+        }
+
+        #endregion
+
         void OnElderOneEnterDie()
         {
+            transform.DOKill();
+            SetMoveState(false);
+
+            if (IsPlayerCatch)  //만약 캐릭터가 붙잡혀 있었다면
+            {
+                _objectiveEntity.transform.GetComponent<Player>().SetMoveState(true);
+                _objectiveEntity.transform.parent = null;
+                IsPlayerCatch = false;
+            }
+
             Sophia.Instantiates.VisualFXObject visualFX = VisualFXObjectPool.GetObject(_dieParticleRef).Init();
             GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
             GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Dead].PlayAffectOneShot(); // 새로 추가 된것!
@@ -285,7 +329,7 @@ namespace Sophia.Entitys
             GameManager.Instance.DonDestroyObjectReferer.DontDestroyGameManager.AudioManager.audioStateSender._bossPhaseSender[2].SendCommand();
             CurrentInstantiatedStage.mobGenerator.RemoveMob(this.gameObject);
         }
-        
+
         public override bool Die()
         {
             Life.Died();
@@ -295,12 +339,14 @@ namespace Sophia.Entitys
         public void DisableModel()
         {
             _modelManager.gameObject.SetActive(false);
+            _visualFXBucket.gameObject.SetActive(false);
             entityCollider.enabled = false;
         }
 
         void OnElderOneExitDie()
         {
             Invoke("DisableModel", 0.5f);
+            Destroy(gameObject, 0.75f);
         }
 
         public void PlayFootStepSound()
@@ -352,6 +398,15 @@ namespace Sophia.Entitys
                                     .SetProjectilePower(GetStat(E_NUMERIC_STAT_TYPE.Power))
                                     .Activate();
         }
+
+        public void UseProjectile_UpperCut()
+        {
+            Sophia.Instantiates.ProjectileObject useProjectile = ProjectilePool.GetObject(_attckProjectileDirection[2]).Init(this);
+
+            _projectileBucketManager.InstantablePositioning(4, useProjectile)
+                                    .SetProjectilePower(GetStat(E_NUMERIC_STAT_TYPE.Power))
+                                    .Activate();
+        }
         public void UseProjectile_JumpAttack()
         {
             Sophia.Instantiates.ProjectileObject useProjectile = ProjectilePool.GetObject(_attckProjectiles[(int)ANIME_STATE.JUMP]).Init(this);
@@ -386,7 +441,7 @@ namespace Sophia.Entitys
         /** Init State */
         void Init_Enter()
         {
-            Debug.Log("Init_Enter");
+            //Debug.Log("Init_Enter");
             //Init Settings
             InitAnimParamList();
             SetNavMeshData();
@@ -398,7 +453,7 @@ namespace Sophia.Entitys
         /** Idle State */
         void Idle_Enter()
         {
-            Debug.Log("Idle_Enter");
+            //Debug.Log("Idle_Enter");
             ResetAnimParam();
             nav.SetDestination(transform.position);
             nav.isStopped = true;
@@ -426,7 +481,7 @@ namespace Sophia.Entitys
         /** Move State */
         void Move_Enter()
         {
-            Debug.Log("Move_Enter");
+            //Debug.Log("Move_Enter");
             this.GetModelManager().GetAnimator().SetBool("IsWalk", true);
             SetMoveState(true);
         }
@@ -478,7 +533,7 @@ namespace Sophia.Entitys
         /** Attack State */
         void Attack_Enter()
         {
-            Debug.Log("Attack_Enter");
+            //Debug.Log("Attack_Enter");
             dontTurn = false;
             //Skill
             if (this.GetModelManager().GetAnimator().GetInteger("attackCount") == attackCount)
@@ -517,7 +572,7 @@ namespace Sophia.Entitys
 
         void SkillWalk_Enter()
         {
-            Debug.Log("SkillWalk_Enter");
+            //Debug.Log("SkillWalk_Enter");
 
             this.SetMoveState(true);
             nav.stoppingDistance /= 2;
@@ -549,15 +604,24 @@ namespace Sophia.Entitys
         {
             if (isWalkReady)
             {
+                currentSkillTimer += Time.deltaTime;
                 this.SetMoveState(true);
                 transform.DOLookAt(_objectiveEntity.transform.position, turnSpeed);
                 nav.SetDestination(_objectiveEntity.transform.position);
+
+                if (currentSkillTimer >= SkillWalkEndTime && !isVFXOnce)
+                {
+                    GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Attack].PlayFunctionalActOneShotWithDuration(0.75f);
+                    isVFXOnce = true;
+                }
             }
         }
 
         void SkillWalk_Exit()
         {
             nav.stoppingDistance = attackRange;
+            currentSkillTimer = 0;
+            isVFXOnce = false;
             this.GetModelManager().GetAnimator().SetBool("IsAttackEnd", false);
             this.GetModelManager().GetAnimator().SetBool("IsSkillWalkEnd", false);
             this.GetModelManager().GetAnimator().SetBool("IsSkillEnd", false);
@@ -565,7 +629,7 @@ namespace Sophia.Entitys
 
         void SkillPhase_Enter()
         {
-            Debug.Log("SkillPhase_Enter");
+            // Debug.Log("SkillPhase_Enter");
 
             transform.DOKill();
             SetMoveState(true);
@@ -587,7 +651,7 @@ namespace Sophia.Entitys
 
             if (isWalkReturn)
             {
-                Debug.Log(transform.position);
+                //Debug.Log(transform.position);
                 if ((transform.position.x >= nav.destination.x - 1f && transform.position.x <= nav.destination.x + 1f) &&
                  (transform.position.z >= nav.destination.z - 1f && transform.position.z <= nav.destination.z + 1f))
                 {
@@ -633,42 +697,56 @@ namespace Sophia.Entitys
         {
             Debug.Log("Rush_Enter");
             this.GetModelManager().GetAnimator().SetTrigger("DoRush");
+            IsUnAffectable = true;
             nav.SetDestination(transform.position);
             nav.isStopped = true;
-
-            // if (GameManager.Instance.CameraController != null)
-            // {
-            //     GameManager.Instance.CameraController.SwitchCamera(1);
-            // }
         }
 
         void Rush_Update()
         {
+            currentRushTimer += Time.deltaTime;
+
             if (this.GetModelManager().GetAnimator().GetBool("IsRush"))
             {
                 if (!isRushOnce)
                 {
-                    transform.DOMove(rushDestination, rushTime).SetEase(Ease.InQuad);
+                    transform.DOMove(rushDestination, currentRushTime).SetEase(Ease.InQuad);
                     isRushOnce = true;
                 }
 
                 if (Physics.Raycast(transform.position, transform.forward, rushStopDistance, RushStopMask) || transform.position == rushDestination)
                 {
                     Debug.Log("RushStop");
+                    IsPlayerCatch = false;
                     _objectiveEntity.transform.GetComponent<Player>().SetMoveState(true);
                     _objectiveEntity.transform.parent = null;
                     transform.DOKill();
+                    isRushDone = true;
                     this.GetModelManager().GetAnimator().SetBool("IsRush", false);
                 }
             }
             else
             {
-                rushRay = new Ray(transform.position, transform.forward);
+                if (!isRushDone)
+                {
+                    rushRay = new Ray(transform.position, transform.forward);
+                }
             }
 
             if (this.GetModelManager().GetAnimator().GetBool("IsRushEnd"))
             {
                 fsm.ChangeState(States.Idle);
+            }
+
+            if (currentRushTimer >= 10f)
+            {
+                Debug.Log("Force RushStop");
+                IsPlayerCatch = false;
+                _objectiveEntity.transform.GetComponent<Player>().SetMoveState(true);
+                _objectiveEntity.transform.parent = null;
+                transform.DOKill();
+                isRushDone = true;
+                this.GetModelManager().GetAnimator().SetBool("IsRush", false);
             }
         }
 
@@ -682,7 +760,6 @@ namespace Sophia.Entitys
                 {
                     rushDestination = navHit.position;
                     currentRushTime = rushTime * (Vector3.Distance(rushDestination, transform.position) / rushDistance);
-                    //GameObject.Find("Cube").transform.position = rushDestination;
                 }
             }
         }
@@ -691,31 +768,27 @@ namespace Sophia.Entitys
         {
             this.GetModelManager().GetAnimator().SetBool("IsRushEnd", false);
             isRushOnce = false;
-
-            // if (GameManager.Instance.CameraController != null)
-            // {
-            //     GameManager.Instance.CameraController.SwitchCamera(0);
-            // }
+            isRushDone = false;
+            IsUnAffectable = false;
+            currentRushTimer = 0;
         }
 
         /** Death State */
         void Death_Enter()
         {
-            Sophia.UserInterface.InGameScreenUI.Instance._storyFadePanel.SetTransparent();
-            Sophia.UserInterface.InGameScreenUI.Instance._storyFadePanel.WaitAfterBoss();
             Debug.Log("Death_Enter");
             Die();
         }
 
         void Death_Update()
         {
-            if (!TextManager.Instance.IsStory && !StoryManager.Instance.IsBossClear && Sophia.UserInterface.InGameScreenUI.Instance._storyFadePanel.IsWaitOver)
-            {
-                Sophia.UserInterface.InGameScreenUI.Instance._fadeUI.FadeOut(0.05f, 2f);
-                Sophia.UserInterface.InGameScreenUI.Instance._fadeUI.AddBindingAction(() => UnityEngine.SceneManagement.SceneManager.LoadScene("05_Demo_Clear"));
-                StoryManager.Instance.IsBossClear = true;
-            }
             //check animation end
+            if (IsPlayerCatch)  //만약 캐릭터가 붙잡혀 있었다면
+            {
+                _objectiveEntity.transform.GetComponent<Player>().SetMoveState(true);
+                _objectiveEntity.transform.parent = null;
+                IsPlayerCatch = false;
+            }
         }
 
         public override bool GetDamaged(DamageInfo damage)
@@ -751,6 +824,9 @@ namespace Sophia.Entitys
 
         public void SetMoveState(bool movableState)
         {
+            if (IsUnAffectable)
+                return;
+
             nav.enabled = true;
 
             isMovable = movableState;
@@ -783,6 +859,7 @@ namespace Sophia.Entitys
 
             if (other.transform.tag == "Player")
             {
+                IsPlayerCatch = true;
                 other.transform.GetComponent<Player>().SetMoveState(false);
                 other.transform.parent = this.transform;
             }

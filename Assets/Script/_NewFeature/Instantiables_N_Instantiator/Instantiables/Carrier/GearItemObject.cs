@@ -23,5 +23,9 @@ namespace Sophia.Instantiates
                 }
             }
         }
+
+        private void OnTriggerStay(Collider other) {
+            OnTriggerLogic(other);    
+        }
     }
 }

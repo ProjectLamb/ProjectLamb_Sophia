@@ -60,7 +60,8 @@ namespace Sophia.UserInterface
         public void TurnOffUI()
         {
             this.StopAllCoroutines();
-            slider.gameObject.SetActive(false);
+            this.gameObject.SetActive(false);
+            //slider.gameObject.SetActive(false);
         }
     }
 

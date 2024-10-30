@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
 {
 
     Player player;
+    StoryManager storyManager;
 
     static public bool IsMoveAllow = true; //인풋을 받을수 있는지 없는지
     static public bool IsAttackAllow = true; //인풋을 받을수 있는지 없는지
@@ -28,7 +29,7 @@ public class PlayerController : MonoBehaviour
         player.AimAssist();
         player.CheckAttack();
         
-        if(player.mIsDie)
+        if(player.mIsDie || storyManager.IsTutorial) // 플레이어가 사망 상태이거나 튜토리얼 진행중일시 이동불가
             IsMoveAllow = false;
         else // 그 외 상태라면
             IsMoveAllow = true;

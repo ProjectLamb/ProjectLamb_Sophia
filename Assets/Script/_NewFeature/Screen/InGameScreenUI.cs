@@ -32,9 +32,10 @@ namespace Sophia.UserInterface
         [SerializeField] public Minimap                 _chapterMinimap;
         [SerializeField] public PlayerSkillCoolUI[]     _playerSkillCoolUIElement;
         [SerializeField] public HitCanvasShadeScript    _hitCanvasShadeScript;
+        [SerializeField] public HitCanvasShadeScript    _lowHPCanvasShadeScript;
         [SerializeField] public EquipmentDescriptionUI  _equipmentDescriptionUI;
         [SerializeField] public FadeUI                  _fadeUI;
-        [SerializeField] public StoryBar                _storyFadePanel;
+        [SerializeField] public StoryBarFade            _storyFadePanel;
         [SerializeField] public VideoController         _videoController;
         [SerializeField] public GameObject              _bossHealthBar;
         //Demo Version

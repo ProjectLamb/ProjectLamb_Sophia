@@ -25,6 +25,7 @@ namespace Sophia.Instantiates {
         public abstract void    RemoveFromUpdator();
         public abstract void    Use();
         public abstract void    SetUltCoolTime();
+        public abstract bool    GetIsSkillIndicate();
     }
     
     public class EmptySkill : IUserInterfaceAccessible

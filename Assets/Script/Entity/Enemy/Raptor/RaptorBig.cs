@@ -5,8 +5,10 @@ using DG.Tweening;
 using Sophia.Composite;
 using NUnit.Framework;
 using UnityEngine.AI;
+using UnityEngine.UI;
 using System.Linq;
 using Sophia.Instantiates;
+using HUDIndicator;
 
 namespace Sophia.Entitys
 {
@@ -17,7 +19,7 @@ namespace Sophia.Entitys
 
         [Header("Raptor Settings")]
         [SerializeField] private float EscapeRange;
-        [SerializeField] private int spawnRaptorAmount = 3;
+        [SerializeField] private int spawnRaptorAmount = 2;
         [SerializeField] private SerialAffectorData serialAffectorData;
         #endregion
 
@@ -26,13 +28,14 @@ namespace Sophia.Entitys
         List<RaptorSmall> raptorSmallList;
         private float howlingCoolTime = 5f;
         Vector3 EscapePosition;
+        public IndicatorOffScreen indicatorOffScreen;
 
         #endregion
         protected override void Awake()
         {
             base.Awake();
             raptorSmallList = new List<RaptorSmall>();
-            EscapeRange = _fOVData.viewRadius / 2;
+            EscapeRange = _fOVData.viewRadius / 2.5f;
         }
         private bool isReadyHowling = true;
         public void SetReadyHowling() => isReadyHowling = true;
@@ -58,7 +61,7 @@ namespace Sophia.Entitys
         public override void SetNavMeshData()
         {
             base.SetNavMeshData();
-            _nav.stoppingDistance = AttackRange;
+            nav.stoppingDistance = AttackRange;
         }
 
         void DoHowl()
@@ -77,7 +80,10 @@ namespace Sophia.Entitys
             }
 
             if (currentRaptorCount == 0)
-                InstantiateRaptorSmall(random.Next(spawnRaptorAmount - 1, spawnRaptorAmount + 2));
+            {
+                InstantiateRaptorSmall(spawnRaptorAmount);
+                //InstantiateRaptorSmall(random.Next(spawnRaptorAmount - 1, spawnRaptorAmount + 1));
+            }
             else
             {
                 DoBuff();
@@ -156,8 +162,8 @@ namespace Sophia.Entitys
             Debug.Log("Idle_Enter");
             Recognize.CurrentViewRadius = originViewRadius;
             _audioSources[(int)E_RAPTOR_AUDIO_INDEX.Idle].Play();
-            _nav.SetDestination(transform.position);
-            _nav.isStopped = true;
+            nav.SetDestination(transform.position);
+            nav.isStopped = true;
         }
 
         void Idle_Update()
@@ -208,6 +214,7 @@ namespace Sophia.Entitys
             Debug.Log("Escape_Enter");
 
             this.GetModelManager().GetAnimator().SetBool("IsEscape", true);
+            nav.speed = MoveSpeed.GetValueForce() / 1.5f;
             SetMoveState(true);
         }
         void Escape_Update()
@@ -229,14 +236,14 @@ namespace Sophia.Entitys
         {
             if (isMovable)
             {
-                _nav.SetDestination(EscapePosition);
+                nav.SetDestination(EscapePosition);
                 transform.DOLookAt(_objectiveEntity.transform.position, TurnSpeed);
             }
         }
 
         void Escape_Exit()
         {
-            _nav.speed = MoveSpeed.GetValueForce();
+            nav.speed = MoveSpeed.GetValueForce();
             this.GetModelManager().GetAnimator().SetBool("IsEscape", false);
         }
 
@@ -257,7 +264,7 @@ namespace Sophia.Entitys
                 CancelInvoke();
                 fsm.ChangeState(States.Idle);
             }
-            else if (IsWandering && _nav.remainingDistance <= _nav.stoppingDistance)
+            else if (IsWandering && nav.remainingDistance <= nav.stoppingDistance)
             {
                 fsm.ChangeState(States.Idle);
             }
@@ -269,7 +276,7 @@ namespace Sophia.Entitys
             {
                 this.GetModelManager().GetAnimator().SetBool("IsWalk", true);
                 transform.DOLookAt(wanderPosition, TurnSpeed);
-                _nav.SetDestination(wanderPosition);
+                nav.SetDestination(wanderPosition);
             }
         }
 
@@ -284,8 +291,8 @@ namespace Sophia.Entitys
         {
             Debug.Log("Attack_Enter");
 
-            _nav.SetDestination(transform.position);
-            _nav.isStopped = true;
+            nav.SetDestination(transform.position);
+            nav.isStopped = true;
             transform.DOLookAt(_objectiveEntity.transform.position, TurnSpeed / 2);
             DoAttack();
         }
@@ -308,9 +315,10 @@ namespace Sophia.Entitys
         void Howl_Enter()
         {
             Debug.Log("Howl_Enter");
-
-            _nav.SetDestination(transform.position);
-            _nav.isStopped = true;
+            indicatorOffScreen.style.color = Color.red;
+            indicatorOffScreen.arrowStyle.color = Color.red;
+            nav.SetDestination(transform.position);
+            nav.isStopped = true;
             transform.DOLookAt(_objectiveEntity.transform.position, TurnSpeed);
             DoHowl();
         }
@@ -326,6 +334,8 @@ namespace Sophia.Entitys
         void Howl_Exit()
         {
             GetModelManager().GetAnimator().SetBool("IsHowlEnd", false);
+            indicatorOffScreen.style.color = Color.yellow;
+            indicatorOffScreen.arrowStyle.color = Color.yellow;
 
             if (!howlingTimer.GetIsReadyToUse())
                 return;
@@ -355,7 +365,7 @@ namespace Sophia.Entitys
             Sequence mySequence = DOTween.Sequence();
             System.Random random = new System.Random();
             Vector3 EndPosForward = transform.right;
-            var randomAngle = random.Next(-180, 180);
+            var randomAngle = 0;
             Vector3[] rotateMatrix = new Vector3[] {
                 new Vector3(Mathf.Cos(randomAngle), 0 , Mathf.Sin(randomAngle)),
                 new Vector3(0, 1 , 0),
@@ -365,11 +375,7 @@ namespace Sophia.Entitys
             retatedVec += EndPosForward.x * rotateMatrix[0];
             retatedVec += EndPosForward.y * rotateMatrix[1];
             retatedVec += EndPosForward.z * rotateMatrix[2];
-            var randomDist = (float)random.NextDouble() * 7;
-            var randomForce = (float)random.NextDouble();
-            var randomTime = (float)(random.NextDouble() * 2 + 0.5);
-            Debug.Log(retatedVec * randomDist);
-            Tween jumpTween = itemObject.transform.DOLocalJump((retatedVec * randomDist) + transform.position, randomForce * 25, 1, randomTime).SetEase(Ease.OutBounce);
+            Tween jumpTween = itemObject.transform.DOLocalJump(retatedVec + transform.position, 10, 1, 1).SetEase(Ease.OutBounce);
             return mySequence.Append(jumpTween);
         }
         

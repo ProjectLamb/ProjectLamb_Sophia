@@ -6,6 +6,7 @@ using AYellowpaper.SerializedCollections;
 using Sophia.UserInterface;
 using UnityEngine;
 using UnityEngine.Events;
+using DG.Tweening;
 
 /// <summary>
 /// Ref, Out에 대한 이해가 필요하다
@@ -22,6 +23,7 @@ public class GlobalEvent : MonoBehaviour
     public List<UnityAction> OnEnemyHitEvent;
     public List<UnityAction<Stage>> OnStageClear;
     public List<UnityAction<Stage, Stage>> OnStageEnter;
+    public TimeScaleEventHandler currentTimeScaleEventHandler;
 
     private void Awake()
     {
@@ -30,15 +32,18 @@ public class GlobalEvent : MonoBehaviour
         OnStageClear = new List<UnityAction<Stage>>();
         OnStageEnter = new List<UnityAction<Stage, Stage>>();
 
-        OnPlayEvent     ??= new UnityEvent<string>();
-        OnPausedEvent   ??= new UnityEvent<string>();
-        _IsGamePaused   ??= new SerializedDictionary<string, bool>
+        OnPlayEvent ??= new UnityEvent<string>();
+        OnPausedEvent ??= new UnityEvent<string>();
+        _IsGamePaused ??= new SerializedDictionary<string, bool>
         {
             { gameObject.name, false }
         };
+
+        currentTimeScaleEventHandler = null;
     }
 
-    private void OnEnable() {
+    private void OnEnable()
+    {
 
     }
 
@@ -61,41 +66,67 @@ public class GlobalEvent : MonoBehaviour
     public const float PLAY_SCALE = 1f;
     public const float PAUSE_SCALE = 0;
 
-    public bool IsGamePaused {
-        get {
-            return !_IsGamePaused.All(x => x.Value == false); 
+    public class TimeScaleEventHandler
+    {
+        public Tween currentTween;
+        private float basetime;
+        public float BaseTime { get; set; }
+        private int priority;
+        public int Priority { get; set; }
+        public TimeScaleEventHandler(Tween tween, float baseTime, int priority)
+        {
+            currentTween = tween;
+            this.basetime = baseTime;
+            this.priority = priority;
         }
     }
 
-    public void SetTimeStateByHandlersString(string handler, bool timeState) {
-        if(!_IsGamePaused.ContainsKey(handler)) {
+    public bool IsGamePaused
+    {
+        get
+        {
+            return !_IsGamePaused.All(x => x.Value == false);
+        }
+    }
+
+    public void SetTimeStateByHandlersString(string handler, bool timeState)
+    {
+        if (!_IsGamePaused.ContainsKey(handler))
+        {
             _IsGamePaused.TryAdd(handler, timeState); return;
         }
         _IsGamePaused[handler] = timeState;
     }
 
-    public void Pause(string handler) {
+    public void Pause(string handler)
+    {
+        DOTween.PauseAll();
         bool PrevTimeState = IsGamePaused;
         Debug.Log("TryPause");
         SetTimeStateByHandlersString(handler, true);
-        if(PrevTimeState == false && IsGamePaused == true) {
+        if (PrevTimeState == false && IsGamePaused == true)
+        {
             OnPausedEvent?.Invoke(gameObject.name);
             GameTimeScale = PAUSE_SCALE;
             Debug.Log("Time Changed");
         }
     }
-    public void Play(string handler) {
+    public void Play(string handler)
+    {
         bool PrevTimeState = IsGamePaused;
         Debug.Log("TryPlay");
         SetTimeStateByHandlersString(handler, false);
-        if(PrevTimeState == true && IsGamePaused == false) {
+        if (PrevTimeState == true && IsGamePaused == false)
+        {
             OnPlayEvent?.Invoke(gameObject.name);
-            GameTimeScale = PLAY_SCALE; 
+            GameTimeScale = PLAY_SCALE;
             Debug.Log("Time Changed");
         }
+        DOTween.PlayAll();
     }
 
-    public void ResetForce() {
+    public void ResetForce()
+    {
         _IsGamePaused = new SerializedDictionary<string, bool>
         {
             { gameObject.name, false }
@@ -107,18 +138,36 @@ public class GlobalEvent : MonoBehaviour
 
     public float TimeHoldingDuration;
     float mCurrentTimeScale = 1f;
-
     bool mIsSlowed = false;
 
-    // public void HandleTimeSlow()
-    // {
-    //     if (mIsSlowed) return;
-    //     Debug.Log("StartSlowed");
+    public void HandleTimeSlow(float basetime, float duratetime, int priority)
+    {
+        if (mIsSlowed)
+        {
+            if (currentTimeScaleEventHandler != null && currentTimeScaleEventHandler.Priority > 1)
+            {
+                DOTween.Kill(currentTimeScaleEventHandler.currentTween);
+            }
+            else
+                return;
+        }
+        Debug.Log("StartSlowed");
 
-    //     StartCoroutine(SlowTimeCoroutine());
-    // }
+        GameTimeScale = basetime;
+        Tween tween = DOTween.To(() => GameTimeScale, x => GameTimeScale = x, 1, duratetime).OnComplete(() => mIsSlowed = false).SetEase(Ease.InQuad);
 
-    // //DotTween 사용해서 증가 커브 설정하기
+        currentTimeScaleEventHandler = new TimeScaleEventHandler(tween, basetime, priority);
+        mIsSlowed = true;
+
+        //StartCoroutine(SlowTimeCoroutine());
+    }
+
+    private void OnCompleteHandleTimeSlow()
+    {
+        mIsSlowed = false;
+    }
+
+    //DotTween 사용해서 증가 커브 설정하기
     // IEnumerator SlowTimeCoroutine()
     // {
     //     mIsSlowed = true;

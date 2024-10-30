@@ -21,20 +21,22 @@ public class StoryManager : MonoBehaviour
         }
     }
 
-    public bool IsBossClear = false;
-    
     public UnityEvent<string> OnIsTutorialEnter;
     public UnityEvent<string> OnIsTutorialExit;
 
     [SerializeField] private bool _isTutorial;
-    public bool IsTutorial {
-        get {return _isTutorial;}
-        set { 
+    public bool IsTutorial
+    {
+        get { return _isTutorial; }
+        set
+        {
             _isTutorial = value;
-            if(_isTutorial == true) {
+            if (_isTutorial == true)
+            {
                 OnIsTutorialEnter?.Invoke("StoryManager");
             }
-            else {
+            else
+            {
                 OnIsTutorialExit?.Invoke("StoryManager");
             }
 
@@ -43,10 +45,12 @@ public class StoryManager : MonoBehaviour
 
     void Awake()
     {
-        if (_instance == null) {
+        if (_instance == null)
+        {
             _instance = this;
         }
-        else if (_instance != this) {
+        else if (_instance != this)
+        {
             Destroy(gameObject);
         }
         OnIsTutorialEnter ??= new UnityEvent<string>();
@@ -54,17 +58,31 @@ public class StoryManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    void OnEnable() {
+    void OnEnable()
+    {
         OnIsTutorialEnter.AddListener(Sophia.Entitys.PlayerController.DisallowInput);
         OnIsTutorialExit.AddListener(Sophia.Entitys.PlayerController.AllowInput);
     }
 
-    private void OnDisable() {
+    private void OnDisable()
+    {
         OnIsTutorialEnter.RemoveListener(Sophia.Entitys.PlayerController.DisallowInput);
-        OnIsTutorialExit.RemoveListener(Sophia.Entitys.PlayerController.AllowInput);    
+        OnIsTutorialExit.RemoveListener(Sophia.Entitys.PlayerController.AllowInput);
     }
 
-    void Start() {
-        IsTutorial = DontDestroyGameManager.Instance.SaveLoadManager.Data.IsTutorial; // IsTutorial
+    void Start()
+    {
+        if (DontDestroyGameManager.Instance != null)
+            IsTutorial = DontDestroyGameManager.Instance.SaveLoadManager.Data.IsTutorial; // IsTutorial
     }
+
+    // void Update()
+    // {
+    //     if (!TextManager.Instance.IsStory && !IsBossClear && Sophia.UserInterface.InGameScreenUI.Instance._storyFadePanel.IsWaitOver)
+    //     {
+    //         Sophia.UserInterface.InGameScreenUI.Instance._fadeUI.FadeOut(0.05f, 2f);
+    //         Sophia.UserInterface.InGameScreenUI.Instance._fadeUI.AddBindingAction(() => UnityEngine.SceneManagement.SceneManager.LoadScene("05_Demo_Clear"));
+    //         IsBossClear = true;
+    //     }
+    // }
 }

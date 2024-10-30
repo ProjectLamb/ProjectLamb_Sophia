@@ -35,6 +35,13 @@ namespace Sophia.Entitys
         public Stage CurrentInstantiatedStage;
 
 #endregion
+
+#region Outline
+
+        public bool IsOutline;
+        protected Outline outline;
+
+#endregion
         public abstract RecognizeEntityComposite GetRecognizeComposite();
     }
 }

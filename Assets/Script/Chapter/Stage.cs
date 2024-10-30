@@ -14,7 +14,7 @@ public class Stage : MonoBehaviour
     #region Enum Members
 
     public enum STAGE_TYPE { NORMAL, START, SHOP, HIDDEN, BOSS };
-    public enum PORTAL_TYPE { NORMAL, BOSS, }
+    public enum PORTAL_TYPE { NORMAL, BOSS, CHAPTER }
     public enum STAGE_CHILD { TILE, WALL, PORTAL, OBSTACLE, MOB, }
     public enum STAGE_SIZE { SMALL, MIDDLE, BIG };
 
@@ -112,7 +112,7 @@ public class Stage : MonoBehaviour
         //     }
         // }
 
-        if(Type == STAGE_TYPE.BOSS)
+        if (Type == STAGE_TYPE.BOSS)
         {
             stageGenerator.InitStageGenerator(2);
         }
@@ -128,6 +128,7 @@ public class Stage : MonoBehaviour
         stageGenerator.InstantiateTile();
         stageGenerator.InstantiateWall();
         stageGenerator.InstantiatePortal();
+        stageGenerator.InstantiateFloor();
 
         if (Type == STAGE_TYPE.NORMAL)
         {
@@ -169,7 +170,7 @@ public class Stage : MonoBehaviour
         }
         else if (Type == STAGE_TYPE.BOSS)
         {
-            Sophia.UserInterface.InGameScreenUI.Instance._fadeUI.FadePanelOn();
+            //Sophia.UserInterface.InGameScreenUI.Instance._fadeUI.FadePanelOn();
             mobGenerator.InitMobGenerator();
             mobGenerator.InstantiateBoss();
         }
@@ -179,8 +180,8 @@ public class Stage : MonoBehaviour
         {
             GameObject character = GameManager.Instance.PlayerGameObject;
             GameManager.Instance.CurrentStage = gameObject;
+            character.transform.position = new Vector3(stageGenerator.tileGameObjectArray[8, 8].transform.position.x, character.transform.position.y, stageGenerator.tileGameObjectArray[8, 8].transform.position.z);
             StageClear();
-            character.transform.position = new Vector3(transform.position.x, character.transform.position.y, transform.position.z);
         }
         else
         {
@@ -234,6 +235,8 @@ public class Stage : MonoBehaviour
         }
         if (Type == STAGE_TYPE.NORMAL)
         {
+            GameManager.Instance.GlobalEvent.HandleTimeSlow(0.5f, 0.75f, 1);
+            GameManager.Instance.CameraController.FastZoomIn(5, 1);
             // // gachaComponent.instantPivot.position = transform.position;
             // // gachaComponent.InstantiateReward(gachaComponent.instantPivot);
             // List<Sophia.Instantiates.ItemObject> positionedItem = gachaComponent.InstantiateReward();
@@ -248,8 +251,13 @@ public class Stage : MonoBehaviour
             ItemObject itemObject = null;
             itemObject = ItemPool.Instance.GetRandomEquipment(E_EQUIPMENT_TYPE.Boss);
 
+            stageGenerator.InstantiateNextChapterPortal();
+
+            itemObjectBucket.transform.position += new Vector3(0, 0, -30);
             itemObjectBucket.InstantablePositioning(itemObject = Instantiate(itemObject).Init()).Activate();
             itemObject.transform.parent = itemObjectBucket.transform;
+            GameManager.Instance.GlobalEvent.HandleTimeSlow(0.5f, 1, 1);
+            GameManager.Instance.CameraController.FastZoomIn(5, 1);
         }
         else if (Type == STAGE_TYPE.HIDDEN)
         {

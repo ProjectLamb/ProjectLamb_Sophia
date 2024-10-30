@@ -2,12 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using FMODPlus;
+using UnityEngine.SceneManagement;
 
 public class Portal : MonoBehaviour
 {
+    public enum E_PORTAL_WARPTYPE { None, Stage, Chapter };
     public CommandSender portalSFXSource;
     public Animator animator;
     public bool IsCollider;
+    public string SceneName;
     bool visited;
     [SerializeField]
     private Vector3 mWarpPos;
@@ -28,9 +31,9 @@ public class Portal : MonoBehaviour
     GameObject departStage;
     GameObject arriveStage;
     private float mWarpInterval;
-    [SerializeField]
-    private string mPortalType;
-    public string PortalType
+    public E_PORTAL_WARPTYPE PortalWarpType;
+    [SerializeField] private string mPortalType;
+    public string PortalDirection
     {
         get
         {
@@ -56,7 +59,23 @@ public class Portal : MonoBehaviour
             }
         }
     }
-    public void WarpPortal()
+    public void WarpPortal(E_PORTAL_WARPTYPE type)
+    {
+        switch (type)
+        {
+            case E_PORTAL_WARPTYPE.None:
+            case E_PORTAL_WARPTYPE.Stage:
+                WarpPortalInStage();
+                break;
+            case E_PORTAL_WARPTYPE.Chapter:
+                WarpPortalInChapter();
+                break;
+        }
+
+        GameManager.Instance.GlobalEvent.PlayerMoveStage(departStage, arriveStage, newWarpPos);
+    }
+
+    private void WarpPortalInStage()
     {
         departStage = GameManager.Instance.CurrentStage;
         if (!visited)
@@ -100,7 +119,15 @@ public class Portal : MonoBehaviour
             }
             visited = true;
         }
-        GameManager.Instance.GlobalEvent.PlayerMoveStage(departStage, arriveStage, newWarpPos);
+    }
+
+    private void WarpPortalInChapter()
+    {
+        Debug.Log("WarpPortalInChapter");
+        DontDestroyGameManager.Instance.SaveLoadManager.Data.CurrentChapterNum += 1;
+        DontDestroyGameManager.Instance.SaveLoadManager.SaveAsJson();   //Json 저장하는 Unity Event 추가 후 invoke?
+        SceneManager.LoadScene("01_Loading");
+        IsCollider = false;
     }
 
     void Awake()
@@ -115,14 +142,30 @@ public class Portal : MonoBehaviour
     }
     void Start()
     {
-        
+        if (PortalWarpType == E_PORTAL_WARPTYPE.Chapter)
+        {
+            IsCollider = true;
+        }
     }
     void OnCollisionEnter(Collision other)
     {
         if (other.gameObject == GameManager.Instance.PlayerGameObject)
         {
-            if (IsCollider){
-                WarpPortal();
+            if (IsCollider)
+            {
+                WarpPortal(PortalWarpType);
+                portalSFXSource.SendCommand();
+            }
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject == GameManager.Instance.PlayerGameObject)
+        {
+            if (IsCollider)
+            {
+                WarpPortal(PortalWarpType);
                 portalSFXSource.SendCommand();
             }
         }

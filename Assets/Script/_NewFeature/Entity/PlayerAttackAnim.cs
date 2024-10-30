@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using AYellowpaper.SerializedCollections;
 using System.Runtime.CompilerServices;
+using DG.Tweening;
 
 namespace Sophia
 {
@@ -48,11 +49,6 @@ namespace Sophia
 
         void AttackStart() // 공격 시작 시점
         {
-            // //DoAttack 선입력 해제
-            // if (animator.GetFloat("attackAnimSpeed") <= 1.5f)
-            // {
-            //     animator.ResetTrigger("DoAttack");
-            // }
             isAttack = true;
             canExitAttack = false;
             canNextAttack = false;
@@ -73,7 +69,6 @@ namespace Sophia
         {
             animator.ResetTrigger("DoAttack");
             canExitAttack = true;
-            animator.SetBool("canExitAttack", true);
         }
 
         void ResetIdle() // idle 상태 돌입 시 변수 초기화
@@ -82,7 +77,6 @@ namespace Sophia
             animator.ResetTrigger("DoAttack");
             canNextAttack = true;
             canExitAttack = true;
-            animator.SetBool("canExitAttack", true);
             isAttack = false;
             attackProTime = false;
         }
@@ -117,40 +111,26 @@ namespace Sophia
 
         public void CheckAttack()
         {
-            // 공격중이라면
-            if (isAttack)
-            {
-                animator.SetBool("isAttack", true);
-            }
-            else
-            {
-                animator.SetBool("isAttack", false);
-            }
-
-            //공격 중 이동이 감지되었다면
-            if (canExitAttack && player.MoveInput.magnitude >= 0.01f)
-            {
-                animator.SetBool("canExitAttack", true);
-            }
-            else if (!canExitAttack)
-            {
-                animator.SetBool("canExitAttack", false);
-            }
-
-            if (canNextAttack)
-            {
-                animator.SetBool("canNextAttack", true);
-            }
-            else
-            {
-                animator.SetBool("canNextAttack", false);
-            }
+            animator.SetBool("isAttack", isAttack);
+            animator.SetBool("canExitAttack", canExitAttack);
+            animator.SetBool("canNextAttack", canNextAttack);
         }
 
         private void Update()
         {
             CheckAttack();
             attackAnimSpeed = weapon.CurrentRatioAttackSpeed + attackSpeedWeight;
+        }
+
+        void PlaySlowMotion(float timeScale)
+        {
+            Time.timeScale = timeScale;
+            DOTween.To(() => Time.timeScale, x => Time.timeScale = x, 1, 0.25f).SetEase(Ease.InQuad);
+        }
+
+        void StopSlowMotion()
+        {
+            Time.timeScale = 1f;
         }
     }
 }

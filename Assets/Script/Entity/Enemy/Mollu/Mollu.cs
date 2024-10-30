@@ -8,6 +8,7 @@ using Sophia.Composite;
 using Sophia.DataSystem.Referer;
 using Sophia.DataSystem;
 using Sophia.DataSystem.Modifiers;
+using HUDIndicator;
 using Cysharp.Threading.Tasks;
 using FMODPlus;
 
@@ -20,6 +21,7 @@ namespace Sophia.Entitys
     public class Mollu : Enemy, IMovable
     {
         #region Public
+        public IndicatorOffScreen indicatorOffScreen;
         public ParticleSystem LeftRocketParticle;
         public ParticleSystem RightRocketParticle;
         public int AttackRange;
@@ -36,6 +38,7 @@ namespace Sophia.Entitys
 
         private float originViewRadius;
         private NavMeshAgent nav;
+        private float HitHandlerTime = 0.3f;
 
         ParticleSystem.MainModule _leftRocketParticleMain;
         ParticleSystem.MainModule _rightRocketParticleMain;
@@ -100,6 +103,7 @@ namespace Sophia.Entitys
             _lastPos = transform.position;
 
             TryGetComponent<NavMeshAgent>(out nav);
+            TryGetComponent<Outline>(out outline);
 
             fsm = new StateMachine<States>(this);
             fsm.ChangeState(States.Init);
@@ -108,6 +112,8 @@ namespace Sophia.Entitys
         protected override void Start()
         {
             base.Start();
+
+            StartCoroutine(CheckOutline());
 
             Life.OnDamaged += OnMolluHit;
             Life.OnEnterDie += OnMolluEnterDie;
@@ -118,16 +124,6 @@ namespace Sophia.Entitys
         void Update()
         {
             fsm.Driver.Update.Invoke();
-
-            if (IsMovable)
-            {
-                nav.enabled = true;
-            }
-            else
-            {
-                nav.enabled = false;
-                transform.DOKill();
-            }
         }
 
         void FixedUpdate()
@@ -162,10 +158,35 @@ namespace Sophia.Entitys
             fsm.Driver.FixedUpdate.Invoke();
         }
 
+        #region UI
+
+        //Outline
+        private IEnumerator CheckOutline()
+        {
+            while (true)
+            {
+                if (IsOutline)
+                {
+                    outline.enabled = true;
+                }
+                else
+                {
+                    outline.enabled = false;
+                }
+                IsOutline = false;
+                yield return new WaitForSeconds(0.1f);
+            }
+        }
+
+        #endregion
+
+        #region Life
+
         public void OnMolluHit(DamageInfo damageInfo)
         {
             // GetModelManager().GetAnimator().SetTrigger("DoHit");
-            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Damaged].PlayFunctionalActOneShotWithDuration(0.3f);
+            HitStun();
+            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Damaged].PlayFunctionalActOneShotWithDuration(HitHandlerTime);
             GameManager.Instance.NewFeatureGlobalEvent.EnemyHit.PerformStartFunctionals(ref GlobalHelper.NullRef);
         }
 
@@ -183,13 +204,28 @@ namespace Sophia.Entitys
             GameManager.Instance.NewFeatureGlobalEvent.EnemyDie.PerformStartFunctionals(ref GlobalHelper.NullRef);
             SetMoveState(false);
             entityCollider.enabled = false;
-
         }
 
         public void OnMolluExitDie()
         {
             GameManager.Instance.NewFeatureGlobalEvent.EnemyDie.PerformExitFunctionals(ref GlobalHelper.NullRef);
             Destroy(gameObject, 0.5f);
+        }
+
+        void HitStun()
+        {
+            StartCoroutine(DoHitStun());
+        }
+
+        private IEnumerator DoHitStun()
+        {
+            GetModelManager().GetAnimator().speed = 0;
+            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Damaged].PauseCurrentAffect();
+
+            yield return new WaitForSeconds(HitHandlerTime / 2);
+
+            GetModelManager().GetAnimator().speed = 1;
+            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Damaged].ResumeCurrentAffect();
         }
 
         void SetNavMeshData()
@@ -233,6 +269,8 @@ namespace Sophia.Entitys
             foreach (string t in animTriggerParamList)
                 GetModelManager().GetAnimator().ResetTrigger(t);
         }
+
+        #endregion
 
         void DoAttack()
         {
@@ -370,7 +408,9 @@ namespace Sophia.Entitys
                 if (dist <= AttackRange)
                     fsm.ChangeState(States.Attack);
                 else
+                {
                     fsm.ChangeState(States.Move);
+                }
             }
             // }
         }
@@ -458,7 +498,6 @@ namespace Sophia.Entitys
         void Wander_Exit()
         {
             Debug.Log("Mollu) Exit Wander");
-
             IsWandering = false;
         }
 
@@ -466,6 +505,8 @@ namespace Sophia.Entitys
         // 움직임은 멈추되, 시선은 따라가도록 처리
         void Attack_Enter()
         {
+            indicatorOffScreen.style.color = Color.red;
+            indicatorOffScreen.arrowStyle.color = Color.red;
             Debug.Log("Mollu) Attack_Enter");
 
             if (!IsMovable) return;
@@ -481,6 +522,8 @@ namespace Sophia.Entitys
         {
             if (GetModelManager().GetAnimator().GetBool("IsAttackEnd"))
             {
+                indicatorOffScreen.style.color = Color.yellow;
+                indicatorOffScreen.arrowStyle.color = Color.yellow;
                 fsm.ChangeState(States.Idle);
             }
         }
@@ -604,9 +647,6 @@ namespace Sophia.Entitys
             }
             else
             {
-                if (!IsMovable)
-                    return;
-
                 nav.isStopped = true;
                 nav.enabled = false;
                 transform.DOKill();
@@ -632,7 +672,7 @@ namespace Sophia.Entitys
             Sequence mySequence = DOTween.Sequence();
             System.Random random = new System.Random();
             Vector3 EndPosForward = transform.right;
-            var randomAngle = random.Next(-180, 180);
+            var randomAngle = 0;
             Vector3[] rotateMatrix = new Vector3[] {
                 new Vector3(Mathf.Cos(randomAngle), 0 , Mathf.Sin(randomAngle)),
                 new Vector3(0, 1 , 0),
@@ -642,11 +682,7 @@ namespace Sophia.Entitys
             retatedVec += EndPosForward.x * rotateMatrix[0];
             retatedVec += EndPosForward.y * rotateMatrix[1];
             retatedVec += EndPosForward.z * rotateMatrix[2];
-            var randomDist = (float)random.NextDouble() * 7;
-            var randomForce = (float)random.NextDouble();
-            var randomTime = (float)(random.NextDouble() * 2 + 0.5);
-            Debug.Log(retatedVec * randomDist);
-            Tween jumpTween = itemObject.transform.DOLocalJump((retatedVec * randomDist) + transform.position, randomForce * 25, 1, randomTime).SetEase(Ease.OutBounce);
+            Tween jumpTween = itemObject.transform.DOLocalJump(retatedVec + transform.position, 10, 1, 1).SetEase(Ease.OutBounce);
             return mySequence.Append(jumpTween);
         }
         [SerializeField] protected List<FMODAudioSource> _audioSources;

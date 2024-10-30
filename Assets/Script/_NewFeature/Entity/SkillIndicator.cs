@@ -1,9 +1,11 @@
 using UnityEngine;
 using UnityEngine.Events;
+using System.Collections;
 using DG.Tweening;
 using Sophia.Entitys;
 using Sophia.Instantiates;
 using Sophia.UserInterface;
+
 
 namespace Sophia.Entitys
 {
@@ -11,134 +13,129 @@ namespace Sophia.Entitys
     using Sophia.UserInterface;
     public class SkillIndicator : MonoBehaviour
     {
+        #region public
         public Player playerRef;
-        public Vector3 recentPointer;
-        public Rigidbody RbIndicator;
-        public const float CamRayLength = 500f;
+        public Vector3 currentPosition;
+        public Vector3 arrowPosition;
+
         public int skillNumber = 0;
+        public float rotationSpeed = 5f;
         public string currentSkillName = null;
-        public LayerMask GroundMask;
-        public GameObject currentIndicator;
+        public bool IsIndicate;
+        public Canvas currentIndicator;
+        public Canvas playerArrow;
+        public LayerMask indicatorMask;
+        public const float CamRayLength = 300f;
+        #endregion
+
+        #region private
+        private RaycastHit hit;
+        private Ray ray;
+        #endregion
 
         [Header("Indicators")]
-        
-        [SerializeField] public GameObject arrowIndicator;
-        [SerializeField] public GameObject cycleIndicator;
-        
+
+        [SerializeField] public Canvas arrowIndicator;
+        [SerializeField] public Canvas circleIndicator;
+        [SerializeField] public Canvas radialIndicator;
+
+        void Awake()
+        {
+            indicatorMask = LayerMask.GetMask("Wall", "Map");
+        }
+
         // Start is called before the first frame update
         void Start()
         {
             currentIndicator = arrowIndicator;
-            RbIndicator = currentIndicator.GetComponent<Rigidbody>();
-            GroundMask = LayerMask.GetMask("Wall", "Map");
-            currentIndicator.SetActive(false);
+            currentIndicator.enabled = false;
         }
 
         // Update is called once per frame
         void Update()
         {
-            if(currentSkillName == ""){
-                currentIndicator.SetActive(false);
-                Debug.Log("업데이트 아리안ㄹ");
-                return;
-            }
-            else{
-                currentIndicator.SetActive(true);
-                Debug.Log("업데이트 아리안ㄹㄴㅇㄹㅇㄴㄴㄹㄴㄹ");
-                Debug.Log("current"+currentSkillName);
-                turning();
-            }
+
         }
 
-        public void Indicate(string skillName)
+        void FixedUpdate()
         {
-            if(skillName == null)
+            MouseArrow();
+            ray = GameManager.Instance.PlayerGameObject.GetComponent<PlayerController>().ray;
+            if (!IsIndicate)
             {
-                currentSkillName = "";
-                Debug.Log("현재 스킬이 없습니다!");
-                return;
+                playerArrow.enabled = true;
+                currentIndicator.enabled = false;
             }
-            else if(skillName == "바람처럼 칼날")
+            else if (IsIndicate)
             {
-                currentSkillName = "바람처럼 칼날";
+                playerArrow.enabled = false;
+                currentIndicator.enabled = true;
+                if (currentIndicator == arrowIndicator || currentIndicator == radialIndicator)
+                {
+                    Turning();
+                }
             }
-            else if(skillName == "거침없는 질주")
-            {
-                currentSkillName = "거침없는 질주";
-            }
-            else if(skillName == "바람처럼 돌진")
-            {
-                currentSkillName = "바람처럼 돌진";
-            }
-            else if(skillName == "갈아버리기")
-            {
-                currentSkillName = "갈아버리기";
-            }
-            else if(skillName == "바람의 상처")
-            {
-                currentSkillName = "바람의 상처";
-            }
-            else if(skillName == "빠르게 탈출하기")
-            {
-                currentSkillName = "빠르게 탈출하기";
-            }
-            else if(skillName == "바닥은 용암이야")
-            {
-                currentSkillName = "바닥은 용암이야";
-            }
-            else if(skillName == "모두 발사!")
-            {
-                currentSkillName = "모두 발사!";
-            }
-            else
-                currentSkillName = "";
-
         }
 
         public void changeIndicate(string skillName)
         {
-            if(skillName == null)
+            if (skillName == "")
             {
-                currentSkillName = null;
                 Debug.Log("현재 스킬이 없습니다!");
                 return;
             }
-            else if(skillName == "바람처럼 칼날")
+            else if (skillName == "갈아버리기")
+            {
+                currentIndicator = circleIndicator;
+            }
+            else if (skillName == "바닥은 용암이야")
+            {
+                currentIndicator = circleIndicator;
+            }
+            else if (skillName == "바람처럼 칼날")
+            {
+                currentIndicator = radialIndicator;
+            }
+            else if (skillName == "거침없는 질주")
+            {
+                currentIndicator = radialIndicator;
+            }
+            else if (skillName == "바람처럼 돌진")
             {
                 currentIndicator = arrowIndicator;
             }
-            else if(skillName == "거침없는 질주")
+            else if (skillName == "바람의 상처")
             {
                 currentIndicator = arrowIndicator;
             }
-            else if(skillName == "바람처럼 돌진")
+            else
             {
-                currentIndicator = arrowIndicator;
+                IsIndicate = false;
+                return;
             }
-            else if(skillName == "갈아버리기")
-            {
-                currentIndicator = cycleIndicator;
-            }
-            else if(skillName == "바람의 상처")
-            {
-                currentIndicator = arrowIndicator;
-            }
-            else if(skillName == "바닥은 용암이야")
-            {
-                currentIndicator = cycleIndicator;
-            }
-
         }
-        private void turning()
+        private void Turning()
         {
-            currentIndicator.transform.position = playerRef.transform.position;
-            Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(camRay, out RaycastHit groundHit, CamRayLength, GroundMask)) // 공격 도중에는 방향 전환 금지
+            if (Physics.Raycast(ray, out hit, CamRayLength, indicatorMask)) // 공격 도중에는 방향 전환 금지
             {
-                recentPointer = groundHit.point - playerRef.transform.position;
-                recentPointer.y = 0f;
-                RbIndicator.DORotate(Quaternion.LookRotation(recentPointer).eulerAngles, 0.1f);
+                currentPosition = new Vector3(hit.point.x, hit.point.y, hit.point.z);
+
+                Quaternion skillCanvas = Quaternion.LookRotation(currentPosition - transform.position);
+                skillCanvas.eulerAngles = new Vector3(0, skillCanvas.eulerAngles.y, 0);
+                currentIndicator.transform.rotation = Quaternion.Lerp(currentIndicator.transform.rotation, skillCanvas, Time.deltaTime * rotationSpeed);
+            }
+        }
+
+        private void MouseArrow()
+        {
+            if (Physics.Raycast(ray, out hit, CamRayLength)) // 공격 도중에는 방향 전환 금지
+            {
+                arrowPosition = new Vector3(hit.point.x, hit.point.y, hit.point.z);
+                Quaternion arrowCanvas = Quaternion.LookRotation(arrowPosition - transform.position);
+                arrowCanvas.eulerAngles = new Vector3(0, arrowCanvas.eulerAngles.y, 0);
+                playerArrow.transform.rotation = Quaternion.Lerp(playerArrow.transform.rotation, arrowCanvas, Time.deltaTime * rotationSpeed);
             }
         }
     }
+
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using MonsterLove.StateMachine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 using DG.Tweening;
 using Sophia.Composite;
 using Sophia.DataSystem.Referer;
@@ -13,6 +14,8 @@ using Sophia_Carriers;
 using UnityEngine.Rendering;
 using FMODPlus;
 using Sophia.AI;
+using HUDIndicator;
+
 
 namespace Sophia.Entitys
 {
@@ -25,6 +28,7 @@ namespace Sophia.Entitys
         #region Public
         public int AttackRange;
         public int TurnSpeed;   //Stat으로 관리 가능성
+        public IndicatorOffScreen indicatorOffScreen;
         #endregion
 
         #region Private
@@ -36,6 +40,7 @@ namespace Sophia.Entitys
 
         private float originViewRadius;
         private NavMeshAgent nav;
+        private float HitHandlerTime = 0.3f;
 
         #endregion
 
@@ -77,6 +82,7 @@ namespace Sophia.Entitys
 
             TryGetComponent<NavMeshAgent>(out nav);
             TryGetComponent<EQS>(out eqs);
+            TryGetComponent<Outline>(out outline);
 
             fsm = new StateMachine<States>(this);
             fsm.ChangeState(States.Init);
@@ -85,6 +91,8 @@ namespace Sophia.Entitys
         protected override void Start()
         {
             base.Start();
+
+            StartCoroutine(CheckOutline());
 
             Life.OnDamaged += OnEnemyHitHandler;
             Life.OnEnterDie += OnRobuwaEnterDie;
@@ -96,16 +104,6 @@ namespace Sophia.Entitys
         void Update()
         {
             fsm.Driver.Update.Invoke();
-
-            if (isMovable)
-            {
-                nav.enabled = true;
-            }
-            else
-            {
-                nav.enabled = false;
-                transform.DOKill();
-            }
         }
 
         void FixedUpdate()
@@ -113,7 +111,29 @@ namespace Sophia.Entitys
             fsm.Driver.FixedUpdate.Invoke();
         }
 
-        
+        #region UI
+
+        //Outline
+        private IEnumerator CheckOutline()
+        {
+            while (true)
+            {
+                if (IsOutline)
+                {
+                    outline.enabled = true;
+                }
+                else
+                {
+                    outline.enabled = false;
+                }
+                IsOutline = false;
+                yield return new WaitForSeconds(0.1f);
+            }
+        }
+
+        #endregion
+
+        #region Life
         private void OnDisable()
         {
             Life.OnDamaged -= OnEnemyHitHandler;
@@ -123,16 +143,17 @@ namespace Sophia.Entitys
 
         public void OnRobuwaEnterDie()
         {
-            Sophia.Instantiates.VisualFXObject visualFX = VisualFXObjectPool.GetObject(_dieParticleRef).Init();
-            GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
-            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Dead].PlayFunctionalActOneShotWithDuration(0.5f);
-            _audioSources[(int)E_ROBUWA_AUDIO_INDEX.Death].Play();
-
+            GetModelManager().GetAnimator().enabled = false;
             for (int i = 0; i < 4; i++)
             {
                 if (_projectileBucketManager.GetProjectileBucket(i) != null)
                     _projectileBucketManager.GetProjectileBucket(i).gameObject.SetActive(false);
             }
+
+            Sophia.Instantiates.VisualFXObject visualFX = VisualFXObjectPool.GetObject(_dieParticleRef).Init();
+            GetVisualFXBucket().InstantablePositioning(visualFX)?.Activate();
+            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Dead].PlayFunctionalActOneShotWithDuration(0.5f);
+            _audioSources[(int)E_ROBUWA_AUDIO_INDEX.Death].Play();
 
             CurrentInstantiatedStage.mobGenerator.RemoveMob(this.gameObject);
         }
@@ -140,6 +161,22 @@ namespace Sophia.Entitys
         public void OnRobuwaExitDie()
         {
             Destroy(gameObject, 0.5f);
+        }
+
+        void HitStun()
+        {
+            StartCoroutine(DoHitStun());
+        }
+
+        private IEnumerator DoHitStun()
+        {
+            GetModelManager().GetAnimator().speed = 0;
+            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Damaged].PauseCurrentAffect();
+
+            yield return new WaitForSeconds(HitHandlerTime / 2);
+
+            GetModelManager().GetAnimator().speed = 1;
+            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Damaged].ResumeCurrentAffect();
         }
 
         void SetNavMeshData()
@@ -179,6 +216,8 @@ namespace Sophia.Entitys
             foreach (string t in animTriggerParamList)
                 this.GetModelManager().GetAnimator().ResetTrigger(t);
         }
+
+        #endregion
 
         void DoAttack()
         {
@@ -230,7 +269,7 @@ namespace Sophia.Entitys
         #region Attack
 
         private Stat power;
-        [SerializeField] protected Instantiates.ProjectileObject[]         _attckProjectileDirection;
+        [SerializeField] protected Instantiates.ProjectileObject[] _attckProjectileDirection;
 
         public void UseProjectile_NormalAttack()
         {
@@ -264,7 +303,7 @@ namespace Sophia.Entitys
         /** Init State */
         void Init_Enter()
         {
-            Debug.Log("Init_Enter");
+            //Debug.Log("Init_Enter");
 
             //Init Settings
             originViewRadius = recognize.CurrentViewRadius;
@@ -276,7 +315,7 @@ namespace Sophia.Entitys
         /** Idle State */
         void Idle_Enter()
         {
-            Debug.Log("Idle_Enter");
+            //Debug.Log("Idle_Enter");
             recognize.CurrentViewRadius = originViewRadius;
 
             if (!isMovable) return;
@@ -310,8 +349,7 @@ namespace Sophia.Entitys
         /**Threat State*/
         void Threat_Enter()
         {
-            Debug.Log("Threat Enter");
-
+            //Debug.Log("Threat Enter");
             if (!isMovable) return;
             transform.DOKill();
             recognize.CurrentViewRadius *= 3;
@@ -357,7 +395,7 @@ namespace Sophia.Entitys
         /**Move State*/
         void Move_Enter()
         {
-            Debug.Log("Move_Enter");
+            //Debug.Log("Move_Enter");
             this.GetModelManager().GetAnimator().SetBool("IsWalk", true);
             _audioSources[(int)E_ROBUWA_AUDIO_INDEX.MoveAttackMode].Play();
             nav.enabled = true;
@@ -399,7 +437,7 @@ namespace Sophia.Entitys
         void Wander_Enter()
         {
             System.Random random = new System.Random();
-            Debug.Log("Wander_Enter");
+            //Debug.Log("Wander_Enter");
 
             Invoke("DoWander", random.Next(0, wanderingCoolTime + 1));
             SetMoveState(true);
@@ -437,8 +475,9 @@ namespace Sophia.Entitys
         /**Attack State*/
         void Attack_Enter()
         {
-            Debug.Log("Attack_Enter");
-
+            //Debug.Log("Attack_Enter");
+            indicatorOffScreen.style.color = Color.red;
+            indicatorOffScreen.arrowStyle.color = Color.red;
 
             if (!isMovable) return;
             nav.SetDestination(transform.position);
@@ -453,28 +492,33 @@ namespace Sophia.Entitys
         {
             if (this.GetModelManager().GetAnimator().GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f)
             {
+                indicatorOffScreen.style.color = Color.yellow;
+                indicatorOffScreen.arrowStyle.color = Color.yellow;
                 fsm.ChangeState(States.Idle);
             }
         }
 
         void Attack_Exit()
         {
+            indicatorOffScreen.style.color = Color.yellow;
+            indicatorOffScreen.arrowStyle.color = Color.yellow;
             ResetAnimParam();
         }
 
         /**Death State*/
         void Death_Enter()
         {
-            Debug.Log("Death_Enter");
+            //Debug.Log("Death_Enter");
+            Die();
+
             List<Sophia.Instantiates.ItemObject> itemObjects;
             itemObjects = GetComponent<Sophia.Instantiates.GachaComponent>().InstantiateReward();
 
             foreach (Sophia.Instantiates.ItemObject itemObject in itemObjects)
             {
-                if(itemObject == null) continue;
+                if (itemObject == null) continue;
                 itemObject.SetTriggerTime(1f).SetTweenSequence(SetSequnce(itemObject)).Activate();
             }
-            Die();
         }
 
         #endregion
@@ -484,7 +528,8 @@ namespace Sophia.Entitys
             Sequence mySequence = DOTween.Sequence();
             System.Random random = new System.Random();
             Vector3 EndPosForward = transform.right;
-            var randomAngle = random.Next(-180, 180);
+            //var randomAngle = random.Next(-180, 180);
+            var randomAngle = 0;
             Vector3[] rotateMatrix = new Vector3[] {
                 new Vector3(Mathf.Cos(randomAngle), 0 , Mathf.Sin(randomAngle)),
                 new Vector3(0, 1 , 0),
@@ -494,11 +539,12 @@ namespace Sophia.Entitys
             retatedVec += EndPosForward.x * rotateMatrix[0];
             retatedVec += EndPosForward.y * rotateMatrix[1];
             retatedVec += EndPosForward.z * rotateMatrix[2];
-            var randomDist = (float)random.NextDouble() * 7;
-            var randomForce = (float)random.NextDouble();
-            var randomTime = (float)(random.NextDouble() * 2 + 0.5);
-            Debug.Log(retatedVec * randomDist);
-            Tween jumpTween = itemObject.transform.DOLocalJump((retatedVec * randomDist) + transform.position, randomForce * 25, 1, randomTime).SetEase(Ease.OutBounce);
+            // var randomDist = (float)random.NextDouble() * 7;
+            // var randomForce = (float)random.NextDouble();
+            // var randomTime = (float)(random.NextDouble() * 2 + 0.5);
+            //Debug.Log(retatedVec * randomDist);
+            //Tween jumpTween = itemObject.transform.DOLocalJump((retatedVec * randomDist) + transform.position, randomForce * 25, 1, randomTime).SetEase(Ease.OutBounce);
+            Tween jumpTween = itemObject.transform.DOLocalJump(retatedVec + transform.position, 10, 1, 1).SetEase(Ease.OutBounce);
             return mySequence.Append(jumpTween);
         }
 
@@ -541,11 +587,13 @@ namespace Sophia.Entitys
             return isDamaged;
         }
 
-        public void OnEnemyHitHandler(DamageInfo damageInfo) {
+        public void OnEnemyHitHandler(DamageInfo damageInfo)
+        {
             _audioSources[(int)E_ROBUWA_AUDIO_INDEX.Hit].Play();
-            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Damaged].PlayFunctionalActOneShotWithDuration(0.3f);
+            HitStun();
+            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Damaged].PlayFunctionalActOneShotWithDuration(HitHandlerTime);
             GameManager.Instance.NewFeatureGlobalEvent.EnemyHit.PerformStartFunctionals(ref GlobalHelper.NullRef);
-        } 
+        }
 
         public override Stat GetStat(E_NUMERIC_STAT_TYPE numericType) => StatReferer.GetStat(numericType);
 
@@ -574,12 +622,15 @@ namespace Sophia.Entitys
 
         public void SetMoveState(bool movableState)
         {
-            nav.enabled = true;
-
             isMovable = movableState;
-            nav.isStopped = !movableState;
-            if (!movableState)
+            if (isMovable)
             {
+                nav.enabled = true;
+                nav.isStopped = false;
+            }
+            else
+            {
+                nav.isStopped = true;
                 nav.enabled = false;
                 transform.DOKill();
             }

@@ -13,12 +13,14 @@ namespace Sophia.DataSystem.Modifiers
         public readonly string Name;
         public readonly string Description;
         public readonly Sprite Icon;
+        public readonly int ID;
         public readonly Dictionary<E_NUMERIC_STAT_TYPE, StatModifier> StatModifiers = new();
 
         public Equipment(in SerialEquipmentData equipmentData) {
             Name            = equipmentData._equipmentName;
             Description     = equipmentData._description;
             Icon            = equipmentData._icon;
+            ID              = equipmentData._equipmentID;
 
             foreach (E_NUMERIC_STAT_TYPE statType in Enum.GetValues(typeof(E_NUMERIC_STAT_TYPE)))
             {

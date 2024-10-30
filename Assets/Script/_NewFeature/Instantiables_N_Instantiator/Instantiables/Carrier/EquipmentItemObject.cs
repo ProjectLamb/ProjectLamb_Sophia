@@ -37,6 +37,9 @@ namespace Sophia.Instantiates
                 {
                     player.EquipEquipment(equipment);
 
+                    //File
+                    DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.EquipmentDataList.Add(GetSerialEquipmentData());
+
                     //_lootVFX.Stop();
                     _lootObject.SetActive(false);
                     IsReadyToTrigger = false;

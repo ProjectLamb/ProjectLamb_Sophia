@@ -8,6 +8,8 @@ using UnityEngine.AI;
 
 namespace Sophia.Entitys
 {
+    using System.Collections;
+    using System.Data;
     using Sophia.Composite;
     using Sophia.Composite.RenderModels;
     using Sophia.DataSystem;
@@ -33,7 +35,7 @@ namespace Sophia.Entitys
         // [SerializeField] protected VisualFXObject             _dieParticleRef;
         // [SerializeField] public    Entity                     _objectiveEntity;
         // [SerializeField] protected E_MOB_AI_DIFFICULTY        _mobDifficulty;
-        [SerializeField] protected UnityEngine.AI.NavMeshAgent _nav;
+        [SerializeField] protected UnityEngine.AI.NavMeshAgent nav;
         [Header("Raptor Settings")]
         [SerializeField] protected float TurnSpeed = 1;
         [SerializeField] protected int wanderingCoolTime = 3;
@@ -53,6 +55,7 @@ namespace Sophia.Entitys
         protected Vector3 wanderPosition;
         protected bool IsWandering = false;
         protected float originViewRadius;
+        protected float HitHandlerTime;
         #endregion
         protected enum States
         {
@@ -87,7 +90,8 @@ namespace Sophia.Entitys
             _affectorManager.Init(_baseEntityData.Tenacity);
             _objectiveEntity = GameManager.Instance.PlayerGameObject.GetComponent<Entitys.Entity>();
 
-            TryGetComponent<NavMeshAgent>(out _nav);
+            TryGetComponent<NavMeshAgent>(out nav);
+            TryGetComponent<Outline>(out outline);
 
             fsm = new StateMachine<States>(this);
             fsm.ChangeState(States.Init);
@@ -97,6 +101,8 @@ namespace Sophia.Entitys
         {
             base.Start();
 
+            StartCoroutine(CheckOutline());
+
             Life.OnDamaged += OnRaptorHit;
             Life.OnEnterDie += OnRaptorEnterDie;
             Life.OnExitDie += OnRaptorExitDie;
@@ -105,16 +111,6 @@ namespace Sophia.Entitys
         protected virtual void Update()
         {
             fsm.Driver.Update.Invoke();
-
-            if (isMovable)
-            {
-                _nav.enabled = true;
-            }
-            else
-            {
-                _nav.enabled = false;
-                transform.DOKill();
-            }
         }
 
         protected virtual void FixedUpdate()
@@ -122,13 +118,53 @@ namespace Sophia.Entitys
             fsm.Driver.FixedUpdate.Invoke();
         }
 
+        #region UI
+
+        //Outline
+        private IEnumerator CheckOutline()
+        {
+            while (true)
+            {
+                if (IsOutline)
+                {
+                    outline.enabled = true;
+                }
+                else
+                {
+                    outline.enabled = false;
+                }
+                IsOutline = false;
+                yield return new WaitForSeconds(0.1f);
+            }
+        }
+
+        #endregion
+
+        #region Life
+
         private void OnDisable()
         {
             Life.OnDamaged -= OnRaptorHit;
             Life.OnEnterDie -= OnRaptorEnterDie;
             Life.OnExitDie -= OnRaptorExitDie;
         }
-        
+
+        void HitStun()
+        {
+            StartCoroutine(DoHitStun());
+        }
+
+        private IEnumerator DoHitStun()
+        {
+            GetModelManager().GetAnimator().speed = 0;
+            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Damaged].PauseCurrentAffect();
+
+            yield return new WaitForSeconds(HitHandlerTime / 2);
+
+            GetModelManager().GetAnimator().speed = 1;
+            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Damaged].ResumeCurrentAffect();
+        }
+
         protected void InitAnimParamList()
         {
             for (int i = 0; i < GetModelManager().GetAnimator().parameterCount; i++)
@@ -155,7 +191,9 @@ namespace Sophia.Entitys
             foreach (string t in animTriggerParamList)
                 this.GetModelManager().GetAnimator().ResetTrigger(t);
         }
-        
+
+        #endregion
+
         #region Attack
         protected void DoAttack()
         {
@@ -201,8 +239,9 @@ namespace Sophia.Entitys
         public void OnRaptorHit(DamageInfo damageInfo)
         {
             _audioSources[(int)E_RAPTOR_AUDIO_INDEX.Hit].Play();
+            HitStun();
             GetModelManager().GetAnimator().SetTrigger("DoHit");
-            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Damaged].PlayFunctionalActOneShotWithDuration(0.3f);
+            GetModelManager().GetMaterialVFX().FunctionalMaterialChanger[E_FUNCTIONAL_EXTRAS_TYPE.Damaged].PlayFunctionalActOneShotWithDuration(HitHandlerTime);
             GameManager.Instance.NewFeatureGlobalEvent.EnemyHit.PerformStartFunctionals(ref GlobalHelper.NullRef);
         }
 
@@ -332,14 +371,17 @@ namespace Sophia.Entitys
 
         public void SetMoveState(bool movableState)
         {
-            _nav.enabled = true;
-
             isMovable = movableState;
-            _nav.isStopped = !movableState;
-            if (!movableState)
+            if (isMovable)
             {
-                _nav.enabled = false;
-                transform.DOKill();
+                nav.enabled = true;
+                nav.isStopped = false;
+            }
+            else
+            {
+                nav.isStopped = true;
+                nav.enabled = false;
+                transform.DOKill(); //애매
             }
         }
 
@@ -355,9 +397,9 @@ namespace Sophia.Entitys
 
         public virtual void SetNavMeshData()
         {
-            _nav.speed = MoveSpeed.GetValueForce();
-            _nav.acceleration = _nav.speed * 1.5f;
-            _nav.updateRotation = false;
+            nav.speed = MoveSpeed.GetValueForce();
+            nav.acceleration = nav.speed * 1.5f;
+            nav.updateRotation = false;
             // _nav.stoppingDistance = rushRange;
             //_nav.autoBraking = false;
         }
