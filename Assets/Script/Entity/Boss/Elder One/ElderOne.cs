@@ -67,6 +67,7 @@ namespace Sophia.Entitys
 
         #region VFX
         [SerializeField] GameObject barrierVFX;
+        [SerializeField] GameObject PatternPreviewIndicator;
         private bool isVFXOnce = false;
         #endregion
 
@@ -655,9 +656,13 @@ namespace Sophia.Entitys
                 if ((transform.position.x >= nav.destination.x - 1f && transform.position.x <= nav.destination.x + 1f) &&
                  (transform.position.z >= nav.destination.z - 1f && transform.position.z <= nav.destination.z + 1f))
                 {
-                    if (!isSkillOnce)
+                    if (!isSkillOnce)   //2Phase Range Attack
                     {
+                        GameObject currentIndicator;
                         barrierVFX?.SetActive(true);
+                        currentIndicator = Instantiate(PatternPreviewIndicator, CurrentInstantiatedStage.transform.position, Quaternion.identity);
+                        currentIndicator.GetComponent<BossPattern>().DisplayPreviewIndicator(300, 300, 3f);
+
                         this.GetModelManager().GetAnimator().SetBool("IsWalk", false);
                         IsInvincible = true;
                         nav.SetDestination(transform.position);

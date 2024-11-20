@@ -16,6 +16,7 @@ TagManager:
   - BossProjectile
   - FxTemporaire
   - Obstacle
+  - Boss
   layers:
   - Default
   - TransparentFX

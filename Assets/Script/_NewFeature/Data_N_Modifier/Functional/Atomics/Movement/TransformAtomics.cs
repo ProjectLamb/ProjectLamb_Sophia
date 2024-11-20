@@ -75,6 +75,9 @@ namespace Sophia.DataSystem.Atomics
 
         public void Invoke(Entitys.Entity entityRef)
         {
+            if (entityRef.tag != "Enemy")
+                return;
+
             entityRef.entityRigidbody.velocity = Vector3.zero;
             entityRef.entityRigidbody.constraints = RigidbodyConstraints.None;
             entityRef.entityRigidbody.constraints = RigidbodyConstraints.FreezeRotation;
