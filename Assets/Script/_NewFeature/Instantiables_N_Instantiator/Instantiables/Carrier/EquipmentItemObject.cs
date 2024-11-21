@@ -1,3 +1,4 @@
+using Sophia.DB;
 using UnityEngine.VFX;
 using UnityEngine;
 
@@ -11,6 +12,14 @@ namespace Sophia.Instantiates
 
     public class EquipmentItemObject : ItemObject
     {
+        [SerializeField] ScriptableEquipmentData _scriptableEquipmentData;
+
+        [ContextMenu("Deep Copy To Scriptable")]
+        private void Deep_Copy_To_Scriptable()
+        {
+            _scriptableEquipmentData._serialEquipmentData = _equipmentData;
+        }
+
         [SerializeField] SerialEquipmentData _equipmentData;
         [SerializeField] PurchaseComponent _purchaseComponent;
         public SerialEquipmentData GetSerialEquipmentData() => _equipmentData;

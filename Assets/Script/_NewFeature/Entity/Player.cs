@@ -441,7 +441,7 @@ namespace Sophia.Entitys
                     }
                 }
 
-                // //스킬
+                //스킬
                 // foreach (var item in saveLoadManager.Data.PlayerData.SkillDataDic)
                 // {
                 //     if (item.Value != null)

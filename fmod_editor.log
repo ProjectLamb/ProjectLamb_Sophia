@@ -1,13 +1,12 @@
-[LOG] System::create                           : Header version = 2.02.20. Current version = 2.02.20.
-[LOG] Manager::init                            : maxchannels = 256 studioflags = 00000006 flags 00000000 extradriverdata 0000000000000000.
-[LOG] SystemI::init                            : Initialize version=20220 (139317), maxchannels=256, flags=0x00020000
-[LOG] SystemI::setOutputInternal               : Setting output to 'FMOD WASAPI Output'
-[LOG] OutputWASAPI::init                       : Mix Format (WAVEFORMATEX): wFormatTag=0xFFFE, nChannels=2, nSamplesPerSec=48000, nAvgBytesPerSec=384000, nBlockAlign=8, wBitsPerSample=32, cbSize=22.
-[LOG] OutputWASAPI::init                       : Mix Format (WAVEFORMATEXTENSIBLE): wValidBitsPerSample=32, dwChannelMask=0x00000003, SubFormat=00000003-0000-0010-8000-00AA00389B71.
-[LOG] OutputWASAPI::init                       : Output buffer size: 4096 samples, latency: 0.00ms, period: 10.00ms, DSP buffer: 1024 * 4
+[LOG] System::create                           : Header version = 2.02.24. Current version = 2.02.24.
+[LOG] Manager::init                            : maxchannels = 256 studioflags = 00000006 flags 00000000 extradriverdata 0x0.
+[LOG] SystemI::init                            : Initialize version=20224 (146338), maxchannels=256, flags=0x00020000
+[LOG] SystemI::setOutputInternal               : Setting output to 'FMOD Core Audio Output'
+[LOG] OutputCoreAudio::init                    : Output running 2 channels at 48000Hz sample rate.
+[LOG] OutputCoreAudio::init                    : Maximum hardware read size: 512 samples, Software buffer size: 512 samples, Number of software buffers: 4.
 [LOG] Thread::initThread                       : Init FMOD stream thread. Affinity: 0x4000000000000003, Priority: 0xFFFF7FFB, Stack Size: 98304, Semaphore: No, Sleep Time: 10, Looping: Yes.
-[LOG] Thread::initThread                       : Init FMOD mixer thread. Affinity: 0x4000000000000001, Priority: 0xFFFF7FFA, Stack Size: 81920, Semaphore: No, Sleep Time: 0, Looping: Yes.
-[LOG] AsyncManager::init                       : manager 000001CB1D6B9EE8 isAsync 0 updatePeriod 0.02
+[LOG] Thread::initThread                       : Init FMOD mixer thread. Affinity: 0x4000000000000001, Priority: 0xFFFF7FFA, Stack Size: 81920, Semaphore: Yes, Sleep Time: 0, Looping: Yes.
+[LOG] AsyncManager::init                       : manager 0x4721d6008 isAsync 0 updatePeriod 0.02
 [LOG] AsyncManager::init                       : done
 [LOG] PlaybackSystem::init                     : 
 [LOG] Thread::initThread                       : Init FMOD Studio sample load thread. Affinity: 0x4000000000000003, Priority: 0xFFFF7FFD, Stack Size: 98304, Semaphore: No, Sleep Time: 1, Looping: No.
@@ -21,312 +20,62 @@
 [LOG] PlaybackSystem::acquireMasterBus         : Setting master channel group format to 3
 [LOG] Manager::readBank                        : fileversion = 142, compatVersion = 140 (oldest = 44, newest = 142)
 [LOG] Manager::readBank                        : fileversion = 142, compatVersion = 140 (oldest = 44, newest = 142)
-[LOG] SystemI::createSoundInternal             : Create name='', mode=0x02000202
-[LOG] SystemI::createSoundInternal             : exinfo->cbsize             = 224
-[LOG] SystemI::createSoundInternal             : exinfo->length             = 4021536
-[LOG] SystemI::createSoundInternal             : exinfo->fileoffset         = 212768
-[LOG] SystemI::createSoundInternal             : exinfo->numsubsounds       = 1
-[LOG] SystemI::createSoundInternal             : exinfo->inclusionlist      = 0000009A605FF458
-[LOG] SystemI::createSoundInternal             : exinfo->inclusionlistnum   = 1
-[LOG] SystemI::createSoundInternal             : exinfo->suggestedsoundtype = 5
-[LOG] SystemI::createSoundInternal             : exinfo->useropen           = 00007FF9F5643F70
-[LOG] SystemI::createSoundInternal             : exinfo->userclose          = 00007FF9F5643F30
-[LOG] SystemI::createSoundInternal             : exinfo->userread           = 00007FF9F5644050
-[LOG] SystemI::createSoundInternal             : exinfo->userseek           = 00007FF9F5644110
-[LOG] SystemI::createSoundInternal             : exinfo->fileuserdata       = 000001CA897BD1B8
-[LOG] SystemI::createSoundInternal             : exinfo->initialseekpostype = 1
-[LOG] SystemI::DSPCodecPoolRegister            : register codec pool for pool type 5
-[LOG] SystemI::createSoundInternal             : Sample 0/1: name='ElderOne_DoubleHandAttack_PunchB', format=5, channels=2, frequency=44100, lengthbytes=12096, lengthpcm=66150, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.312597.
-[LOG] SystemI::createSoundInternal             : Create name='', mode=0x02000202
-[LOG] SystemI::createSoundInternal             : exinfo->cbsize             = 224
-[LOG] SystemI::createSoundInternal             : exinfo->length             = 4021536
-[LOG] SystemI::createSoundInternal             : exinfo->fileoffset         = 212768
-[LOG] SystemI::createSoundInternal             : exinfo->numsubsounds       = 1
-[LOG] SystemI::createSoundInternal             : exinfo->inclusionlist      = 0000009A605FF458
-[LOG] SystemI::createSoundInternal             : exinfo->inclusionlistnum   = 1
-[LOG] SystemI::createSoundInternal             : exinfo->suggestedsoundtype = 5
-[LOG] SystemI::createSoundInternal             : exinfo->useropen           = 00007FF9F5643F70
-[LOG] SystemI::createSoundInternal             : exinfo->userclose          = 00007FF9F5643F30
-[LOG] SystemI::createSoundInternal             : exinfo->userread           = 00007FF9F5644050
-[LOG] SystemI::createSoundInternal             : exinfo->userseek           = 00007FF9F5644110
-[LOG] SystemI::createSoundInternal             : exinfo->fileuserdata       = 000001CA897BD1B8
-[LOG] SystemI::createSoundInternal             : exinfo->initialseekpostype = 1
-[LOG] SystemI::DSPCodecPoolRegister            : register codec pool for pool type 5
-[LOG] SystemI::createSoundInternal             : Sample 0/1: name='ElderOne_DoubleHandAttack_PunchA', format=5, channels=2, frequency=44100, lengthbytes=11744, lengthpcm=66150, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.301493.
-[LOG] SystemI::createSoundInternal             : Create name='', mode=0x02000202
-[LOG] SystemI::createSoundInternal             : exinfo->cbsize             = 224
-[LOG] SystemI::createSoundInternal             : exinfo->length             = 4021536
-[LOG] SystemI::createSoundInternal             : exinfo->fileoffset         = 212768
-[LOG] SystemI::createSoundInternal             : exinfo->numsubsounds       = 1
-[LOG] SystemI::createSoundInternal             : exinfo->inclusionlist      = 0000009A605FF458
-[LOG] SystemI::createSoundInternal             : exinfo->inclusionlistnum   = 1
-[LOG] SystemI::createSoundInternal             : exinfo->suggestedsoundtype = 5
-[LOG] SystemI::createSoundInternal             : exinfo->useropen           = 00007FF9F5643F70
-[LOG] SystemI::createSoundInternal             : exinfo->userclose          = 00007FF9F5643F30
-[LOG] SystemI::createSoundInternal             : exinfo->userread           = 00007FF9F5644050
-[LOG] SystemI::createSoundInternal             : exinfo->userseek           = 00007FF9F5644110
-[LOG] SystemI::createSoundInternal             : exinfo->fileuserdata       = 000001CA897BD1B8
-[LOG] SystemI::createSoundInternal             : exinfo->initialseekpostype = 1
-[LOG] SystemI::DSPCodecPoolRegister            : register codec pool for pool type 5
-[LOG] SystemI::createSoundInternal             : Sample 0/1: name='ElderOne_DustAfterAttackOnGround_TypeB', format=5, channels=2, frequency=44100, lengthbytes=31552, lengthpcm=108855, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.500512.
-[LOG] SystemI::createSoundInternal             : Create name='', mode=0x02000202
-[LOG] SystemI::createSoundInternal             : exinfo->cbsize             = 224
-[LOG] SystemI::createSoundInternal             : exinfo->length             = 4021536
-[LOG] SystemI::createSoundInternal             : exinfo->fileoffset         = 212768
-[LOG] SystemI::createSoundInternal             : exinfo->numsubsounds       = 1
-[LOG] SystemI::createSoundInternal             : exinfo->inclusionlist      = 0000009A605FF458
-[LOG] SystemI::createSoundInternal             : exinfo->inclusionlistnum   = 1
-[LOG] SystemI::createSoundInternal             : exinfo->suggestedsoundtype = 5
-[LOG] SystemI::createSoundInternal             : exinfo->useropen           = 00007FF9F5643F70
-[LOG] SystemI::createSoundInternal             : exinfo->userclose          = 00007FF9F5643F30
-[LOG] SystemI::createSoundInternal             : exinfo->userread           = 00007FF9F5644050
-[LOG] SystemI::createSoundInternal             : exinfo->userseek           = 00007FF9F5644110
-[LOG] SystemI::createSoundInternal             : exinfo->fileuserdata       = 000001CA897BD1B8
-[LOG] SystemI::createSoundInternal             : exinfo->initialseekpostype = 1
-[LOG] SystemI::DSPCodecPoolRegister            : register codec pool for pool type 5
-[LOG] SystemI::createSoundInternal             : Sample 0/1: name='ElderOne_DustAfterAttackOnGround_TypeA', format=5, channels=2, frequency=44100, lengthbytes=31360, lengthpcm=108855, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.497945.
-[LOG] SystemI::createSoundInternal             : Create name='', mode=0x02000202
-[LOG] SystemI::createSoundInternal             : exinfo->cbsize             = 224
-[LOG] SystemI::createSoundInternal             : exinfo->length             = 4021536
-[LOG] SystemI::createSoundInternal             : exinfo->fileoffset         = 212768
-[LOG] SystemI::createSoundInternal             : exinfo->numsubsounds       = 1
-[LOG] SystemI::createSoundInternal             : exinfo->inclusionlist      = 0000009A605FF458
-[LOG] SystemI::createSoundInternal             : exinfo->inclusionlistnum   = 1
-[LOG] SystemI::createSoundInternal             : exinfo->suggestedsoundtype = 5
-[LOG] SystemI::createSoundInternal             : exinfo->useropen           = 00007FF9F5643F70
-[LOG] SystemI::createSoundInternal             : exinfo->userclose          = 00007FF9F5643F30
-[LOG] SystemI::createSoundInternal             : exinfo->userread           = 00007FF9F5644050
-[LOG] SystemI::createSoundInternal             : exinfo->userseek           = 00007FF9F5644110
-[LOG] SystemI::createSoundInternal             : exinfo->fileuserdata       = 000001CA897BEC88
-[LOG] SystemI::createSoundInternal             : exinfo->initialseekpostype = 1
-[LOG] SystemI::DSPCodecPoolRegister            : register codec pool for pool type 5
-[LOG] SystemI::createSoundInternal             : Sample 0/1: name='ElderOne_NormalAttack_PunchB', format=5, channels=2, frequency=44100, lengthbytes=5184, lengthpcm=33075, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.499931.
-[LOG] SystemI::createSoundInternal             : Create name='', mode=0x02000202
-[LOG] SystemI::createSoundInternal             : exinfo->cbsize             = 224
-[LOG] SystemI::createSoundInternal             : exinfo->length             = 4021536
-[LOG] SystemI::createSoundInternal             : exinfo->fileoffset         = 212768
-[LOG] SystemI::createSoundInternal             : exinfo->numsubsounds       = 1
-[LOG] SystemI::createSoundInternal             : exinfo->inclusionlist      = 0000009A605FF458
-[LOG] SystemI::createSoundInternal             : exinfo->inclusionlistnum   = 1
-[LOG] SystemI::createSoundInternal             : exinfo->suggestedsoundtype = 5
-[LOG] SystemI::createSoundInternal             : exinfo->useropen           = 00007FF9F5643F70
-[LOG] SystemI::createSoundInternal             : exinfo->userclose          = 00007FF9F5643F30
-[LOG] SystemI::createSoundInternal             : exinfo->userread           = 00007FF9F5644050
-[LOG] SystemI::createSoundInternal             : exinfo->userseek           = 00007FF9F5644110
-[LOG] SystemI::createSoundInternal             : exinfo->fileuserdata       = 000001CA897BEC88
-[LOG] SystemI::createSoundInternal             : exinfo->initialseekpostype = 1
-[LOG] SystemI::DSPCodecPoolRegister            : register codec pool for pool type 5
-[LOG] SystemI::createSoundInternal             : Sample 0/1: name='ElderOne_NormalAttack_PunchA', format=5, channels=2, frequency=44100, lengthbytes=5120, lengthpcm=33075, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.484782.
-[LOG] SystemI::createSoundInternal             : Create name='', mode=0x02000202
-[LOG] SystemI::createSoundInternal             : exinfo->cbsize             = 224
-[LOG] SystemI::createSoundInternal             : exinfo->length             = 4021536
-[LOG] SystemI::createSoundInternal             : exinfo->fileoffset         = 212768
-[LOG] SystemI::createSoundInternal             : exinfo->numsubsounds       = 1
-[LOG] SystemI::createSoundInternal             : exinfo->inclusionlist      = 0000009A605FF458
-[LOG] SystemI::createSoundInternal             : exinfo->inclusionlistnum   = 1
-[LOG] SystemI::createSoundInternal             : exinfo->suggestedsoundtype = 5
-[LOG] SystemI::createSoundInternal             : exinfo->useropen           = 00007FF9F5643F70
-[LOG] SystemI::createSoundInternal             : exinfo->userclose          = 00007FF9F5643F30
-[LOG] SystemI::createSoundInternal             : exinfo->userread           = 00007FF9F5644050
-[LOG] SystemI::createSoundInternal             : exinfo->userseek           = 00007FF9F5644110
-[LOG] SystemI::createSoundInternal             : exinfo->fileuserdata       = 000001CA897BC978
-[LOG] SystemI::createSoundInternal             : exinfo->initialseekpostype = 1
-[LOG] SystemI::DSPCodecPoolRegister            : register codec pool for pool type 5
-[LOG] SystemI::createSoundInternal             : Sample 0/1: name='ElderOne_NormalAttack_Ready', format=5, channels=2, frequency=44100, lengthbytes=6976, lengthpcm=33075, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.329696.
-[LOG] SystemI::createSoundInternal             : Create name='', mode=0x02000202
-[LOG] SystemI::createSoundInternal             : exinfo->cbsize             = 224
-[LOG] SystemI::createSoundInternal             : exinfo->length             = 4021536
-[LOG] SystemI::createSoundInternal             : exinfo->fileoffset         = 212768
-[LOG] SystemI::createSoundInternal             : exinfo->numsubsounds       = 1
-[LOG] SystemI::createSoundInternal             : exinfo->inclusionlist      = 0000009A605FF458
-[LOG] SystemI::createSoundInternal             : exinfo->inclusionlistnum   = 1
-[LOG] SystemI::createSoundInternal             : exinfo->suggestedsoundtype = 5
-[LOG] SystemI::createSoundInternal             : exinfo->useropen           = 00007FF9F5643F70
-[LOG] SystemI::createSoundInternal             : exinfo->userclose          = 00007FF9F5643F30
-[LOG] SystemI::createSoundInternal             : exinfo->userread           = 00007FF9F5644050
-[LOG] SystemI::createSoundInternal             : exinfo->userseek           = 00007FF9F5644110
-[LOG] SystemI::createSoundInternal             : exinfo->fileuserdata       = 000001CA897C15C8
-[LOG] SystemI::createSoundInternal             : exinfo->initialseekpostype = 1
-[LOG] SystemI::DSPCodecPoolRegister            : register codec pool for pool type 5
-[LOG] SystemI::createSoundInternal             : Sample 0/1: name='ElderOne_NormalAttack_WhooshB', format=5, channels=2, frequency=44100, lengthbytes=5728, lengthpcm=33075, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.500299.
-[LOG] SystemI::createSoundInternal             : Create name='', mode=0x02000202
-[LOG] SystemI::createSoundInternal             : exinfo->cbsize             = 224
-[LOG] SystemI::createSoundInternal             : exinfo->length             = 4021536
-[LOG] SystemI::createSoundInternal             : exinfo->fileoffset         = 212768
-[LOG] SystemI::createSoundInternal             : exinfo->numsubsounds       = 1
-[LOG] SystemI::createSoundInternal             : exinfo->inclusionlist      = 0000009A605FF458
-[LOG] SystemI::createSoundInternal             : exinfo->inclusionlistnum   = 1
-[LOG] SystemI::createSoundInternal             : exinfo->suggestedsoundtype = 5
-[LOG] SystemI::createSoundInternal             : exinfo->useropen           = 00007FF9F5643F70
-[LOG] SystemI::createSoundInternal             : exinfo->userclose          = 00007FF9F5643F30
-[LOG] SystemI::createSoundInternal             : exinfo->userread           = 00007FF9F5644050
-[LOG] SystemI::createSoundInternal             : exinfo->userseek           = 00007FF9F5644110
-[LOG] SystemI::createSoundInternal             : exinfo->fileuserdata       = 000001CA897C15C8
-[LOG] SystemI::createSoundInternal             : exinfo->initialseekpostype = 1
-[LOG] SystemI::DSPCodecPoolRegister            : register codec pool for pool type 5
-[LOG] SystemI::createSoundInternal             : Sample 0/1: name='ElderOne_NormalAttack_WhooshA', format=5, channels=2, frequency=44100, lengthbytes=5696, lengthpcm=33075, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.376782.
-[LOG] SystemI::createSoundInternal             : Create name='', mode=0x02000202
-[LOG] SystemI::createSoundInternal             : exinfo->cbsize             = 224
-[LOG] SystemI::createSoundInternal             : exinfo->length             = 4021536
-[LOG] SystemI::createSoundInternal             : exinfo->fileoffset         = 212768
-[LOG] SystemI::createSoundInternal             : exinfo->numsubsounds       = 1
-[LOG] SystemI::createSoundInternal             : exinfo->inclusionlist      = 0000009A605FF458
-[LOG] SystemI::createSoundInternal             : exinfo->inclusionlistnum   = 1
-[LOG] SystemI::createSoundInternal             : exinfo->suggestedsoundtype = 5
-[LOG] SystemI::createSoundInternal             : exinfo->useropen           = 00007FF9F5643F70
-[LOG] SystemI::createSoundInternal             : exinfo->userclose          = 00007FF9F5643F30
-[LOG] SystemI::createSoundInternal             : exinfo->userread           = 00007FF9F5644050
-[LOG] SystemI::createSoundInternal             : exinfo->userseek           = 00007FF9F5644110
-[LOG] SystemI::createSoundInternal             : exinfo->fileuserdata       = 000001CA897BEC88
-[LOG] SystemI::createSoundInternal             : exinfo->initialseekpostype = 1
-[LOG] SystemI::DSPCodecPoolRegister            : register codec pool for pool type 5
-[LOG] SystemI::createSoundInternal             : Sample 0/1: name='ElderOne_SpecialAttack_Ready', format=5, channels=2, frequency=44100, lengthbytes=9248, lengthpcm=43410, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.329135.
-[LOG] SystemI::createSoundInternal             : Create name='', mode=0x02000202
-[LOG] SystemI::createSoundInternal             : exinfo->cbsize             = 224
-[LOG] SystemI::createSoundInternal             : exinfo->length             = 4021536
-[LOG] SystemI::createSoundInternal             : exinfo->fileoffset         = 212768
-[LOG] SystemI::createSoundInternal             : exinfo->numsubsounds       = 1
-[LOG] SystemI::createSoundInternal             : exinfo->inclusionlist      = 0000009A605FF458
-[LOG] SystemI::createSoundInternal             : exinfo->inclusionlistnum   = 1
-[LOG] SystemI::createSoundInternal             : exinfo->suggestedsoundtype = 5
-[LOG] SystemI::createSoundInternal             : exinfo->useropen           = 00007FF9F5643F70
-[LOG] SystemI::createSoundInternal             : exinfo->userclose          = 00007FF9F5643F30
-[LOG] SystemI::createSoundInternal             : exinfo->userread           = 00007FF9F5644050
-[LOG] SystemI::createSoundInternal             : exinfo->userseek           = 00007FF9F5644110
-[LOG] SystemI::createSoundInternal             : exinfo->fileuserdata       = 000001CA897BDE18
-[LOG] SystemI::createSoundInternal             : exinfo->initialseekpostype = 1
-[LOG] SystemI::DSPCodecPoolRegister            : register codec pool for pool type 5
-[LOG] SystemI::createSoundInternal             : Sample 0/1: name='ElderOne_Motor_ShortA', format=5, channels=2, frequency=44100, lengthbytes=5504, lengthpcm=23962, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.417752.
-[LOG] SystemI::createSoundInternal             : Create name='', mode=0x02000202
-[LOG] SystemI::createSoundInternal             : exinfo->cbsize             = 224
-[LOG] SystemI::createSoundInternal             : exinfo->length             = 4021536
-[LOG] SystemI::createSoundInternal             : exinfo->fileoffset         = 212768
-[LOG] SystemI::createSoundInternal             : exinfo->numsubsounds       = 1
-[LOG] SystemI::createSoundInternal             : exinfo->inclusionlist      = 0000009A605FF458
-[LOG] SystemI::createSoundInternal             : exinfo->inclusionlistnum   = 1
-[LOG] SystemI::createSoundInternal             : exinfo->suggestedsoundtype = 5
-[LOG] SystemI::createSoundInternal             : exinfo->useropen           = 00007FF9F5643F70
-[LOG] SystemI::createSoundInternal             : exinfo->userclose          = 00007FF9F5643F30
-[LOG] SystemI::createSoundInternal             : exinfo->userread           = 00007FF9F5644050
-[LOG] SystemI::createSoundInternal             : exinfo->userseek           = 00007FF9F5644110
-[LOG] SystemI::createSoundInternal             : exinfo->fileuserdata       = 000001CA897BDE18
-[LOG] SystemI::createSoundInternal             : exinfo->initialseekpostype = 1
-[LOG] SystemI::DSPCodecPoolRegister            : register codec pool for pool type 5
-[LOG] SystemI::createSoundInternal             : Sample 0/1: name='ElderOne_Motor_ShortB', format=5, channels=2, frequency=44100, lengthbytes=6528, lengthpcm=34769, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.321680.
-[LOG] SystemI::createSoundInternal             : Create name='', mode=0x02000202
-[LOG] SystemI::createSoundInternal             : exinfo->cbsize             = 224
-[LOG] SystemI::createSoundInternal             : exinfo->length             = 4021536
-[LOG] SystemI::createSoundInternal             : exinfo->fileoffset         = 212768
-[LOG] SystemI::createSoundInternal             : exinfo->numsubsounds       = 1
-[LOG] SystemI::createSoundInternal             : exinfo->inclusionlist      = 0000009A605FF458
-[LOG] SystemI::createSoundInternal             : exinfo->inclusionlistnum   = 1
-[LOG] SystemI::createSoundInternal             : exinfo->suggestedsoundtype = 5
-[LOG] SystemI::createSoundInternal             : exinfo->useropen           = 00007FF9F5643F70
-[LOG] SystemI::createSoundInternal             : exinfo->userclose          = 00007FF9F5643F30
-[LOG] SystemI::createSoundInternal             : exinfo->userread           = 00007FF9F5644050
-[LOG] SystemI::createSoundInternal             : exinfo->userseek           = 00007FF9F5644110
-[LOG] SystemI::createSoundInternal             : exinfo->fileuserdata       = 000001CA897C38D8
-[LOG] SystemI::createSoundInternal             : exinfo->initialseekpostype = 1
-[LOG] SystemI::DSPCodecPoolRegister            : register codec pool for pool type 5
-[LOG] SystemI::createSoundInternal             : Sample 0/1: name='ElderOne_Motor_A', format=5, channels=2, frequency=44100, lengthbytes=8640, lengthpcm=47136, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.348937.
-[LOG] SystemI::createSoundInternal             : Create name='', mode=0x02000202
-[LOG] SystemI::createSoundInternal             : exinfo->cbsize             = 224
-[LOG] SystemI::createSoundInternal             : exinfo->length             = 4021536
-[LOG] SystemI::createSoundInternal             : exinfo->fileoffset         = 212768
-[LOG] SystemI::createSoundInternal             : exinfo->numsubsounds       = 1
-[LOG] SystemI::createSoundInternal             : exinfo->inclusionlist      = 0000009A605FF458
-[LOG] SystemI::createSoundInternal             : exinfo->inclusionlistnum   = 1
-[LOG] SystemI::createSoundInternal             : exinfo->suggestedsoundtype = 5
-[LOG] SystemI::createSoundInternal             : exinfo->useropen           = 00007FF9F5643F70
-[LOG] SystemI::createSoundInternal             : exinfo->userclose          = 00007FF9F5643F30
-[LOG] SystemI::createSoundInternal             : exinfo->userread           = 00007FF9F5644050
-[LOG] SystemI::createSoundInternal             : exinfo->userseek           = 00007FF9F5644110
-[LOG] SystemI::createSoundInternal             : exinfo->fileuserdata       = 000001CA897C38D8
-[LOG] SystemI::createSoundInternal             : exinfo->initialseekpostype = 1
-[LOG] SystemI::DSPCodecPoolRegister            : register codec pool for pool type 5
-[LOG] SystemI::createSoundInternal             : Sample 0/1: name='ElderOne_Motor_B', format=5, channels=2, frequency=44100, lengthbytes=7968, lengthpcm=42355, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.337660.
-[LOG] SystemI::createSoundInternal             : Create name='', mode=0x02000202
-[LOG] SystemI::createSoundInternal             : exinfo->cbsize             = 224
-[LOG] SystemI::createSoundInternal             : exinfo->length             = 4021536
-[LOG] SystemI::createSoundInternal             : exinfo->fileoffset         = 212768
-[LOG] SystemI::createSoundInternal             : exinfo->numsubsounds       = 1
-[LOG] SystemI::createSoundInternal             : exinfo->inclusionlist      = 0000009A605FF458
-[LOG] SystemI::createSoundInternal             : exinfo->inclusionlistnum   = 1
-[LOG] SystemI::createSoundInternal             : exinfo->suggestedsoundtype = 5
-[LOG] SystemI::createSoundInternal             : exinfo->useropen           = 00007FF9F5643F70
-[LOG] SystemI::createSoundInternal             : exinfo->userclose          = 00007FF9F5643F30
-[LOG] SystemI::createSoundInternal             : exinfo->userread           = 00007FF9F5644050
-[LOG] SystemI::createSoundInternal             : exinfo->userseek           = 00007FF9F5644110
-[LOG] SystemI::createSoundInternal             : exinfo->fileuserdata       = 000001CA897BE238
-[LOG] SystemI::createSoundInternal             : exinfo->initialseekpostype = 1
-[LOG] SystemI::DSPCodecPoolRegister            : register codec pool for pool type 5
-[LOG] SystemI::createSoundInternal             : Sample 0/1: name='ElderOne_Motor_WalkingA', format=5, channels=2, frequency=44100, lengthbytes=5568, lengthpcm=27562, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.297703.
-[LOG] SystemI::createSoundInternal             : Create name='', mode=0x02000202
-[LOG] SystemI::createSoundInternal             : exinfo->cbsize             = 224
-[LOG] SystemI::createSoundInternal             : exinfo->length             = 4021536
-[LOG] SystemI::createSoundInternal             : exinfo->fileoffset         = 212768
-[LOG] SystemI::createSoundInternal             : exinfo->numsubsounds       = 1
-[LOG] SystemI::createSoundInternal             : exinfo->inclusionlist      = 0000009A605FF458
-[LOG] SystemI::createSoundInternal             : exinfo->inclusionlistnum   = 1
-[LOG] SystemI::createSoundInternal             : exinfo->suggestedsoundtype = 5
-[LOG] SystemI::createSoundInternal             : exinfo->useropen           = 00007FF9F5643F70
-[LOG] SystemI::createSoundInternal             : exinfo->userclose          = 00007FF9F5643F30
-[LOG] SystemI::createSoundInternal             : exinfo->userread           = 00007FF9F5644050
-[LOG] SystemI::createSoundInternal             : exinfo->userseek           = 00007FF9F5644110
-[LOG] SystemI::createSoundInternal             : exinfo->fileuserdata       = 000001CA897BE238
-[LOG] SystemI::createSoundInternal             : exinfo->initialseekpostype = 1
-[LOG] SystemI::DSPCodecPoolRegister            : register codec pool for pool type 5
-[LOG] SystemI::createSoundInternal             : Sample 0/1: name='ElderOne_Motor_WalkingB', format=5, channels=2, frequency=44100, lengthbytes=9600, lengthpcm=46856, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.273540.
-[LOG] SystemI::createSoundInternal             : Create name='', mode=0x02000202
-[LOG] SystemI::createSoundInternal             : exinfo->cbsize             = 224
-[LOG] SystemI::createSoundInternal             : exinfo->length             = 4021536
-[LOG] SystemI::createSoundInternal             : exinfo->fileoffset         = 212768
-[LOG] SystemI::createSoundInternal             : exinfo->numsubsounds       = 1
-[LOG] SystemI::createSoundInternal             : exinfo->inclusionlist      = 0000009A605FF458
-[LOG] SystemI::createSoundInternal             : exinfo->inclusionlistnum   = 1
-[LOG] SystemI::createSoundInternal             : exinfo->suggestedsoundtype = 5
-[LOG] SystemI::createSoundInternal             : exinfo->useropen           = 00007FF9F5643F70
-[LOG] SystemI::createSoundInternal             : exinfo->userclose          = 00007FF9F5643F30
-[LOG] SystemI::createSoundInternal             : exinfo->userread           = 00007FF9F5644050
-[LOG] SystemI::createSoundInternal             : exinfo->userseek           = 00007FF9F5644110
-[LOG] SystemI::createSoundInternal             : exinfo->fileuserdata       = 000001CA897BE238
-[LOG] SystemI::createSoundInternal             : exinfo->initialseekpostype = 1
-[LOG] SystemI::DSPCodecPoolRegister            : register codec pool for pool type 5
-[LOG] SystemI::createSoundInternal             : Sample 0/1: name='ElderOne_Motor_WalkingC', format=5, channels=2, frequency=44100, lengthbytes=7808, lengthpcm=44945, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.392218.
-[LOG] SoundI::release                          :  (000001CB4CBA2A88)
-[LOG] SoundI::release                          :     ElderOne_DustAfterAttackOnGround_TypeA (000001C9536DB988)
-[LOG] SoundI::release                          :  (000001CB4CBA31B8)
-[LOG] SoundI::release                          :     ElderOne_DustAfterAttackOnGround_TypeB (000001C9536DB308)
-[LOG] SoundI::release                          :  (000001CB4CBA3608)
-[LOG] SoundI::release                          :     ElderOne_DoubleHandAttack_PunchA (000001C9536DBCC8)
-[LOG] SoundI::release                          :  (000001CB4CBA2ED8)
-[LOG] SoundI::release                          :     ElderOne_DoubleHandAttack_PunchB (000001C9536DBB28)
-[LOG] SoundI::release                          :  (000001CB4CBA3778)
-[LOG] SoundI::release                          :     ElderOne_NormalAttack_PunchA (000001CB9356D008)
-[LOG] SoundI::release                          :  (000001CB4CBA3328)
-[LOG] SoundI::release                          :     ElderOne_NormalAttack_PunchB (000001CB9356CE68)
-[LOG] SoundI::release                          :  (000001C951AA87C8)
-[LOG] SoundI::release                          :     ElderOne_NormalAttack_WhooshA (000001CB4CFA2998)
-[LOG] SoundI::release                          :  (000001CB4CBA2D68)
-[LOG] SoundI::release                          :     ElderOne_NormalAttack_WhooshB (000001CB9356C988)
-[LOG] SoundI::release                          :  (000001CB4CBA2BF8)
-[LOG] SoundI::release                          :     ElderOne_NormalAttack_Ready (000001CB9356D348)
-[LOG] SoundI::release                          :  (000001C951AA8C18)
-[LOG] SoundI::release                          :     ElderOne_SpecialAttack_Ready (000001CB4CFA2B38)
-[LOG] SoundI::release                          :  (000001C951AA8D88)
-[LOG] SoundI::release                          :     ElderOne_Motor_ShortA (000001CB4CFA2658)
-[LOG] SoundI::release                          :  (000001C9528356B8)
-[LOG] SoundI::release                          :     ElderOne_Motor_ShortB (000001CB4CFA2E78)
-[LOG] SoundI::release                          :  (000001C952835C78)
-[LOG] SoundI::release                          :     ElderOne_Motor_A (000001CB4CFA2178)
-[LOG] SoundI::release                          :  (000001C952835B08)
-[LOG] SoundI::release                          :     ElderOne_Motor_B (000001CB9161C3D8)
-[LOG] SoundI::release                          :  (000001C9528353D8)
-[LOG] SoundI::release                          :     ElderOne_Motor_WalkingA (000001CB9161C718)
-[LOG] SoundI::release                          :  (000001C952835998)
-[LOG] SoundI::release                          :     ElderOne_Motor_WalkingC (000001CB9161CBF8)
-[LOG] SoundI::release                          :  (000001C952835DE8)
-[LOG] SoundI::release                          :     ElderOne_Motor_WalkingB (000001CB9161C8B8)
+[LOG] SystemI::createSound                     : filename = Assets/Resources/FmodProject/Build/Desktop/BGM.bank : mode 02010082
+[LOG] SystemI::createSound                     : FMOD_NONBLOCKING specified.  Putting into queue to be opened asynchronously!
+[LOG] Thread::initThread                       : Init FMOD nonblocking thread (0). Affinity: 0x4000000000000003, Priority: 0xFFFF7FFC, Stack Size: 114688, Semaphore: Yes, Sleep Time: 0, Looping: Yes.
+[LOG] AsyncThread::add                         : add sound to async queue : soundi = 0x39366fd48, queue head = 0x3936701b8, queue count = 0
+[LOG] AsyncThread::threadFunc                  : Starting Asynchronous operation on sound 0x39366fd48
+[LOG] SystemI::createSoundInternal             :     Create name='Assets/Resources/FmodProject/Build/Desktop/BGM.bank', mode=0x02010082
+[LOG] SystemI::createSoundInternal             :     exinfo->cbsize             = 224
+[LOG] SystemI::createSoundInternal             :     exinfo->length             = 14771200
+[LOG] SystemI::createSoundInternal             :     exinfo->fileoffset         = 179616
+[LOG] SystemI::createSoundInternal             :     exinfo->numsubsounds       = 1
+[LOG] SystemI::createSoundInternal             :     exinfo->inclusionlist      = 0x393670010
+[LOG] SystemI::createSoundInternal             :     exinfo->inclusionlistnum   = 1
+[LOG] SystemI::createSoundInternal             :     exinfo->suggestedsoundtype = 5
+[LOG] SystemI::createSoundInternal             :     exinfo->initialseekpostype = 1
+[LOG] SystemI::createSound                     :     filename = Assets/Resources/FmodProject/Build/Desktop/BGM.bank : mode 02010082
+[LOG] SystemI::createSound                     :     FMOD_NONBLOCKING specified.  Putting into queue to be opened asynchronously!
+[LOG] AsyncThread::add                         :     add sound to async queue : soundi = 0x39d990f98, queue head = 0x3936701b8, queue count = 0
+[LOG] SystemI::createSound                     :     filename = Assets/Resources/FmodProject/Build/Desktop/BGM.bank : mode 02010082
+[LOG] SystemI::createSound                     :     FMOD_NONBLOCKING specified.  Putting into queue to be opened asynchronously!
+[LOG] AsyncThread::add                         :     add sound to async queue : soundi = 0x39d9912e8, queue head = 0x3936701b8, queue count = 1
+[LOG] SystemI::createSoundInternal             :     Stream 0/1: name='Top Glide Synth - 1', format=5, channels=2, frequency=44100, lengthbytes=329664, lengthpcm=2257920, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.206846.
+[LOG] Thread::initThread                       :     Init FMOD file thread. Affinity: 0x4000000000000003, Priority: 0xFFFF7FFC, Stack Size: 65536, Semaphore: No, Sleep Time: 10, Looping: Yes.
+[LOG] AsyncThread::threadFunc                  : Finished Asynchronous operation on sound 0x39366fd48
+[LOG] AsyncThread::threadFunc                  : Starting Asynchronous operation on sound 0x39d990f98
+[LOG] SystemI::createSoundInternal             :     Create name='Assets/Resources/FmodProject/Build/Desktop/BGM.bank', mode=0x02010082
+[LOG] SystemI::createSoundInternal             :     exinfo->cbsize             = 224
+[LOG] SystemI::createSoundInternal             :     exinfo->length             = 14771200
+[LOG] SystemI::createSoundInternal             :     exinfo->fileoffset         = 179616
+[LOG] SystemI::createSoundInternal             :     exinfo->numsubsounds       = 1
+[LOG] SystemI::createSoundInternal             :     exinfo->inclusionlist      = 0x39d9920f0
+[LOG] SystemI::createSoundInternal             :     exinfo->inclusionlistnum   = 1
+[LOG] SystemI::createSoundInternal             :     exinfo->suggestedsoundtype = 5
+[LOG] SystemI::createSoundInternal             :     exinfo->initialseekpostype = 1
+[LOG] SystemI::createSoundInternal             :     Stream 0/1: name='Pad (sidechain)', format=5, channels=2, frequency=44100, lengthbytes=579392, lengthpcm=5362560, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.337948.
+[LOG] AsyncThread::threadFunc                  : Finished Asynchronous operation on sound 0x39d990f98
+[LOG] AsyncThread::threadFunc                  : Starting Asynchronous operation on sound 0x39d9912e8
+[LOG] SystemI::createSoundInternal             :     Create name='Assets/Resources/FmodProject/Build/Desktop/BGM.bank', mode=0x02010082
+[LOG] SystemI::createSoundInternal             :     exinfo->cbsize             = 224
+[LOG] SystemI::createSoundInternal             :     exinfo->length             = 14771200
+[LOG] SystemI::createSoundInternal             :     exinfo->fileoffset         = 179616
+[LOG] SystemI::createSoundInternal             :     exinfo->numsubsounds       = 1
+[LOG] SystemI::createSoundInternal             :     exinfo->inclusionlist      = 0x39d9915b0
+[LOG] SystemI::createSoundInternal             :     exinfo->inclusionlistnum   = 1
+[LOG] SystemI::createSoundInternal             :     exinfo->suggestedsoundtype = 5
+[LOG] SystemI::createSoundInternal             :     exinfo->initialseekpostype = 1
+[LOG] SystemI::createSoundInternal             :     Stream 0/1: name='Pad Bass (sidechain)', format=5, channels=2, frequency=44100, lengthbytes=404928, lengthpcm=5221440, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.571782.
+[LOG] AsyncThread::threadFunc                  : Finished Asynchronous operation on sound 0x39d9912e8
+[LOG] SoundI::release                          : Pad Bass (sidechain) (0x39d9912e8)
+[LOG] SoundI::release                          :     Pad Bass (sidechain) (0x39d834248)
+[LOG] SoundI::release                          :     Pad Bass (sidechain) (0x39d8343d8)
+[LOG] SoundI::release                          : Pad (sidechain) (0x39d990f98)
+[LOG] SoundI::release                          :     Pad (sidechain) (0x393656618)
+[LOG] SoundI::release                          :     Pad (sidechain) (0x3936710d8)
+[LOG] SoundI::release                          : Top Glide Synth - 1 (0x39366fd48)
+[LOG] SoundI::release                          :     Top Glide Synth - 1 (0x393670be8)
+[LOG] SoundI::release                          :     Top Glide Synth - 1 (0x393670e98)
 [LOG] Thread::callback                         : FMOD Studio bank load thread finished.
 [LOG] Thread::callback                         : FMOD Studio sample load thread finished.
 [LOG] LiveUpdate::release                      : 
@@ -334,3 +83,5 @@
 [LOG] Thread::callback                         : FMOD stream thread finished.
 [LOG] Thread::callback                         : FMOD mixer thread finished.
 [LOG] SystemI::close                           : Closed.
+[LOG] Thread::callback                         : FMOD nonblocking thread (0) finished.
+[LOG] Thread::callback                         : FMOD file thread finished.
