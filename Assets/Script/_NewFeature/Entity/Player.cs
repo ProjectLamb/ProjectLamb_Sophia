@@ -161,7 +161,10 @@ namespace Sophia.Entitys
             PlayerController.AllowInput(this.name);
 
             if (DontDestroyGameManager.Instance != null)
+            {
+                Debug.Log("사전 플레이어 데이터 로드");
                 LoadPlayerData();
+            }
         }
 
         #endregion
@@ -397,11 +400,11 @@ namespace Sophia.Entitys
         public void DropEquipment(Equipment equipment)
         {
             // File
-            foreach (var item in DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.TestEquipmentData)
+            foreach (var item in DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.CollectedEquipmentIndexs)
             {
                 if (equipment.ID == item)
                 {
-                    DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.TestEquipmentData.Remove(item);
+                    DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.CollectedEquipmentIndexs.Remove(item);
                 }
             }
 
@@ -422,17 +425,20 @@ namespace Sophia.Entitys
 
         public void LoadPlayerData()
         {
-            GlobalSaveLoadManager saveLoadManager = DontDestroyGameManager.Instance.SaveLoadManager;
+            GlobalSaveLoadManager saveLoadManager = DontDestroyGameManager.Instance.SaveLoadManager; 
+            Debug.Log("LoadPlayerData()");
             if (saveLoadManager != null)
             {
+                Debug.Log("saveLoadManager != null");
                 //기어
                 PlayerWealth = saveLoadManager.Data.PlayerData.Gear;
 
                 //부품
                 //번호를 토대로 장착
-                if (saveLoadManager.Data.PlayerData.TestEquipmentData.Count > 0)
+                if (saveLoadManager.Data.PlayerData.CollectedEquipmentIndexs.Count > 0)
                 {
-                    foreach (var item in saveLoadManager.Data.PlayerData.TestEquipmentData)
+                    Debug.Log("saveLoadManager.Data.PlayerData.TestEquipmentData.Count > 0");
+                    foreach (var item in saveLoadManager.Data.PlayerData.CollectedEquipmentIndexs)
                     {
                         SerialEquipmentData serialEquipmentData = DontDestroyGameManager.Instance.ScriptableEquipmentModelManager.GetScriptableEquipmentData(item);
 

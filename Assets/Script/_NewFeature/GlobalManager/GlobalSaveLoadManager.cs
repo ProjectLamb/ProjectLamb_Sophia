@@ -3,6 +3,7 @@ using System.IO;
 using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Sophia.DB;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
@@ -11,12 +12,15 @@ using Sophia.DataSystem.Modifiers;
 using Sophia.Instantiates;
 using UnityEngine.InputSystem;
 using AYellowpaper.SerializedCollections;
+using UnityEngine.Serialization;
 
 
 public class GlobalSaveLoadManager : MonoBehaviour
 {
     private string PATH;
     public UserData Data;
+    public List<int> TestEquipmentData;
+
     public bool GetIsDataExist()
     {
         if (File.Exists(PATH))
@@ -54,6 +58,7 @@ public class GlobalSaveLoadManager : MonoBehaviour
         else
         {
             Data = new UserData();
+            Data.TEST_SET_EQUIPMENT(TestEquipmentData);
             Data.IsNewFile = true;
             //SaveAsJson();
         }
@@ -67,6 +72,7 @@ public class GlobalSaveLoadManager : MonoBehaviour
     public void ResetData()
     {
         Data = new UserData();
+        Data.TEST_SET_EQUIPMENT(TestEquipmentData);
         Data.IsNewFile = true;
 
         StartCoroutine(AsyncResetFile());
@@ -134,6 +140,11 @@ namespace Sophia.DB
 
             ChapterClearSaveData.IsChapter1Clear = false;
         }
+        
+        public void TEST_SET_EQUIPMENT(List<int> TestEquipmentData)
+        {
+            PlayerData.CollectedEquipmentIndexs = TestEquipmentData.ToList();
+        }
     }
 
     [Serializable]
@@ -157,7 +168,7 @@ namespace Sophia.DB
         public bool IsDied = false;
         #region Equipment_TEST
 
-        public List<int> TestEquipmentData = new List<int>();
+        public List<int> CollectedEquipmentIndexs = new List<int>();
 
         #endregion
         // public List<SerialEquipmentData> EquipmentDataList = new List<SerialEquipmentData>();

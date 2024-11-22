@@ -75,11 +75,11 @@ namespace Sophia.Composite
 
         #region Events
 
-        public event UnityAction OnInitialized = null;
-        public event UnityAction OnStart = null;
-        public event UnityAction OnInterval = null;
-        public event UnityAction<float> OnTicking = null;
-        public event UnityAction OnFinished = null;
+        public UnityAction OnInitialized = null;
+        public UnityAction OnStart = null;
+        public UnityAction OnInterval = null;
+        public UnityAction<float> OnTicking = null;
+        public UnityAction OnFinished = null;
         private event Func<bool> WhenRewindable = () => false;
         public TimerComposite SetRewindCondition(Func<bool> condition)
         {

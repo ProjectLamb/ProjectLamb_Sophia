@@ -180,15 +180,15 @@ namespace Sophia
             #endregion
 
             #region Event
-            public event UnityAction<float> OnHpUpdated = null;
-            public event UnityAction<float> OnBarrierUpdated = null;
-            public event UnityAction<DamageInfo> OnDamaged = null;
-            public event UnityAction OnHit = null;
-            public event UnityAction<int> OnHeal = null;
-            public event UnityAction OnEnterDie = null;
-            public event UnityAction OnExitDie = null;
-            public event UnityAction<float> OnBarrier = null;
-            public event UnityAction OnBreakBarrier = null;
+            public UnityAction<float> OnHpUpdated = null;
+            public UnityAction<float> OnBarrierUpdated = null;
+            public UnityAction<DamageInfo> OnDamaged = null;
+            public UnityAction OnHit = null;
+            public UnityAction<int> OnHeal = null;
+            public UnityAction OnEnterDie = null;
+            public UnityAction OnExitDie = null;
+            public UnityAction<float> OnBarrier = null;
+            public UnityAction OnBreakBarrier = null;
 
             protected void OnMaxHpUpdated()
             {

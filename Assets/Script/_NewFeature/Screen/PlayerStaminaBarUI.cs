@@ -35,59 +35,80 @@ namespace Sophia.UserInterface
             } 
         }
         public void MaxStaminaUpdatedHandler() {
-            int maxStamina = dashSkillRef.MaxStamina;
-            StartCoroutine(GlobalAsync.PerformAndRenderUI(() => {
-                foreach(Transform child in transform){ Destroy(child.gameObject); }
-                for(int i = 0 ; i < maxStamina; i++) {
-                    existsliders.Push(Instantiate(_dashSliderPrefeb, transform));
-                }
-            }));
-        }
+            if (this.gameObject.activeSelf == false)
+            {
+                _actionsQueue.Enqueue(MaxSteminaUpdatedLambda);
+                return;
+            }
 
-        private void InitializedHandler() {
-            StartCoroutine(GlobalAsync.PerformAndRenderUI(() => {
-                sliders.ForEach(E => E.value = 1f);
-            }));
+            StartCoroutine(GlobalAsync.PerformAndRenderUI(MaxSteminaUpdatedLambda));
         }
         
+        private void MaxSteminaUpdatedLambda() {
+            int maxStamina = dashSkillRef.MaxStamina;
+            foreach(Transform child in transform){ Destroy(child.gameObject); }
+            for(int i = 0 ; i < maxStamina; i++) {
+                existsliders.Push(Instantiate(_dashSliderPrefeb, transform));
+            }
+        }
+
+        private Queue<UnityAction> _actionsQueue = new Queue<UnityAction>();
+        private void InitializedHandler()
+        {
+            if (this.gameObject.activeSelf == false) { _actionsQueue.Enqueue(InitializeLambda); return; }
+            StartCoroutine(GlobalAsync.PerformAndRenderUI(InitializeLambda));
+        }
+
+        private void InitializeLambda() => sliders.ForEach(E => E.value = 1f);
+
         private void StartCooldownEventHandler() {
-            StartCoroutine(GlobalAsync.PerformAndRenderUI(() => {}));
         }
         
         // UpdateFillAmount
         private void TickingEventHandler(float input) {
-            StartCoroutine(GlobalAsync.PerformAndRenderUI(() => {
-                progressOneSlider = dashSkillRef.Timer.GetProgressAmount();
-                chargingSlider.Peek().value = progressOneSlider;
-            }));
+            if (this.gameObject.activeSelf == false){_actionsQueue.Enqueue(TickingLambda); return;}
+
+            StartCoroutine(GlobalAsync.PerformAndRenderUI(TickingLambda));
         }
-        
+
+        private void TickingLambda()
+        {
+            progressOneSlider = dashSkillRef.Timer.GetProgressAmount();
+            chargingSlider.Peek().value = progressOneSlider;
+        }
+
         private void IntervalEventHandler() {
-            StartCoroutine(GlobalAsync.PerformAndRenderUI(() => {}));
         }
         
         private void FinishedEventHandler() {
-            StartCoroutine(GlobalAsync.PerformAndRenderUI(() => {}));
         }
         
         // UseStack
         private void UseEventHandler() {
-            StartCoroutine(GlobalAsync.PerformAndRenderUI(() => {
-                if(chargingSlider.Count != 0) 
-                    chargingSlider.Peek().value = 0;
-                chargingSlider.Push(existsliders.Pop());
-                chargingSlider.Peek().value = progressOneSlider;
-                chargingSlider.Peek().image.color = _chargingColor;
-            }));
+            if (this.gameObject.activeSelf == false) { _actionsQueue.Enqueue(UseLambda); return; }
+            StartCoroutine(GlobalAsync.PerformAndRenderUI(UseLambda));
         }
-        
+
+        private void UseLambda()
+        {
+            if(chargingSlider.Count != 0) 
+                chargingSlider.Peek().value = 0;
+            chargingSlider.Push(existsliders.Pop());
+            chargingSlider.Peek().value = progressOneSlider;
+            chargingSlider.Peek().image.color = _chargingColor;
+        }
+
         // OnRecoverOnce
         private void RecoverEventHandler() {
-            StartCoroutine(GlobalAsync.PerformAndRenderUI(() => {
-                chargingSlider.Peek().value = 1f;
-                existsliders.Push(chargingSlider.Pop());
-                existsliders.Peek().image.color = _existColor;
-            }));
+            if (this.gameObject.activeSelf == false) { _actionsQueue.Enqueue(RecoverLambda); return; }
+            StartCoroutine(GlobalAsync.PerformAndRenderUI(RecoverLambda));
+        }
+        
+        private void RecoverLambda()
+        {
+            chargingSlider.Peek().value = 1f;
+            existsliders.Push(chargingSlider.Pop());
+            existsliders.Peek().image.color = _existColor;
         }
 
         private void OnDestroy() {
