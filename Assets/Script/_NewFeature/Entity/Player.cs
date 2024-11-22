@@ -1,11 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using FMODPlus;
 using Cysharp.Threading.Tasks;
+using Sophia.Instantiates.Skills;
 using UnityEngine.SceneManagement;
 
 namespace Sophia.Entitys
@@ -446,12 +448,26 @@ namespace Sophia.Entitys
                     }
                 }
 
-                //스킬
-                // foreach (var item in saveLoadManager.Data.PlayerData.SkillDataDic)
-                // {
-                //     if (item.Value != null)
-                //         CollectSkill(item.Value, item.Key);
-                // }
+                // 스킬
+                if (saveLoadManager.Data.PlayerData.CollectSkillIndexs.Count > 0)
+                {
+                    Debug.Log("saveLoadManager.Data.PlayerData.CollectSkillIndexs.Count > 0");
+                    List<KeyCode> keyCodes = saveLoadManager.Data.PlayerData.CollectSkillIndexs.Keys.ToList();
+                    for(int i = 0; i < keyCodes.Count; i++)
+                    {
+                        int skillIndex = saveLoadManager.Data.PlayerData.CollectSkillIndexs[keyCodes[i]];
+                        if(skillIndex == 0) continue;
+                        SerialSkillData serialSkillData = DontDestroyGameManager.Instance.ScriptableSkillModelManager
+                            .ScriptableSkillDatas[skillIndex]._serialSkillData;
+                        Skill concreteSkill = FactoryConcreteSkill.GetSkillByID((E_SKILL_INDEX)skillIndex,
+                            GetComponent<Player>(), serialSkillData._userInterfaceData, serialSkillData._affectorData,
+                            serialSkillData._damageModifierData, serialSkillData._conveyAffectModifierData,
+                            serialSkillData._projectileInstantiateData, serialSkillData._activatedAudioData);
+                        Debug.Log($"{skillIndex} {concreteSkill.GetName()}");
+                        if (skillIndex != null)
+                            CollectSkill(concreteSkill, keyCodes[i]);
+                    }
+                }
             }
         }
 

@@ -40,4 +40,7 @@ using UnityEngine;
 
         [SerializeField] private GlobalScriptableEquipmentModelManager _scriptableEquipmentModelManager;
         public GlobalScriptableEquipmentModelManager ScriptableEquipmentModelManager {get { return _scriptableEquipmentModelManager; } }
+        
+        [SerializeField] private GlobalScriptableSkillModelManager _scriptableSkillModelManager;
+        public GlobalScriptableSkillModelManager ScriptableSkillModelManager {get { return _scriptableSkillModelManager; } }
     }

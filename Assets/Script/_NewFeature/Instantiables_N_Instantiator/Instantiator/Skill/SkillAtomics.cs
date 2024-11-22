@@ -24,69 +24,69 @@ namespace Sophia.Instantiates.Skills {
         {
             switch (index) {
                 case E_SKILL_INDEX.Barrier : {
-                    return new Neutral.Barrier(in userInterfaceData)
+                    return new Neutral.Barrier(index, in userInterfaceData)
                                 .SetBarrierData(in affectorData)
                                 .SetOwnerEntity(player);
                 }
                 case E_SKILL_INDEX.MoveFaster : {
-                    return new Neutral.MoveFaster(in userInterfaceData)
+                    return new Neutral.MoveFaster(index, in userInterfaceData)
                                 .SetMoveFasterAffect(in affectorData)
                                 .SetOwnerEntity(player)
 ;
                 }
                 case E_SKILL_INDEX.WeaponStun : {
-                    return new Neutral.WeaponStun(in userInterfaceData)
+                    return new Neutral.WeaponStun(index, in userInterfaceData)
                                 .SetStunData(in conveyAffectExtrasModifierData._affectData)
                                 .SetOwnerEntity(player);
                 }
                 case E_SKILL_INDEX.WeaponAdditionalDamage : {
-                    return new Neutral.WeaponAdditionalDamage(in userInterfaceData)
+                    return new Neutral.WeaponAdditionalDamage(index, in userInterfaceData)
                                 .SetDamageInfoData(in damageExtrasModifierData)
                                 .SetOwnerEntity(player)
                                 .SetAudioData(in activatedAudioData);
                 }
                 case E_SKILL_INDEX.PowerUp : {
-                    return new Neutral.PowerUp(in userInterfaceData)
+                    return new Neutral.PowerUp(index, in userInterfaceData)
                                 .SetPowerUpAffect(in affectorData)
                                 .SetOwnerEntity(player);
                 }
                 case E_SKILL_INDEX.Lava : {
-                    return new Neutral.Lava(in userInterfaceData)
+                    return new Neutral.Lava(index, in userInterfaceData)
                                 .SetInstantiationData(in projectileInstantiateData)
                                 .SetOwnerEntity(player);
                 }
                 case E_SKILL_INDEX.BlackWhiteHole : {
-                    return new Neutral.BlackWhiteHole(in userInterfaceData)
+                    return new Neutral.BlackWhiteHole(index, in userInterfaceData)
                                 .SetInstantiationData(in projectileInstantiateData)
                                 .SetOwnerEntity(player);
                 }
                 case E_SKILL_INDEX.DoubleShot : {
-                    return new Melee.DoubleShot(in userInterfaceData)
+                    return new Melee.DoubleShot(index, in userInterfaceData)
                                 .SetInstantiationData(in projectileInstantiateData)
                                 .SetOwnerEntity(player);
                 }
                 case E_SKILL_INDEX.Piercing : {
-                    return new Melee.Piercing(in userInterfaceData)
+                    return new Melee.Piercing(index, in userInterfaceData)
                                 .SetInstantiationData(in projectileInstantiateData)
                                 .SetPhysics(in affectorData)
                                 .SetOwnerEntity(player);
                 }
                 case E_SKILL_INDEX.RotateSlash : {
-                    return new Melee.RotateSlash(in userInterfaceData)
+                    return new Melee.RotateSlash(index, in userInterfaceData)
                                 .SetInstantiationData(in projectileInstantiateData)
                                 .SetOwnerEntity(player);
 
   
                 }
                 case E_SKILL_INDEX.ThrowSlash : {
-                    return new Melee.ThrowSlash(in userInterfaceData)
+                    return new Melee.ThrowSlash(index, in userInterfaceData)
                                 .SetInstantiationData(in projectileInstantiateData)
                                 .SetOwnerEntity(player);
 
   
                 }
                 case E_SKILL_INDEX.DashSlash : {
-                    return new Melee.DashSlash(in userInterfaceData)
+                    return new Melee.DashSlash(index, in userInterfaceData)
                                 .SetInstantiationData(in projectileInstantiateData)
                                 .SetPhysics(in affectorData)
                                 .SetOwnerEntity(player);

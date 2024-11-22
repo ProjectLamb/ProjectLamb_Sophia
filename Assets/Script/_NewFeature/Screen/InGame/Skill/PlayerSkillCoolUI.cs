@@ -14,6 +14,8 @@ namespace Sophia.UserInterface
         public UnityEngine.UI.Image     fill;
         public UnityEngine.UI.Image     icon;
         public TextMeshProUGUI          textMeshPro;
+        public GameObject key;
+        public bool                     isActive = true;
 
         public Sprite defaultSprite;
 
@@ -44,6 +46,26 @@ namespace Sophia.UserInterface
             }
         }
 
+        public void SetUIActivate()
+        {
+            isActive = true;
+            while (_actionSkillQueue.Count > 0)
+            {
+                (Skill, UnityAction<Skill>)
+                    frontData = _actionSkillQueue.Dequeue();
+                StartCoroutine(GlobalAsync.PerformAndRenderUI(() => frontData.Item2.Invoke(frontData.Item1)));
+            }
+            while(_actionVoidQueue.Count > 0)
+            {
+                StartCoroutine(GlobalAsync.PerformAndRenderUI(_actionVoidQueue.Dequeue()));
+            }
+        }
+        
+        public void SetUIDeactivate()
+        {
+            isActive = false;
+        }
+
         public void SetSkill(Skill skill)
         {
             TimerRef = skill.GetCoolTimeComposite();
@@ -52,8 +74,11 @@ namespace Sophia.UserInterface
                     .AddOnUseEvent(UseStack)
                     .AddOnFinishedEvent(RecoverStack)
                     .AddOnInitialized(ResetUI);
-            
-            if(this.gameObject.activeSelf == false) { _actionSkillQueue.Enqueue((skill, SkillSetUpdateLambda)); return; }
+
+            if (isActive == false)
+            {
+                _actionSkillQueue.Enqueue((skill, SkillSetUpdateLambda)); return;
+            }
             StartCoroutine(GlobalAsync.PerformAndRenderUI(() => SkillSetUpdateLambda(skill)));
         }
 
@@ -73,7 +98,7 @@ namespace Sophia.UserInterface
             }
                     
             TimerRef = null;
-            if(this.gameObject.activeSelf == false) { _actionVoidQueue.Enqueue(SkillRemoveUpdateLambda); return; }
+            if(isActive == false) { _actionVoidQueue.Enqueue(SkillRemoveUpdateLambda); return; }
             StartCoroutine(GlobalAsync.PerformAndRenderUI(SkillRemoveUpdateLambda));
         }
         
@@ -92,7 +117,7 @@ namespace Sophia.UserInterface
         public void ResetUI()
         {
             fill.fillAmount = 0;
-            if(this.gameObject.activeSelf == false) { _actionVoidQueue.Enqueue(CoolTimeResetLambda); return; }
+            if(isActive == false) { _actionVoidQueue.Enqueue(CoolTimeResetLambda); return; }
             StartCoroutine(GlobalAsync.PerformAndRenderUI(CoolTimeResetLambda));
         }
 
@@ -103,7 +128,7 @@ namespace Sophia.UserInterface
 
         public void DrawForce()
         {
-            if(this.gameObject.activeSelf == false) {_actionVoidQueue.Enqueue(DrawForceLambda); return;}
+            if(isActive == false) {_actionVoidQueue.Enqueue(DrawForceLambda); return;}
             StartCoroutine(GlobalAsync.PerformAndRenderUI(DrawForceLambda));
         }
 
@@ -115,12 +140,12 @@ namespace Sophia.UserInterface
 
         private void UseStack()
         {
-            if(this.gameObject.activeSelf == false) {_actionVoidQueue.Enqueue(StackCounterUpdateLambda); return;}
+            if(isActive == false) {_actionVoidQueue.Enqueue(StackCounterUpdateLambda); return;}
             StartCoroutine(GlobalAsync.PerformAndRenderUI(StackCounterUpdateLambda));
         }
         private void RecoverStack()
         {
-            if(this.gameObject.activeSelf == false) {_actionVoidQueue.Enqueue(StackCounterUpdateLambda); return;}
+            if(isActive == false) {_actionVoidQueue.Enqueue(StackCounterUpdateLambda); return;}
             StartCoroutine(GlobalAsync.PerformAndRenderUI(StackCounterUpdateLambda));
         }
 

@@ -4,10 +4,10 @@ using UnityEngine;
 
 namespace Sophia.DB
 {
-    public class GlobalScriptableEquipmentModelManager : MonoBehaviour
+    public class GlobalScriptableSkillModelManager : MonoBehaviour
     {
-        [SerializedDictionary("EquipmentIndex", "ScriptableEquipmentData")] [field: SerializeField]
-        private SerializedDictionary<int, ScriptableEquipmentData> _scriptableEquipmentDatas;
-        public IReadOnlyDictionary<int, ScriptableEquipmentData> ScriptableEquipmentDatas => _scriptableEquipmentDatas;
+        [SerializedDictionary("SkillIndex", "ScriptableSkillData")] [field: SerializeField]
+        private SerializedDictionary<int, ScriptableSkillData> _scriptableSkillDatas;
+        public IReadOnlyDictionary<int, ScriptableSkillData> ScriptableSkillDatas => _scriptableSkillDatas;
     }
 }

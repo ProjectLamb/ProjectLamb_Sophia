@@ -21,6 +21,9 @@ public class GlobalSaveLoadManager : MonoBehaviour
     public UserData Data;
     public List<int> TestEquipmentData;
 
+    [SerializedDictionary("KeyCode", "SkillIndex")]
+    public SerializedDictionary<KeyCode, int> TestSkillData;
+
     public bool GetIsDataExist()
     {
         if (File.Exists(PATH))
@@ -72,6 +75,7 @@ public class GlobalSaveLoadManager : MonoBehaviour
     {
         Data = new UserData();
         Data.TEST_SET_EQUIPMENT(TestEquipmentData);
+        Data.TEST_SET_SKILL(TestSkillData);
         Data.IsNewFile = true;
 
         StartCoroutine(AsyncResetFile());
@@ -124,9 +128,9 @@ namespace Sophia.DB
         {
             //New Game Setting
             PlayerData = new PlayerData();
-            PlayerData.SkillDataDic.Add(KeyCode.Q, null);
-            PlayerData.SkillDataDic.Add(KeyCode.E, null);
-            PlayerData.SkillDataDic.Add(KeyCode.R, null);
+            PlayerData.CollectSkillIndexs.Add(KeyCode.Q, 0);
+            PlayerData.CollectSkillIndexs.Add(KeyCode.E, 0);
+            PlayerData.CollectSkillIndexs.Add(KeyCode.R, 0);
 
             CutSceneSaveData = new CutSceneSaveData();
             ChapterClearSaveData = new ChapterClearSaveData();
@@ -140,9 +144,17 @@ namespace Sophia.DB
             ChapterClearSaveData.IsChapter1Clear = false;
         }
         
-        public void TEST_SET_EQUIPMENT(List<int> TestEquipmentData)
+        public void TEST_SET_EQUIPMENT(List<int> testEquipmentData)
         {
-            PlayerData.CollectedEquipmentIndexs = TestEquipmentData.ToList();
+            PlayerData.CollectedEquipmentIndexs = testEquipmentData.ToList();
+        }
+
+        public void TEST_SET_SKILL(Dictionary<KeyCode, int> testSkillData)
+        {
+            foreach (var item in testSkillData)
+            {
+                PlayerData.CollectSkillIndexs[item.Key] = item.Value;
+            }
         }
     }
 
@@ -170,8 +182,13 @@ namespace Sophia.DB
         public List<int> CollectedEquipmentIndexs = new List<int>();
 
         #endregion
+        #region Equipment_TEST
+        
+        public Dictionary<KeyCode, int> CollectSkillIndexs = new Dictionary<KeyCode, int>();
+        
+        #endregion
         // public List<SerialEquipmentData> EquipmentDataList = new List<SerialEquipmentData>();
-        public Dictionary<KeyCode, Skill> SkillDataDic = new Dictionary<KeyCode, Skill>();
+        // public Dictionary<KeyCode, Skill> SkillDataDic = new Dictionary<KeyCode, Skill>();
     }
 
 }

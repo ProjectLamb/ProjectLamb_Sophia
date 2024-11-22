@@ -1,4 +1,6 @@
 using System;
+using Sophia.Instantiates;
+using Sophia.Instantiates.Skills;
 using UnityEngine;
 
 namespace Sophia.DB
