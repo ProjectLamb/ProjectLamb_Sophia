@@ -12,18 +12,16 @@ namespace Sophia.Instantiates
 
     public class EquipmentItemObject : ItemObject
     {
-        [SerializeField] ScriptableEquipmentData _scriptableEquipmentData;
-        
         [ContextMenu("Deep Copy To Scriptable")]
-        private void Deep_Copy_To_Scriptable()
+        public void Deep_Copy_To_Scriptable(ScriptableEquipmentData _scriptableEquipmentData)
         {
-            _scriptableEquipmentData._serialEquipmentData = _equipmentData;
+            _scriptableEquipmentData.SetSerial(_equipmentData);
         }
 
         [SerializeField] SerialEquipmentData _equipmentData;
         [SerializeField] PurchaseComponent _purchaseComponent;
         // public SerialEquipmentData GetSerialEquipmentData() => _equipmentData;
-        public SerialEquipmentData GetSerialEquipmentData ()=> DontDestroyGameManager.Instance.ScriptableEquipmentModelManager.GetScriptableEquipmentData(_equipmentData._equipmentID);
+        public SerialEquipmentData GetSerialEquipmentData ()=> DontDestroyGameManager.Instance.ScriptableEquipmentModelManager.ScriptableEquipmentDatas[_equipmentData._equipmentID]._serialEquipmentData;
         public Equipment equipment { get; private set; }
         public bool ISDEBUG = true;
 

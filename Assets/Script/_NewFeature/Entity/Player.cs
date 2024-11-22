@@ -440,9 +440,8 @@ namespace Sophia.Entitys
                     Debug.Log("saveLoadManager.Data.PlayerData.TestEquipmentData.Count > 0");
                     foreach (var item in saveLoadManager.Data.PlayerData.CollectedEquipmentIndexs)
                     {
-                        SerialEquipmentData serialEquipmentData = DontDestroyGameManager.Instance.ScriptableEquipmentModelManager.GetScriptableEquipmentData(item);
-
-                        Debug.Log(FactoryConcreteEquipment.GetEquipmentByID(serialEquipmentData, GetComponent<Player>()).Name);
+                        SerialEquipmentData serialEquipmentData = DontDestroyGameManager.Instance.ScriptableEquipmentModelManager.ScriptableEquipmentDatas[item]._serialEquipmentData;
+                        Debug.Log($"{item} {FactoryConcreteEquipment.GetEquipmentByID(serialEquipmentData, GetComponent<Player>()).ID}");
                         EquipEquipment(FactoryConcreteEquipment.GetEquipmentByID(serialEquipmentData, GetComponent<Player>()));
                     }
                 }

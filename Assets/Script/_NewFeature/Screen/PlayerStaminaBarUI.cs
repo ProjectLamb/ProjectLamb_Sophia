@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Linq;
 using System.Collections.Generic;
@@ -19,6 +20,16 @@ namespace Sophia.UserInterface
         private Stack<Slider> existsliders = new Stack<Slider>();
         private Stack<Slider> chargingSlider = new Stack<Slider>();
         private float progressOneSlider = 0;
+
+        private void OnEnable()
+        {
+            while (_actionsQueue.Count > 0)
+            {
+                StartCoroutine(GlobalAsync.PerformAndRenderUI(_actionsQueue.Dequeue()));
+            }
+        }
+        
+        private Queue<UnityAction> _actionsQueue = new Queue<UnityAction>();
         public void SetReferenceComposite(DashSkill dashSkill)
         {
             dashSkillRef = dashSkill;
@@ -52,7 +63,7 @@ namespace Sophia.UserInterface
             }
         }
 
-        private Queue<UnityAction> _actionsQueue = new Queue<UnityAction>();
+
         private void InitializedHandler()
         {
             if (this.gameObject.activeSelf == false) { _actionsQueue.Enqueue(InitializeLambda); return; }

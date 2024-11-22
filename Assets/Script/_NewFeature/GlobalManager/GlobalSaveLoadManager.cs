@@ -58,7 +58,6 @@ public class GlobalSaveLoadManager : MonoBehaviour
         else
         {
             Data = new UserData();
-            Data.TEST_SET_EQUIPMENT(TestEquipmentData);
             Data.IsNewFile = true;
             //SaveAsJson();
         }
