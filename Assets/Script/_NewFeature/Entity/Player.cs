@@ -397,11 +397,11 @@ namespace Sophia.Entitys
         public void DropEquipment(Equipment equipment)
         {
             // File
-            foreach (var item in DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.EquipmentDataList)
+            foreach (var item in DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.TestEquipmentData)
             {
-                if (equipment.ID == item._equipmentID)
+                if (equipment.ID == item)
                 {
-                    DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.EquipmentDataList.Remove(item);
+                    DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.TestEquipmentData.Remove(item);
                 }
             }
 
@@ -430,11 +430,11 @@ namespace Sophia.Entitys
 
                 //부품
                 //번호를 토대로 장착
-                if (saveLoadManager.Data.PlayerData.EquipmentDataList.Count > 0)
+                if (saveLoadManager.Data.PlayerData.TestEquipmentData.Count > 0)
                 {
-                    foreach (var item in saveLoadManager.Data.PlayerData.EquipmentDataList)
+                    foreach (var item in saveLoadManager.Data.PlayerData.TestEquipmentData)
                     {
-                        SerialEquipmentData serialEquipmentData = item;
+                        SerialEquipmentData serialEquipmentData = DontDestroyGameManager.Instance.ScriptableEquipmentModelManager.GetScriptableEquipmentData(item);
 
                         Debug.Log(FactoryConcreteEquipment.GetEquipmentByID(serialEquipmentData, GetComponent<Player>()).Name);
                         EquipEquipment(FactoryConcreteEquipment.GetEquipmentByID(serialEquipmentData, GetComponent<Player>()));

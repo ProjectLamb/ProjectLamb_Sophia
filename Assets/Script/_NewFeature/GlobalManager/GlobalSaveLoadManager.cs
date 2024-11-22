@@ -155,7 +155,12 @@ namespace Sophia.DB
         public float Health = 100;
         public int Gear = 30;
         public bool IsDied = false;
-        public List<SerialEquipmentData> EquipmentDataList = new List<SerialEquipmentData>();
+        #region Equipment_TEST
+
+        public List<int> TestEquipmentData = new List<int>();
+
+        #endregion
+        // public List<SerialEquipmentData> EquipmentDataList = new List<SerialEquipmentData>();
         public Dictionary<KeyCode, Skill> SkillDataDic = new Dictionary<KeyCode, Skill>();
     }
 

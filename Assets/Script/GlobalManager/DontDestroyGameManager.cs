@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Sophia.DB;
 using UnityEngine;
 
     public class DontDestroyGameManager : MonoBehaviour
@@ -36,4 +37,7 @@ using UnityEngine;
 
         [SerializeField] private GlobalSaveLoadManager _saveLoadManager;
         public GlobalSaveLoadManager SaveLoadManager {get { return _saveLoadManager; } }
+
+        [SerializeField] private GlobalScriptableEquipmentModelManager _scriptableEquipmentModelManager;
+        public GlobalScriptableEquipmentModelManager ScriptableEquipmentModelManager {get { return _scriptableEquipmentModelManager; } }
     }
