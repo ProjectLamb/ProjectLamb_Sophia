@@ -7,9 +7,9 @@ namespace Sophia.DB
     [CreateAssetMenu(fileName = "SkillData", menuName = "ScriptableObject/Carrier/Item/Skill", order = int.MaxValue)]
     public class ScriptableSkillData : ScriptableObject
     {
-        [field : SerializeField] public SerialSkillData _serialSkillData { get; private set; }
+        [SerializeField] private SerialSkillData _serialSkillData;
         
-        public void SetSerial(SerialSkillData serialSkillData)
+        public void SetSerials(SerialSkillData serialSkillData)
         {
             _serialSkillData = serialSkillData;
         }

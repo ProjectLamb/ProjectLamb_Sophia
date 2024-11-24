@@ -19,6 +19,12 @@ namespace Sophia.DB
     public class ScriptableEquipmentData : ScriptableObject, IEquipmentDataAccessable
     {
         [SerializeField] private SerialEquipmentData _serialEquipmentData;
+
+        public void SetSerials(SerialEquipmentData serialEquipmentData)
+        {
+            _serialEquipmentData = serialEquipmentData;
+        }
+
         public int EquipmentID => _serialEquipmentData._equipmentID;
         public string EquipmentName => _serialEquipmentData._equipmentName;
         public string EquipmentDescription => _serialEquipmentData._description;

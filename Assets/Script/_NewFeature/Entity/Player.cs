@@ -457,17 +457,17 @@ namespace Sophia.Entitys
                     List<KeyCode> keyCodes = saveLoadManager.Data.PlayerData.CollectSkillIndexs.Keys.ToList();
                     for(int i = 0; i < keyCodes.Count; i++)
                     {
-                        int skillIndex = saveLoadManager.Data.PlayerData.CollectSkillIndexs[keyCodes[i]];
-                        if(skillIndex == 0) continue;
-                        SerialSkillData serialSkillData = DontDestroyGameManager.Instance.ScriptableSkillModelManager
-                            .ScriptableSkillDatas[skillIndex]._serialSkillData;
-                        Skill concreteSkill = FactoryConcreteSkill.GetSkillByID((E_SKILL_INDEX)skillIndex,
-                            GetComponent<Player>(), serialSkillData._userInterfaceData, serialSkillData._affectorData,
-                            serialSkillData._damageModifierData, serialSkillData._conveyAffectModifierData,
-                            serialSkillData._projectileInstantiateData, serialSkillData._activatedAudioData);
-                        Debug.Log($"{skillIndex} {concreteSkill.GetName()}");
-                        if (skillIndex != null)
-                            CollectSkill(concreteSkill, keyCodes[i]);
+                        // int skillIndex = saveLoadManager.Data.PlayerData.CollectSkillIndexs[keyCodes[i]];
+                        // if(skillIndex == 0) continue;
+                        // SerialSkillData serialSkillData = DontDestroyGameManager.Instance.ScriptableSkillModelManager
+                        //     .ScriptableSkillDatas[skillIndex]._serialSkillData;
+                        // Skill concreteSkill = FactoryConcreteSkill.GetSkillByID((E_SKILL_INDEX)skillIndex,
+                        //     GetComponent<Player>(), serialSkillData._userInterfaceData, serialSkillData._affectorData,
+                        //     serialSkillData._damageModifierData, serialSkillData._conveyAffectModifierData,
+                        //     serialSkillData._projectileInstantiateData, serialSkillData._activatedAudioData);
+                        // Debug.Log($"{skillIndex} {concreteSkill.GetName()}");
+                        // if (skillIndex != null)
+                        //     CollectSkill(concreteSkill, keyCodes[i]);
                     }
                 }
             }
