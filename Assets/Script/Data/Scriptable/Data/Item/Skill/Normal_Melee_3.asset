@@ -1,0 +1,282 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b07be72d8f904b65bc97a3ebf18d1108, type: 3}
+  m_Name: Normal_Melee_3
+  m_EditorClassIdentifier: 
+  _serialSkillData:
+    _index: 0
+    _userInterfaceData:
+      _name: 
+      _description: 
+      _icon: {fileID: 0}
+    _affectorData:
+      _uiData:
+        _name: 
+        _description: 
+        _icon: {fileID: 0}
+      _affectType: 0
+      _baseDurateTime: 0
+      _audioData:
+        _fmodEventRef:
+          Guid:
+            Data1: 0
+            Data2: 0
+            Data3: 0
+            Data4: 0
+          Path: 
+        _startParamRefs: []
+        _exitParamRefs: []
+      _skinData:
+        _intervalTime: 0
+        _materialRef: {fileID: 0}
+        _materialType: 0
+        _entityFunctionActType: 0
+        _affectType: 0
+      _visualData:
+        _intervalTime: 0
+        _visualFxRef: {fileID: 0}
+      _barrierData:
+        _barrierRatio: 0
+      _tickDamageData:
+        _baseTickDamage:
+          damageAmount: 0
+          damageRatio: 0
+          damageHandleType: 0
+          hitType: 0
+        _intervalTime: 0
+      _physicsData:
+        _intervalTime: 0
+        _physicsForce: 0
+      _calculateData:
+        MaxHp:
+          amount: 0
+          calType: 0
+        Defence:
+          amount: 0
+          calType: 0
+        MoveSpeed:
+          amount: 0
+          calType: 0
+        Accecerate:
+          amount: 0
+          calType: 0
+        Tenacity:
+          amount: 0
+          calType: 0
+        MaxStamina:
+          amount: 0
+          calType: 0
+        StaminaRestoreSpeed:
+          amount: 0
+          calType: 0
+        Luck:
+          amount: 0
+          calType: 0
+        Power:
+          amount: 0
+          calType: 0
+        InstantiableDurateLifeTimeMultiplyRatio:
+          amount: 0
+          calType: 0
+        InstantiableSizeMultiplyRatio:
+          amount: 0
+          calType: 0
+        InstantiableForwardingSpeedMultiplyRatio:
+          amount: 0
+          calType: 0
+        PoolSize:
+          amount: 0
+          calType: 0
+        AttackSpeed:
+          amount: 0
+          calType: 0
+        MeleeRatio:
+          amount: 0
+          calType: 0
+        RangerRatio:
+          amount: 0
+          calType: 0
+        TechRatio:
+          amount: 0
+          calType: 0
+        EfficienceMultiplyer:
+          amount: 0
+          calType: 0
+        CoolDownSpeed:
+          amount: 0
+          calType: 0
+      _projectileVisualData:
+        _shaderUnderbarColor: {r: 0, g: 0, b: 0, a: 0}
+        _shaderUnderbarColorPower: 0
+        _destroyEffect: {fileID: 0}
+        _hitEffect: {fileID: 0}
+    _damageModifierData:
+      _extrasType: 0
+      _performType: 0
+      _damageConverterData:
+        _damageRatio: 0
+        _damageHandleType: 0
+        _hitType: 0
+    _conveyAffectModifierData:
+      _extrasType: 0
+      _performType: 0
+      _affectData:
+        _uiData:
+          _name: 
+          _description: 
+          _icon: {fileID: 0}
+        _affectType: 0
+        _baseDurateTime: 0
+        _audioData:
+          _fmodEventRef:
+            Guid:
+              Data1: 0
+              Data2: 0
+              Data3: 0
+              Data4: 0
+            Path: 
+          _startParamRefs: []
+          _exitParamRefs: []
+        _skinData:
+          _intervalTime: 0
+          _materialRef: {fileID: 0}
+          _materialType: 0
+          _entityFunctionActType: 0
+          _affectType: 0
+        _visualData:
+          _intervalTime: 0
+          _visualFxRef: {fileID: 0}
+        _barrierData:
+          _barrierRatio: 0
+        _tickDamageData:
+          _baseTickDamage:
+            damageAmount: 0
+            damageRatio: 0
+            damageHandleType: 0
+            hitType: 0
+          _intervalTime: 0
+        _physicsData:
+          _intervalTime: 0
+          _physicsForce: 0
+        _calculateData:
+          MaxHp:
+            amount: 0
+            calType: 0
+          Defence:
+            amount: 0
+            calType: 0
+          MoveSpeed:
+            amount: 0
+            calType: 0
+          Accecerate:
+            amount: 0
+            calType: 0
+          Tenacity:
+            amount: 0
+            calType: 0
+          MaxStamina:
+            amount: 0
+            calType: 0
+          StaminaRestoreSpeed:
+            amount: 0
+            calType: 0
+          Luck:
+            amount: 0
+            calType: 0
+          Power:
+            amount: 0
+            calType: 0
+          InstantiableDurateLifeTimeMultiplyRatio:
+            amount: 0
+            calType: 0
+          InstantiableSizeMultiplyRatio:
+            amount: 0
+            calType: 0
+          InstantiableForwardingSpeedMultiplyRatio:
+            amount: 0
+            calType: 0
+          PoolSize:
+            amount: 0
+            calType: 0
+          AttackSpeed:
+            amount: 0
+            calType: 0
+          MeleeRatio:
+            amount: 0
+            calType: 0
+          RangerRatio:
+            amount: 0
+            calType: 0
+          TechRatio:
+            amount: 0
+            calType: 0
+          EfficienceMultiplyer:
+            amount: 0
+            calType: 0
+          CoolDownSpeed:
+            amount: 0
+            calType: 0
+        _projectileVisualData:
+          _shaderUnderbarColor: {r: 0, g: 0, b: 0, a: 0}
+          _shaderUnderbarColorPower: 0
+          _destroyEffect: {fileID: 0}
+          _hitEffect: {fileID: 0}
+    _projectileInstantiateData:
+      _projectileObjectRefer: {fileID: 0}
+      _InstantiateType: 0
+      _bucketIndex: 0
+      _DeactivateForce: 0
+      _DurateTimeByRatio: 0
+      _SimulateSpeed: 0
+      _ScaleOverrideByRatio: 0
+      _ScaleMultiplyByRatio: 0
+      _ForwardingSpeedByRatio: 0
+      _ProjectilePower: 0
+      _intervalData:
+        _baseIntervalTime: 0
+        _baseIntervalCheckTime: 0
+        _baseIntervalMuls: 0
+        _isIntervalTrigger: 0
+        _isIntervalDamage: 0
+        _isIntervalExtrasConvey: 0
+        _isIntervalExtrasWeaponConvey: 0
+        _isIntervalExtrasSkillConvey: 0
+        IsTriggerOnceOnStay: 0
+        triggerCountTime: 0
+        checkCountTime: 0
+      _AffectType: 0
+      _stackingType: 0
+      _positioningType: 0
+      _projectileDamageInfoByWaeponModifierDatas:
+        _extrasType: 0
+        _performType: 0
+        _damageConverterData:
+          _damageRatio: 0
+          _damageHandleType: 0
+          _hitType: 0
+      _projectileDamageInfoBySkillModifierDatas:
+        _extrasType: 0
+        _performType: 0
+        _damageConverterData:
+          _damageRatio: 0
+          _damageHandleType: 0
+          _hitType: 0
+    _activatedAudioData:
+      _fmodEventRef:
+        Guid:
+          Data1: 0
+          Data2: 0
+          Data3: 0
+          Data4: 0
+        Path: 
+      _startParamRefs: []
+      _exitParamRefs: []

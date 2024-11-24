@@ -5,13 +5,11 @@ using UnityEngine;
 
 namespace Sophia.DB
 {
-    using EquipmentIndex = System.Int32;
-    using SkillIndex = System.Int32;
     
     [System.Serializable]
     public struct SerialSkillOverlapData
     {
-        [SerializeField] public SkillIndex skillIndex;
+        [SerializeField] public int skillIndex;
         [SerializeField] public KeyCode assignedKey;
     }
     
@@ -24,8 +22,8 @@ namespace Sophia.DB
         public int PlayerOverlapWealth { get; private set;}
         public int PlayerOverlapHP { get; private set; }
 
-        private readonly List<EquipmentIndex> equipmentOverlapDatas = new List<EquipmentIndex>();
-        public IReadOnlyList<EquipmentIndex> EquipmentOverlapDatas => equipmentOverlapDatas;
+        private readonly List<int> equipmentOverlapDatas = new List<int>();
+        public IReadOnlyList<int> EquipmentOverlapDatas => equipmentOverlapDatas;
 
         private readonly List<SerialSkillOverlapData> skillOverlapDatas = new List<SerialSkillOverlapData>();
         public IReadOnlyList<SerialSkillOverlapData> SkillOverlapDatas => skillOverlapDatas;

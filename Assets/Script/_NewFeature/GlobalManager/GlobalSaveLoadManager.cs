@@ -18,12 +18,11 @@ using UnityEngine.Serialization;
 public class GlobalSaveLoadManager : MonoBehaviour
 {
     private string PATH;
+    [SerializedDictionary] 
+    private ScriptablePlayerPasteData _scriptablePlayerPasteData;
+    
     public UserData Data;
-    public List<int> TestEquipmentData;
-
-    [SerializedDictionary("KeyCode", "SkillIndex")]
-    public SerializedDictionary<KeyCode, int> TestSkillData;
-
+    
     public bool GetIsDataExist()
     {
         if (File.Exists(PATH))
@@ -74,8 +73,6 @@ public class GlobalSaveLoadManager : MonoBehaviour
     public void ResetData()
     {
         Data = new UserData();
-        Data.TEST_SET_EQUIPMENT(TestEquipmentData);
-        Data.TEST_SET_SKILL(TestSkillData);
         Data.IsNewFile = true;
 
         StartCoroutine(AsyncResetFile());
@@ -109,6 +106,8 @@ public class GlobalSaveLoadManager : MonoBehaviour
         string json = JsonConvert.SerializeObject(Data, Formatting.Indented);
         await File.WriteAllTextAsync(PATH, json);
     }
+    
+    
 }
 
 namespace Sophia.DB
@@ -177,18 +176,7 @@ namespace Sophia.DB
         public float Health = 100;
         public int Gear = 30;
         public bool IsDied = false;
-        #region Equipment_TEST
-
         public List<int> CollectedEquipmentIndexs = new List<int>();
-
-        #endregion
-        #region Equipment_TEST
-        
         public Dictionary<KeyCode, int> CollectSkillIndexs = new Dictionary<KeyCode, int>();
-        
-        #endregion
-        // public List<SerialEquipmentData> EquipmentDataList = new List<SerialEquipmentData>();
-        // public Dictionary<KeyCode, Skill> SkillDataDic = new Dictionary<KeyCode, Skill>();
     }
-
 }

@@ -180,10 +180,11 @@ namespace Sophia.Entitys
         public override bool GetDamaged(DamageInfo damage)
         {
             bool isDamaged = false;
-            if (Life.IsDie) { isDamaged = false; }
-            isDamaged = Life.Damaged(damage);
-            if (isDamaged) { GetModelManager().GetAnimator().SetTrigger("GetDamaged"); }
-            if (Life.IsDie) { Die(); }
+            Debug.LogWarning("현재 무적 디버깅 활성화");
+            // if (Life.IsDie) { isDamaged = false; }
+            // isDamaged = Life.Damaged(damage);
+            // if (isDamaged) { GetModelManager().GetAnimator().SetTrigger("GetDamaged"); }
+            // if (Life.IsDie) { Die(); }
             return isDamaged;
         }
 
