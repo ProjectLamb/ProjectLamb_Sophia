@@ -58,22 +58,22 @@ namespace Sophia
             {
                 E_EQUIPMENT_TYPE type = E_EQUIPMENT_TYPE.None;
                 //Normal
-                if (_equipmentItems[i].GetSerialEquipmentData()._equipmentID >= 1000 && _equipmentItems[i].GetSerialEquipmentData()._equipmentID < 2000)
+                if (_equipmentItems[i].GetSerialEquipmentData().EquipmentID >= 1000 && _equipmentItems[i].GetSerialEquipmentData().EquipmentID < 2000)
                 {
                     type = E_EQUIPMENT_TYPE.Normal;
                 }
                 //Shop
-                else if (_equipmentItems[i].GetSerialEquipmentData()._equipmentID >= 2000 && _equipmentItems[i].GetSerialEquipmentData()._equipmentID < 3000)
+                else if (_equipmentItems[i].GetSerialEquipmentData().EquipmentID >= 2000 && _equipmentItems[i].GetSerialEquipmentData().EquipmentID < 3000)
                 {
                     type = E_EQUIPMENT_TYPE.Shop;
                 }
                 //Hidden
-                else if (_equipmentItems[i].GetSerialEquipmentData()._equipmentID >= 3000 && _equipmentItems[i].GetSerialEquipmentData()._equipmentID < 4000)
+                else if (_equipmentItems[i].GetSerialEquipmentData().EquipmentID >= 3000 && _equipmentItems[i].GetSerialEquipmentData().EquipmentID < 4000)
                 {
                     type = E_EQUIPMENT_TYPE.Hidden;
                 }
                 //Boss
-                else if (_equipmentItems[i].GetSerialEquipmentData()._equipmentID >= 4000 && _equipmentItems[i].GetSerialEquipmentData()._equipmentID < 5000)
+                else if (_equipmentItems[i].GetSerialEquipmentData().EquipmentID >= 4000 && _equipmentItems[i].GetSerialEquipmentData().EquipmentID < 5000)
                 {
                     type = E_EQUIPMENT_TYPE.Boss;
                 }
@@ -95,7 +95,7 @@ namespace Sophia
             EquipmentItemObject equipmentItemObject = null;
 
             equipmentItemObject = _equipmentItemsDic[type][random.Next(0, _equipmentItemsDic[type].Count)];
-            int EquipmentId = equipmentItemObject.GetSerialEquipmentData()._equipmentID;
+            int EquipmentId = equipmentItemObject.GetSerialEquipmentData().EquipmentID;
             if(1000 <= EquipmentId && EquipmentId < 2000) {
                 _equipmentItemsDic[E_EQUIPMENT_TYPE.Normal].Remove(equipmentItemObject);
             }
@@ -126,7 +126,7 @@ namespace Sophia
             System.Random random = new System.Random();
             EquipmentItemObject equipmentItemObject = null;
             equipmentItemObject = _equipmentItems[random.Next(0, ItemPool.Instance._equipmentItems.Count)];
-            int EquipmentId = equipmentItemObject.GetSerialEquipmentData()._equipmentID;
+            int EquipmentId = equipmentItemObject.GetSerialEquipmentData().EquipmentID;
             if(1000 <= EquipmentId && EquipmentId < 2000) {
                 _equipmentItemsDic[E_EQUIPMENT_TYPE.Normal].Remove(equipmentItemObject);
             }

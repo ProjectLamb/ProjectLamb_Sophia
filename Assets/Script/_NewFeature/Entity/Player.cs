@@ -7,6 +7,7 @@ using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using FMODPlus;
 using Cysharp.Threading.Tasks;
+using Sophia.DB;
 using Sophia.Instantiates.Skills;
 using UnityEngine.SceneManagement;
 
@@ -443,9 +444,9 @@ namespace Sophia.Entitys
                     Debug.Log("saveLoadManager.Data.PlayerData.TestEquipmentData.Count > 0");
                     foreach (var item in saveLoadManager.Data.PlayerData.CollectedEquipmentIndexs)
                     {
-                        SerialEquipmentData serialEquipmentData = DontDestroyGameManager.Instance.ScriptableEquipmentModelManager.ScriptableEquipmentDatas[item]._serialEquipmentData;
-                        Debug.Log($"{item} {FactoryConcreteEquipment.GetEquipmentByID(serialEquipmentData, GetComponent<Player>()).ID}");
-                        EquipEquipment(FactoryConcreteEquipment.GetEquipmentByID(serialEquipmentData, GetComponent<Player>()));
+                        IEquipmentDataAccessable EquipmentData = DontDestroyGameManager.Instance.ScriptableEquipmentModelManager.ScriptableEquipmentDatas[item];
+                        Debug.Log($"{item} {FactoryConcreteEquipment.GetEquipmentByID(EquipmentData, GetComponent<Player>()).ID}");
+                        EquipEquipment(FactoryConcreteEquipment.GetEquipmentByID(EquipmentData, GetComponent<Player>()));
                     }
                 }
 

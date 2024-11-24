@@ -12,16 +12,9 @@ namespace Sophia.Instantiates
 
     public class EquipmentItemObject : ItemObject
     {
-        [ContextMenu("Deep Copy To Scriptable")]
-        public void Deep_Copy_To_Scriptable(ScriptableEquipmentData _scriptableEquipmentData)
-        {
-            _scriptableEquipmentData.SetSerial(_equipmentData);
-        }
-
-        [SerializeField] SerialEquipmentData _equipmentData;
+        [SerializeField] ScriptableEquipmentData _equipmentData;
         [SerializeField] PurchaseComponent _purchaseComponent;
-        // public SerialEquipmentData GetSerialEquipmentData() => _equipmentData;
-        public SerialEquipmentData GetSerialEquipmentData ()=> DontDestroyGameManager.Instance.ScriptableEquipmentModelManager.ScriptableEquipmentDatas[_equipmentData._equipmentID]._serialEquipmentData;
+        public IEquipmentDataAccessable GetSerialEquipmentData() => _equipmentData;
         public Equipment equipment { get; private set; }
         public bool ISDEBUG = true;
 
@@ -40,20 +33,20 @@ namespace Sophia.Instantiates
                 {
                     if (!_purchaseComponent.Purchase(player)) return;
                 }
-                equipment = FactoryConcreteEquipment.GetEquipmentByID(in _equipmentData, GameManager.Instance.PlayerGameObject.GetComponent<Player>());
+                equipment = FactoryConcreteEquipment.GetEquipmentByID(_equipmentData, GameManager.Instance.PlayerGameObject.GetComponent<Player>());
                 if (EquipUserInterface())
                 {
                     player.EquipEquipment(equipment);
 
                     //File
-                    DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.CollectedEquipmentIndexs.Add(GetSerialEquipmentData()._equipmentID);
+                    DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.CollectedEquipmentIndexs.Add(_equipmentData.EquipmentID);
 
                     //_lootVFX.Stop();
                     _lootObject.SetActive(false);
                     IsReadyToTrigger = false;
 
                     //UI
-                    InGameScreenUI.Instance._equipmentDescriptionUI.Init(_equipmentData._equipmentName, _equipmentData._description);
+                    InGameScreenUI.Instance._equipmentDescriptionUI.Init(_equipmentData.EquipmentName, _equipmentData.EquipmentDescription);
                     InGameScreenUI.Instance._equipmentDescriptionUI.DisplayOn();
 
                     if (this._isDestroyable) Destroy(this.gameObject, 2);

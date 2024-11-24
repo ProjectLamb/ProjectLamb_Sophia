@@ -1,4 +1,6 @@
 
+using Sophia.DB;
+
 namespace Sophia.DataSystem
 {
     using System.Collections.Generic;
@@ -8,20 +10,20 @@ namespace Sophia.DataSystem
     namespace Modifiers.ConcreteEquipment
     {
         public static class FactoryConcreteEquipment {
-            public static Equipment GetEquipmentByID(in SerialEquipmentData equipmentData, Entitys.Entity entity) {
+            public static Equipment GetEquipmentByID(IEquipmentDataAccessable equipmentData, Entitys.Entity entity) {
                 Equipment equipmentRes = null;
-                switch(equipmentData._equipmentID) {
-                    case 1005 : {equipmentRes = new Equipment_1005_HorsepowerSender(in equipmentData, entity);      break;}
-                    case 1008 : {equipmentRes = new Equipment_1008_BullsTrap(in equipmentData);     break;}
-                    case 1009 : {equipmentRes = new Equipment_1009_LightFlash(in equipmentData);        break;}
-                    case 1011 : {equipmentRes = new Equipment_1011_YellowLegoBrick(in equipmentData);       break;}
-                    case 1012 : {equipmentRes = new Equipment_1012_PinkDumbbell(in equipmentData);      break;}
+                switch(equipmentData.EquipmentID) {
+                    case 1005 : {equipmentRes = new Equipment_1005_HorsepowerSender(equipmentData, entity);      break;}
+                    case 1008 : {equipmentRes = new Equipment_1008_BullsTrap(equipmentData);     break;}
+                    case 1009 : {equipmentRes = new Equipment_1009_LightFlash(equipmentData);        break;}
+                    case 1011 : {equipmentRes = new Equipment_1011_YellowLegoBrick(equipmentData);       break;}
+                    case 1012 : {equipmentRes = new Equipment_1012_PinkDumbbell(equipmentData);      break;}
                     case 1013 : {equipmentRes = new Equipment_1013_CommunistsHammer(equipmentData, entity);     break;}
                     case 2004 : {equipmentRes = new Equipment_2004_CrudeGoldenBadge(equipmentData, entity);     break;}
                     case 3002 : {equipmentRes = new Equipment_3002_FrozenHelm(equipmentData);     break;}
                     case 3004 : {equipmentRes = new Equipment_3004_DeadlyThorn(equipmentData);     break;}
                     case 4005 : {equipmentRes = new Equipment_4005_MovementDirective(equipmentData);     break;}
-                    default : {equipmentRes = new Equipment(in equipmentData); break;}
+                    default : {equipmentRes = new Equipment(equipmentData); break;}
                 }
                 return equipmentRes;
             }
@@ -29,7 +31,7 @@ namespace Sophia.DataSystem
         public class Equipment_1005_HorsepowerSender : Equipment {
             ExtrasModifier<int> gearcoinExtras;
             StatModifier powerModifier;
-            public Equipment_1005_HorsepowerSender(in SerialEquipmentData equipmentData, Entitys.Entity player) : base(equipmentData) {
+            public Equipment_1005_HorsepowerSender(IEquipmentDataAccessable equipmentData, Entitys.Entity player) : base(equipmentData) {
                 powerModifier = new StatModifier(0, E_STAT_CALC_TYPE.Add, E_NUMERIC_STAT_TYPE.Power);
                 player.GetStat(E_NUMERIC_STAT_TYPE.Power).AddModifier(powerModifier);
                 gearcoinExtras = new ExtrasModifier<int>(
@@ -60,10 +62,10 @@ namespace Sophia.DataSystem
 
             readonly List<ExtrasModifier<Entity>> ConveyAffectExtrasModifiers = new();
 
-            public Equipment_1008_BullsTrap(in SerialEquipmentData equipmentData) : base(equipmentData) {
+            public Equipment_1008_BullsTrap(IEquipmentDataAccessable equipmentData) : base(equipmentData) {
                 ExtrasModifier<Entity> extrasModifier = new ExtrasModifier<Entity>(
                     new ConveyAffectCommand.FactoryStunAffectCommand(
-                        in equipmentData._extrasCalculateDatas.OnConveyAffect._affectData
+                        equipmentData.EquipmentStatExtras.OnConveyAffect._affectData
                     ).SetRandomPercentage(5),
                     E_EXTRAS_PERFORM_TYPE.Start,
                     E_FUNCTIONAL_EXTRAS_TYPE.ConveyAffect
@@ -96,7 +98,7 @@ namespace Sophia.DataSystem
         {
             readonly SerialDamageConverterData DamageConverterData;
             readonly List<ExtrasModifier<DamageInfo>> DamageExtrasModifiers = new();
-            public Equipment_1009_LightFlash(in SerialEquipmentData equipmentData) : base(equipmentData)
+            public Equipment_1009_LightFlash(IEquipmentDataAccessable equipmentData) : base(equipmentData)
             {
                 DamageConverterData = new SerialDamageConverterData {
                     _damageRatio = 0,
@@ -138,7 +140,7 @@ namespace Sophia.DataSystem
         {
             readonly SerialDamageConverterData DamageConverterData;
             readonly List<ExtrasModifier<DamageInfo>> DamageExtrasModifiers = new();
-            public Equipment_1011_YellowLegoBrick(in SerialEquipmentData equipmentData) : base(equipmentData)
+            public Equipment_1011_YellowLegoBrick(IEquipmentDataAccessable equipmentData) : base(equipmentData)
             {
                 DamageConverterData = new SerialDamageConverterData {
                     _damageRatio = 5,
@@ -178,7 +180,7 @@ namespace Sophia.DataSystem
         {
             public UnityEngine.Vector3 OriginScale;
             public Player PlayerEntity;
-            public Equipment_1012_PinkDumbbell(in SerialEquipmentData equipmentData) : base(equipmentData)
+            public Equipment_1012_PinkDumbbell(IEquipmentDataAccessable equipmentData) : base(equipmentData)
             {
             }
 
@@ -199,11 +201,11 @@ namespace Sophia.DataSystem
         public class Equipment_1013_CommunistsHammer : Equipment
         {
             readonly List<ExtrasModifier<Entity>> ConveyAffectExtrasModifiers = new();
-            public Equipment_1013_CommunistsHammer(in SerialEquipmentData equipmentData, Entitys.Entity entity) : base(equipmentData)
+            public Equipment_1013_CommunistsHammer(IEquipmentDataAccessable equipmentData, Entitys.Entity entity) : base(equipmentData)
             {
                 ExtrasModifier<Entity> ExtrasModifier = new ExtrasModifier<Entity>(
                     new ConveyAffectCommand.FactoryKnockbackAffectCommand(
-                        in equipmentData._extrasCalculateDatas.OnConveyAffect._affectData, 
+                        equipmentData.EquipmentStatExtras.OnConveyAffect._affectData, 
                         entity.GetGameObject().transform
                     ),
                     E_EXTRAS_PERFORM_TYPE.Start,
@@ -236,9 +238,9 @@ namespace Sophia.DataSystem
             Entitys.Entity entityRef;
             private readonly SerialAffectorData serialAffectorData;
 
-            public Equipment_2004_CrudeGoldenBadge(in SerialEquipmentData equipmentData, Entitys.Entity entity) : base(equipmentData) {
+            public Equipment_2004_CrudeGoldenBadge(IEquipmentDataAccessable equipmentData, Entitys.Entity entity) : base(equipmentData) {
                 entityRef = entity;
-                serialAffectorData = equipmentData._extrasCalculateDatas.OnConveyAffect._affectData;
+                serialAffectorData = equipmentData.EquipmentStatExtras.OnConveyAffect._affectData;
                 EnemyDieExtrasModifier = new ExtrasModifier<object>(
                     new GeneralCommand.NoneParameterCommand(MoveFasterAction),
                     E_EXTRAS_PERFORM_TYPE.Start,
@@ -271,10 +273,10 @@ namespace Sophia.DataSystem
         public class Equipment_3002_FrozenHelm : Equipment
         {
             ExtrasModifier<Entitys.Entity> ConveyAffectExtrasModifier;
-            public Equipment_3002_FrozenHelm(in SerialEquipmentData equipmentData) : base(equipmentData)
+            public Equipment_3002_FrozenHelm(IEquipmentDataAccessable equipmentData) : base(equipmentData)
             {
                 ConveyAffectExtrasModifier = new ExtrasModifier<Entity>(
-                    new ConveyAffectCommand.FactoryColdAffectCommand(in equipmentData._extrasCalculateDatas.OnConveyAffect._affectData),
+                    new ConveyAffectCommand.FactoryColdAffectCommand(equipmentData.EquipmentStatExtras.OnConveyAffect._affectData),
                     E_EXTRAS_PERFORM_TYPE.Start,
                     E_FUNCTIONAL_EXTRAS_TYPE.ConveyAffect
                 );
@@ -300,10 +302,10 @@ namespace Sophia.DataSystem
         public class Equipment_3004_DeadlyThorn : Equipment
         {
             ExtrasModifier<Entitys.Entity> ConveyAffectExtrasModifier;
-            public Equipment_3004_DeadlyThorn(in SerialEquipmentData equipmentData) : base(equipmentData)
+            public Equipment_3004_DeadlyThorn(IEquipmentDataAccessable equipmentData) : base(equipmentData)
             {
                 ConveyAffectExtrasModifier = new ExtrasModifier<Entity>(
-                    new ConveyAffectCommand.FactoryBleedAffectCommand(in equipmentData._extrasCalculateDatas.OnConveyAffect._affectData),
+                    new ConveyAffectCommand.FactoryBleedAffectCommand(equipmentData.EquipmentStatExtras.OnConveyAffect._affectData),
                     E_EXTRAS_PERFORM_TYPE.Start,
                     E_FUNCTIONAL_EXTRAS_TYPE.ConveyAffect
                 );
@@ -328,10 +330,10 @@ namespace Sophia.DataSystem
         public class Equipment_4005_MovementDirective : Equipment
         {
             ExtrasModifier<Entitys.Entity> ConveyAffectExtrasModifier;
-            public Equipment_4005_MovementDirective(in SerialEquipmentData equipmentData) : base(equipmentData)
+            public Equipment_4005_MovementDirective(IEquipmentDataAccessable equipmentData) : base(equipmentData)
             {
                 ConveyAffectExtrasModifier = new ExtrasModifier<Entity>(
-                    new ConveyAffectCommand.FactoryExecuteCommand(in equipmentData._extrasCalculateDatas.OnConveyAffect._affectData)
+                    new ConveyAffectCommand.FactoryExecuteCommand(equipmentData.EquipmentStatExtras.OnConveyAffect._affectData)
                         .SetRandomPercentage(5),
                     E_EXTRAS_PERFORM_TYPE.Start,
                     E_FUNCTIONAL_EXTRAS_TYPE.ConveyAffect

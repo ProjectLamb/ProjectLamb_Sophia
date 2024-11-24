@@ -15,7 +15,7 @@ namespace Script.Tools
         {
             int index = 0;
             foreach(var data in ConcreteEquipmentPrefabs) {
-                data.Deep_Copy_To_Scriptable(ScriptableEquipmentData[index++]);
+                // data.Deep_Copy_To_Scriptable(ScriptableEquipmentData[index++]);
             }
         }
     }
