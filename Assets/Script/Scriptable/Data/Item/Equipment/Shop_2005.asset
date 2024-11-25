@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Shop_2005
   m_EditorClassIdentifier: 
   _serialEquipmentData:
-    _equipmentID: 0
-    _equipmentName: 
-    _description: 
-    _icon: {fileID: 0}
+    _equipmentID: 2005
+    _equipmentName: "\uBC31\uD638\uC778\uD615"
+    _description: "\uC2A4\uD14C\uBBF8\uB108 \uCDA9\uC804\uC18D\uB3C4 \uAC00\uC18D"
+    _icon: {fileID: 21300000, guid: aa178d856210dc1428bcef6cc274f34b, type: 3}
     _statCalculateDatas:
       MaxHp:
         amount: 0
@@ -37,8 +37,8 @@ MonoBehaviour:
         amount: 0
         calType: 0
       StaminaRestoreSpeed:
-        amount: 0
-        calType: 0
+        amount: 0.1
+        calType: 2
       Luck:
         amount: 0
         calType: 0

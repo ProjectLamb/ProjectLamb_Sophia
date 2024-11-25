@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: Normal_1006
   m_EditorClassIdentifier: 
   _serialEquipmentData:
-    _equipmentID: 0
-    _equipmentName: 
-    _description: 
-    _icon: {fileID: 0}
+    _equipmentID: 1006
+    _equipmentName: "\uBC18\uCBE4 \uB0A8\uC740 \uC704\uC7A5\uD06C\uB9BC"
+    _description: "\uC774\uB3D9\uC18D\uB3C4 \uC99D\uAC00, \uACF5\uACA9\uC18D\uB3C4
+      \uC99D\uAC00"
+    _icon: {fileID: 1713586417168917357, guid: b5adc707aeb0d884baeee132623a67d0, type: 3}
     _statCalculateDatas:
       MaxHp:
         amount: 0
@@ -25,8 +26,8 @@ MonoBehaviour:
         amount: 0
         calType: 0
       MoveSpeed:
-        amount: 0
-        calType: 0
+        amount: 0.1
+        calType: 2
       Accecerate:
         amount: 0
         calType: 0
@@ -58,7 +59,7 @@ MonoBehaviour:
         amount: 0
         calType: 0
       AttackSpeed:
-        amount: 0
+        amount: 0.05
         calType: 0
       MeleeRatio:
         amount: 0

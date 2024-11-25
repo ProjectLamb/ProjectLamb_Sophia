@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: Hidden_3002
   m_EditorClassIdentifier: 
   _serialEquipmentData:
-    _equipmentID: 0
-    _equipmentName: 
-    _description: 
-    _icon: {fileID: 0}
+    _equipmentID: 3002
+    _equipmentName: "\uC5BC\uC5B4\uBD99\uC740 \uD22C\uAD6C"
+    _description: "\uD50C\uB808\uC774\uC5B4 \uACF5\uACA9\uC5D0 \uB0C9\uAE30\uD6A8\uACFC
+      \uBD80\uC5EC"
+    _icon: {fileID: 21300000, guid: 06a0fd70388b19c42af08b940bfdc1a4, type: 3}
     _statCalculateDatas:
       MaxHp:
         amount: 0
@@ -84,15 +85,15 @@ MonoBehaviour:
           _damageHandleType: 0
           _hitType: 0
       OnConveyAffect:
-        _extrasType: 0
-        _performType: 0
+        _extrasType: 14
+        _performType: 1
         _affectData:
           _uiData:
             _name: 
             _description: 
             _icon: {fileID: 0}
-          _affectType: 0
-          _baseDurateTime: 0
+          _affectType: 105
+          _baseDurateTime: 1
           _audioData:
             _fmodEventRef:
               Guid:
@@ -105,7 +106,8 @@ MonoBehaviour:
             _exitParamRefs: []
           _skinData:
             _intervalTime: 0
-            _materialRef: {fileID: 0}
+            _materialRef: {fileID: 2100000, guid: 224c09ed7d28d4df6b14c51569ee5742,
+              type: 2}
             _materialType: 0
             _entityFunctionActType: 0
             _affectType: 0
@@ -132,8 +134,8 @@ MonoBehaviour:
               amount: 0
               calType: 0
             MoveSpeed:
-              amount: 0
-              calType: 0
+              amount: -0.4
+              calType: 2
             Accecerate:
               amount: 0
               calType: 0

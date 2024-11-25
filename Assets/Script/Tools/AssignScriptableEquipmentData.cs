@@ -4,6 +4,13 @@ using Sophia.DB;
 using Sophia.Instantiates;
 using UnityEngine;
 using Sophia;
+using UnityEditor;
+using UnityEngine.AddressableAssets;
+using Cysharp.Threading.Tasks;
+using Cysharp.Threading;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Threading.Tasks.Sources;
 
 namespace Script.Tools
 {
@@ -12,6 +19,8 @@ namespace Script.Tools
         [SerializeField] private List<EquipmentItemObject> ConcreteEquipmentPrefabs;
         [SerializeField] private List<ScriptableEquipmentData> ScriptableEquipmentData;
         [SerializeField] private List<int> EquipmentIDs;
+        
+        const string AddressablePATH = "Scriptable/Data/Item/Equipment";
 
         [ContextMenu("Assign")]
         public void TEST_ASSIGN()
@@ -23,7 +32,7 @@ namespace Script.Tools
         }
         
         [ContextMenu("Overlap")]
-        public void TEST_OVERLAP()
+        public async void TEST_OVERLAP()
         {
             int index = 0;
             foreach(var data in ScriptableEquipmentData)
@@ -42,9 +51,15 @@ namespace Script.Tools
                     eT = E_EQUIPMENT_TYPE.Boss;
                 }
                 
-                string PATH = Path.Combine(Application.dataPath, $"Resources/Json/{eT.ToString()}_{EquipmentIDs[index]}.json");
-                string json = File.ReadAllText(PATH);
+                // SerializedObject so = new SerializedObject(data);
+                string JSONPATH = Path.Combine(Application.dataPath, $"Resources/Json/{eT.ToString()}_{EquipmentIDs[index].ToString("0000")}.json");
+                var SO = await Addressables.LoadAssetAsync<ScriptableEquipmentData>(AddressablePATH +
+                    $"/{eT.ToString()}_{EquipmentIDs[index].ToString("0000")}.asset");
+                string json = File.ReadAllText(JSONPATH);
                 data.SetSerials(JsonUtility.FromJson<SerialEquipmentData>(json));
+                EditorUtility.SetDirty(SO);
+                AssetDatabase.SaveAssetIfDirty(SO);
+                // so.ApplyModifiedProperties();
                 index++;
             }
         }

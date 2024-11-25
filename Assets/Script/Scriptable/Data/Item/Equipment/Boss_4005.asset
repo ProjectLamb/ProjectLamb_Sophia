@@ -13,14 +13,10 @@ MonoBehaviour:
   m_Name: Boss_4005
   m_EditorClassIdentifier: 
   _serialEquipmentData:
-    _equipmentID: 0
-    _equipmentName: 
-    _description: 
-    _icon: {fileID: 0}
-    _statCalculateDatas:
-    _equipmentID: 0
-    _equipmentName: 
-    _description: 
+    _equipmentID: 4005
+    _equipmentName: "\uB7EC\uB2E4\uC774\uD2B8 \uC6B4\uB3D9 \uC9C0\uB839\uC11C"
+    _description: "\uD50C\uB808\uC774\uC5B4 \uACF5\uACA9\uC5D0 \uC77C\uC815 \uD655\uB960\uB85C
+      \uC989\uC0AC \uD6A8\uACFC \uBD80\uC5EC"
     _icon: {fileID: 0}
     _statCalculateDatas:
       MaxHp:
@@ -89,15 +85,15 @@ MonoBehaviour:
           _damageHandleType: 0
           _hitType: 0
       OnConveyAffect:
-        _extrasType: 0
-        _performType: 0
+        _extrasType: 14
+        _performType: 1
         _affectData:
           _uiData:
             _name: 
             _description: 
             _icon: {fileID: 0}
-          _affectType: 0
-          _baseDurateTime: 0
+          _affectType: 113
+          _baseDurateTime: 10
           _audioData:
             _fmodEventRef:
               Guid:
@@ -110,21 +106,23 @@ MonoBehaviour:
             _exitParamRefs: []
           _skinData:
             _intervalTime: 0
-            _materialRef: {fileID: 0}
+            _materialRef: {fileID: 2100000, guid: c0ccb937203e342aeb7a78d3b94cdfa9,
+              type: 2}
             _materialType: 0
             _entityFunctionActType: 0
             _affectType: 0
           _visualData:
             _intervalTime: 0
-            _visualFxRef: {fileID: 0}
+            _visualFxRef: {fileID: 2831088036309946118, guid: 979c83ff82d4b48b3a30eed1dd41ebf0,
+              type: 3}
           _barrierData:
             _barrierRatio: 0
           _tickDamageData:
             _baseTickDamage:
-              damageAmount: 0
-              damageRatio: 0
-              damageHandleType: 0
-              hitType: 0
+              damageAmount: 9999
+              damageRatio: 1
+              damageHandleType: 2
+              hitType: 2
             _intervalTime: 0
           _physicsData:
             _intervalTime: 0

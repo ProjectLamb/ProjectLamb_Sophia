@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Normal_1013
   m_EditorClassIdentifier: 
   _serialEquipmentData:
-    _equipmentID: 0
-    _equipmentName: 
-    _description: 
-    _icon: {fileID: 0}
+    _equipmentID: 1013
+    _equipmentName: "\uB178\uB3D9\uC790\uC758 \uB9DD\uCE58"
+    _description: "\uD50C\uB808\uC774\uC5B4 \uB109\uBC31\uAC70\uB9AC \uC99D\uAC00"
+    _icon: {fileID: 21300000, guid: 62c4cfd5ad2da6842b2ef56844423b08, type: 3}
     _statCalculateDatas:
       MaxHp:
         amount: 0
@@ -84,15 +84,15 @@ MonoBehaviour:
           _damageHandleType: 0
           _hitType: 0
       OnConveyAffect:
-        _extrasType: 0
-        _performType: 0
+        _extrasType: 14
+        _performType: 1
         _affectData:
           _uiData:
             _name: 
             _description: 
             _icon: {fileID: 0}
-          _affectType: 0
-          _baseDurateTime: 0
+          _affectType: 110
+          _baseDurateTime: 0.25
           _audioData:
             _fmodEventRef:
               Guid:
@@ -123,7 +123,7 @@ MonoBehaviour:
             _intervalTime: 0
           _physicsData:
             _intervalTime: 0
-            _physicsForce: 0
+            _physicsForce: 150
           _calculateData:
             MaxHp:
               amount: 0

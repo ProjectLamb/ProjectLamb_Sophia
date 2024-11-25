@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: Hidden_3004
   m_EditorClassIdentifier: 
   _serialEquipmentData:
-    _equipmentID: 0
-    _equipmentName: 
-    _description: 
+    _equipmentID: 3004
+    _equipmentName: "\uB0A0\uCE74\uB85C\uC6B4 \uAC00\uC2DC"
+    _description: "\uD50C\uB808\uC774\uC5B4 \uACF5\uACA9\uC5D0 \uCD9C\uD608\uD6A8\uACFC
+      \uBD80\uC5EC"
     _icon: {fileID: 0}
     _statCalculateDatas:
       MaxHp:
@@ -84,15 +85,15 @@ MonoBehaviour:
           _damageHandleType: 0
           _hitType: 0
       OnConveyAffect:
-        _extrasType: 0
-        _performType: 0
+        _extrasType: 14
+        _performType: 1
         _affectData:
           _uiData:
             _name: 
             _description: 
             _icon: {fileID: 0}
-          _affectType: 0
-          _baseDurateTime: 0
+          _affectType: 103
+          _baseDurateTime: 3
           _audioData:
             _fmodEventRef:
               Guid:
@@ -105,22 +106,24 @@ MonoBehaviour:
             _exitParamRefs: []
           _skinData:
             _intervalTime: 0
-            _materialRef: {fileID: 0}
+            _materialRef: {fileID: 2100000, guid: a13824c329e2e45c3ad549130b0d7ab4,
+              type: 2}
             _materialType: 0
             _entityFunctionActType: 0
             _affectType: 0
           _visualData:
             _intervalTime: 0
-            _visualFxRef: {fileID: 0}
+            _visualFxRef: {fileID: 5123576538277296335, guid: 8bd8778fcd0ee445cbd795bfaffb6c79,
+              type: 3}
           _barrierData:
             _barrierRatio: 0
           _tickDamageData:
             _baseTickDamage:
-              damageAmount: 0
-              damageRatio: 0
-              damageHandleType: 0
+              damageAmount: 3
+              damageRatio: 1
+              damageHandleType: 2
               hitType: 0
-            _intervalTime: 0
+            _intervalTime: 0.33
           _physicsData:
             _intervalTime: 0
             _physicsForce: 0

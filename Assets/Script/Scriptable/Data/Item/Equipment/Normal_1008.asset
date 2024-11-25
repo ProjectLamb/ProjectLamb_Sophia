@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Normal_1008
   m_EditorClassIdentifier: 
   _serialEquipmentData:
-    _equipmentID: 0
-    _equipmentName: 
-    _description: 
-    _icon: {fileID: 0}
+    _equipmentID: 1008
+    _equipmentName: "\uD669\uC18C\uC6A9 \uC62C\uAC00\uBBF8"
+    _description: "\uC77C\uC815\uD655\uB960\uB85C \uC18D\uBC15 \uD6A8\uACFC \uBC1C\uB3D9"
+    _icon: {fileID: 21300000, guid: 172c2082ce3058840929b2031b4b3d68, type: 3}
     _statCalculateDatas:
       MaxHp:
         amount: 0
@@ -91,8 +91,8 @@ MonoBehaviour:
             _name: 
             _description: 
             _icon: {fileID: 0}
-          _affectType: 0
-          _baseDurateTime: 0
+          _affectType: 108
+          _baseDurateTime: 0.5
           _audioData:
             _fmodEventRef:
               Guid:
@@ -105,13 +105,15 @@ MonoBehaviour:
             _exitParamRefs: []
           _skinData:
             _intervalTime: 0
-            _materialRef: {fileID: 0}
+            _materialRef: {fileID: 2100000, guid: 3aaa761fb518643e08ba7646667fcde2,
+              type: 2}
             _materialType: 0
             _entityFunctionActType: 0
             _affectType: 0
           _visualData:
             _intervalTime: 0
-            _visualFxRef: {fileID: 0}
+            _visualFxRef: {fileID: 7049161727829206410, guid: 653e0541579bf46f9b176cf6b4b92c67,
+              type: 3}
           _barrierData:
             _barrierRatio: 0
           _tickDamageData:

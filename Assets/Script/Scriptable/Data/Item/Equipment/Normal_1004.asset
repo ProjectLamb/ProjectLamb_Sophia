@@ -13,17 +13,18 @@ MonoBehaviour:
   m_Name: Normal_1004
   m_EditorClassIdentifier: 
   _serialEquipmentData:
-    _equipmentID: 0
-    _equipmentName: 
-    _description: 
-    _icon: {fileID: 0}
+    _equipmentID: 1004
+    _equipmentName: "\uB514\uC9C0\uD138 \uD30C\uD3B8 \uC870\uAC01"
+    _description: "\uACF5\uACA9\uB825 \uC99D\uAC00, \uD50C\uB808\uC774\uC5B4 \uD53C\uD574
+      \uAC10\uC18C"
+    _icon: {fileID: 21300000, guid: cdee1cb3a4314e24d92b0d9eeae638b4, type: 3}
     _statCalculateDatas:
       MaxHp:
         amount: 0
         calType: 0
       Defence:
-        amount: 0
-        calType: 0
+        amount: 10
+        calType: 1
       MoveSpeed:
         amount: 0
         calType: 0
@@ -43,8 +44,8 @@ MonoBehaviour:
         amount: 0
         calType: 0
       Power:
-        amount: 0
-        calType: 0
+        amount: 0.1
+        calType: 2
       InstantiableDurateLifeTimeMultiplyRatio:
         amount: 0
         calType: 0

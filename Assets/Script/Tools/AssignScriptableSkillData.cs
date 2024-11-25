@@ -7,6 +7,13 @@ using Sophia.DB;
 using Sophia.Instantiates;
 using Sophia.Instantiates.Skills;
 using UnityEngine;
+using UnityEditor;
+using UnityEngine.AddressableAssets;
+using Cysharp.Threading.Tasks;
+using Cysharp.Threading;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Threading.Tasks.Sources;
 
 namespace Script.Tools
 {
@@ -14,7 +21,9 @@ namespace Script.Tools
     {
         [SerializeField] private List<SkillItemObject> ConcreteSkillPrefabs;
         [SerializeField] private List<ScriptableSkillData> ScriptableSkillData;
-
+        
+        const string AddressablePATH = "Scriptable/Data/Item/Skill";
+        
         [ContextMenu("Assign")]
         public void TEST_ASSIGN()
         {
@@ -24,7 +33,7 @@ namespace Script.Tools
             }
         }
         [ContextMenu("Overlap")]
-        public void TEST_OVERLAP()
+        public async void TEST_OVERLAP()
         {
             int index = 0;
             List<E_SKILL_INDEX> skillEnum = new List<E_SKILL_INDEX>();
@@ -37,9 +46,13 @@ namespace Script.Tools
             }
             foreach(var data in ScriptableSkillData)
             {
-                string PATH = Path.Combine(Application.dataPath, $"Resources/Json/{skillEnum[index].ToString()}_{(int)skillEnum[index]}.json");
+                string PATH = Path.Combine(Application.dataPath, $"Resources/Json/{skillEnum[index].ToString()}_{((int)skillEnum[index]).ToString("000")}.json");
+                var SO = await Addressables.LoadAssetAsync<ScriptableSkillData>(AddressablePATH +
+                    $"/{skillEnum[index].ToString()}_{((int)skillEnum[index]).ToString("000")}.asset");
                 string json = File.ReadAllText(PATH);
                 data.SetSerials(JsonUtility.FromJson<SerialSkillData>(json));
+                EditorUtility.SetDirty(SO);
+                AssetDatabase.SaveAssetIfDirty(SO);
                 index++;
             }
         }
