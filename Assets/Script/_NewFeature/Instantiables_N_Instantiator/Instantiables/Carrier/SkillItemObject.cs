@@ -18,28 +18,9 @@ namespace Sophia.Instantiates
 
     public class SkillItemObject : ItemObject
     {
-        [SerializeField] public E_SKILL_INDEX _index;
-        [SerializeField] public SerialUserInterfaceData _userInterfaceData;
-        [SerializeField] public SerialAffectorData _affectorData;
-        [SerializeField] public SerialOnDamageExtrasModifierDatas _damageModifierData;
-        [SerializeField] public SerialOnConveyAffectExtrasModifierDatas _conveyAffectModifierData;
-        [SerializeField] public SerialProjectileInstantiateData _projectileInstantiateData;
-        [SerializeField] public SerialAudioData _activatedAudioData;
+        [SerializeField] ScriptableSkillData _skillData;
         [SerializeField] PurchaseComponent _purchaseComponent;
-        
-        [ContextMenu("Deep Copy To Scriptable")]
-        public void Deep_Copy_To_Scriptable(ScriptableSkillData _scriptableSkillData)
-        {
-            _scriptableSkillData.SetSerial(
-                _index,
-                _userInterfaceData,
-                _affectorData,
-                _damageModifierData,
-                _conveyAffectModifierData,
-                _projectileInstantiateData,
-                _activatedAudioData);
-        }
-
+        public ISkillDataAccessable GetSerialEquipmentData() => _skillData;
         public Skill skill { get; private set; }
         public bool ISDEBUG = true;
 
@@ -58,14 +39,7 @@ namespace Sophia.Instantiates
                 {
                     if (!_purchaseComponent.Purchase(player)) return;
                 }
-                skill ??= FactoryConcreteSkill.GetSkillByID(_index, player,
-                    in _userInterfaceData,
-                    in _affectorData,
-                    in _damageModifierData,
-                    in _conveyAffectModifierData,
-                    in _projectileInstantiateData,
-                    in _activatedAudioData
-                );
+                skill ??= FactoryConcreteSkill.GetSkillByID(_skillData.SkillType, player, _skillData);
 
                 CollectUserInterfaceAction(skill, (bool selected, KeyCode key) =>
                 {

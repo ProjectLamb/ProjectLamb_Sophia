@@ -349,7 +349,7 @@ namespace Sophia.Instantiates.Skills
                                 .SetDurateTimeByRatio(projectileInstantiateData._DurateTimeByRatio)
                                 .SetSimulateSpeedByRatio(projectileInstantiateData._SimulateSpeed)
                                 .SetForwardingSpeedByRatio(projectileInstantiateData._ForwardingSpeedByRatio)
-                                .SetProjectilePower(projectileInstantiateData._ProjectilePower)
+                                .SetProjectilePower((int)(projectileInstantiateData._ProjectileBasePower+ (projectileInstantiateData._ProjectilePowerByRatio * ownerEntity.GetStat(E_NUMERIC_STAT_TYPE.Power).GetValueForce())))
                                 .SetAffectType(projectileInstantiateData._AffectType)
                                 .SetIntervalData(in projectileInstantiateData._intervalData)
                                 .Activate();
@@ -403,7 +403,7 @@ namespace Sophia.Instantiates.Skills
                                 .SetDurateTimeByRatio(projectileInstantiateData._DurateTimeByRatio)
                                 .SetSimulateSpeedByRatio(projectileInstantiateData._SimulateSpeed)
                                 .SetForwardingSpeedByRatio(projectileInstantiateData._ForwardingSpeedByRatio)
-                                .SetProjectilePower(projectileInstantiateData._ProjectilePower)
+                                .SetProjectilePower((int)(projectileInstantiateData._ProjectileBasePower+ (projectileInstantiateData._ProjectilePowerByRatio * ownerEntity.GetStat(E_NUMERIC_STAT_TYPE.Power).GetValueForce())))
                                 .SetAffectType(projectileInstantiateData._AffectType)
                                 .SetIntervalData(in projectileInstantiateData._intervalData)
                                 .Activate();
@@ -461,7 +461,7 @@ namespace Sophia.Instantiates.Skills
                                 .SetDurateTimeByRatio(projectileInstantiateData._DurateTimeByRatio)
                                 .SetSimulateSpeedByRatio(projectileInstantiateData._SimulateSpeed)
                                 .SetForwardingSpeedByRatio(projectileInstantiateData._ForwardingSpeedByRatio)
-                                .SetProjectilePower(projectileInstantiateData._ProjectilePower)
+                                .SetProjectilePower((int)(projectileInstantiateData._ProjectileBasePower+ (projectileInstantiateData._ProjectilePowerByRatio * ownerEntity.GetStat(E_NUMERIC_STAT_TYPE.Power).GetValueForce())))
                                 .SetAffectType(projectileInstantiateData._AffectType)
                                 .SetIntervalData(in projectileInstantiateData._intervalData)
                                 .Activate();
@@ -475,7 +475,7 @@ namespace Sophia.Instantiates.Skills
                                 .SetDurateTimeByRatio(projectileInstantiateData._DurateTimeByRatio)
                                 .SetSimulateSpeedByRatio(projectileInstantiateData._SimulateSpeed)
                                 .SetForwardingSpeedByRatio(projectileInstantiateData._ForwardingSpeedByRatio)
-                                .SetProjectilePower(projectileInstantiateData._ProjectilePower)
+                                .SetProjectilePower((int)(projectileInstantiateData._ProjectileBasePower+ (projectileInstantiateData._ProjectilePowerByRatio * ownerEntity.GetStat(E_NUMERIC_STAT_TYPE.Power).GetValueForce())))
                                 .SetAffectType(projectileInstantiateData._AffectType)
                                 .SetIntervalData(in projectileInstantiateData._intervalData)
                                 .Activate();
@@ -548,7 +548,7 @@ namespace Sophia.Instantiates.Skills
                                 .SetDurateTimeByRatio(projectileInstantiateData._DurateTimeByRatio)
                                 .SetSimulateSpeedByRatio(projectileInstantiateData._SimulateSpeed)
                                 .SetForwardingSpeedByRatio(projectileInstantiateData._ForwardingSpeedByRatio)
-                                .SetProjectilePower(projectileInstantiateData._ProjectilePower)
+                                .SetProjectilePower((int)(projectileInstantiateData._ProjectileBasePower+ (projectileInstantiateData._ProjectilePowerByRatio * ownerEntity.GetStat(E_NUMERIC_STAT_TYPE.Power).GetValueForce())))
                                 .SetAffectType(projectileInstantiateData._AffectType)
                                 .SetIntervalData(in projectileInstantiateData._intervalData)
                                 .Activate();
@@ -604,7 +604,7 @@ namespace Sophia.Instantiates.Skills
                                 .SetDurateTimeByRatio(projectileInstantiateData._DurateTimeByRatio)
                                 .SetSimulateSpeedByRatio(projectileInstantiateData._SimulateSpeed)
                                 .SetForwardingSpeedByRatio(projectileInstantiateData._ForwardingSpeedByRatio)
-                                .SetProjectilePower(projectileInstantiateData._ProjectilePower)
+                                .SetProjectilePower((int)(projectileInstantiateData._ProjectileBasePower+ (projectileInstantiateData._ProjectilePowerByRatio * ownerEntity.GetStat(E_NUMERIC_STAT_TYPE.Power).GetValueForce())))
                                 .SetAffectType(projectileInstantiateData._AffectType)
                                 .SetIntervalData(in projectileInstantiateData._intervalData)
                                 .Activate();
@@ -658,7 +658,7 @@ namespace Sophia.Instantiates.Skills
                                 .SetDurateTimeByRatio(projectileInstantiateData._DurateTimeByRatio)
                                 .SetSimulateSpeedByRatio(projectileInstantiateData._SimulateSpeed)
                                 .SetForwardingSpeedByRatio(projectileInstantiateData._ForwardingSpeedByRatio)
-                                .SetProjectilePower(projectileInstantiateData._ProjectilePower)
+                                .SetProjectilePower((int)(projectileInstantiateData._ProjectileBasePower+ (projectileInstantiateData._ProjectilePowerByRatio * ownerEntity.GetStat(E_NUMERIC_STAT_TYPE.Power).GetValueForce())))
                                 .SetAffectType(projectileInstantiateData._AffectType)
                                 .SetIntervalData(in projectileInstantiateData._intervalData)
                                 .Activate();
@@ -670,7 +670,7 @@ namespace Sophia.Instantiates.Skills
                                 .SetDurateTimeByRatio(projectileInstantiateData._DurateTimeByRatio)
                                 .SetSimulateSpeedByRatio(projectileInstantiateData._SimulateSpeed)
                                 .SetForwardingSpeedByRatio(projectileInstantiateData._ForwardingSpeedByRatio)
-                                .SetProjectilePower(projectileInstantiateData._ProjectilePower)
+                                .SetProjectilePower((int)(projectileInstantiateData._ProjectileBasePower+ (projectileInstantiateData._ProjectilePowerByRatio * ownerEntity.GetStat(E_NUMERIC_STAT_TYPE.Power).GetValueForce())))
                                 .SetAffectType(projectileInstantiateData._AffectType)
                                 .SetIntervalData(in projectileInstantiateData._intervalData)
                                 .Activate();
@@ -681,7 +681,7 @@ namespace Sophia.Instantiates.Skills
                                 .SetDurateTimeByRatio(projectileInstantiateData._DurateTimeByRatio)
                                 .SetSimulateSpeedByRatio(projectileInstantiateData._SimulateSpeed)
                                 .SetForwardingSpeedByRatio(projectileInstantiateData._ForwardingSpeedByRatio)
-                                .SetProjectilePower(projectileInstantiateData._ProjectilePower)
+                                .SetProjectilePower((int)(projectileInstantiateData._ProjectileBasePower+ (projectileInstantiateData._ProjectilePowerByRatio * ownerEntity.GetStat(E_NUMERIC_STAT_TYPE.Power).GetValueForce())))
                                 .SetAffectType(projectileInstantiateData._AffectType)
                                 .SetIntervalData(in projectileInstantiateData._intervalData)
                                 .Activate();
@@ -753,7 +753,7 @@ namespace Sophia.Instantiates.Skills
                                 .SetDurateTimeByRatio(projectileInstantiateData._DurateTimeByRatio)
                                 .SetSimulateSpeedByRatio(projectileInstantiateData._SimulateSpeed)
                                 .SetForwardingSpeedByRatio(projectileInstantiateData._ForwardingSpeedByRatio)
-                                .SetProjectilePower(projectileInstantiateData._ProjectilePower)
+                                .SetProjectilePower((int)(projectileInstantiateData._ProjectileBasePower+ (projectileInstantiateData._ProjectilePowerByRatio * ownerEntity.GetStat(E_NUMERIC_STAT_TYPE.Power).GetValueForce())))
                                 .SetAffectType(projectileInstantiateData._AffectType)
                                 .SetIntervalData(in projectileInstantiateData._intervalData)
                                 .Activate();

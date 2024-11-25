@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b07be72d8f904b65bc97a3ebf18d1108, type: 3}
-  m_Name: ThrowSlash
+  m_Name: ThrowSlash_004
   m_EditorClassIdentifier: 
   _serialSkillData:
     _index: 104
@@ -243,7 +243,8 @@ MonoBehaviour:
       _ScaleOverrideByRatio: 1
       _ScaleMultiplyByRatio: 1
       _ForwardingSpeedByRatio: 100
-      _ProjectilePower: 30
+      _ProjectileBasePower: 25
+      _ProjectilePowerByRatio: 2
       _intervalData:
         _baseIntervalTime: 0
         _baseIntervalCheckTime: 0

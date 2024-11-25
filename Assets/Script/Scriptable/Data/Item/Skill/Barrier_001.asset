@@ -51,7 +51,7 @@ MonoBehaviour:
         _visualFxRef: {fileID: 6401722548855688836, guid: efe23c149a38e4a15b4f54c13dbcf94f,
           type: 3}
       _barrierData:
-        _barrierRatio: 0.15
+        _barrierRatio: 0.2
       _tickDamageData:
         _baseTickDamage:
           damageAmount: 0
@@ -246,7 +246,8 @@ MonoBehaviour:
       _ScaleOverrideByRatio: 0
       _ScaleMultiplyByRatio: 0
       _ForwardingSpeedByRatio: 0
-      _ProjectilePower: 0
+      _ProjectileBasePower: 0
+      _ProjectilePowerByRatio: 0
       _intervalData:
         _baseIntervalTime: 0
         _baseIntervalCheckTime: 0

@@ -243,7 +243,8 @@ MonoBehaviour:
       _ScaleOverrideByRatio: 1
       _ScaleMultiplyByRatio: 1
       _ForwardingSpeedByRatio: 100
-      _ProjectilePower: 30
+      _ProjectileBasePower: 30
+      _ProjectilePowerByRatio: 2
       _intervalData:
         _baseIntervalTime: 0
         _baseIntervalCheckTime: 0

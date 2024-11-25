@@ -56,7 +56,7 @@ namespace Script.Tools
                 var SO = await Addressables.LoadAssetAsync<ScriptableEquipmentData>(AddressablePATH +
                     $"/{eT.ToString()}_{EquipmentIDs[index].ToString("0000")}.asset");
                 string json = File.ReadAllText(JSONPATH);
-                data.SetSerials(JsonUtility.FromJson<SerialEquipmentData>(json));
+                // data.SetSerials(JsonUtility.FromJson<SerialEquipmentData>(json));
                 EditorUtility.SetDirty(SO);
                 AssetDatabase.SaveAssetIfDirty(SO);
                 // so.ApplyModifiedProperties();

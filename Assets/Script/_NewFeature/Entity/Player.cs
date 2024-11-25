@@ -429,6 +429,7 @@ namespace Sophia.Entitys
 
         public void LoadPlayerData()
         {
+            Debug.Log("00000000 LoadPlayerData 00000000");
             GlobalSaveLoadManager saveLoadManager = DontDestroyGameManager.Instance.SaveLoadManager; 
             Debug.Log("LoadPlayerData()");
             if (saveLoadManager != null)
@@ -444,9 +445,9 @@ namespace Sophia.Entitys
                     Debug.Log("saveLoadManager.Data.PlayerData.TestEquipmentData.Count > 0");
                     foreach (var item in saveLoadManager.Data.PlayerData.CollectedEquipmentIndexs)
                     {
-                        IEquipmentDataAccessable EquipmentData = DontDestroyGameManager.Instance.ScriptableEquipmentModelManager.ScriptableEquipmentDatas[item];
-                        Debug.Log($"{item} {FactoryConcreteEquipment.GetEquipmentByID(EquipmentData, GetComponent<Player>()).ID}");
-                        EquipEquipment(FactoryConcreteEquipment.GetEquipmentByID(EquipmentData, GetComponent<Player>()));
+                        IEquipmentDataAccessable equipmentData = DontDestroyGameManager.Instance.ScriptableEquipmentModelManager.ScriptableEquipmentDatas[item];
+                        Debug.Log($"{item} {FactoryConcreteEquipment.GetEquipmentByID(equipmentData, GetComponent<Player>()).ID}");
+                        EquipEquipment(FactoryConcreteEquipment.GetEquipmentByID(equipmentData, GetComponent<Player>()));
                     }
                 }
 
@@ -457,17 +458,13 @@ namespace Sophia.Entitys
                     List<KeyCode> keyCodes = saveLoadManager.Data.PlayerData.CollectSkillIndexs.Keys.ToList();
                     for(int i = 0; i < keyCodes.Count; i++)
                     {
-                        // int skillIndex = saveLoadManager.Data.PlayerData.CollectSkillIndexs[keyCodes[i]];
-                        // if(skillIndex == 0) continue;
-                        // SerialSkillData serialSkillData = DontDestroyGameManager.Instance.ScriptableSkillModelManager
-                        //     .ScriptableSkillDatas[skillIndex]._serialSkillData;
-                        // Skill concreteSkill = FactoryConcreteSkill.GetSkillByID((E_SKILL_INDEX)skillIndex,
-                        //     GetComponent<Player>(), serialSkillData._userInterfaceData, serialSkillData._affectorData,
-                        //     serialSkillData._damageModifierData, serialSkillData._conveyAffectModifierData,
-                        //     serialSkillData._projectileInstantiateData, serialSkillData._activatedAudioData);
-                        // Debug.Log($"{skillIndex} {concreteSkill.GetName()}");
-                        // if (skillIndex != null)
-                        //     CollectSkill(concreteSkill, keyCodes[i]);
+                        int skillIndex = saveLoadManager.Data.PlayerData.CollectSkillIndexs[keyCodes[i]];
+                        if(skillIndex == 0) continue;
+                        ISkillDataAccessable skillData = DontDestroyGameManager.Instance.ScriptableSkillModelManager.ScriptableSkillDatas[skillIndex];
+                        Skill concreteSkill = FactoryConcreteSkill.GetSkillByID( (E_SKILL_INDEX)skillIndex, GetComponent<Player>(),skillData);
+                        Debug.Log($"{skillIndex} {concreteSkill.GetName()}");
+                        if (skillIndex != null)
+                            CollectSkill(concreteSkill, keyCodes[i]);
                     }
                 }
             }

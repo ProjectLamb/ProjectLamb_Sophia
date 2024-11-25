@@ -17,7 +17,7 @@ namespace Sophia
             SkillItemObject carrier = GetComponent<SkillItemObject>();
             StartCoroutine(GlobalAsync.PerformAndRenderUI(() =>
             {
-                _spriteRenderer.sprite = carrier._userInterfaceData._icon;
+                _spriteRenderer.sprite = carrier.GetSerialEquipmentData().SkillIcon;
                 _spriteRenderer.color = new Color(0, 0, 0, 1);
             }));
         }

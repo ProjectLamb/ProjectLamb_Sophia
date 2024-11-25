@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Pool;
 using DG.Tweening;
+using UnityEngine.Serialization;
 
 namespace Sophia.Instantiates
 {
@@ -27,7 +28,8 @@ namespace Sophia.Instantiates
         [SerializeField] public float _ScaleOverrideByRatio;
         [SerializeField] public float _ScaleMultiplyByRatio;
         [SerializeField] public float _ForwardingSpeedByRatio;
-        [SerializeField] public int _ProjectilePower;
+        [SerializeField] public int _ProjectileBasePower;
+        [SerializeField] public float _ProjectilePowerByRatio;
         [SerializeField] public SerialProjectileIntervalData _intervalData;
         [SerializeField] public E_AFFECT_TYPE _AffectType;
         [SerializeField] public E_INSTANTIATE_STACKING_TYPE _stackingType;

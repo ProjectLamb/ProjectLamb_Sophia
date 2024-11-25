@@ -28,9 +28,9 @@ namespace Script.Tools
         public void TEST_ASSIGN()
         {
             int index = 0;
-            foreach(var data in ConcreteSkillPrefabs) {
-                data.Deep_Copy_To_Scriptable(ScriptableSkillData[index++]);
-            }
+            // foreach(var data in ConcreteSkillPrefabs) {
+            //     data.Deep_Copy_To_Scriptable(ScriptableSkillData[index++]);
+            // }
         }
         [ContextMenu("Overlap")]
         public async void TEST_OVERLAP()
@@ -50,7 +50,7 @@ namespace Script.Tools
                 var SO = await Addressables.LoadAssetAsync<ScriptableSkillData>(AddressablePATH +
                     $"/{skillEnum[index].ToString()}_{((int)skillEnum[index]).ToString("000")}.asset");
                 string json = File.ReadAllText(PATH);
-                data.SetSerials(JsonUtility.FromJson<SerialSkillData>(json));
+                // data.SetSerials(JsonUtility.FromJson<SerialSkillData>(json));
                 EditorUtility.SetDirty(SO);
                 AssetDatabase.SaveAssetIfDirty(SO);
                 index++;

@@ -31,13 +31,6 @@ namespace Sophia.DataSystem.Modifiers
                     StatModifiers.Add(statType, new StatModifier(statValue.amount, statValue.calType, statType));
                 }
             }
-
-            // foreach(E_FUNCTIONAL_EXTRAS_TYPE funcType in Enum.GetValues(typeof(E_FUNCTIONAL_EXTRAS_TYPE))) {
-            //     SerialExtrasModifierDatas extrasValue = equipmentData._extraDatas.GetModifierDatas(funcType);
-            //     if(funcType....)
-            //     
-            //     
-            // }
         }
 
         public virtual void Invoke(IDataAccessible dataAccessible) {

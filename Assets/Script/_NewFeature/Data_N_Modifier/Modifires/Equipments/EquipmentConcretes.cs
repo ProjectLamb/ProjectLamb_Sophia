@@ -31,6 +31,7 @@ namespace Sophia.DataSystem
         public class Equipment_1005_HorsepowerSender : Equipment {
             ExtrasModifier<int> gearcoinExtras;
             StatModifier powerModifier;
+            Player playerEntity = null;
             public Equipment_1005_HorsepowerSender(IEquipmentDataAccessable equipmentData, Entitys.Entity player) : base(equipmentData) {
                 powerModifier = new StatModifier(0, E_STAT_CALC_TYPE.Add, E_NUMERIC_STAT_TYPE.Power);
                 player.GetStat(E_NUMERIC_STAT_TYPE.Power).AddModifier(powerModifier);
@@ -39,6 +40,7 @@ namespace Sophia.DataSystem
                     E_EXTRAS_PERFORM_TYPE.Start,
                     E_FUNCTIONAL_EXTRAS_TYPE.GearcoinTriggered
                 );
+                playerEntity = player as Player;
             }
 
             public override void Invoke(IDataAccessible dataAccessible)
@@ -47,6 +49,8 @@ namespace Sophia.DataSystem
                 Extras<int> extrasRef = dataAccessible.GetExtras<int>(E_FUNCTIONAL_EXTRAS_TYPE.GearcoinTriggered);
                 extrasRef.AddModifier(gearcoinExtras);
                 extrasRef.RecalculateExtras();
+                int currentWealth = playerEntity.PlayerWealth;
+                extrasRef.PerformStartFunctionals(ref currentWealth);
             }
 
             public override void Revert(IDataAccessible dataAccessible)
