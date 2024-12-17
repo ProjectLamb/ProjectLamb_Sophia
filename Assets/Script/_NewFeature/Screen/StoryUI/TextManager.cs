@@ -60,12 +60,15 @@ public class TextManager : MonoBehaviour
 
         if (!IsSkipStory || StoryManager.Instance.IsTutorial)
         {
-            InGameScreenUI.Instance._fadeUI.FadeIn(0.02f, 2f);
-            InGameScreenUI.Instance._storyFadePanel.FadeStoryBarIn();
-            IsStory = true;
-            TextBarOn();
-            storyEventName = "Prologue";
-            SetDialogue();
+            if (DontDestroyGameManager.Instance.SaveLoadManager.Data.CurrentChapterNum < 2)
+            {
+                InGameScreenUI.Instance._fadeUI.FadeIn(0.02f, 2f);
+                InGameScreenUI.Instance._storyFadePanel.FadeStoryBarIn();
+                IsStory = true;
+                TextBarOn();
+                storyEventName = "Prologue";
+                SetDialogue();
+            }
         }
     }
     public void SetDialogue()

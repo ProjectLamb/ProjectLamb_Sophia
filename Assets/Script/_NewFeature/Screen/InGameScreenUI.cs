@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
@@ -40,9 +41,20 @@ namespace Sophia.UserInterface
         [SerializeField] public GameObject              _bossHealthBar;
         //Demo Version
         [SerializeField] public GameObject              demoClear;
-        
+
+        public void OnEnable()
+        {
+            Debug.LogWarning("InGameScreenUI : Enable");
+        }
+
+        public void OnDisable()
+        {
+            Debug.LogWarning("InGameScreenUI : OnDisable");
+        }
+
         public void UIVisibleOn() 
         {
+            Debug.LogWarning("InGameScreenUI : UIVisibleOn");
             _playerHealthBarUI.gameObject.SetActive(true);
             _playerBarrierBarUI.gameObject.SetActive(true);
             _playerStaminaBarUI.gameObject.SetActive(true);
@@ -53,6 +65,7 @@ namespace Sophia.UserInterface
 
         public void UIVisibleOff() 
         {
+            Debug.LogWarning("InGameScreenUI : UIVisibleOff");
             _playerHealthBarUI.gameObject.SetActive(false);
             _playerBarrierBarUI.gameObject.SetActive(false);
             _playerStaminaBarUI.gameObject.SetActive(false);

@@ -182,10 +182,10 @@ namespace Sophia.Entitys
         {
             bool isDamaged = false;
             Debug.LogWarning("현재 무적 디버깅 활성화");
-            // if (Life.IsDie) { isDamaged = false; }
-            // isDamaged = Life.Damaged(damage);
-            // if (isDamaged) { GetModelManager().GetAnimator().SetTrigger("GetDamaged"); }
-            // if (Life.IsDie) { Die(); }
+            if (Life.IsDie) { isDamaged = false; }
+            isDamaged = Life.Damaged(damage);
+            if (isDamaged) { GetModelManager().GetAnimator().SetTrigger("GetDamaged"); }
+            if (Life.IsDie) { Die(); }
             return isDamaged;
         }
 
