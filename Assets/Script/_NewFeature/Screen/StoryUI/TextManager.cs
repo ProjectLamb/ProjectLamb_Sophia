@@ -164,23 +164,13 @@ public class TextManager : MonoBehaviour
     private void TextBarOff()
     {
         talkPanel.SetActive(false);
-        _playerHealthBar.SetActive(true);
-        _playerBarrierBar.SetActive(true);
-        _playerStaminaBar.SetActive(true);
-        _playerWealthBar.SetActive(true);
-        _playerSkillCool.SetActive(true);
-        _minimap.SetActive(true);
+        InGameScreenUI.Instance.UIVisibleOn();
     }
 
     private void TextBarOn()
     {
         talkPanel.SetActive(true);
-        _playerHealthBar.SetActive(false);
-        _playerBarrierBar.SetActive(false);
-        _playerStaminaBar.SetActive(false);
-        _playerWealthBar.SetActive(false);
-        _playerSkillCool.SetActive(false);
-        _minimap.SetActive(false);
+        InGameScreenUI.Instance.UIVisibleOff();
     }
 
     private void SetTextCursor()

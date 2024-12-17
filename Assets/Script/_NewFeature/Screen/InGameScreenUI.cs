@@ -28,7 +28,7 @@ namespace Sophia.UserInterface
         [SerializeField] public Slider                  _playerBarrierBarUI;
         [SerializeField] public PlayerStaminaBarUI      _playerStaminaBarUI;
         [SerializeField] public PlayerWealthBar         _playerWealthBarUI;
-        [SerializeField] public GameObject              _playerSkillCoolUI;
+        [SerializeField] public PlayerSkillGroup        _PlayerSkillGroupUI;
         [SerializeField] public Minimap                 _chapterMinimap;
         [SerializeField] public PlayerSkillCoolUI[]     _playerSkillCoolUIElement;
         [SerializeField] public HitCanvasShadeScript    _hitCanvasShadeScript;
@@ -40,9 +40,7 @@ namespace Sophia.UserInterface
         [SerializeField] public GameObject              _bossHealthBar;
         //Demo Version
         [SerializeField] public GameObject              demoClear;
-
         
-
         public void UIVisibleOn() 
         {
             _playerHealthBarUI.gameObject.SetActive(true);
@@ -50,7 +48,7 @@ namespace Sophia.UserInterface
             _playerStaminaBarUI.gameObject.SetActive(true);
             _playerWealthBarUI.gameObject.SetActive(true);
             _chapterMinimap.gameObject.SetActive(true);
-            _playerSkillCoolUI.SetActive(true);
+            _PlayerSkillGroupUI.SetVisible();
         }
 
         public void UIVisibleOff() 
@@ -60,7 +58,7 @@ namespace Sophia.UserInterface
             _playerStaminaBarUI.gameObject.SetActive(false);
             _playerWealthBarUI.gameObject.SetActive(false);
             _chapterMinimap.gameObject.SetActive(false);
-            _playerSkillCoolUI.SetActive(false);
+            _PlayerSkillGroupUI.SetInvisible();
         }
 
     }

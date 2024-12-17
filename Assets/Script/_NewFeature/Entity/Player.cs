@@ -1,11 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using FMODPlus;
 using Cysharp.Threading.Tasks;
+using Sophia.DB;
+using Sophia.Instantiates.Skills;
 using UnityEngine.SceneManagement;
 
 namespace Sophia.Entitys
@@ -161,7 +164,10 @@ namespace Sophia.Entitys
             PlayerController.AllowInput(this.name);
 
             if (DontDestroyGameManager.Instance != null)
+            {
+                Debug.Log("사전 플레이어 데이터 로드");
                 LoadPlayerData();
+            }
         }
 
         #endregion
@@ -175,10 +181,11 @@ namespace Sophia.Entitys
         public override bool GetDamaged(DamageInfo damage)
         {
             bool isDamaged = false;
-            if (Life.IsDie) { isDamaged = false; }
-            isDamaged = Life.Damaged(damage);
-            if (isDamaged) { GetModelManager().GetAnimator().SetTrigger("GetDamaged"); }
-            if (Life.IsDie) { Die(); }
+            Debug.LogWarning("현재 무적 디버깅 활성화");
+            // if (Life.IsDie) { isDamaged = false; }
+            // isDamaged = Life.Damaged(damage);
+            // if (isDamaged) { GetModelManager().GetAnimator().SetTrigger("GetDamaged"); }
+            // if (Life.IsDie) { Die(); }
             return isDamaged;
         }
 
@@ -397,11 +404,11 @@ namespace Sophia.Entitys
         public void DropEquipment(Equipment equipment)
         {
             // File
-            foreach (var item in DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.EquipmentDataList)
+            foreach (var item in DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.CollectedEquipmentIndexs)
             {
-                if (equipment.ID == item._equipmentID)
+                if (equipment.ID == item)
                 {
-                    DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.EquipmentDataList.Remove(item);
+                    DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.CollectedEquipmentIndexs.Remove(item);
                 }
             }
 
@@ -422,31 +429,44 @@ namespace Sophia.Entitys
 
         public void LoadPlayerData()
         {
-            GlobalSaveLoadManager saveLoadManager = DontDestroyGameManager.Instance.SaveLoadManager;
+            Debug.Log("00000000 LoadPlayerData 00000000");
+            GlobalSaveLoadManager saveLoadManager = DontDestroyGameManager.Instance.SaveLoadManager; 
+            Debug.Log("LoadPlayerData()");
             if (saveLoadManager != null)
             {
+                Debug.Log("saveLoadManager != null");
                 //기어
                 PlayerWealth = saveLoadManager.Data.PlayerData.Gear;
 
                 //부품
                 //번호를 토대로 장착
-                if (saveLoadManager.Data.PlayerData.EquipmentDataList.Count > 0)
+                if (saveLoadManager.Data.PlayerData.CollectedEquipmentIndexs.Count > 0)
                 {
-                    foreach (var item in saveLoadManager.Data.PlayerData.EquipmentDataList)
+                    Debug.Log("saveLoadManager.Data.PlayerData.TestEquipmentData.Count > 0");
+                    foreach (var item in saveLoadManager.Data.PlayerData.CollectedEquipmentIndexs)
                     {
-                        SerialEquipmentData serialEquipmentData = item;
-
-                        Debug.Log(FactoryConcreteEquipment.GetEquipmentByID(serialEquipmentData, GetComponent<Player>()).Name);
-                        EquipEquipment(FactoryConcreteEquipment.GetEquipmentByID(serialEquipmentData, GetComponent<Player>()));
+                        IEquipmentDataAccessable equipmentData = DontDestroyGameManager.Instance.ScriptableEquipmentModelManager.ScriptableEquipmentDatas[item];
+                        Debug.Log($"{item} {FactoryConcreteEquipment.GetEquipmentByID(equipmentData, GetComponent<Player>()).ID}");
+                        EquipEquipment(FactoryConcreteEquipment.GetEquipmentByID(equipmentData, GetComponent<Player>()));
                     }
                 }
 
-                // //스킬
-                // foreach (var item in saveLoadManager.Data.PlayerData.SkillDataDic)
-                // {
-                //     if (item.Value != null)
-                //         CollectSkill(item.Value, item.Key);
-                // }
+                // 스킬
+                if (saveLoadManager.Data.PlayerData.CollectSkillIndexs.Count > 0)
+                {
+                    Debug.Log("saveLoadManager.Data.PlayerData.CollectSkillIndexs.Count > 0");
+                    List<KeyCode> keyCodes = saveLoadManager.Data.PlayerData.CollectSkillIndexs.Keys.ToList();
+                    for(int i = 0; i < keyCodes.Count; i++)
+                    {
+                        int skillIndex = saveLoadManager.Data.PlayerData.CollectSkillIndexs[keyCodes[i]];
+                        if(skillIndex == 0) continue;
+                        ISkillDataAccessable skillData = DontDestroyGameManager.Instance.ScriptableSkillModelManager.ScriptableSkillDatas[skillIndex];
+                        Skill concreteSkill = FactoryConcreteSkill.GetSkillByID( (E_SKILL_INDEX)skillIndex, GetComponent<Player>(),skillData);
+                        Debug.Log($"{skillIndex} {concreteSkill.GetName()}");
+                        if (skillIndex != null)
+                            CollectSkill(concreteSkill, keyCodes[i]);
+                    }
+                }
             }
         }
 

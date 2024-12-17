@@ -19,8 +19,9 @@ namespace Sophia.Instantiates.Skills
         public override CoolTimeComposite GetCoolTimeComposite() => this.TimerComposite;
         public Entitys.Player ownerEntity { get; protected set; }
 
-        public SkillAbstractConcrete(in SerialUserInterfaceData userInterfaceData)
+        public SkillAbstractConcrete(E_SKILL_INDEX skillIndex, in SerialUserInterfaceData userInterfaceData)
         {
+            SkillIndex = skillIndex;
             name = userInterfaceData._name;
             description = userInterfaceData._description;
             icon = userInterfaceData._icon;
@@ -84,7 +85,7 @@ namespace Sophia.Instantiates.Skills
             private DataSystem.Atomics.VisualFXAtomics visualFX;
 
             #endregion
-            public Barrier(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
+            public Barrier(E_SKILL_INDEX skillIndex, in SerialUserInterfaceData userInterfaceData) : base(skillIndex, userInterfaceData)
             {
                 TimerComposite = new CoolTimeComposite(baseCoolTime, baseStackAmount);
                 TimerComposite.AddBindingAction(Activate);
@@ -130,7 +131,7 @@ namespace Sophia.Instantiates.Skills
 
             #endregion
 
-            public MoveFaster(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
+            public MoveFaster(E_SKILL_INDEX skillIndex, in SerialUserInterfaceData userInterfaceData) : base(skillIndex, userInterfaceData)
             {
                 TimerComposite = new CoolTimeComposite(baseCoolTime, baseStackAmount);
                 TimerComposite.AddBindingAction(Activate);
@@ -171,7 +172,7 @@ namespace Sophia.Instantiates.Skills
 
             #endregion
 
-            public WeaponStun(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
+            public WeaponStun(E_SKILL_INDEX skillIndex, in SerialUserInterfaceData userInterfaceData) : base(skillIndex, userInterfaceData)
             {
                 TimerComposite = new CoolTimeComposite(baseCoolTime, baseStackAmount);
                 TimerComposite.AddBindingAction(Activate);
@@ -220,7 +221,7 @@ namespace Sophia.Instantiates.Skills
 
             #endregion
 
-            public WeaponAdditionalDamage(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
+            public WeaponAdditionalDamage(E_SKILL_INDEX skillIndex, in SerialUserInterfaceData userInterfaceData) : base(skillIndex, userInterfaceData)
             {
                 TimerComposite = new CoolTimeComposite(baseCoolTime, baseStackAmount);
                 TimerComposite.AddBindingAction(Activate);
@@ -271,7 +272,7 @@ namespace Sophia.Instantiates.Skills
             #region Member
             private DataSystem.Modifiers.ConcreteAffector.PowerUpAffect powerUpAffect;
             #endregion
-            public PowerUp(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
+            public PowerUp(E_SKILL_INDEX skillIndex, in SerialUserInterfaceData userInterfaceData) : base(skillIndex, userInterfaceData)
             {
                 TimerComposite = new CoolTimeComposite(baseCoolTime, baseStackAmount);
                 TimerComposite.AddBindingAction(Activate);
@@ -310,7 +311,7 @@ namespace Sophia.Instantiates.Skills
 
             #endregion
 
-            public Lava(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
+            public Lava(E_SKILL_INDEX skillIndex, in SerialUserInterfaceData userInterfaceData) : base(skillIndex, userInterfaceData)
             {
                 TimerComposite = new CoolTimeComposite(baseCoolTime, baseStackAmount);
                 TimerComposite.AddBindingAction(Activate);
@@ -348,7 +349,7 @@ namespace Sophia.Instantiates.Skills
                                 .SetDurateTimeByRatio(projectileInstantiateData._DurateTimeByRatio)
                                 .SetSimulateSpeedByRatio(projectileInstantiateData._SimulateSpeed)
                                 .SetForwardingSpeedByRatio(projectileInstantiateData._ForwardingSpeedByRatio)
-                                .SetProjectilePower(projectileInstantiateData._ProjectilePower)
+                                .SetProjectilePower((int)(projectileInstantiateData._ProjectileBasePower+ (projectileInstantiateData._ProjectilePowerByRatio * ownerEntity.GetStat(E_NUMERIC_STAT_TYPE.Power).GetValueForce())))
                                 .SetAffectType(projectileInstantiateData._AffectType)
                                 .SetIntervalData(in projectileInstantiateData._intervalData)
                                 .Activate();
@@ -365,7 +366,7 @@ namespace Sophia.Instantiates.Skills
 
             #endregion
 
-            public BlackWhiteHole(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
+            public BlackWhiteHole(E_SKILL_INDEX skillIndex, in SerialUserInterfaceData userInterfaceData) : base(skillIndex, userInterfaceData)
             {
                 TimerComposite = new CoolTimeComposite(baseCoolTime, baseStackAmount);
                 TimerComposite.AddBindingAction(Activate);
@@ -402,7 +403,7 @@ namespace Sophia.Instantiates.Skills
                                 .SetDurateTimeByRatio(projectileInstantiateData._DurateTimeByRatio)
                                 .SetSimulateSpeedByRatio(projectileInstantiateData._SimulateSpeed)
                                 .SetForwardingSpeedByRatio(projectileInstantiateData._ForwardingSpeedByRatio)
-                                .SetProjectilePower(projectileInstantiateData._ProjectilePower)
+                                .SetProjectilePower((int)(projectileInstantiateData._ProjectileBasePower+ (projectileInstantiateData._ProjectilePowerByRatio * ownerEntity.GetStat(E_NUMERIC_STAT_TYPE.Power).GetValueForce())))
                                 .SetAffectType(projectileInstantiateData._AffectType)
                                 .SetIntervalData(in projectileInstantiateData._intervalData)
                                 .Activate();
@@ -422,7 +423,7 @@ namespace Sophia.Instantiates.Skills
 
             #endregion
 
-            public DoubleShot(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
+            public DoubleShot(E_SKILL_INDEX skillIndex, in SerialUserInterfaceData userInterfaceData) : base(skillIndex, userInterfaceData)
             {
                 IsSkillIndicate = true;
                 TimerComposite = new CoolTimeComposite(baseCoolTime, baseStackAmount);
@@ -460,7 +461,7 @@ namespace Sophia.Instantiates.Skills
                                 .SetDurateTimeByRatio(projectileInstantiateData._DurateTimeByRatio)
                                 .SetSimulateSpeedByRatio(projectileInstantiateData._SimulateSpeed)
                                 .SetForwardingSpeedByRatio(projectileInstantiateData._ForwardingSpeedByRatio)
-                                .SetProjectilePower(projectileInstantiateData._ProjectilePower)
+                                .SetProjectilePower((int)(projectileInstantiateData._ProjectileBasePower+ (projectileInstantiateData._ProjectilePowerByRatio * ownerEntity.GetStat(E_NUMERIC_STAT_TYPE.Power).GetValueForce())))
                                 .SetAffectType(projectileInstantiateData._AffectType)
                                 .SetIntervalData(in projectileInstantiateData._intervalData)
                                 .Activate();
@@ -474,7 +475,7 @@ namespace Sophia.Instantiates.Skills
                                 .SetDurateTimeByRatio(projectileInstantiateData._DurateTimeByRatio)
                                 .SetSimulateSpeedByRatio(projectileInstantiateData._SimulateSpeed)
                                 .SetForwardingSpeedByRatio(projectileInstantiateData._ForwardingSpeedByRatio)
-                                .SetProjectilePower(projectileInstantiateData._ProjectilePower)
+                                .SetProjectilePower((int)(projectileInstantiateData._ProjectileBasePower+ (projectileInstantiateData._ProjectilePowerByRatio * ownerEntity.GetStat(E_NUMERIC_STAT_TYPE.Power).GetValueForce())))
                                 .SetAffectType(projectileInstantiateData._AffectType)
                                 .SetIntervalData(in projectileInstantiateData._intervalData)
                                 .Activate();
@@ -492,7 +493,7 @@ namespace Sophia.Instantiates.Skills
             private SerialPhysicsData PhysicsData;
             #endregion
 
-            public Piercing(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
+            public Piercing(E_SKILL_INDEX skillIndex, in SerialUserInterfaceData userInterfaceData) : base(skillIndex, userInterfaceData)
             {
                 IsSkillIndicate = true;
                 TimerComposite = new CoolTimeComposite(baseCoolTime, baseStackAmount);
@@ -547,7 +548,7 @@ namespace Sophia.Instantiates.Skills
                                 .SetDurateTimeByRatio(projectileInstantiateData._DurateTimeByRatio)
                                 .SetSimulateSpeedByRatio(projectileInstantiateData._SimulateSpeed)
                                 .SetForwardingSpeedByRatio(projectileInstantiateData._ForwardingSpeedByRatio)
-                                .SetProjectilePower(projectileInstantiateData._ProjectilePower)
+                                .SetProjectilePower((int)(projectileInstantiateData._ProjectileBasePower+ (projectileInstantiateData._ProjectilePowerByRatio * ownerEntity.GetStat(E_NUMERIC_STAT_TYPE.Power).GetValueForce())))
                                 .SetAffectType(projectileInstantiateData._AffectType)
                                 .SetIntervalData(in projectileInstantiateData._intervalData)
                                 .Activate();
@@ -565,7 +566,7 @@ namespace Sophia.Instantiates.Skills
 
             #endregion
 
-            public RotateSlash(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
+            public RotateSlash(E_SKILL_INDEX skillIndex, in SerialUserInterfaceData userInterfaceData) : base(skillIndex, userInterfaceData)
             {
                 IsSkillIndicate = true;
                 TimerComposite = new CoolTimeComposite(baseCoolTime, baseStackAmount);
@@ -603,7 +604,7 @@ namespace Sophia.Instantiates.Skills
                                 .SetDurateTimeByRatio(projectileInstantiateData._DurateTimeByRatio)
                                 .SetSimulateSpeedByRatio(projectileInstantiateData._SimulateSpeed)
                                 .SetForwardingSpeedByRatio(projectileInstantiateData._ForwardingSpeedByRatio)
-                                .SetProjectilePower(projectileInstantiateData._ProjectilePower)
+                                .SetProjectilePower((int)(projectileInstantiateData._ProjectileBasePower+ (projectileInstantiateData._ProjectilePowerByRatio * ownerEntity.GetStat(E_NUMERIC_STAT_TYPE.Power).GetValueForce())))
                                 .SetAffectType(projectileInstantiateData._AffectType)
                                 .SetIntervalData(in projectileInstantiateData._intervalData)
                                 .Activate();
@@ -619,7 +620,7 @@ namespace Sophia.Instantiates.Skills
 
             #endregion
 
-            public ThrowSlash(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
+            public ThrowSlash(E_SKILL_INDEX skillIndex, in SerialUserInterfaceData userInterfaceData) : base(skillIndex, userInterfaceData)
             {
                 IsSkillIndicate = true;
                 TimerComposite = new CoolTimeComposite(baseCoolTime, baseStackAmount);
@@ -657,7 +658,7 @@ namespace Sophia.Instantiates.Skills
                                 .SetDurateTimeByRatio(projectileInstantiateData._DurateTimeByRatio)
                                 .SetSimulateSpeedByRatio(projectileInstantiateData._SimulateSpeed)
                                 .SetForwardingSpeedByRatio(projectileInstantiateData._ForwardingSpeedByRatio)
-                                .SetProjectilePower(projectileInstantiateData._ProjectilePower)
+                                .SetProjectilePower((int)(projectileInstantiateData._ProjectileBasePower+ (projectileInstantiateData._ProjectilePowerByRatio * ownerEntity.GetStat(E_NUMERIC_STAT_TYPE.Power).GetValueForce())))
                                 .SetAffectType(projectileInstantiateData._AffectType)
                                 .SetIntervalData(in projectileInstantiateData._intervalData)
                                 .Activate();
@@ -669,7 +670,7 @@ namespace Sophia.Instantiates.Skills
                                 .SetDurateTimeByRatio(projectileInstantiateData._DurateTimeByRatio)
                                 .SetSimulateSpeedByRatio(projectileInstantiateData._SimulateSpeed)
                                 .SetForwardingSpeedByRatio(projectileInstantiateData._ForwardingSpeedByRatio)
-                                .SetProjectilePower(projectileInstantiateData._ProjectilePower)
+                                .SetProjectilePower((int)(projectileInstantiateData._ProjectileBasePower+ (projectileInstantiateData._ProjectilePowerByRatio * ownerEntity.GetStat(E_NUMERIC_STAT_TYPE.Power).GetValueForce())))
                                 .SetAffectType(projectileInstantiateData._AffectType)
                                 .SetIntervalData(in projectileInstantiateData._intervalData)
                                 .Activate();
@@ -680,7 +681,7 @@ namespace Sophia.Instantiates.Skills
                                 .SetDurateTimeByRatio(projectileInstantiateData._DurateTimeByRatio)
                                 .SetSimulateSpeedByRatio(projectileInstantiateData._SimulateSpeed)
                                 .SetForwardingSpeedByRatio(projectileInstantiateData._ForwardingSpeedByRatio)
-                                .SetProjectilePower(projectileInstantiateData._ProjectilePower)
+                                .SetProjectilePower((int)(projectileInstantiateData._ProjectileBasePower+ (projectileInstantiateData._ProjectilePowerByRatio * ownerEntity.GetStat(E_NUMERIC_STAT_TYPE.Power).GetValueForce())))
                                 .SetAffectType(projectileInstantiateData._AffectType)
                                 .SetIntervalData(in projectileInstantiateData._intervalData)
                                 .Activate();
@@ -697,7 +698,7 @@ namespace Sophia.Instantiates.Skills
             private SerialPhysicsData PhysicsData;
             #endregion
 
-            public DashSlash(in SerialUserInterfaceData userInterfaceData) : base(userInterfaceData)
+            public DashSlash(E_SKILL_INDEX skillIndex, in SerialUserInterfaceData userInterfaceData) : base(skillIndex, userInterfaceData)
             {
                 IsSkillIndicate = true;
                 baseStackAmount = 3;
@@ -752,7 +753,7 @@ namespace Sophia.Instantiates.Skills
                                 .SetDurateTimeByRatio(projectileInstantiateData._DurateTimeByRatio)
                                 .SetSimulateSpeedByRatio(projectileInstantiateData._SimulateSpeed)
                                 .SetForwardingSpeedByRatio(projectileInstantiateData._ForwardingSpeedByRatio)
-                                .SetProjectilePower(projectileInstantiateData._ProjectilePower)
+                                .SetProjectilePower((int)(projectileInstantiateData._ProjectileBasePower+ (projectileInstantiateData._ProjectilePowerByRatio * ownerEntity.GetStat(E_NUMERIC_STAT_TYPE.Power).GetValueForce())))
                                 .SetAffectType(projectileInstantiateData._AffectType)
                                 .SetIntervalData(in projectileInstantiateData._intervalData)
                                 .Activate();
