@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using Sophia.Composite;
 using Sophia.DataSystem.Functional;
+using Sophia.DB;
 
 
 namespace Sophia.DataSystem.Modifiers
@@ -16,27 +17,20 @@ namespace Sophia.DataSystem.Modifiers
         public readonly int ID;
         public readonly Dictionary<E_NUMERIC_STAT_TYPE, StatModifier> StatModifiers = new();
 
-        public Equipment(in SerialEquipmentData equipmentData) {
-            Name            = equipmentData._equipmentName;
-            Description     = equipmentData._description;
-            Icon            = equipmentData._icon;
-            ID              = equipmentData._equipmentID;
+        public Equipment(IEquipmentDataAccessable equipmentData) {
+            Name            = equipmentData.EquipmentName;
+            Description     = equipmentData.EquipmentDescription;
+            Icon            = equipmentData.EquipmentIcon;
+            ID              = equipmentData.EquipmentID;
 
             foreach (E_NUMERIC_STAT_TYPE statType in Enum.GetValues(typeof(E_NUMERIC_STAT_TYPE)))
             {
-                SerialStatModifierDatas statValue = equipmentData._statCalculateDatas.GetModifierDatas(statType);
+                SerialStatModifierDatas statValue = equipmentData.EquipmentStat.GetModifierDatas(statType);
                 if (statValue.calType != E_STAT_CALC_TYPE.None)
                 {
                     StatModifiers.Add(statType, new StatModifier(statValue.amount, statValue.calType, statType));
                 }
             }
-
-            // foreach(E_FUNCTIONAL_EXTRAS_TYPE funcType in Enum.GetValues(typeof(E_FUNCTIONAL_EXTRAS_TYPE))) {
-            //     SerialExtrasModifierDatas extrasValue = equipmentData._extraDatas.GetModifierDatas(funcType);
-            //     if(funcType....)
-            //     
-            //     
-            // }
         }
 
         public virtual void Invoke(IDataAccessible dataAccessible) {

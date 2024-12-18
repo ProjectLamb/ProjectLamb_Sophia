@@ -81,7 +81,7 @@ namespace Sophia.Composite
         private void OnWeaponUseExtrasUpdated()             => Debug.Log("무기 사용 추가 동작 변경됨!");
         private void OnProjectileRestoreExtrasUpdated()     => Debug.Log("장전 사용 추가 동작 변경됨!");
 
-        public event UnityAction OnWeaponChanged = ()=>{};
+        public UnityAction OnWeaponChanged = ()=>{};
 
         public void ClearEvents() {
             OnWeaponChanged = null;
