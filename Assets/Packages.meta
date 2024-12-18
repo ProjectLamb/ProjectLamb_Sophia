@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Packages.meta
 guid: 4262ce7a78004c940bde0903a13337e7
+========
+guid: e4f3431fd0c734e09971da8cc2150a57
+>>>>>>>> TA_Escatrgot:Assets/AddressableAssetsData.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

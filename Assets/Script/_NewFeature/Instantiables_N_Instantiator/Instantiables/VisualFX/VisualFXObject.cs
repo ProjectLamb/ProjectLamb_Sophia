@@ -183,7 +183,6 @@ namespace Sophia.Instantiates
         public void SetPoolEvents(UnityAction activated, UnityAction release)
         {
             OnActivated     = activated;
-
             OnRelease       = release;
         }
 
@@ -304,8 +303,8 @@ namespace Sophia.Instantiates
         {
             OnActivated = null;
             OnRelease = null;
-            OnActivated ??= () => { };
-            OnRelease ??= () => { };
+            OnActivated += () => { };
+            OnRelease += () => { };
         }
 
 #endregion

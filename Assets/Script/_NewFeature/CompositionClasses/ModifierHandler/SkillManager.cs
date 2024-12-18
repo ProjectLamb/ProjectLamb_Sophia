@@ -100,6 +100,7 @@ namespace Sophia.Composite
                 throw new System.Exception("올바른 스킬 키보드 접근이 아님 QER 중 하나로..");
             if (collectedSkillInfo[key] != EmptySkill.Instance) { Drop(key); }
             collectedSkill[key] = skill;
+            collectedSkill[key].AddToUpdater();
             collectedSkill[key].GetCoolTimeComposite().AddOnUseEvent(() =>
             {
                 if (skill.GetIsSkillIndicate())
@@ -111,11 +112,12 @@ namespace Sophia.Composite
 
             switch (key)
             {
-                case KeyCode.Q: { InGameScreenUI.Instance._playerSkillCoolUIElement[0].SetSkill(collectedSkill[KeyCode.Q]); break; }
-                case KeyCode.E: { InGameScreenUI.Instance._playerSkillCoolUIElement[1].SetSkill(collectedSkill[KeyCode.E]); break; }
-                case KeyCode.R: { InGameScreenUI.Instance._playerSkillCoolUIElement[2].SetSkill(collectedSkill[KeyCode.R]); break; }
+                case KeyCode.Q: { InGameScreenUI.Instance._playerSkillCoolUIElement[0].SetSkill(collectedSkill[KeyCode.Q]); InGameScreenUI.Instance._playerSkillCoolUIElement[0].DrawForce(); break; }
+                case KeyCode.E: { InGameScreenUI.Instance._playerSkillCoolUIElement[1].SetSkill(collectedSkill[KeyCode.E]); InGameScreenUI.Instance._playerSkillCoolUIElement[1].DrawForce(); break; }
+                case KeyCode.R: { InGameScreenUI.Instance._playerSkillCoolUIElement[2].SetSkill(collectedSkill[KeyCode.R]); InGameScreenUI.Instance._playerSkillCoolUIElement[2].DrawForce(); break; }
             }
-            SaveSkillData();
+            SaveSkillData(key);
+            
             return true;
         }
 
@@ -129,11 +131,11 @@ namespace Sophia.Composite
                 collectedSkillInfo[key] = EmptySkill.Instance;
                 switch (key)
                 {
-                    case KeyCode.Q: { InGameScreenUI.Instance._playerSkillCoolUIElement[0].RemoveSkill(); break; }
-                    case KeyCode.E: { InGameScreenUI.Instance._playerSkillCoolUIElement[1].RemoveSkill(); break; }
-                    case KeyCode.R: { InGameScreenUI.Instance._playerSkillCoolUIElement[2].RemoveSkill(); break; }
+                    case KeyCode.Q: { InGameScreenUI.Instance._playerSkillCoolUIElement[0].RemoveSkill(); InGameScreenUI.Instance._playerSkillCoolUIElement[0].DrawForce(); break; }
+                    case KeyCode.E: { InGameScreenUI.Instance._playerSkillCoolUIElement[1].RemoveSkill(); InGameScreenUI.Instance._playerSkillCoolUIElement[1].DrawForce(); break; }
+                    case KeyCode.R: { InGameScreenUI.Instance._playerSkillCoolUIElement[2].RemoveSkill(); InGameScreenUI.Instance._playerSkillCoolUIElement[2].DrawForce(); break; }
                 }
-                SaveSkillData();
+                SaveSkillData(key);
                 return true;
             }
             else { return false; }
@@ -196,18 +198,17 @@ namespace Sophia.Composite
                 // InGameScreenUI.Instance._playerSkillCoolUIElement[KeyBUiIndex].SetSkill(collectedSkill[keyB]);
                 InGameScreenUI.Instance._playerSkillCoolUIElement[KeyBUiIndex].DrawForce();
 
-                SaveSkillData();
+                SaveSkillData(keyA);
+                SaveSkillData(keyB);
 
                 return true;
             }
             throw new System.Exception("올바른 스킬 키보드 접근이 아님 QER 중 하나로..");
         }
 
-        public void SaveSkillData()
+        public void SaveSkillData(KeyCode keyCode)
         {
-            DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.SkillDataDic[KeyCode.Q] = collectedSkill[KeyCode.Q];
-            DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.SkillDataDic[KeyCode.E] = collectedSkill[KeyCode.E];
-            DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.SkillDataDic[KeyCode.R] = collectedSkill[KeyCode.R];
+            DontDestroyGameManager.Instance.SaveLoadManager.Data.PlayerData.CollectSkillIndexs[keyCode] = (collectedSkill[keyCode] == null) ? 0 : (int)collectedSkill[keyCode].SkillIndex;
         }
     }
 }

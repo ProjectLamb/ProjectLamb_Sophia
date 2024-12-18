@@ -35,9 +35,9 @@ namespace Sophia.Composite.Stacks
 
         #region Event
 
-        public event UnityAction OnUseAction = null;
-        public event UnityAction OnRecoverAction = null;
-        public event UnityAction OnResetAction = null;
+        public UnityAction OnUseAction = null;
+        public UnityAction OnRecoverAction = null;
+        public UnityAction OnResetAction = null;
 
         public void ClearEvents()
         {

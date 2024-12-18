@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using Sophia.Composite;
 using Sophia.DataSystem.Modifiers;
 using System;
+using Sophia.DB;
 
 namespace Sophia.Instantiates.Skills {
     public enum E_SKILL_INDEX {
@@ -14,81 +15,76 @@ namespace Sophia.Instantiates.Skills {
 
     public class FactoryConcreteSkill {
         public static Skill GetSkillByID(E_SKILL_INDEX index, Entitys.Player player, 
-            in SerialUserInterfaceData userInterfaceData, 
-            in SerialAffectorData affectorData, 
-            in SerialOnDamageExtrasModifierDatas damageExtrasModifierData, 
-            in SerialOnConveyAffectExtrasModifierDatas conveyAffectExtrasModifierData, 
-            in SerialProjectileInstantiateData projectileInstantiateData,
-            in SerialAudioData activatedAudioData
+            ISkillDataAccessable skillData
         )
         {
             switch (index) {
                 case E_SKILL_INDEX.Barrier : {
-                    return new Neutral.Barrier(in userInterfaceData)
-                                .SetBarrierData(in affectorData)
+                    return new Neutral.Barrier(index, skillData.SkillUserInterfaceData)
+                                .SetBarrierData(skillData.SkillAffectorData)
                                 .SetOwnerEntity(player);
                 }
                 case E_SKILL_INDEX.MoveFaster : {
-                    return new Neutral.MoveFaster(in userInterfaceData)
-                                .SetMoveFasterAffect(in affectorData)
+                    return new Neutral.MoveFaster(index, skillData.SkillUserInterfaceData)
+                                .SetMoveFasterAffect(skillData.SkillAffectorData)
                                 .SetOwnerEntity(player)
 ;
                 }
                 case E_SKILL_INDEX.WeaponStun : {
-                    return new Neutral.WeaponStun(in userInterfaceData)
-                                .SetStunData(in conveyAffectExtrasModifierData._affectData)
+                    return new Neutral.WeaponStun(index, skillData.SkillUserInterfaceData)
+                                .SetStunData(skillData.SkillConveyAffectModifierData._affectData)
                                 .SetOwnerEntity(player);
                 }
                 case E_SKILL_INDEX.WeaponAdditionalDamage : {
-                    return new Neutral.WeaponAdditionalDamage(in userInterfaceData)
-                                .SetDamageInfoData(in damageExtrasModifierData)
+                    return new Neutral.WeaponAdditionalDamage(index, skillData.SkillUserInterfaceData)
+                                .SetDamageInfoData(skillData.SkillDamageModifierData)
                                 .SetOwnerEntity(player)
-                                .SetAudioData(in activatedAudioData);
+                                .SetAudioData(skillData.SkillActivatedAudioData);
                 }
                 case E_SKILL_INDEX.PowerUp : {
-                    return new Neutral.PowerUp(in userInterfaceData)
-                                .SetPowerUpAffect(in affectorData)
+                    return new Neutral.PowerUp(index, skillData.SkillUserInterfaceData)
+                                .SetPowerUpAffect(skillData.SkillAffectorData)
                                 .SetOwnerEntity(player);
                 }
                 case E_SKILL_INDEX.Lava : {
-                    return new Neutral.Lava(in userInterfaceData)
-                                .SetInstantiationData(in projectileInstantiateData)
+                    return new Neutral.Lava(index, skillData.SkillUserInterfaceData)
+                                .SetInstantiationData(skillData.SkillProjectileInstantiateData)
                                 .SetOwnerEntity(player);
                 }
                 case E_SKILL_INDEX.BlackWhiteHole : {
-                    return new Neutral.BlackWhiteHole(in userInterfaceData)
-                                .SetInstantiationData(in projectileInstantiateData)
+                    return new Neutral.BlackWhiteHole(index, skillData.SkillUserInterfaceData)
+                                .SetInstantiationData(skillData.SkillProjectileInstantiateData)
                                 .SetOwnerEntity(player);
                 }
                 case E_SKILL_INDEX.DoubleShot : {
-                    return new Melee.DoubleShot(in userInterfaceData)
-                                .SetInstantiationData(in projectileInstantiateData)
+                    return new Melee.DoubleShot(index, skillData.SkillUserInterfaceData)
+                                .SetInstantiationData(skillData.SkillProjectileInstantiateData)
                                 .SetOwnerEntity(player);
                 }
                 case E_SKILL_INDEX.Piercing : {
-                    return new Melee.Piercing(in userInterfaceData)
-                                .SetInstantiationData(in projectileInstantiateData)
-                                .SetPhysics(in affectorData)
+                    return new Melee.Piercing(index, skillData.SkillUserInterfaceData)
+                                .SetInstantiationData(skillData.SkillProjectileInstantiateData)
+                                .SetPhysics(skillData.SkillAffectorData)
                                 .SetOwnerEntity(player);
                 }
                 case E_SKILL_INDEX.RotateSlash : {
-                    return new Melee.RotateSlash(in userInterfaceData)
-                                .SetInstantiationData(in projectileInstantiateData)
+                    return new Melee.RotateSlash(index, skillData.SkillUserInterfaceData)
+                                .SetInstantiationData(skillData.SkillProjectileInstantiateData)
                                 .SetOwnerEntity(player);
 
   
                 }
                 case E_SKILL_INDEX.ThrowSlash : {
-                    return new Melee.ThrowSlash(in userInterfaceData)
-                                .SetInstantiationData(in projectileInstantiateData)
+                    return new Melee.ThrowSlash(index, skillData.SkillUserInterfaceData)
+                                .SetInstantiationData(skillData.SkillProjectileInstantiateData)
                                 .SetOwnerEntity(player);
 
   
                 }
                 case E_SKILL_INDEX.DashSlash : {
-                    return new Melee.DashSlash(in userInterfaceData)
-                                .SetInstantiationData(in projectileInstantiateData)
-                                .SetPhysics(in affectorData)
+                    return new Melee.DashSlash(index, skillData.SkillUserInterfaceData)
+                                .SetInstantiationData(skillData.SkillProjectileInstantiateData)
+                                .SetPhysics(skillData.SkillAffectorData)
                                 .SetOwnerEntity(player);
                 }
                 default : {

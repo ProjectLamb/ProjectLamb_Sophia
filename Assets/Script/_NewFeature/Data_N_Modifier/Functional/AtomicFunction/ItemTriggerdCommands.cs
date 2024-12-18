@@ -17,7 +17,7 @@ namespace Sophia.DataSystem.Functional.AtomFunctions
             public GearcoinCollect(Entitys.Entity entity) {
                 entityRef = entity;
             }
-
+            
             public void Invoke(ref int currentGear)
             {
                 if(powerModifier != null) {
