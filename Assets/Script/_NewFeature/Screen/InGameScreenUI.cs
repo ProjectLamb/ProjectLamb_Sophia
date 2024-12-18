@@ -40,7 +40,7 @@ namespace Sophia.UserInterface
         [SerializeField] public VideoController         _videoController;
         [SerializeField] public GameObject              _bossHealthBar;
         //Demo Version
-        [SerializeField] public GameObject              demoClear;
+        //[SerializeField] public GameObject              demoClear;
 
         public void OnEnable()
         {
