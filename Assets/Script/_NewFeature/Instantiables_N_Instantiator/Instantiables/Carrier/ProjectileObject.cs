@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Pool;
 using DG.Tweening;
+using UnityEngine.Serialization;
 
 namespace Sophia.Instantiates
 {
@@ -27,7 +28,8 @@ namespace Sophia.Instantiates
         [SerializeField] public float _ScaleOverrideByRatio;
         [SerializeField] public float _ScaleMultiplyByRatio;
         [SerializeField] public float _ForwardingSpeedByRatio;
-        [SerializeField] public int _ProjectilePower;
+        [SerializeField] public int _ProjectileBasePower;
+        [SerializeField] public float _ProjectilePowerByRatio;
         [SerializeField] public SerialProjectileIntervalData _intervalData;
         [SerializeField] public E_AFFECT_TYPE _AffectType;
         [SerializeField] public E_INSTANTIATE_STACKING_TYPE _stackingType;
@@ -495,28 +497,28 @@ namespace Sophia.Instantiates
 
         #region Event
 
-        public event UnityAction OnProjectileCreated = null;
+        public UnityAction OnProjectileCreated = null;
         public ProjectileObject SetOnProjectileCreatedEvent(UnityAction action)
         {
             OnProjectileCreated = action;
             return this;
         }
 
-        public event UnityAction OnProjectileTriggerd = null;
+        public UnityAction OnProjectileTriggerd = null;
         public ProjectileObject SetOnProjectileTriggerdEvent(UnityAction action)
         {
             OnProjectileTriggerd = action;
             return this;
         }
 
-        public event UnityAction OnProjectileReleased = null;
+        public UnityAction OnProjectileReleased = null;
         public ProjectileObject SetOnProjectileReleasedEvent(UnityAction action)
         {
             OnProjectileReleased = action;
             return this;
         }
 
-        public event UnityAction OnProjectileForwarding = null;
+        public UnityAction OnProjectileForwarding = null;
         public ProjectileObject SetOnProjectileForwardingEvent(UnityAction action)
         {
             OnProjectileForwarding = action;
@@ -534,8 +536,8 @@ namespace Sophia.Instantiates
             OnProjectileReleased = null;
             OnProjectileForwarding = null;
 
-            OnActivated ??= () => { };
-            OnRelease ??= () => { };
+            OnActivated += () => {};
+            OnRelease += () => {};
 
             OnProjectileCreated ??= () => { };
             OnProjectileTriggerd ??= () => { };

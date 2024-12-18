@@ -42,7 +42,7 @@ namespace Sophia
         ENTITY_TYPE = 10,
             Move, Damaged, Attack, ConveyAffect, Dead, Idle, PhysicTriggered,
         PLAYER_TYPE = 20,
-            Dash, Skill, GearcoinTriggered, HealthTriggered,
+            Dash, Skill, GearcoinTriggered, HealthTriggered, ItemTriggered,
         WEAPON_TYPE = 30, 
             WeaponUse, ProjectileRestore, WeaponConveyAffect, 
         SKILL_TYPE = 40,

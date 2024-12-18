@@ -1,6 +1,7 @@
 using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Utilities;
+using Sophia.DB;
 using UnityEngine;
 
 namespace Sophia.Instantiates
@@ -17,15 +18,9 @@ namespace Sophia.Instantiates
 
     public class SkillItemObject : ItemObject
     {
-        [SerializeField] public E_SKILL_INDEX _index;
-        [SerializeField] public SerialUserInterfaceData _userInterfaceData;
-        [SerializeField] public SerialAffectorData _affectorData;
-        [SerializeField] public SerialOnDamageExtrasModifierDatas _damageModifierData;
-        [SerializeField] public SerialOnConveyAffectExtrasModifierDatas _conveyAffectModifierData;
-        [SerializeField] public SerialProjectileInstantiateData _projectileInstantiateData;
+        [SerializeField] ScriptableSkillData _skillData;
         [SerializeField] PurchaseComponent _purchaseComponent;
-        [SerializeField] public SerialAudioData _activatedAudioData;
-
+        public ISkillDataAccessable GetSerialEquipmentData() => _skillData;
         public Skill skill { get; private set; }
         public bool ISDEBUG = true;
 
@@ -44,20 +39,12 @@ namespace Sophia.Instantiates
                 {
                     if (!_purchaseComponent.Purchase(player)) return;
                 }
-                skill ??= FactoryConcreteSkill.GetSkillByID(_index, player,
-                    in _userInterfaceData,
-                    in _affectorData,
-                    in _damageModifierData,
-                    in _conveyAffectModifierData,
-                    in _projectileInstantiateData,
-                    in _activatedAudioData
-                );
+                skill ??= FactoryConcreteSkill.GetSkillByID(_skillData.SkillType, player, _skillData);
 
                 CollectUserInterfaceAction(skill, (bool selected, KeyCode key) =>
                 {
                     if (selected)
                     {
-                        skill.AddToUpdater();
                         player.CollectSkill(skill, key);
                         _lootVFX.Stop();
                         _lootObject.SetActive(false);

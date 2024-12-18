@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
@@ -28,7 +29,7 @@ namespace Sophia.UserInterface
         [SerializeField] public Slider                  _playerBarrierBarUI;
         [SerializeField] public PlayerStaminaBarUI      _playerStaminaBarUI;
         [SerializeField] public PlayerWealthBar         _playerWealthBarUI;
-        [SerializeField] public GameObject              _playerSkillCoolUI;
+        [SerializeField] public PlayerSkillGroup        _PlayerSkillGroupUI;
         [SerializeField] public Minimap                 _chapterMinimap;
         [SerializeField] public PlayerSkillCoolUI[]     _playerSkillCoolUIElement;
         [SerializeField] public HitCanvasShadeScript    _hitCanvasShadeScript;
@@ -39,28 +40,38 @@ namespace Sophia.UserInterface
         [SerializeField] public VideoController         _videoController;
         [SerializeField] public GameObject              _bossHealthBar;
         //Demo Version
-        [SerializeField] public GameObject              demoClear;
+        //[SerializeField] public GameObject              demoClear;
 
-        
+        public void OnEnable()
+        {
+            Debug.LogWarning("InGameScreenUI : Enable");
+        }
+
+        public void OnDisable()
+        {
+            Debug.LogWarning("InGameScreenUI : OnDisable");
+        }
 
         public void UIVisibleOn() 
         {
+            Debug.LogWarning("InGameScreenUI : UIVisibleOn");
             _playerHealthBarUI.gameObject.SetActive(true);
             _playerBarrierBarUI.gameObject.SetActive(true);
             _playerStaminaBarUI.gameObject.SetActive(true);
             _playerWealthBarUI.gameObject.SetActive(true);
             _chapterMinimap.gameObject.SetActive(true);
-            _playerSkillCoolUI.SetActive(true);
+            _PlayerSkillGroupUI.SetVisible();
         }
 
         public void UIVisibleOff() 
         {
+            Debug.LogWarning("InGameScreenUI : UIVisibleOff");
             _playerHealthBarUI.gameObject.SetActive(false);
             _playerBarrierBarUI.gameObject.SetActive(false);
             _playerStaminaBarUI.gameObject.SetActive(false);
             _playerWealthBarUI.gameObject.SetActive(false);
             _chapterMinimap.gameObject.SetActive(false);
-            _playerSkillCoolUI.SetActive(false);
+            _PlayerSkillGroupUI.SetInvisible();
         }
 
     }

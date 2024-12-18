@@ -94,7 +94,7 @@ public class TypingManager : MonoBehaviour
  
         while (currentChar < charLength)
         {
-            if (timer >= 0)
+            if (timer > 0)
             {
                 yield return null;
                 timer -= Time.deltaTime;

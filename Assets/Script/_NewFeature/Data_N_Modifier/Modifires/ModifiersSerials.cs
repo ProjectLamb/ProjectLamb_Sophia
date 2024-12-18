@@ -86,6 +86,22 @@ namespace Sophia
     
 #endregion
 
+#region Skill
+
+    [System.Serializable]
+    public struct SerialSkillData
+    {
+        [SerializeField] public E_SKILL_INDEX _index;
+        [SerializeField] public SerialUserInterfaceData _userInterfaceData;
+        [SerializeField] public SerialAffectorData _affectorData;
+        [SerializeField] public SerialOnDamageExtrasModifierDatas _damageModifierData;
+        [SerializeField] public SerialOnConveyAffectExtrasModifierDatas _conveyAffectModifierData;
+        [SerializeField] public SerialProjectileInstantiateData _projectileInstantiateData;
+        [SerializeField] public SerialAudioData _activatedAudioData;
+    }
+
+#endregion
+
 #region Affector
 
     [System.Serializable]
