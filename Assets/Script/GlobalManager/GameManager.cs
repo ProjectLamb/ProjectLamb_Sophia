@@ -36,6 +36,7 @@ public class GameManager : MonoBehaviour
     public GameObject                          CurrentStage;
     public Test_CameraController               CameraController;
     
+    
     void Awake()
     {
         Resources.UnloadUnusedAssets();

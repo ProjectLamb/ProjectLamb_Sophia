@@ -91,7 +91,7 @@ namespace Sophia.Composite
             WhenRewindable = null;
         }
 
-        internal void InvoekInitializedAction() => OnInitialized?.Invoke();
+        internal void InvokeInitializedAction() => OnInitialized?.Invoke();
         internal void InvokeStartAction() => OnStart?.Invoke();
         internal void InvokeIntervalAction() => OnInterval?.Invoke();
         internal void InvokeTickingAction(float input) => OnTicking?.Invoke(input);
@@ -192,7 +192,7 @@ namespace Sophia.Composite
             timer.StateType = E_TIMER_STATE.Initialized;
             timer.PassedTime = timer.BaseTime;
             timer.NextInterval = 0f;
-            timer.InvoekInitializedAction();
+            timer.InvokeInitializedAction();
         }
 
         public void Execute(TimerComposite timer) { return; }

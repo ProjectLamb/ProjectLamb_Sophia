@@ -12,6 +12,7 @@ namespace Sophia
 
 #region Member
 
+        public Extras<object>               DataMad = null;
         public Extras<object>               EnemyHit = null;
         public Extras<object>               EnemyDie = null;    
         public Extras<Stage>                StageClear = null;
@@ -21,6 +22,7 @@ namespace Sophia
 
 #region Event
 
+        public UnityEvent                   OnDataMadEvent;
         public UnityEvent                   OnEnemyDieEvent;
         public UnityEvent                   OnEnemyHitEvent;
         public UnityEvent<Stage>            OnStageClearEvent;

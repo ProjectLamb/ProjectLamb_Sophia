@@ -1,7 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Sophia;
+using Sophia.Entitys;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 public class ChapterGenerator : MonoBehaviour
 {
@@ -30,7 +34,6 @@ public class ChapterGenerator : MonoBehaviour
     [SerializeField]
     float hiddenStageSpawnRate;
     public GameObject obj;
-
     public class StageClass 
     {
         //type
@@ -460,6 +463,20 @@ public class ChapterGenerator : MonoBehaviour
             }
         }
     }
+
+    #region DataMad 
+    
+    [SerializeField] private float _madDelayTime;
+    [SerializeField] public Sophia.UserInterface.UIChapterTimer uiChapterTimer;
+    public DataMadWaiter DataMadWait { get; private set; }
+
+    public void DataMadHander()
+    {
+        // TODO 사방이 빨개지고,
+        // 몬스터가 계속 나오고 등등등..
+    }
+
+    #endregion
     void Awake()
     {
         System.Random rand = new System.Random();
@@ -467,6 +484,24 @@ public class ChapterGenerator : MonoBehaviour
         stageAmount = rand.Next(stageAmount, stageAmount + 3);
         minimumDistanceOfEndStage = 2;
         GenerateStage(stageAmount);
+        
+        DataMadWait = new DataMadWaiter(_madDelayTime);
+        uiChapterTimer.Initialize();
+        uiChapterTimer.SetTime(_madDelayTime);
+        Debug.Log(_madDelayTime);
+        GlobalTimeUpdator.CheckAndAdd(DataMadWait);
+        DataMadWait.ActionStart();
+    }
+
+    private void OnEnable()
+    {
+        // TODO Finished되면 data 폭주가 발생한다.
+        // Data폭주에 대한 클래스르 만드는게 좋으려나 
+        // Data 폭주는 챕터에 귀속된다.
+        DataMadWait.AddOnFinishedEvent(uiChapterTimer.TimeFinishedHandler);
+        
+        // TODO 타이머 폰트를 갱신 시키는 이벤트를 여기다 넣자;
+        DataMadWait.AddOnIntervalEvent(uiChapterTimer.TimeIntervalHandler);
     }
 
     void Update()
