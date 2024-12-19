@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using DG.Tweening;
+using Sophia.Entitys;
 
 public class BossPattern : MonoBehaviour
 {
     [SerializeField] DecalProjector indicator;
-    [SerializeField] GameObject projectile;
-
+    public Boss Boss;
+    public int PatternNum;
     public bool IsPreview;
 
     public float IndicatorDisplayTime = 2f;
@@ -22,6 +23,7 @@ public class BossPattern : MonoBehaviour
 
         DisplayIndicator();
         StartCoroutine(DelayProjectile());
+        StartCoroutine(DelayDestroy(IndicatorDisplayTime * 1.5f));
     }
 
     [ContextMenu("Display Preview Indicator")]
@@ -30,7 +32,8 @@ public class BossPattern : MonoBehaviour
         indicator.enabled = true;
 
         indicator.size = new Vector3(0, 0, 0);
-        DOTween.To(() => indicator.size, x => indicator.size = x, new Vector3(width, height, height), duration).OnComplete(()=>{
+        DOTween.To(() => indicator.size, x => indicator.size = x, new Vector3(width, height, height), duration).OnComplete(() =>
+        {
             StartCoroutine(DelayDestroy(2f));
         });
     }
@@ -55,8 +58,9 @@ public class BossPattern : MonoBehaviour
         InstantiateProjectile();
     }
 
+    [ContextMenu("Instantiate Projectile")]
     void InstantiateProjectile()
     {
-
+        Boss.GetComponent<ElderOne>().UseProjectile_RangeAttack(PatternNum);
     }
 }

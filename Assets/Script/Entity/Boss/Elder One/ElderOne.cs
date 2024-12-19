@@ -10,6 +10,7 @@ using UnityEngine.AI;
 using Sophia.UserInterface;
 using FMODPlus;
 using System.Runtime.Remoting.Contexts;
+using Sophia.Instantiates;
 
 namespace Sophia.Entitys
 {
@@ -63,11 +64,13 @@ namespace Sophia.Entitys
         private bool isSkillOnce = false;
         private float currentSkillTimer = 0f;
         private float SkillWalkEndTime = 1.5f;
+        private int WaveAttackCount = 0;
+        [SerializeField] ProjectileObject[] WaveAttackProjectiles;
         #endregion
 
         #region VFX
         [SerializeField] GameObject barrierVFX;
-        [SerializeField] GameObject PatternPreviewIndicator;
+        [SerializeField] GameObject[] PatternIndicator;
         private bool isVFXOnce = false;
         #endregion
 
@@ -371,7 +374,7 @@ namespace Sophia.Entitys
             _audioSource[(int)E_ELDERONE_AUDIO_INDEX.Dirt].Play();
         }
 
-        #region Attack
+        #region Use Projectile
         private Stat power;
         [SerializeField] protected Instantiates.ProjectileObject[] _attckProjectileDirection;
 
@@ -417,24 +420,74 @@ namespace Sophia.Entitys
                                     .Activate();
         }
 
+        public void UseProjectile_RangeAttack(int num)
+        {
+            float scaleRatio = num;
+            switch (num)
+            {
+                case 1:
+                    scaleRatio = 1.5f;
+                    break;
+                case 2:
+                    scaleRatio = 1.3f;
+                    break;
+                case 3:
+                    scaleRatio = 1.95f;
+                    break;
+                case 4:
+                    scaleRatio = 3f;
+                    break;
+            }
+
+            Sophia.Instantiates.ProjectileObject useProjectile = ProjectilePool.GetObject(WaveAttackProjectiles[num - 1]).Init(this);
+
+            _projectileBucketManager.InstantablePositioning((int)ANIME_STATE.JUMP, useProjectile)
+                                    .SetProjectilePower(GetStat(E_NUMERIC_STAT_TYPE.Power) * 2)
+                                    .SetScaleMultiplyByRatio(scaleRatio)
+                                    .Activate();
+        }
+
         public void UseProjectile_WaveAttack()
         {
-            StartCoroutine(CoWaveAttack());
-        }
+            GameObject pattern;
 
-        IEnumerator CoWaveAttack()
-        {
-            for (int i = 0; i < 5; i++)
+            //홀짝 패턴
+            if (WaveAttackCount % 2 == 0)
             {
-                Sophia.Instantiates.ProjectileObject useProjectile = ProjectilePool.GetObject(_attckProjectiles[3]).Init(this);
+                pattern = Instantiate(PatternIndicator[2], CurrentInstantiatedStage.transform.position, Quaternion.identity);
+                pattern.GetComponent<BossPattern>().Boss = this;
 
-                _projectileBucketManager.InstantablePositioning((int)ANIME_STATE.JUMP, useProjectile)
-                                        .SetProjectilePower((int)(GetStat(E_NUMERIC_STAT_TYPE.Power) * (4 - i)))
-                                        .SetScaleMultiplyByRatio(i + 1)
-                                        .Activate();
-                yield return new WaitForSeconds(0.25f);
+                pattern = Instantiate(PatternIndicator[4], CurrentInstantiatedStage.transform.position, Quaternion.identity);
+                pattern.GetComponent<BossPattern>().Boss = this;
             }
+            else
+            {
+                pattern = Instantiate(PatternIndicator[1], CurrentInstantiatedStage.transform.position, Quaternion.identity);
+                pattern.GetComponent<BossPattern>().Boss = this;
+
+                pattern = Instantiate(PatternIndicator[3], CurrentInstantiatedStage.transform.position, Quaternion.identity);
+                pattern.GetComponent<BossPattern>().Boss = this;
+            }
+
+            //랜덤 패턴
+
+            WaveAttackCount++;
+            //StartCoroutine(CoWaveAttack());
         }
+
+        // IEnumerator CoWaveAttack()
+        // {
+        //     for (int i = 0; i < 5; i++)
+        //     {
+        //         Sophia.Instantiates.ProjectileObject useProjectile = ProjectilePool.GetObject(_attckProjectiles[3]).Init(this);
+
+        //         _projectileBucketManager.InstantablePositioning((int)ANIME_STATE.JUMP, useProjectile)
+        //                                 .SetProjectilePower((int)(GetStat(E_NUMERIC_STAT_TYPE.Power) * (4 - i)))
+        //                                 .SetScaleMultiplyByRatio(i + 1)
+        //                                 .Activate();
+        //         yield return new WaitForSeconds(0.25f);
+        //     }
+        // }
 
         #endregion
 
@@ -658,9 +711,10 @@ namespace Sophia.Entitys
                 {
                     if (!isSkillOnce)   //2Phase Range Attack
                     {
-                        GameObject currentIndicator;
                         barrierVFX?.SetActive(true);
-                        currentIndicator = Instantiate(PatternPreviewIndicator, CurrentInstantiatedStage.transform.position, Quaternion.identity);
+
+                        GameObject currentIndicator;
+                        currentIndicator = Instantiate(PatternIndicator[0], CurrentInstantiatedStage.transform.position, Quaternion.identity);
                         currentIndicator.GetComponent<BossPattern>().DisplayPreviewIndicator(300, 300, 3f);
 
                         this.GetModelManager().GetAnimator().SetBool("IsWalk", false);
