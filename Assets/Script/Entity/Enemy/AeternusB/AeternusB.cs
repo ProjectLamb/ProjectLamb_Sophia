@@ -166,6 +166,7 @@ namespace Sophia.Entitys
             //     GetModelManager().GetAnimator().ResetTrigger(t);
             GetModelManager().GetAnimator().ResetTrigger("DoAttack");
             GetModelManager().GetAnimator().SetBool("IsAttackEnd", false);
+            GetModelManager().GetAnimator().SetBool("IsWalk", false);
         }
 
         void DoAttack()
